@@ -3,7 +3,7 @@
 import { useContext } from "react";
 
 import { toast } from "react-toastify";
-import { StoreContext } from "../../context";
+import { StoreContext } from "../../_context";
 
 const AddToCart = ({ book }: { book: any }) => {
   const { cartData, setCartData } = useContext<any>(StoreContext);

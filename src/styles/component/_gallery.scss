@@ -1,0 +1,159 @@
+.image-gallery {
+  overflow: visible !important;
+
+  // Ednar bsn bggu ylgaagu bgch hureed yhvde daraa ni yuch bolchhin bile hha
+  &-content {
+    width: 100% !important;
+    height: 100%;
+    .image-gallery-slide-wrapper {
+      overflow: hidden;
+    }
+  }
+  &-slide {
+    // top: 50% !important;
+    // transform: translate(0%, -50%) !important;
+    height: 100%;
+    img {
+      height: 100% !important;
+      object-fit: cover !important;
+    }
+  }
+
+  &-thumbnails-wrapper {
+    margin-top: 10px;
+  }
+
+  // Navigation button uud
+  &-left-nav {
+    left: 20px !important;
+    transform-origin: center;
+    &::before:hover {
+      transform: scale(1.1) !important;
+    }
+    .image-gallery-svg {
+      display: none;
+    }
+  }
+  &-right-nav {
+    right: 20px !important;
+    .image-gallery-svg {
+      display: none;
+    }
+  }
+  &-image {
+    aspect-ratio: 1;
+  }
+}
+
+.image-gallery {
+  &-left-nav::before,
+  &-right-nav::after {
+    content: '';
+    position: absolute;
+    transform: translate(-50%, -50%) scale(1.3);
+    background: url('/utils/swiper-arrow2.png');
+    background-position: center;
+    background-size: cover;
+    width: 30px;
+    height: 30px;
+  }
+  &-right-nav::after {
+    transform: translate(-50%, -50%) scale(1.3) rotate(180deg);
+  }
+}
+
+///
+
+.image-gallery-thumbnail {
+  @apply aspect-square;
+  span,
+  img {
+    height: 100%;
+  }
+}
+
+.image-gallery-thumbnail-image {
+  object-fit: cover;
+}
+
+// product slug hevtee uyd
+.product__image {
+  margin-bottom: 10vh;
+}
+
+// .product__image,
+// .image-gallery-swipe {
+//   height: 50vh;
+// }
+.image-gallery-slides,
+.image-gallery {
+  height: 100%;
+  transition: 0.3s ease-in-out;
+  // &::before {
+  //   content: '';
+  //   position: absolute;
+  //   top: 0;
+  //   left: 0;
+  //   width: 100%;
+  //   height: 100%;
+
+  //   z-index: 1;
+  //   @apply bg-gradient-to-b from-slate-700/0 via-slate-700/10 to-slate-900/80;
+  // }
+  .image-gallery-thumbnails {
+    z-index: 2;
+  }
+}
+.image-gallery-slides {
+  height: 50vh;
+}
+
+.fullscreen .image-gallery-slides {
+  height: 100vh;
+  object-fit: cover !important;
+  transition: 0.3s ease-in-out;
+  .product__image,
+  .image-gallery-swipe {
+    height: 100vh;
+  }
+  .image-gallery-slide {
+    display: grid !important;
+    place-items: center;
+    img {
+      object-fit: contain !important;
+    }
+  }
+}
+// edit
+.edit-product__image {
+  margin-bottom: 10vh;
+  height: 50vh;
+  .image-gallery-swipe {
+    height: 50vh;
+  }
+  .image-gallery-slides {
+    height: 100%;
+  }
+  .image-gallery {
+    height: 50vh;
+  }
+}
+
+@media (min-width: 768px) {
+  .image-gallery-left-nav {
+    left: 45% !important;
+    top: 92% !important;
+  }
+
+  .image-gallery-right-nav {
+    right: 45% !important;
+    top: 92% !important;
+  }
+}
+
+.image-gallery-left-nav,
+.image-gallery-right-nav {
+  padding: 50px 10px;
+  top: 90%;
+  transform: translate(-50%, -50%);
+}

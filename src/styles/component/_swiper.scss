@@ -1,0 +1,111 @@
+@use "../vars/" as *;
+
+.headerSwiper {
+  height: 100% !important;
+}
+
+.image-gallery {
+  margin-top: 20px !important;
+}
+
+.swiper,
+.headerSwiper {
+  .swiper-button-prev,
+  .swiper-button-next {
+    background: url('/utils/swiper-arrow2.png');
+
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 40px;
+    height: 40px;
+    z-index: 11 !important;
+
+    border-radius: 50%;
+    &::after {
+      display: none !important;
+    }
+    &::before {
+      content: "";
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0%;
+      left: 0;
+      border-radius: 50%;
+      box-shadow: rgba(60, 64, 67, 1) 0px 0px 2px 0px,
+        rgba(60, 64, 67, 0.5) 0px 0px 3px 1px;
+    }
+
+    // &::before {
+    //      content: "";
+    //      width: 100%;
+    //      height: 100%;
+    //      background-color: red;
+    // }
+  }
+  .swiper-button-next {
+    transform: rotate(180deg);
+  }
+  .swiper-button-disabled {
+    display: none !important;
+  }
+}
+
+.swiper-pagination-bullet {
+  background: white !important;
+  width: 10px !important;
+  height: 10px !important;
+  opacity: 0.8 !important;
+}
+
+.swiper-pagination-bullet-active {
+  background: #4b65f6 !important;
+}
+
+@media (max-width: 568px) {
+  .headerSwiper {
+    .swiper-button-prev,
+    .swiper-button-next {
+      background: url('/utils/swiper-arrow2.png');
+
+      background-position: center;
+      background-size: cover;
+      background-repeat: no-repeat;
+      width: 30px;
+      height: 30px;
+
+      &::after {
+        display: none !important;
+      }
+    }
+    .swiper-button-next {
+      transform: rotate(180deg);
+    }
+    .swiper-button-disabled {
+      display: none !important;
+    }
+  }
+}
+
+.cardSwiper {
+  height: 100%;
+  .swiper-button-prev,
+  .swiper-button-next {
+    background: url('/utils/swiper-arrow.png');
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 30px;
+    height: 30px;
+    z-index: 11 !important;
+    &::after {
+      display: none !important;
+    }
+  }
+  &:hover {
+    .swiper-slide img {
+      transform: scale(1.1);
+    }
+  }
+}

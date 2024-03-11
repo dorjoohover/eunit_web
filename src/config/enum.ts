@@ -102,4 +102,13 @@ export enum Action {
     general = 'general',
     detail = 'detail',
   }
+
   
+export enum Api {
+  POST = "POST",
+  GET = "GET",
+  DELETE = "DELETE",
+  PATCH = "PATCH",
+  PUT = "PUT",
+
+}

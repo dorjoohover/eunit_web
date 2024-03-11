@@ -1,0 +1,97 @@
+.animated__icon {
+  background-size: cover;
+  width: 30px;
+  height: 30px;
+}
+
+.animated__wallet {
+  .animated__icon {
+    background-image: url('/assets/utils/icons/static/wallet.png');
+    background-size: cover;
+    width: 30px;
+    height: 30px;
+  }
+  &:hover .animated__icon {
+    background-image: url('/assets/utils/icons/wallet.gif');
+  }
+}
+
+.animated__estimator {
+  .animated__icon {
+    background-image: url('/assets/utils/icons/static/estimator.png');
+    background-size: cover;
+    width: 30px;
+    height: 30px;
+  }
+  &:hover .animated__icon {
+    background-image: url('/assets/utils/icons/estimator.gif');
+  }
+}
+
+.animated__heart {
+  .animated__icon {
+    background-image: url('/assets/utils/icons/static/heart.png');
+    background-size: cover;
+    width: 30px;
+    height: 30px;
+  }
+  &:hover .animated__icon {
+    background-image: url('/assets/utils/icons/heart.gif');
+  }
+}
+
+.white__animated__heart {
+  .animated__icon {
+    background-image: url('/assets/utils/icons/static/heart-outline.png');
+    background-size: cover;
+    width: 22px;
+    height: 22px;
+  }
+  &:hover .animated__icon {
+    background-image: url('/assets/utils/icons/heart-outline.gif');
+  }
+}
+
+.white__animated__estimator {
+  .animated__icon {
+    background-image: url('/assets/utils/icons/static/estimator-solid.png');
+    background-size: cover;
+    width: 28px;
+    height: 28px;
+  }
+  &:hover .animated__icon {
+    background-image: url('/assets/utils/icons/estimator-solid.gif');
+  }
+}
+
+@media only screen and (max-width: 720px) {
+  .animated__icon {
+    width: 30px !important;
+    height: 30px !important;
+  }
+}
+
+.animated__account {
+  .animated__icon {
+    background-image: url('/assets/utils/icons/static/account.png');
+    background-size: cover;
+    width: 30px;
+    height: 30px;
+  }
+  &:hover .animated__icon {
+    background-image: url('/assets/utils/icons/account.gif');
+  }
+}
+
+// account white
+.animated__account-white {
+  .animated__icon {
+    background-image: url('/assets/utils/icons/account-white.gif');
+    background-size: cover;
+    width: 22px;
+    height: 22px;
+  }
+  // &:hover .animated__icon {
+  //   background-image: url('/assets/utils/icons/account-white.gif);
+  // }
+}
