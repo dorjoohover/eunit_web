@@ -1,4 +1,11 @@
-import { AdSellType, AdStatus, AdTypes, AdView, ItemPosition, ItemTypes } from "@/config/enum";
+import {
+  AdSellType,
+  AdStatus,
+  AdTypes,
+  AdView,
+  ItemPosition,
+  ItemTypes,
+} from "@/config/enum";
 
 export interface AdItemsModel {
   id: string;
@@ -29,6 +36,8 @@ export interface AdModel {
   title: string;
 
   images: [];
+  unitPrice: number;
+  area: number;
 
   description: string;
 

@@ -13,10 +13,10 @@ export async function getUser(): Promise<UserModel> {
         Authorization: `Bearer ${token?.value ?? ""}`,
       },
     }).then((d) => d.json());
-    cookies().set("current", res._id)
+    cookies().set("current", res._id);
     return res;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     throw new Error(ErrorMessages.occured);
   }
 }
@@ -37,7 +37,7 @@ export const sendFeedback = async (message: string, title: string) => {
           title: title,
         }),
       }).then((d) => d.json());
-      console.log(res);
+
       return true;
     } catch (error) {
       console.error(error);

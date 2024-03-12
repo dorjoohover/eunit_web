@@ -1,16 +1,14 @@
 import { CreateAdSteps } from "@/config/enum";
-
-
-
+import { ItemModel } from "./items.model";
 
 export interface CategoryStepsModel {
   step: CreateAdSteps;
 
-  values: string[];
+  values: string[] | ItemModel[];
 }
 
 export interface CategoryModel {
-  _id: string
+  _id: string;
   name: string;
 
   english: string;
@@ -21,7 +19,7 @@ export interface CategoryModel {
 
   suggestionItem: string[];
 
-  subCategory: (string | CategoryModel)[] ;
+  subCategory: (string | CategoryModel)[];
 
   href: string;
 

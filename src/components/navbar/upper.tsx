@@ -1,5 +1,3 @@
-
-
 import { HiMenuAlt3 } from "react-icons/hi";
 
 import Link from "next/link";
@@ -7,7 +5,9 @@ import BottomMenu from "./bottomMenu";
 import { WhiteHeartIcon } from "./icons";
 import SideMenu from "./sideMenu";
 import { NavContainer } from "../container";
-import Image from "next/image";
+
+import { Assets } from "@/utils/assets";
+import { Image } from "@chakra-ui/react";
 
 const calcSize = (pt: string) => {
   switch (pt) {
@@ -56,14 +56,13 @@ const UpperNav = () => {
         <div className="flex items-center justify-between gap-2 py-2 ">
           <Link href={"/"}>
             {/* <a> */}
-              <Image
-                src="/images/logo/bom-white-text.png"
-                alt="BOM logo"
-                layout="fill"
-                // width={size.width}
-                // height={size.height}
-                objectFit="contain"
-              />
+            <Image
+              src={Assets.logoWhite}
+              alt="BOM logo"
+              // width={size.width}
+              // height={size.height}
+              objectFit="contain"
+            />
             {/* </a> */}
           </Link>
           <div className="flex items-center">
@@ -78,11 +77,11 @@ const UpperNav = () => {
               onClick={() => router.push("/account?tab=Bookmark")}
             /> */}
             <button
-              // onClick={() => {
-              //   setShowSideMenu(true);
-              // }}
+            // onClick={() => {
+            //   setShowSideMenu(true);
+            // }}
 
-              // onClick={openNav}
+            // onClick={openNav}
             >
               <HiMenuAlt3
                 size={30}

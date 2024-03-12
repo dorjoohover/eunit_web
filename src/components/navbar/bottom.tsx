@@ -7,7 +7,7 @@ import CreateAdNav from "./createAdNav";
 import NavCategory from "./navCategory";
 import mergeNames from "@/utils/functions";
 import { NavContainer } from "../container";
-import Image from "next/image";
+
 import { Assets } from "@/utils/assets";
 import { CategoryModel } from "@/models/category.model";
 import { useState } from "react";
@@ -17,6 +17,7 @@ import { UserModel } from "@/models/user.model";
 import { getSearchAds } from "@/app/(api)/ad.api";
 import { motion } from "framer-motion";
 import { useAppContext } from "@/app/_context";
+import { Image } from "@chakra-ui/react";
 const Bottom = ({
   categories,
   current,
@@ -24,7 +25,6 @@ const Bottom = ({
   current: string | undefined;
   categories: CategoryModel[] | undefined;
 }) => {
-  
   // const [isHoveringId, setIsHoveringId] = useState(true);
   const [activeSearch, setActiveSearch] = useState<boolean>(false);
   // const handleMouseOver = (id) => {
@@ -54,7 +54,6 @@ const Bottom = ({
               <Image
                 src={Assets.logoMiniWhite}
                 alt="Logo"
-                layout="fill"
                 objectFit="contain"
               />
             </Link>
@@ -75,7 +74,7 @@ const Bottom = ({
             </Link>
 
             {current ? (
-              <UserDrawer  />
+              <UserDrawer />
             ) : (
               <Link href={"/login"}>
                 <UserIcon text="Нэвтрэх" />

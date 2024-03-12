@@ -1,230 +1,216 @@
-'use client'
+"use client";
 import { getConstants } from "@/app/(api)/constants.api";
 import { useAppContext } from "@/app/_context";
-import { Api } from "@/config/enum";
-import { CategoryModel } from "@/models/category.model";
-import { ConstantApi } from "@/utils/values";
-import { useEffect, useState } from "react";
-import { useToast } from "react-toastify";
-
+import { ContainerX } from "@/components/container";
+import StepProgress from "@/components/global/stepProgress";
+import useAd from "@/components/global/useAd";
+import { AdSellType, Api, CreateAdSteps } from "@/config/enum";
+import { CategoryModel, CategoryStepsModel } from "@/models/category.model";
+import { ConstantApi, GoogleMapsOptions } from "@/utils/values";
+import { Heading, useToast } from "@chakra-ui/react";
+import { useEffect, useMemo, useState } from "react";
+import {
+  GoogleMap,
+  MarkerF,
+  MarkerProps,
+  useLoadScript,
+} from "@react-google-maps/api";
+import {
+  CacheVarType,
+  CreateAdType,
+  GeneralDataType,
+  StepTypes,
+} from "@/utils/type";
+import Step1 from "@/components/createAd/step1";
+import StepButtons from "@/components/createAd/stepButtons";
+import { filterCategoryById } from "@/app/(api)/category.api";
+import Step4 from "@/components/createAd/step4";
+import { ItemModel } from "@/models/items.model";
+import Step3 from "@/components/createAd/step3";
+import FormTitle from "@/components/createAd/title";
+import { createAd } from "@/app/(api)/ad.api";
+import { useRouter } from "next/navigation";
 export default function AdCreatePage() {
   const toast = useToast();
 
-  const [step, setStep] = useState<number>(-1);
-  const [passcategory, setPassCategory] = useState([]);
-  const {user} = useAppContext()
-  const [categories,setCategories] = useState<CategoryModel[] | undefined>(undefined)
-  const getCategories = async() => {
-    await getConstants(ConstantApi.category, Api.GET).then((d) => setCategories(d))
-  }
+  const [currentStep, setCurrentStep] = useState<number>(-1);
+  const [steps, setSteps] = useState<CategoryStepsModel[]>([]);
+  const { user } = useAppContext();
+  const [categories, setCategories] = useState<CategoryModel[]>([]);
+  const getCategories = async () => {
+    await getConstants(ConstantApi.category, Api.GET).then((d) =>
+      setCategories(d)
+    );
+  };
   useEffect(() => {
-    
+    getCategories();
   }, []);
 
-  const [types, setTypes] = useState({
-    categoryId: false,
-    categoryName: false,
-    subCategoryId: false,
-    sellType: false,
-    adType: false,
+  const [types, setTypes] = useState<CreateAdType>({
+    categoryId: -1,
+    categoryName: "",
+    subCategoryId: "",
+    category_ID: "",
+    sellType: AdSellType.nothing,
+    adType: "",
   });
 
-  const [map, setMap] = useState();
-  const [values, change, typeId] = useAd();
+  const [locationData, setLocationData] = useState<StepTypes>();
+  const [moreData, setMoreData] = useState<StepTypes>();
+  const [cache, setCache] = useState<CacheVarType[]>([]);
   // FILTER INFORMATION - FOR WHICH DATA TO DISPLAY
-  const [subCategory, setSubCategory] = useState([]);
+
   // STEP3 IIN DATA - PRICE, AREA, UNITPRICE, TITLE, DESC, IMAGE
-  const [generalData, setGeneralData] = useState({
-    price: false,
-    area: false,
-    unitPrice: false,
-    title: false,
-    desc: false,
+  const [generalData, setGeneralData] = useState<StepTypes>({
+    price: 0,
+    area: 0,
+    unitPrice: 0,
+    title: "",
+    desc: "",
     imgSelected: false,
     images: [],
     phone: parseInt(user?.phone ? user.phone : 0),
   });
   // STEP 3IIN RAW IMAGE FILES
-  const [images, setImages] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const getCate = async () => {
-    await axios.get(`${urls['test']}/category`).then((d) => {
-      setCategories(d.data);
+  const [images, setImages] = useState<File[]>([]);
+  const router = useRouter();
+  const filterCategory = async (id: string) => {
+    await filterCategoryById(id).then((d) => {
+      setSteps(d.steps);
     });
   };
-  useEffect(() => {
-    getCate();
-  }, []);
   // THIS EFFECT IS FOR FETCHING FILTER DATA FOR STEP2,STEP3,STEP4
-  React.useEffect(() => {
+  useEffect(() => {
+    if (
+      categories != undefined &&
+      types.subCategoryId != "" &&
+      steps.length == 0
+    ) {
+      filterCategory(types.subCategoryId);
+    }
     if (types.categoryName && types.subCategoryId) {
-      try {
-        passcategory[types.categoryId].subCategory.filter((item) => {
-          if (item.href == types.subCategoryId) {
-            axios
-              .get(`${urls['test']}/category/filters/${item._id}`)
-              .then((res) => {
-                setSubCategory(res.data);
-              });
-          }
-        });
-      } catch (e) {
-        console.log(e);
-      }
+      // try {
+      //   categories[types.categoryId].subCategory.filter((item) => {
+      //     if (item.href == types.subCategoryId) {
+      //       axios
+      //         .get(`${urls["test"]}/category/filters/${item._id}`)
+      //         .then((res) => {
+      //           setSubCategory(res.data);
+      //         });
+      //     }
+      //   });
+      // } catch (e) {
+      //   console.log(e);
+      // }
     } else {
     }
-  }, [passcategory, types.categoryId, types.subCategoryId, types.categoryName]);
+    // }, [categories, types.categoryId, types.subCategoryId, types.categoryName]);
+  }, [types]);
   const [isLoading, setIsLoading] = useState(false);
   // checking validation of steps in here
   const handleNextStep = () => {
-    if (step === -1)
+    if (currentStep === -1)
       return checkConditionOnNextStep(
-        types.categoryName != '' &&
-          types.sellType != '' &&
-          types.subCategoryId != ''
+        types.categoryName != "" &&
+          types.sellType != AdSellType.nothing &&
+          types.subCategoryId != ""
       );
-    if (step == 0) {
+    if (currentStep == 0) {
       let check = true;
-      subCategory.steps[0].values.map((s) => {
-        console.log(values[s.type]);
-        if (values[s.type] == undefined || values[s.type] == '') check = false;
+
+      (steps[0].values as ItemModel[]).map((s) => {
+        let key: keyof StepTypes;
+        key = s.type as keyof StepTypes;
+
+        if (
+          locationData == undefined ||
+          locationData?.[key] == undefined ||
+          locationData?.[key] == ""
+        )
+          check = false;
       });
       return checkConditionOnNextStep(check);
     }
-    if (step === 1)
+    if (currentStep === 1)
       return checkConditionOnNextStep(
-        generalData.price &&
-          generalData.area &&
-          generalData.unitPrice &&
-          generalData.title &&
-          generalData.desc
+        generalData.price != 0 &&
+          generalData.area != 0 &&
+          generalData.unitPrice != 0 &&
+          generalData.title != "" &&
+          generalData.desc != ""
       );
-
-    if (step === 2) return validateStep4();
+    if (currentStep === 2) return validateStep4();
   };
 
-  const checkConditionOnNextStep = (booleanValue) => {
-    return booleanValue === undefined || booleanValue === '' || booleanValue
-      ? setStep((prev) => prev + 1)
+  const checkConditionOnNextStep = (value: boolean) => {
+    return value
+      ? setCurrentStep((prev) => prev + 1)
       : toast({
-          title: 'Та бүх талбарыг бөглөнө үү.',
-          status: 'error',
-          duration: 1000,
+          title: "Та бүх талбарыг бөглөнө үү.",
+          status: "warning",
+          duration: 2000,
           isClosable: true,
         });
   };
 
   const sendAd = async () => {
-    const token = getCookie('token');
-    console.log(`start ${new Date(Date.now())}`);
-    const filters = [];
-    const pushedImages = [];
-    subCategory.steps.map((s) => {
-      s.values.map((v) => {
-        if (s.step != 'general') {
-          filters.push({
-            name: v.name,
-            id: v.type,
-            value: values[v.type],
-            position: v.position,
-            type: v.types,
-            index: v.index,
-            isSearch: v.isSearch ?? false,
-            isUse: v.isUse ?? false,
-          });
-        } else {
-          filters.push({
-            name: v.name,
-            id: v.type,
-            value: generalData[v.type],
-            position: v.position,
-            type: v.types,
-            index: v.index,
-            isSearch: v.isSearch ?? false,
-            isUse: v.isUse ?? false,
-          });
-        }
-      });
-    });
+    setIsLoading(true);
 
+    setTypes((prev) => ({
+      ...prev,
+      category_ID: categories[types.categoryId]._id,
+    }));
     let fImages = new FormData();
-
     images?.map((prev, i) => {
       if (i < 8) {
-        fImages.append('images', prev);
+        fImages.append(`files`, prev);
       }
     });
-    try {
-      await axios
-        .post(`${urls['test']}/ad/uploadFields`, fImages, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Access-Control-Allow-Headers': '*',
-          },
-        })
-        .then((d) => (pushedImages = d.data));
-
-      await axios.post(
-        `${urls['test']}/ad`,
-        {
-          images: pushedImages,
-          title: generalData.title,
-          description: generalData.desc,
-          location: map,
-          subCategory: subCategory._id,
-          category: categories[types.categoryId]._id,
-          sellType: getSellType(types.sellType),
-          items: filters,
-          adType: types.adType == 'sharing' ? 'sharing' : 'default',
-          adStatus: 'pending',
-          view: 'hide',
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Access-Control-Allow-Headers': '*',
-            charset: 'UTF-8',
-          },
-        }
-      );
-
-      toast({
-        title: 'Амжилттай нэмэгдлээ.',
-        status: 'success',
-        duration: 1000,
-        isClosable: true,
-      });
-      router.push('/account?tab=MyAds');
-    } catch (error) {
-      setIsLoading(false);
-      console.error(error);
-    }
+    await createAd(
+      fImages,
+      { ...locationData, ...generalData, ...moreData },
+      types,
+      steps
+    ).then((d) => {
+      if (d) {
+        toast({
+          title: "Амжилттай нэмэгдлээ.",
+          status: "success",
+          duration: 1000,
+          isClosable: true,
+        });
+        router.push("/account?tab=MyAds");
+      }
+    });
+    setIsLoading(false);
   };
   const validateStep4 = async () => {
     setIsLoading(true);
 
     let emptyAd = true;
-    subCategory.steps[2].values.map((f) => {
-      if (values[f.type] == undefined) {
+    (steps[2].values as ItemModel[]).map((f) => {
+      let key: keyof StepTypes;
+      key = f.type as keyof StepTypes;
+      if (moreData?.[key] == undefined) {
         emptyAd = false;
       }
     });
     if (emptyAd) {
-      if (user?.status != 'banned') {
+      if (user?.status != "banned") {
         await sendAd();
       } else {
         toast({
           title:
-            'Та одоогоор зар илгээх боломжгүй байна. Email-ээ шалган Verify хийнэ үү',
-          status: 'warning',
+            "Та одоогоор зар илгээх боломжгүй байна. Email-ээ шалган Verify хийнэ үү",
+          status: "warning",
           duration: 2000,
           isClosable: true,
         });
       }
     } else {
       toast({
-        title: 'Та бүх талбарыг бөглөнө үү.',
-        status: 'warning',
+        title: "Та бүх талбарыг бөглөнө үү.",
+        status: "warning",
         duration: 2000,
         isClosable: true,
       });
@@ -234,7 +220,7 @@ export default function AdCreatePage() {
   };
 
   const handlePrevStep = () => {
-    setStep((prev) => {
+    setCurrentStep((prev) => {
       return prev > -1 ? prev - 1 : prev;
     });
     top();
@@ -243,11 +229,12 @@ export default function AdCreatePage() {
   const top = () => {
     window.scrollTo(0, 0);
   };
-  const libraries = useMemo(() => ['places'], []);
+  // const libraries = useMemo(() => ["places"], []);
 
   const { isLoaded } = useLoadScript({
-    googleMapsApiKey: 'AIzaSyC2u2OzBNo53GxJJdN3Oc_W6Yc42OmdZcE',
-    libraries: libraries,
+    googleMapsApiKey: "AIzaSyC2u2OzBNo53GxJJdN3Oc_W6Yc42OmdZcE",
+    libraries: GoogleMapsOptions.libraries,
+    // libraries: libraries,
   });
   const mapOptions = useMemo(
     () => ({
@@ -271,50 +258,60 @@ export default function AdCreatePage() {
     <div className="min-h-[80vh] py-10">
       <ContainerX>
         <StepProgress
-          activeStep={step}
-          handleClick={(stepId) => setStep(stepId)}
-          hasFourStep={types?.categoryName === 'realState'}
+          activeStep={currentStep}
+          handleClick={(stepId) => setCurrentStep(stepId)}
+          hasFourStep={types?.categoryName === "realState"}
         />
+
         {
           // STEP1 TYPES: CATEGORY, SUBCATEGORY, ADTYPE, SELLTYPE
-          step === -1 && (
-            <Step1 {...{ types, setTypes }} categories={passcategory} />
+          currentStep === -1 && (
+            <Step1 {...{ types, setTypes }} categories={categories} />
           )
         }
 
-        {subCategory?.steps?.map((filter, index) => {
-          if (step == index) {
-            if (index == 0)
+        {steps?.map((step, index) => {
+          if (currentStep == index) {
+            if (step.step == CreateAdSteps.location)
               //STEP2: LOCATIONS - DISTRICT, LOCATION, COMMITTEE, TOWN
 
               return (
                 <div key={index}>
                   <Step4
-                    filter={filter}
-                    state={values}
-                    handle={change}
-                    typeId={typeId}
+                    filter={step.values as ItemModel[]}
+                    state={locationData}
+                    handle={setLocationData}
+                    cache={cache}
+                    setCache={setCache}
                   />
                   <Heading variant="mediumHeading" className="mb-5 text-center">
                     Газрын зураг дээр байршлаа сонгоно уу
                   </Heading>
                   {isLoaded && (
                     <GoogleMap
-                      className="shadow aspect-video"
+                      // className="shadow aspect-video"
                       options={mapOptions}
                       onClick={(e) => {
-                        setMap(e.latLng.toJSON());
+                        const selected = e.latLng?.toJSON();
+                        if (selected) {
+                          setLocationData((prev) => ({
+                            ...prev,
+                            map: { latLng: selected },
+                          }));
+                        }
                       }}
                       zoom={14}
                       center={mapCenter}
                       mapTypeId={google.maps.MapTypeId.ROADMAP}
-                      mapContainerStyle={{ width: '100%', height: '40vh' }}
+                      mapContainerStyle={{ width: "100%", height: "40vh" }}
                     >
-                      <MarkerF
-                        position={map}
-                        onClick={() => {}}
-                        animation={google.maps.Animation.DROP}
-                      />
+                      {locationData?.map?.latLng && (
+                        <MarkerF
+                          position={locationData.map.latLng}
+                          onClick={() => {}}
+                          animation={google.maps.Animation.DROP}
+                        />
+                      )}
                     </GoogleMap>
                   )}
                 </div>
@@ -323,7 +320,7 @@ export default function AdCreatePage() {
               return (
                 <Step3
                   key={index}
-                  filter={filter}
+                  filter={step.values as ItemModel[]}
                   images={images}
                   setImages={setImages}
                   generalData={generalData}
@@ -337,10 +334,11 @@ export default function AdCreatePage() {
                   <FormTitle>Дэлгэрэнгүй мэдээлэл</FormTitle>
                   <div className="bg-white min-h-[40vh] rounded-xl py-10 md:px-10 px-2">
                     <Step4
-                      filter={filter}
-                      state={values}
-                      handle={change}
-                      typeId={typeId}
+                      filter={step.values as ItemModel[]}
+                      state={moreData}
+                      handle={setMoreData}
+                      cache={cache}
+                      setCache={setCache}
                     />
                   </div>
                 </div>
@@ -349,21 +347,18 @@ export default function AdCreatePage() {
         })}
 
         <StepButtons
-          setStep={setStep}
+          setCurrentStep={setCurrentStep}
           onNext={() => {
             handleNextStep(), top();
           }}
           onPrev={() => {
             handlePrevStep(), top();
           }}
-          data={values}
-          filter={subCategory?.steps}
-          generalData={generalData}
+          data={{ ...locationData, ...generalData, ...moreData }}
+          filter={steps}
           loading={isLoading}
-          txt={step == 2 ? 'Илгээх' : 'Дараах'}
-          step={step}
-          map={map}
-          // onClick={() => step == 2 && <CustomModal />}
+          txt={currentStep == 2 ? "Илгээх" : "Дараах"}
+          step={currentStep}
         />
       </ContainerX>
     </div>
