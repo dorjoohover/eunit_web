@@ -1,13 +1,20 @@
 "use server";
-import { Api, CreateAdSteps } from "@/config/enum";
+import { AdStatus, AdTypes, Api, CreateAdSteps } from "@/config/enum";
 import { CategoryStepsModel } from "@/models/category.model";
 import { ItemModel } from "@/models/items.model";
 import { UserModel } from "@/models/user.model";
 import { ErrorMessages } from "@/utils/string";
-import { CreateAdType, FetchAdType, StepTypes } from "@/utils/type";
+import {
+  AdFilterType,
+  CreateAdType,
+  FetchAdType,
+  FetchAdUnitType,
+  StepTypes,
+} from "@/utils/type";
 import { AdApi, api } from "@/utils/values";
 
 import { cookies } from "next/headers";
+import { getUser } from "./user.api";
 
 export async function getAds(num: number): Promise<FetchAdType> {
   try {
@@ -93,6 +100,111 @@ export async function createAd(
       },
       body: JSON.stringify(body),
     }).then((d) => d.json());
+
+    return res;
+  } catch (error) {
+    console.error(error);
+    throw new Error(ErrorMessages.occured);
+  }
+}
+
+export async function getManyAds(
+  num: number,
+  self: boolean,
+  limit: number,
+  status: AdStatus,
+  type: AdTypes,
+  ads: string[],
+  id?: string
+): Promise<FetchAdUnitType> {
+  try {
+    let res = await fetch(
+      `${api}${AdApi.many}${num}/${self}/${limit}/${status}/${type}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          dto: ads,
+          cateId: id,
+        }),
+      }
+    ).then((d) => d.json());
+
+    return res;
+  } catch (error) {
+    console.error(error);
+    throw new Error(ErrorMessages.occured);
+  }
+}
+
+export async function getMyAds(
+  num: number,
+  limit: number,
+  status: AdStatus,
+  type: AdTypes,
+  id?: string
+) {
+  try {
+    const currentUser = await getUser();
+    const res = await getManyAds(
+      num,
+      true,
+      limit,
+      status,
+      type,
+      currentUser.ads,
+      id
+    );
+    return res;
+  } catch (error) {
+    console.error(error);
+    throw new Error(ErrorMessages.occured);
+  }
+}
+
+export async function getAdByCategory(id: string, num: number) {
+  try {
+    let res = await fetch(`${api}${AdApi.create}${id}/${num}`).then((d) =>
+      d.json()
+    );
+    return res;
+  } catch (error) {
+    console.error(error);
+    throw new Error(ErrorMessages.occured);
+  }
+}
+
+export async function getFilteredAd(
+  id: string,
+  num: number,
+  type: AdTypes,
+  types: string[],
+  items: AdFilterType[] = []
+) {
+  try {
+    let res = await fetch(`${api}${AdApi.filter}${num}/${type}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        cateId: id,
+        types: types,
+        items: items,
+      }),
+    }).then((d) => d.json());
+
+    return res;
+  } catch (error) {
+    console.error(error);
+    throw new Error(ErrorMessages.occured);
+  }
+}
+export async function getAdById(id: string) {
+  try {
+    let res = await fetch(`${api}${AdApi.id}${id}`).then((d) => d.json());
 
     return res;
   } catch (error) {

@@ -18,6 +18,7 @@ import {
   DrawerContent,
   DrawerOverlay,
   Image,
+  Text,
   useDisclosure,
 } from "@chakra-ui/react";
 import Feedback from "../global/feedback";
@@ -30,36 +31,42 @@ const drawerItem = [
   {
     icon: <CgProfile />,
     text: "Хувийн мэдээлэл",
-    href: "Profile",
+    href: "profile",
   },
   {
     icon: <BsGrid />,
     text: "Миний зарууд",
-    href: "MyAds",
+    href: "myads",
   },
   {
     icon: <MdShare />,
     text: "Хуваалцсан зарууд",
-    href: "SharedAds",
+    href: "sharedads",
   },
   {
     icon: <FiHeart />,
     text: "Миний хүслүүд",
-    href: "Bookmark",
+    href: "bookmark",
   },
   {
     icon: <IoWalletOutline />,
     text: "Хэтэвч",
-    href: "WalletPage",
+    href: "walletpage",
   },
   {
     icon: <AiOutlineCalculator />,
     text: "Үнэлгээ",
-    href: "Estimated",
+    href: "estimated",
   },
 ];
 
-const BodyDrawer = ({ user }: { user: UserModel }) => {
+const BodyDrawer = ({
+  user,
+  onClose,
+}: {
+  user: UserModel;
+  onClose: () => void;
+}) => {
   return (
     <DrawerBody className="flex flex-col justify-between p-0 bg-bgdark/95">
       <div
@@ -81,6 +88,7 @@ const BodyDrawer = ({ user }: { user: UserModel }) => {
               "https://www.pikpng.com/pngl/m/80-805068_my-profile-icon-blank-profile-picture-circle-clipart.png"
             }
             alt="user image"
+            referrerPolicy="no-referrer"
             className="w-[100px] aspect-square rounded-full bg-gray-400 object-cover mt-10"
           />
           <h2 className="text-[22px] mt-2 font-bold">{user?.username ?? ""}</h2>
@@ -93,8 +101,9 @@ const BodyDrawer = ({ user }: { user: UserModel }) => {
             return (
               <DownLink
                 key={i}
+                onClick={onClose}
                 icon={d.icon}
-                href={`/account?tab=${d.href}`}
+                href={`/account/${d.href}`}
                 text={d.text}
               />
             );
@@ -131,16 +140,22 @@ const DownLink = ({
 }) => {
   return (
     <Link
-      href={"/"}
+      href={href ?? "/"}
       className={mergeNames(
         "px-5 py-4 transition-all ease-in-out border-2 rounded-lg h-[100px] group hover:bg-gray-100 text-mainBlossom text-bold",
         STYLES.flexCenter,
         "flex-col items-center"
       )}
+      onClick={() => {
+        if (onClick != null) {
+          onClick();
+        }
+      }}
     >
       {text && text?.length > 0 ? (
         <>
           <p className="text-[30px] mb-2">{icon}</p>
+          <Text className="font-semibold">{text}</Text>
         </>
       ) : (
         ""
@@ -173,7 +188,7 @@ const UserDrawer = () => {
         <DrawerContent className="bg-transparent">
           <DrawerCloseButton className="text-white" />
 
-          <BodyDrawer user={user} />
+          <BodyDrawer user={user} onClose={onClose} />
         </DrawerContent>
       </Drawer>
     </div>

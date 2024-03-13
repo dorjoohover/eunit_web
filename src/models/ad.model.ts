@@ -6,6 +6,8 @@ import {
   ItemPosition,
   ItemTypes,
 } from "@/config/enum";
+import { CategoryModel } from "./category.model";
+import { UserModel } from "./user.model";
 
 export interface AdItemsModel {
   id: string;
@@ -35,7 +37,7 @@ export interface AdModel {
 
   title: string;
 
-  images: [];
+  images?: string[];
   unitPrice: number;
   area: number;
 
@@ -43,9 +45,9 @@ export interface AdModel {
 
   location: AdLocationModel;
 
-  subCategory: string;
+  subCategory: string | CategoryModel;
 
-  category: string;
+  category: string | CategoryModel;
 
   sellType: AdSellType;
 
@@ -61,9 +63,12 @@ export interface AdModel {
 
   view: AdView;
 
-  user: string;
+  user: string | UserModel;
 
   views?: string[];
 
   returnMessage?: string;
+
+  updatedAt?: string;
+  createdAt?: string;
 }

@@ -48,10 +48,10 @@
 .image-gallery {
   &-left-nav::before,
   &-right-nav::after {
-    content: '';
+    content: "";
     position: absolute;
     transform: translate(-50%, -50%) scale(1.3);
-    background: url('/utils/swiper-arrow2.png');
+    background: url("/assets/utils/swiper-arrow2.png");
     background-position: center;
     background-size: cover;
     width: 30px;

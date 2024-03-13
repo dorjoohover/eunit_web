@@ -9,6 +9,7 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { IoIosCheckboxOutline, IoMdRadioButtonOn } from "react-icons/io";
 import { Libraries } from "@react-google-maps/api";
 import { AdSellType } from "@/config/enum";
+import { GridOptions, SwiperOptions } from "swiper/types";
 // export const api = "http://localhost:5050/api/";
 export const api = "http://localhost:5050/api/";
 // export const url = "http://localhost:3000/";
@@ -50,9 +51,13 @@ export class UserApi {
   static sendFeedback = `${user}feedback`;
 }
 export class AdApi {
-  static view = `${ad}`;
+  static view = `${ad}get/`;
   static search = `${ad}search/{value}?value=`;
   static create = `${ad}`;
+  static many = `${ad}many/`;
+  static filter = `${ad}filter/`;
+  static category = `${ad}category/`;
+  static id = `${ad}id/`;
 }
 export class CategoryApi {
   static filter = `${category}filters/`;
@@ -227,3 +232,84 @@ export const CommitteeData = [
 export class GoogleMapsOptions {
   static libraries = ["places"] as Libraries;
 }
+
+export const proSwiperBreakpoints: {
+  [width: number]: SwiperOptions;
+  [ratio: string]: SwiperOptions;
+} = {
+  // sm
+  1: {
+    slidesPerView: 1,
+    grid: {
+      rows: 2,
+      fill: "row",
+    },
+  },
+
+  1280: {
+    slidesPerView: 2,
+    grid: {
+      rows: 2,
+      fill: "row",
+    },
+  },
+};
+
+export const swiperBreakpoints: {
+  [width: number]: SwiperOptions;
+  [ratio: string]: SwiperOptions;
+} = {
+  // sm
+  1: {
+    slidesPerView: 1,
+    grid: {
+      rows: 2,
+      fill: "row",
+    },
+  },
+  640: {
+    slidesPerView: 2,
+    grid: {
+      rows: 2,
+      fill: "row",
+    },
+  },
+  // md
+  768: {
+    slidesPerView: 2,
+    grid: {
+      rows: 2,
+      fill: "row",
+    },
+  },
+  870: {
+    slidesPerView: 3,
+    grid: {
+      rows: 2,
+      fill: "row",
+    },
+  },
+  // lg
+  1024: {
+    slidesPerView: 3,
+    grid: {
+      rows: 2,
+      fill: "row",
+    },
+  },
+  // xl
+  1280: {
+    slidesPerView: 4,
+    grid: {
+      rows: 2,
+      fill: "row",
+    },
+  },
+  1600: {
+    slidesPerView: 5,
+    grid: {
+      rows: 2,
+      fill: "row",
+    },
+  },
+};

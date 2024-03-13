@@ -7,16 +7,22 @@ import { cookies } from "next/headers";
 export async function getUser(): Promise<UserModel> {
   try {
     let token = cookies().get("token");
-
-    let res = await fetch(`${api}${UserApi.me}`, {
-      headers: {
-        Authorization: `Bearer ${token?.value ?? ""}`,
-      },
-    }).then((d) => d.json());
-    cookies().set("current", res._id);
-    return res;
+    if (token?.value != "") {
+      let res = await fetch(`${api}${UserApi.me}`, {
+        headers: {
+          Authorization: `Bearer ${token?.value ?? ""}`,
+        },
+      }).then((d) => d.json());
+      cookies().set("current", res._id);
+      return res;
+    }
+    cookies().delete("token");
+    cookies().delete("current");
+    throw new Error(ErrorMessages.cookieExpired);
   } catch (error) {
     console.error(error);
+    cookies().delete("current");
+    cookies().delete("token");
     throw new Error(ErrorMessages.occured);
   }
 }

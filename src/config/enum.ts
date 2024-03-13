@@ -20,10 +20,10 @@ export enum UserStatus {
   returned = "returned",
 }
 
-export enum Socials {
-  facebook,
-  instagram,
-  telegram,
+export enum SocialsEnum {
+  facebook = "facebook",
+  instagram = "instagram",
+  telegram = "telegram",
 }
 // ad
 export enum AdTypes {
@@ -33,6 +33,7 @@ export enum AdTypes {
   default = "default",
   poster = "poster",
   all = "all",
+  any = "any",
 }
 
 export enum AdView {
@@ -65,6 +66,16 @@ export enum AdSellType {
   rented = "rented",
   sellRent = "sellRent",
   nothing = "nothing",
+}
+
+export enum ProfileEnumType {
+  username = "username",
+  phone = "phone",
+  agent = "agent",
+  date = "date",
+  email = "email",
+  floor = "floor",
+  square = "square",
 }
 
 export enum ItemPosition {

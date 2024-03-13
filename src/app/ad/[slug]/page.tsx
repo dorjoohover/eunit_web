@@ -1,3 +1,4 @@
+"use client";
 import {
   Box,
   Button,
@@ -12,6 +13,7 @@ import {
 } from "@chakra-ui/react";
 import React, {
   Fragment,
+  ReactElement,
   ReactNode,
   useEffect,
   useMemo,
@@ -24,14 +26,14 @@ import {
   MarkerF,
   useLoadScript,
 } from "@react-google-maps/api";
-
-import { useRouter } from "next/router";
+import ImageGallery from "react-image-gallery";
+import { useRouter } from "next/navigation";
 import { BiArea, BiDoorOpen } from "react-icons/bi";
 import { FaCopy, FaHeart } from "react-icons/fa";
 import { IoBedOutline } from "react-icons/io5";
 import { TbBath } from "react-icons/tb";
-import { useDispatch, useSelector } from "react-redux";
-import mergeNames from "@/utils/functions";
+
+import mergeNames, { getSellType } from "@/utils/functions";
 // import ProductInfoValue from "@/components/createAd/product/productInfoValue";
 import { FiltersContainer } from "@/components/createAd/step4/filter";
 import { AppProps } from "next/app";
@@ -39,10 +41,24 @@ import ScrollTop from "@/components/global/scrollTop";
 import MainContainer from "@/components/containers/mainContainer";
 import Engage from "@/components/product/engage";
 import { GeneralDataType } from "@/utils/type";
-import { GoogleMapsOptions } from "@/utils/values";
+import { GoogleMapsOptions, api } from "@/utils/values";
 import ProductInfoValue from "@/components/createAd/product/productInfoValue";
 import { ItemModel } from "@/models/items.model";
 import { ItemTypes } from "@/config/enum";
+import { AdModel } from "@/models/ad.model";
+import { getAdById } from "@/app/(api)/ad.api";
+import moment from "moment";
+import UserInfo, {
+  SmallProductHeader,
+  SmallUserInfo,
+} from "@/components/ad/userInfo";
+import { UserModel } from "@/models/user.model";
+
+import { CategoryModel } from "@/models/category.model";
+import ItemContainer from "@/components/createAd/product/itemContainer";
+import { calcValue } from "@/components/ad/card";
+import WhiteBox from "@/components/createAd/product/whiteBox";
+import ProductHeader from "@/components/product/productHeader";
 
 export const ProductInfo = ({
   title,
@@ -228,14 +244,18 @@ export const ProductInfo = ({
   );
 };
 
-const Product = () => {
-  const { asPath, pathname } = useRouter();
+export default function AdDynamicPage({
+  params,
+}: {
+  params: { slug: string };
+}) {
+  const [data, setData] = useState<AdModel>();
+
   const toast = useToast();
   const router = useRouter();
   // const { user } = useSelector((state) => state.user);
   // const { bookmarks } = useSelector((state) => state.bookmarks);
-  const [data, setData] = useState("");
-  const dispatch = useDispatch();
+
   const [suggestion, setSuggestion] = useState("map");
   // propAds?.subCategory?.suggestionItem[0] ?? "location"
   const dummyData = [];
@@ -265,10 +285,10 @@ const Product = () => {
   );
   const mapCenter = useMemo(
     () => ({
-      // lat: parseFloat(data?.location?.lat ?? 47.91887307876936),
-      // lng: parseFloat(data?.location?.lng ?? 106.91757202148438),
+      lat: parseFloat(data?.location?.lat?.toString() ?? "47.91887307876936"),
+      lng: parseFloat(data?.location?.lng?.toString() ?? "106.91757202148438"),
     }),
-    [data]
+    []
   );
   // const getSuggestion = async (suggest, sd) => {
   //   if (suggest != "map") {
@@ -307,17 +327,13 @@ const Product = () => {
   //   }
   // };
 
-  // const getData = async () => {
-  //   await axios.get(`${urls["test"]}/ad/id/${router.query.slug}`).then((d) => {
-  //     setData(d.data);
-  //     dummyData = d.data;
-  //     getSuggestion("map", d.data);
-  //   });
-  // };
+  const getData = async () => {
+    await getAdById(params.slug).then((d) => setData(d));
+  };
 
-  // useEffect(() => {
-  //   if (router?.query?.slug) getData();
-  // }, [router?.query?.slug]);
+  useEffect(() => {
+    if (params.slug) getData();
+  }, []);
   // const [open, setOpen] = useState(false);
   // const copyToClipboard = (e) => {
   //   navigator.clipboard.writeText(window.location.toString());
@@ -333,16 +349,16 @@ const Product = () => {
             <div className="flex flex-col-reverse xl:flex-row gap-7">
               <div className="flex flex-col w-full gap-5 max-w-[1030px]">
                 {/* <p className="text-darkBlue">/Үл хөдлөх/Орон сууц</p> */}
-                {/* <h1 className="my-5 text-lg font-semibold md:text-3xl">
-                  {data.title}
+                <h1 className="my-5 text-lg font-semibold md:text-3xl">
+                  {data?.title}
                 </h1>
                 <div className="flex items-center justify-between">
                   <Engage
-                    date={moment(data.createdAt).format("lll")}
-                    num={data.num}
+                    date={moment(data?.createdAt).format("lll")}
+                    num={data?.num}
                     view={
-                      data?.views?.length > 0 && (
-                        <p>Үзсэн хүний тоо: {data.views.length}</p>
+                      (data?.views?.length ?? 0) > 0 && (
+                        <p>Үзсэн хүний тоо: {data?.views?.length}</p>
                       )
                     }
                   />
@@ -350,90 +366,90 @@ const Product = () => {
                     <AdButton
                       icon={<FaHeart />}
                       color={
-                        bookmarks?.find((b) => b == data._id) != undefined
-                          ? "red"
-                          : "gray"
+                        // bookmarks?.find((b) => b == data._id) != undefined
+                        "red"
+                        //   ? "red"
+                        //   : "gray"
                       }
                       onClick={() => {
-                        if (bookmarks != undefined) {
-                          dispatch(setBookmark(data._id));
-
-                          if (bookmarks.includes(data._id)) {
-                            toast({
-                              title: "Зар хүслээс хасагдлаа.",
-                              status: "warning",
-                              duration: 5000,
-                              isClosable: true,
-                            });
-                          } else {
-                            toast({
-                              title: "Зар хүсэлд нэмэгдлээ.",
-                              status: "success",
-                              duration: 5000,
-                              isClosable: true,
-                            });
-                          }
-                        } else {
-                          toast({
-                            title: "Та нэвтэрнэ үү",
-                            status: "warning",
-                            duration: 5000,
-                            isClosable: true,
-                          });
-                        }
+                        // if (bookmarks != undefined) {
+                        //   dispatch(setBookmark(data._id));
+                        //   if (bookmarks.includes(data._id)) {
+                        //     toast({
+                        //       title: "Зар хүслээс хасагдлаа.",
+                        //       status: "warning",
+                        //       duration: 5000,
+                        //       isClosable: true,
+                        //     });
+                        //   } else {
+                        //     toast({
+                        //       title: "Зар хүсэлд нэмэгдлээ.",
+                        //       status: "success",
+                        //       duration: 5000,
+                        //       isClosable: true,
+                        //     });
+                        //   }
+                        // } else {
+                        //   toast({
+                        //     title: "Та нэвтэрнэ үү",
+                        //     status: "warning",
+                        //     duration: 5000,
+                        //     isClosable: true,
+                        //   });
+                        // }
                       }}
                     />
                     <AdButton
                       icon={<FaCopy />}
                       onClick={() => {
-                        copyToClipboard(),
-                          toast({
-                            title: `Холбоосыг хуулж авлаа`,
-                            status: "info",
-                            isClosable: true,
-                            duration: 1500,
-                          });
+                        // copyToClipboard(),
+                        //   toast({
+                        //     title: `Холбоосыг хуулж авлаа`,
+                        //     status: "info",
+                        //     isClosable: true,
+                        //     duration: 1500,
+                        //   });
                       }}
                     />
                   </div>
-                </div> */}
-                {/* {data && (
+                </div>
+                {data && (
                   <div className="flex items-end justify-between xl:hidden">
                     <SmallUserInfo
-                      id={data.user._id}
-                      email={data.user.email}
-                      username={data.user?.username}
+                      id={(data.user as UserModel)._id ?? ""}
+                      email={(data.user as UserModel).email}
+                      username={(data.user as UserModel)?.username}
                       phone={
                         data.items?.filter((f) => f.id == "phone")[0].value
                       }
                       agent={
-                        data.user?.userType == "default"
+                        (data.user as UserModel)?.userType == "default"
                           ? "Энгийн"
-                          : data.user?.userType == "organization"
+                          : (data.user as UserModel)?.userType == "organization"
                           ? "Байгууллага"
-                          : data.user?.userType == "agent"
+                          : (data.user as UserModel)?.userType == "agent"
                           ? "Агент"
-                          : data.user?.userType
+                          : (data.user as UserModel)?.userType
                       }
                       avatar={
-                        data.user?.profileImg ??
+                        (data.user as UserModel)?.profileImg ??
                         "https://www.pikpng.com/pngl/m/80-805068_my-profile-icon-blank-profile-picture-circle-clipart.png"
                       }
                     />
 
                     <SmallProductHeader
                       price={
-                        data?.items?.find((d) => d.id == "price")?.value ?? 0
+                        data?.items?.find((d) => d.id == "price")?.value ?? "0"
                       }
                       unitPrice={
                         data?.items?.find((d) => d.id == "unitPrice")?.value ??
-                        0
+                        "0"
                       }
                     />
                   </div>
-                )} */}
-                {/* <div className="relative w-full overflow-hidden bg-gray-900 rounded-lg gallery">
-                  {data?.images?.length > 0 ? (
+                )}
+                <div className="relative w-full overflow-hidden bg-gray-900 rounded-lg gallery">
+                  {(data?.images?.length ?? 0) > 0 ? (
                     <div className="object-contain">
                       <ImageGallery
                         // thumbnailPosition="bottom"
@@ -442,12 +458,14 @@ const Product = () => {
                         // showBullets={true}
                         // showThumbnails={false}
                         // showIndex={true}
-                        items={data?.images?.map((i) => ({
-                          original: i,
-                          thumbnail: i,
-                          loading: "lazy",
-                          thumbnailLoading: "lazy",
-                        }))}
+                        items={
+                          data?.images?.map((i) => ({
+                            original: `${api}${i}`,
+                            thumbnail: `${api}${i}`,
+                            loading: "lazy",
+                            thumbnailLoading: "lazy",
+                          })) ?? []
+                        }
                       />
                     </div>
                   ) : (
@@ -455,8 +473,8 @@ const Product = () => {
                       Энэ заранд зураг байхгүй байна
                     </div>
                   )}
-                </div> */}
-                {/* <div
+                </div>
+                <div
                   className={mergeNames(
                     // '-translate-y-[50px] relative z-10',
                     " py-5 px-6  w-full   font-semibold",
@@ -475,8 +493,8 @@ const Product = () => {
                               href={true}
                               value={p.value}
                               id={p.id}
-                              cateId={data.subCategory?._id}
-                              Icon={(props) => {
+                              cateId={(data.subCategory as CategoryModel)?._id}
+                              Icon={(props: any) => {
                                 switch (p.id) {
                                   case "room":
                                     return (
@@ -519,15 +537,14 @@ const Product = () => {
                       );
                     })}
                   </div>
-                </div> */}
-                {/* <div className="grid grid-cols-1 gap-7 md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
-                
+                </div>
+                <div className="grid grid-cols-1 gap-7 md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
                   <WhiteBox
                     heading="Зарын дэлгэрэнгүй"
-                    classnames="flex flex-col gap-3"
+                    className="flex flex-col gap-3"
                   >
                     <Text className="text-[#5c727d] whitespace-pre-line">
-                      {data.description}
+                      {data?.description}
                     </Text>
                   </WhiteBox>
                   <WhiteBox heading="Газрын зураг">
@@ -542,9 +559,13 @@ const Product = () => {
                         {isLoaded && (
                           <MarkerF
                             position={{
-                              lat: parseFloat(data?.location?.lat ?? 47.74604),
+                              lat: parseFloat(
+                                data?.location?.lat?.toString() ??
+                                  "47.91887307876936"
+                              ),
                               lng: parseFloat(
-                                data?.location?.lng ?? 107.341515
+                                data?.location?.lng?.toString() ??
+                                  "106.91757202148438"
                               ),
                             }}
                             // onMouseOver={() => setMarkerActive(i)}
@@ -555,10 +576,10 @@ const Product = () => {
                       </GoogleMap>
                     )}
                   </WhiteBox>
-                </div> */}
-                {/* <WhiteBox
+                </div>
+                <WhiteBox
                   heading="Хаяг"
-                  classnames="grid xs:grid-cols-2 xl:grid-cols-4 gap-5"
+                  className="grid xs:grid-cols-2 xl:grid-cols-4 gap-5"
                 >
                   {data?.items?.map((p, i) => {
                     if (p.position == "location") {
@@ -568,9 +589,9 @@ const Product = () => {
                           key={i}
                           title={p.name}
                           id={p.id}
-                          cateId={data.subCategory?._id}
+                          cateId={(data.subCategory as CategoryModel)?._id}
                           value={p.value}
-                          onClick={() => getFilterByItem(p.id, p.value)}
+                          // onClick={() => getFilterByItem(p.id, p.value)}
                         />
                       );
                     } else {
@@ -580,17 +601,17 @@ const Product = () => {
                 </WhiteBox>
                 <WhiteBox
                   heading="Мэдээлэл"
-                  classnames="grid grid-cols-2 md:grid-cols-3 2xl:grid-cols-4 gap-3"
+                  className="grid grid-cols-2 md:grid-cols-3 2xl:grid-cols-4 gap-3"
                 >
                   <ProductInfo
-                    href={data.sellType}
+                    href={data?.sellType != undefined}
                     title={"Борлуулах төрөл"}
-                    id={data.sellType}
-                    cateId={data.subCategory?._id}
-                    value={getSellType(data.sellType)}
-                    onClick={() =>
-                      getFilterByItem(data.sellType, data.sellType)
-                    }
+                    id={data?.sellType}
+                    cateId={(data?.subCategory as CategoryModel)?._id}
+                    value={getSellType(data?.sellType ?? "") ?? ""}
+                    // onClick={() =>
+                    //   getFilterByItem(data.sellType, data.sellType)
+                    // }
                   />
 
                   {data?.items?.map((p, i) => {
@@ -601,294 +622,277 @@ const Product = () => {
                           href={(p.isSearch || p.id == "sellType") ?? false}
                           title={p.name}
                           id={p.id}
-                          cateId={data.subCategory?._id}
+                          cateId={(data.subCategory as CategoryModel)?._id}
                           value={p.value}
-                          onClick={() => getFilterByItem(p.id, p.value)}
+                          // onClick={() => getFilterByItem(p.id, p.value)}
                         />
                       );
                     }
                   })}
-                </WhiteBox> */}
+                </WhiteBox>
               </div>
-              {/* <div className="flex-col justify-between hidden h-full gap-3 xl:flex xl:sticky top-20">
+              <div className="flex-col justify-between hidden h-full gap-3 xl:flex xl:sticky top-20">
                 {data && (
                   <>
                     <div>
                       <ProductHeader
                         price={
-                          data?.items?.find((d) => d.id == "price")?.value ?? 0
+                          data?.items?.find((d) => d.id == "price")?.value ??
+                          "0"
                         }
                         unitPrice={
                           data?.items?.find((d) => d.id == "unitPrice")
-                            ?.value ?? 0
+                            ?.value ?? "0"
                         }
                       />
                       <AdButton
                         icon={<FaHeart />}
                         color={
-                          bookmarks?.find((b) => b == data._id) != undefined
-                            ? "red"
-                            : "gray"
+                          // bookmarks?.find((b) => b == data._id) != undefined
+                          //   ? "red"
+                          //   : "gray"
+                          "gray"
                         }
                         onClick={() => {
-                          if (bookmarks != undefined) {
-                            dispatch(setBookmark(data._id));
-                            if (bookmarks.includes(data._id)) {
-                              toast({
-                                title: "Зар хүслээс хасагдлаа.",
-                                status: "warning",
-                                duration: 5000,
-                                isClosable: true,
-                              });
-                            } else {
-                              toast({
-                                title: "Зар хүсэлд нэмэгдлээ.",
-                                status: "success",
-                                duration: 5000,
-                                isClosable: true,
-                              });
-                            }
-                          } else {
-                            toast({
-                              title: "Та нэвтэрнэ үү",
-                              status: "warning",
-                              duration: 5000,
-                              isClosable: true,
-                            });
-                          }
+                          //   if (bookmarks != undefined) {
+                          //     dispatch(setBookmark(data._id));
+                          //     if (bookmarks.includes(data._id)) {
+                          //       toast({
+                          //         title: "Зар хүслээс хасагдлаа.",
+                          //         status: "warning",
+                          //         duration: 5000,
+                          //         isClosable: true,
+                          //       });
+                          //     } else {
+                          //       toast({
+                          //         title: "Зар хүсэлд нэмэгдлээ.",
+                          //         status: "success",
+                          //         duration: 5000,
+                          //         isClosable: true,
+                          //       });
+                          //     }
+                          //   } else {
+                          //     toast({
+                          //       title: "Та нэвтэрнэ үү",
+                          //       status: "warning",
+                          //       duration: 5000,
+                          //       isClosable: true,
+                          //     });
+                          //   }
                         }}
                       />
                       <AdButton
                         icon={<FaCopy />}
                         onClick={() => {
-                          copyToClipboard(),
-                            toast({
-                              title: `Холбоосыг хуулж авлаа`,
-                              status: "info",
-                              isClosable: true,
-                              duration: 1500,
-                            });
+                          // copyToClipboard(),
+                          toast({
+                            title: `Холбоосыг хуулж авлаа`,
+                            status: "info",
+                            isClosable: true,
+                            duration: 1500,
+                          });
                         }}
                       />
                     </div>
                     <div>
                       <div className="p-2 bg-white rounded-md w-auto xl:w-[320px]">
                         <UserInfo
-                          id={data.user._id}
-                          email={data.user.email}
-                          username={data.user?.username}
+                          id={(data.user as UserModel)._id!}
+                          email={(data.user as UserModel).email}
+                          username={(data.user as UserModel)?.username}
                           phone={
                             data.items?.filter((f) => f.id == "phone")[0].value
                           }
                           agent={
-                            data.user?.userType == "default"
+                            (data.user as UserModel)?.userType == "default"
                               ? "Энгийн"
-                              : data.user?.userType == "organization"
+                              : (data.user as UserModel)?.userType ==
+                                "organization"
                               ? "Байгууллага"
-                              : data.user?.userType == "agent"
+                              : (data.user as UserModel)?.userType == "agent"
                               ? "Агент"
-                              : data.user?.userType
+                              : (data.user as UserModel)?.userType
                           }
                           avatar={
-                            data.user?.profileImg ??
+                            (data.user as UserModel)?.profileImg ??
                             "https://www.pikpng.com/pngl/m/80-805068_my-profile-icon-blank-profile-picture-circle-clipart.png"
                           }
                         />
-                        {user && user._id == data?.user?._id && (
-                          <EditAd
-                            images={images}
-                            data={data}
-                            setData={setData}
-                            generalData={generalData}
-                            setGeneralData={setGeneralData}
-                            setImages={setImages}
-                            onNext={async () => {
-                              const f = new FormData();
-                              f.append("title", data.title);
-                              f.append("description", data.description);
-                              f.append("filters", data.filters);
-                              f.append("subCategory", data.subCategory._id);
-                              f.append("category", data.category);
-                              f.append("types", data.types);
-                              f.append("adTypes", data.adType);
-                              f.append("location", data.location);
-                              let fImages = new FormData();
-                              images?.map((prev) => {
-                                fImages.append("images", prev);
-                              });
-
-                              try {
-                                await axios
-                                  .post(
-                                    `${urls["test"]}/ad/uploadFields`,
-                                    fImages,
+                        {/* {user && user._id == data?.user?._id && (
+                            <EditAd
+                              images={images}
+                              data={data}
+                              setData={setData}
+                              generalData={generalData}
+                              setGeneralData={setGeneralData}
+                              setImages={setImages}
+                              onNext={async () => {
+                                const f = new FormData();
+                                f.append("title", data.title);
+                                f.append("description", data.description);
+                                f.append("filters", data.filters);
+                                f.append("subCategory", data.subCategory._id);
+                                f.append("category", data.category);
+                                f.append("types", data.types);
+                                f.append("adTypes", data.adType);
+                                f.append("location", data.location);
+                                let fImages = new FormData();
+                                images?.map((prev) => {
+                                  fImages.append("images", prev);
+                                });
+  
+                                try {
+                                  await axios
+                                    .post(
+                                      `${urls["test"]}/ad/uploadFields`,
+                                      fImages,
+                                      {
+                                        headers: {
+                                          Authorization: `Bearer ${token}`,
+                                          "Access-Control-Allow-Headers": "*",
+                                        },
+                                      }
+                                    )
+                                    .then((d) => f.append("images", d.data));
+                                  await axios.put(
+                                    `${urls["test"]}/ad/${data._id}`,
+                                    f,
                                     {
                                       headers: {
                                         Authorization: `Bearer ${token}`,
                                         "Access-Control-Allow-Headers": "*",
+                                        "Content-Type": "application/json",
+                                        charset: "UTF-8",
                                       },
                                     }
-                                  )
-                                  .then((d) => f.append("images", d.data));
-                                await axios.put(
-                                  `${urls["test"]}/ad/${data._id}`,
-                                  f,
-                                  {
-                                    headers: {
-                                      Authorization: `Bearer ${token}`,
-                                      "Access-Control-Allow-Headers": "*",
-                                      "Content-Type": "application/json",
-                                      charset: "UTF-8",
-                                    },
-                                  }
-                                );
-                              } catch (error) {}
-                            }}
-                          />
-                        )}
+                                  );
+                                } catch (error) {}
+                              }}
+                            />
+                          )} */}
                       </div>
                     </div>
                   </>
                 )}
-              </div> */}
+              </div>
             </div>
             <Box>
               {/* <Estimator /> */}
               {/* {data && (
-                <ECalculator
-                  data={parseInt(
-                    data?.items?.filter((f) => f.id === "price")[0]?.value ??
-                      "0"
-                  )}
-                />
-              )} */}
+                  <ECalculator
+                    data={parseInt(
+                      data?.items?.filter((f) => f.id === "price")[0]?.value ??
+                        "0"
+                    )}
+                  />
+                )} */}
             </Box>
           </Box>
         </Stack>
       </MainContainer>
       {/*      
-        <MainContainer py={"50px"}>
-          <div className={mergeNames(STYLES.flexBetween, "flex-row")}>
-            <h1
-              variant={"mediumHeading"}
-              className="text-sm font-bold uppercase md:text-lg"
-            >
-              Санал болгох зарууд
-            </h1>
-      
-            <Box>
-              <Select
-                className="h-[30px] text-sm border-2 pr-3 border-blue-700 rounded-full"
-                onChange={(e) => {
-                  setSuggestion(e.target.value);
-                  getSuggestion(e.target.value, data);
-                }}
+          <MainContainer py={"50px"}>
+            <div className={mergeNames(STYLES.flexBetween, "flex-row")}>
+              <h1
+                variant={"mediumHeading"}
+                className="text-sm font-bold uppercase md:text-lg"
               >
-                <Fragment>
-                  {data?.subCategory?.suggestionItem?.map((sug, i) => {
-                    return getSuggestionValue(sug, i);
-                  })}
-                  <option value={"map"}>Газрын зургаар</option>
-                </Fragment>
-              </Select>
-            </Box>
-       
-          </div>
-          {suggestion == "map" && categoryAds?.length > 0 ? (
-            <GoogleMap
-              options={mapOptions}
-              onClick={(e) => {
-                // setMap(e.latLng.toJSON());
-                console.log(e.latLng.toJSON());
-              }}
-              zoom={14}
-              center={mapCenter}
-              mapTypeId={google.maps.MapTypeId.ROADMAP}
-              mapContainerStyle={{ width: "100%", height: "50vh" }}
-            >
-              {isLoaded &&
-                categoryAds?.map((m, i) => {
-                  return (
-                    <HStack key={i}>
-                      <MarkerF
-                        position={{
-                          lat: parseFloat(m.location?.lat ?? 47.74604),
-                          lng: parseFloat(m.location?.lng ?? 107.341515),
-                        }}
-                        // onMouseOver={() => setMarkerActive(i)}
-                        onMouseOver={() => setMarkerActive(i)}
-                        onClick={() => setMarkerActive(i)}
-                        animation={google.maps.Animation.DROP}
-                      >
+                Санал болгох зарууд
+              </h1>
+        
+              <Box>
+                <Select
+                  className="h-[30px] text-sm border-2 pr-3 border-blue-700 rounded-full"
+                  onChange={(e) => {
+                    setSuggestion(e.target.value);
+                    getSuggestion(e.target.value, data);
+                  }}
+                >
+                  <Fragment>
+                    {data?.subCategory?.suggestionItem?.map((sug, i) => {
+                      return getSuggestionValue(sug, i);
+                    })}
+                    <option value={"map"}>Газрын зургаар</option>
+                  </Fragment>
+                </Select>
+              </Box>
          
-                        {markerActive == i && (
-                          <InfoWindow
-                            position={{
-                              lat: parseFloat(m.location?.lat ?? 47.74604),
-                              lng: parseFloat(m.location?.lng ?? 107.341515),
-                            }}
-                            options={{
-                              maxWidth: "100%",
-                              width: "100%",
-                              minWidth: "100%",
-                              position: "relative",
-                              zIndex: 120,
-                            }}
-                          >
-                            <MapCard data={m} />
-                          
-                          </InfoWindow>
-                        )}
-                      </MarkerF>
-                    </HStack>
-                  );
-                })}
-            </GoogleMap>
-          ) : (
-            sData?.ads?.length > 0 && <AdContent data={sData} n={10} />
-          )}
-        </MainContainer> */}
+            </div>
+            {suggestion == "map" && categoryAds?.length > 0 ? (
+              <GoogleMap
+                options={mapOptions}
+                onClick={(e) => {
+                  // setMap(e.latLng.toJSON());
+                  console.log(e.latLng.toJSON());
+                }}
+                zoom={14}
+                center={mapCenter}
+                mapTypeId={google.maps.MapTypeId.ROADMAP}
+                mapContainerStyle={{ width: "100%", height: "50vh" }}
+              >
+                {isLoaded &&
+                  categoryAds?.map((m, i) => {
+                    return (
+                      <HStack key={i}>
+                        <MarkerF
+                          position={{
+                            lat: parseFloat(m.location?.lat ?? 47.74604),
+                            lng: parseFloat(m.location?.lng ?? 107.341515),
+                          }}
+                          // onMouseOver={() => setMarkerActive(i)}
+                          onMouseOver={() => setMarkerActive(i)}
+                          onClick={() => setMarkerActive(i)}
+                          animation={google.maps.Animation.DROP}
+                        >
+           
+                          {markerActive == i && (
+                            <InfoWindow
+                              position={{
+                                lat: parseFloat(m.location?.lat ?? 47.74604),
+                                lng: parseFloat(m.location?.lng ?? 107.341515),
+                              }}
+                              options={{
+                                maxWidth: "100%",
+                                width: "100%",
+                                minWidth: "100%",
+                                position: "relative",
+                                zIndex: 120,
+                              }}
+                            >
+                              <MapCard data={m} />
+                            
+                            </InfoWindow>
+                          )}
+                        </MarkerF>
+                      </HStack>
+                    );
+                  })}
+              </GoogleMap>
+            ) : (
+              sData?.ads?.length > 0 && <AdContent data={sData} n={10} />
+            )}
+          </MainContainer> */}
     </Box>
   );
-};
+}
 // 890
-export default Product;
-
-// export async function getServerSideProps(ctx, req, res) {
-//   const { params } = ctx;
-//   const { slug } = params;
-//   const token = getCookie('token', { req, res });
-//   const adRes = await fetch(`${urls['test']}/ad/id/${slug}`);
-
-//   const ads = await adRes.json();
-
-//   return {
-//     props: {
-//       propAds: ads,
-//     },
-//   };
-// }
-
-// function AdButton({ onClick = func(), color, icon }) {
-//   return (
-//     <IconButton
-//       className="float-right bg-white border-2 border-gray-200 hover:text-blue-600"
-//       aria-label="Get link"
-//       icon={icon}
-//       onClick={onClick}
-//       size={{ base: "xs", sm: "md" }}
-//       color={color}
-//     />
-//   );
-// }
-
-// export const calcValue = (props, checker = "Байхгүй", suffix) => {
-//   // p?.value?.toLowerCase() === "байхгүй"
-
-//   if (props.toString().toLowerCase() === checker) return 0;
-//   if (props) {
-//     if (suffix) return `${props} ${suffix}`;
-//     return props;
-//   }
-//   return "-";
-// };
+function AdButton({
+  onClick,
+  color,
+  icon,
+}: {
+  onClick: () => void;
+  icon: ReactElement;
+  color?: string;
+}) {
+  return (
+    <IconButton
+      className="float-right bg-white border-2 border-gray-200 hover:text-blue-600"
+      aria-label="Get link"
+      icon={icon}
+      onClick={onClick}
+      size={{ base: "xs", sm: "md" }}
+      color={color}
+    />
+  );
+}

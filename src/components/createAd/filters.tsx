@@ -119,7 +119,7 @@ export const FilterButtonSelector = ({
   title: string;
   Item: any;
   selected: string;
-  data: ItemDetailModel[];
+  data?: ItemDetailModel[];
 }) => {
   return (
     <ItemContainer>
@@ -148,7 +148,7 @@ export const FilterSelect = ({
   Item = () => <></>,
   requirement = true,
 }: {
-  data: ItemDetailModel[];
+  data?: ItemDetailModel[];
   width?: string;
   requirement: boolean;
   label: string;

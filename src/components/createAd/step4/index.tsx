@@ -4,7 +4,7 @@ import { Dispatch, FC, Fragment, ReactNode, SetStateAction } from "react";
 import ButtonSelectItem from "../formButtonSelectItem";
 import FormLabel from "../formLabel";
 
-import { ItemModel } from "@/models/items.model";
+import { ItemDetailModel, ItemModel } from "@/models/items.model";
 import { ItemTypes } from "@/config/enum";
 import mergeNames from "@/utils/functions";
 import FilterDate, {
@@ -42,9 +42,9 @@ const Step4 = ({
         let cachePosition = cache.filter((c) => c.parent == f.position)?.[0];
         if (
           f.other == true &&
-          f.value.find((v) => v.id == "other") == undefined
+          f.value?.find((v) => v.id == "other") == undefined
         )
-          f.value.push({ id: "other", value: "Бусад" });
+          f.value?.push({ id: "other", value: "Бусад" });
         if (f.types == ItemTypes.date)
           return (
             <FilterDate
@@ -74,8 +74,8 @@ const Step4 = ({
                 state?.[key] != "" && state?.[key] != undefined ? false : true
               }
               title={f.name}
-              limit={parseInt(f.value[f.value.length - 2].value) ?? 0}
-              maxValue={parseInt(f.value[f.value.length - 1].value) ?? 0}
+              limit={parseInt(f.value?.[f.value?.length - 2]?.value ?? "0")}
+              maxValue={parseInt(f.value?.[f.value?.length - 1]?.value ?? "0")}
               setValue={(num) => handle((prev) => ({ ...prev, [key]: num }))}
             />
           );
@@ -134,7 +134,7 @@ const Step4 = ({
                   data={
                     cacheParent.id != "country"
                       ? CommitteeData
-                      : f.value.filter((v) => v.parentId == cachePosition.id)
+                      : f.value?.filter((v) => v.parentId == cachePosition.id)
                   }
                   requirement={
                     cacheParent.id != undefined && cacheParent.id != ""
@@ -255,22 +255,23 @@ const Step4 = ({
                         : true
                     }
                     data={
-                      f.value.filter(
+                      f.value!.filter(
                         (v) => cacheParent.id == v.parentId || v.id == "other"
-                      ).length > 0
-                        ? f.value.filter(
+                      )?.length > 0
+                        ? f.value?.filter(
                             (v) =>
                               cacheParent.id == v.parentId || v.id == "other"
                           )
-                        : filter
-                            .filter((fil) => fil.type == f.parentId)[0]
-                            .value.filter(
-                              (v) =>
-                                v.id == "B2" ||
-                                v.id == "B1" ||
-                                parseInt(cacheParent.value ?? "0") >=
-                                  parseInt(v.id)
-                            )
+                        : (
+                            filter!.filter((fil) => fil.type == f.parentId)?.[0]
+                              .value as ItemDetailModel[]
+                          )?.filter(
+                            (v) =>
+                              v.id == "B2" ||
+                              v.id == "B1" ||
+                              parseInt(cacheParent.value ?? "0") >=
+                                parseInt(v.id)
+                          )
                       // f.value.filter(
                       //   (v) =>
                       //     (f.parentId == v.parentId &&

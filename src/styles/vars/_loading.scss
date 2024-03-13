@@ -6,7 +6,8 @@ $main: white;
 
 @layer components {
   .loader {
-    @apply w-[10px] h-[10px] rounded-[50%] block my-[15px] relative text-white -left-[100px] box-border;
+    // @apply w-[10px] h-[10px] rounded-[50%] block my-[15px] relative white:text-white left-[100px] box-border;
+    @apply w-[10px] h-[10px] rounded-[50%] block my-[15px] relative  left-[100px] box-border;
 
     animation: shadowRolling 2s linear infinite;
   }

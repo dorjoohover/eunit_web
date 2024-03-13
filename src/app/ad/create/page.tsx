@@ -30,6 +30,8 @@ import Step3 from "@/components/createAd/step3";
 import FormTitle from "@/components/createAd/title";
 import { createAd } from "@/app/(api)/ad.api";
 import { useRouter } from "next/navigation";
+import Loading from "@/app/loading";
+
 export default function AdCreatePage() {
   const toast = useToast();
 
@@ -179,7 +181,7 @@ export default function AdCreatePage() {
           duration: 1000,
           isClosable: true,
         });
-        router.push("/account?tab=MyAds");
+        // router.push("/account/myads");
       }
     });
     setIsLoading(false);
@@ -252,7 +254,7 @@ export default function AdCreatePage() {
     []
   );
   if (!isLoaded) {
-    return <p>Loading...</p>;
+    return <Loading />;
   }
   return (
     <div className="min-h-[80vh] py-10">

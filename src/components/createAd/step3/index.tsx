@@ -4,7 +4,6 @@ import { NumberInput, NumberInputField } from "@chakra-ui/react";
 import FormLine from "../formLine";
 import { AtomLabel } from "./atom";
 
-import { useSelector } from "react-redux";
 import { Dispatch, SetStateAction } from "react";
 import { GeneralDataType, StepTypes } from "@/utils/type";
 import { ItemModel } from "@/models/items.model";
@@ -79,8 +78,8 @@ const Step3 = ({
               <FieldPhotoUpload
                 images={images}
                 setImages={setImages}
-                generalData={generalData}
-                setGeneralData={setGeneralData}
+                data={generalData}
+                setData={setGeneralData}
               />
             </div>
           </div>
@@ -119,8 +118,8 @@ const Step3 = ({
           <div className="block md:hidden">
             <FieldPhotoUpload
               setImages={setImages}
-              generalData={generalData}
-              setGeneralData={setGeneralData}
+              data={generalData}
+              setData={setGeneralData}
               images={images}
             />
           </div>

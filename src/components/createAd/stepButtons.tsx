@@ -14,12 +14,13 @@ import CustomModal from "../global/customModal";
 import mergeNames from "@/utils/functions";
 import WhiteBox from "./product/whiteBox";
 import ImageGallery from "react-image-gallery";
-import { ProductInfo } from "@/app/ad/create/[slug]/page";
+
 import { GoogleMapsOptions } from "@/utils/values";
 import { GoogleMapsType, StepTypes } from "@/utils/type";
 import { CategoryStepsModel } from "@/models/category.model";
 import { CreateAdSteps } from "@/config/enum";
 import { ItemModel } from "@/models/items.model";
+import { ProductInfo } from "@/app/ad/[slug]/page";
 
 const ButtonProcess = () => {
   return (

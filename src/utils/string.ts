@@ -20,25 +20,23 @@ export const aboutEnd =
 export const aboutTitle = "We’re Hovering Study";
 
 // product
-export const slogan = "Unleash Your Potential with our" 
-export const product = "Product" 
-
+export const slogan = "Unleash Your Potential with our";
+export const product = "Product";
 
 export class SurveyStrings {
-  static recentForm = "Recent forms"
-  static lastModified = "Last modified"
-  static addQuestion = "Асуулт нэмэх"
-  static shortAnswer = "Богино хариулт текст"
-  static longAnswer = "Урт хариулт текст"
-  static addOption = "Нэмэх"
-  static addOther = "Бусад"
-  static or = "эсвэл"
-  
+  static recentForm = "Recent forms";
+  static lastModified = "Last modified";
+  static addQuestion = "Асуулт нэмэх";
+  static shortAnswer = "Богино хариулт текст";
+  static longAnswer = "Урт хариулт текст";
+  static addOption = "Нэмэх";
+  static addOther = "Бусад";
+  static or = "эсвэл";
 }
 
 export class ErrorMessages {
-  static occured = "Алдаа гарлаа";
   static success = "Амжилттай";
+  static occured = "Алдаа гарлаа";
+  static cookieExpired = "Cookie expired";
   static info = "Мэдэгдэл";
-
 }

@@ -1,10 +1,20 @@
-import { AdSellType } from "@/config/enum";
+import { AdSellType, ProfileEnumType, SocialsEnum } from "@/config/enum";
 import { AdModel } from "@/models/ad.model";
 import React, { ReactNode } from "react";
 
 export type FetchAdUnitType = {
   ads: AdModel[];
   limit: number;
+};
+
+export type AdFilterType = {
+  id: string;
+
+  value?: string;
+
+  min?: number;
+
+  max?: number;
 };
 
 export type FetchAdType = {
@@ -28,6 +38,7 @@ export type ProductInfoValueType = {
   id: string;
   cateId: number;
 };
+export type SocialType = { name: SocialsEnum; url: string };
 
 // zasna
 export type CreateAdType = {
@@ -88,6 +99,16 @@ export type ItemType = {
   onClick: () => void;
   id: string;
   isSelected: boolean;
+};
+
+export type ProfileType = {
+  item: ProfileEnumType;
+  edit?: boolean;
+  value?: string;
+  onChange: (e: string) => void;
+  className?: string;
+  ph?: string;
+  type?: string;
 };
 export type DateType = {
   defValue?: string;

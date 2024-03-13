@@ -1,11 +1,10 @@
 import {
   PointSendType,
   PointTitle,
-  Socials,
+  SocialsEnum,
   UserStatus,
   UserType,
 } from "@/config/enum";
-
 
 export interface UserModel {
   _id?: string;
@@ -42,6 +41,8 @@ export interface AgentAdditionModel {
 
   identityCardFront?: string;
 
+  orgCertification?: FileList | null;
+
   identityCardBack?: string;
 
   location?: UserLocationModel;
@@ -58,13 +59,15 @@ export interface OrganizationAdditionModel {
   organizationCertificationCopy: string;
 
   location: UserLocationModel;
+  address: string;
+  orgCertification: FileList | null;
 
   organizationRegisterNumber: string;
 }
 
 export interface Social {
-  url: string;
-  name: Socials;
+  url?: string;
+  name: SocialsEnum;
 }
 export interface PointHistory {
   point: number;

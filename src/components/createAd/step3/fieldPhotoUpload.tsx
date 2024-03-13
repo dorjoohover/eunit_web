@@ -4,25 +4,27 @@ import { FiUploadCloud } from "react-icons/fi";
 import { AtomLabel } from "./atom";
 import { StepTypes } from "@/utils/type";
 
-const FieldPhotoUpload = ({
-  generalData,
+const FieldPhotoUpload = <T,>({
+  data,
   setImages,
   images,
-  setGeneralData,
+  setData,
+  label,
 }: {
-  setGeneralData: Dispatch<SetStateAction<StepTypes>>;
-  generalData: StepTypes;
+  setData: Dispatch<SetStateAction<any>>;
+  data: any;
 
+  label?: string;
   images: File[];
   setImages: Dispatch<SetStateAction<File[]>>;
 }) => {
   const hiddenFileInput = React.useRef<HTMLInputElement>(null);
   // saving IMAGES locally
-  const [selectedImages, setSelectedImages] = React.useState(
-    generalData.images
+  const [selectedImages, setSelectedImages] = React.useState<string[]>(
+    data.images
   );
   const [isImageSelected, setIsImageSelected] = React.useState(
-    generalData?.imgSelected
+    data?.imgSelected
   );
 
   const handleClick = () => {
@@ -44,13 +46,13 @@ const FieldPhotoUpload = ({
         })
         .slice(0, 8 - selectedImages.length);
       if (selectedImages.length < 8) {
-        setSelectedImages((prev) => [...prev!, ...imagesArray]);
+        setSelectedImages((prev: typeof data) => [...prev!, ...imagesArray]);
         Object.values(files)?.map((f, i) => {
           setImages((images) => [...images, f]);
         });
       }
       setIsImageSelected(true);
-      setGeneralData((prev) => ({
+      setData((prev: typeof data) => ({
         ...prev,
         imgSelected: true,
         images: [...prev.images!, ...imagesArray],
@@ -62,13 +64,13 @@ const FieldPhotoUpload = ({
   function deleteHandler(image: string) {
     // IF ALL IMAGES ARE GONE, SETTING STATUS FALSE
     if (selectedImages?.length === 1) {
-      setGeneralData((prev) => ({ ...prev, imgSelected: false }));
+      setData((prev: typeof data) => ({ ...prev, imgSelected: false }));
       setIsImageSelected(false);
     }
 
     setSelectedImages(selectedImages!.filter((e, i) => e !== image && i < 8));
     if (images) setImages(images.filter((e, i) => e.name !== image && i < 8));
-    setGeneralData((prev) => ({
+    setData((prev: typeof data) => ({
       ...prev,
       imgSelected: true,
       images: selectedImages!.filter((e, i) => e !== image && i < 8),
@@ -80,7 +82,7 @@ const FieldPhotoUpload = ({
   return (
     <div className="">
       <div className="flex items-center justify-between w-full">
-        <AtomLabel>Зураг оруулах</AtomLabel>
+        <AtomLabel>{label ?? "Зураг оруулах"}</AtomLabel>
         <p className="font-semibold">{selectedImages!.length}/8</p>
       </div>
       <>
