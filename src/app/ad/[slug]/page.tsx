@@ -59,6 +59,8 @@ import ItemContainer from "@/components/createAd/product/itemContainer";
 import { calcValue } from "@/components/ad/card";
 import WhiteBox from "@/components/createAd/product/whiteBox";
 import ProductHeader from "@/components/product/productHeader";
+import { useAppContext } from "@/app/_context";
+import { bookmark } from "@/app/(api)/user.api";
 
 export const ProductInfo = ({
   title,
@@ -253,23 +255,21 @@ export default function AdDynamicPage({
 
   const toast = useToast();
   const router = useRouter();
-  // const { user } = useSelector((state) => state.user);
-  // const { bookmarks } = useSelector((state) => state.bookmarks);
+  const {
+    mark,
+    setMark,
+    user,
+    setUser
+  }: {
+    user: UserModel,
+    mark: number[];
+    setMark: React.Dispatch<React.SetStateAction<number[]>>;
+    setUser: React.Dispatch<React.SetStateAction<UserModel>>;
+  } = useAppContext();
+  const [loading, setLoading] = useState(false);
 
   const [suggestion, setSuggestion] = useState("map");
-  // propAds?.subCategory?.suggestionItem[0] ?? "location"
-  const dummyData = [];
 
-  const [sData, setsData] = useState([]);
-  const [categoryAds, setCategoryAds] = useState([]);
-
-  const [markerActive, setMarkerActive] = useState(null);
-  const [generalData, setGeneralData] = useState({
-    imgSelected: false,
-    images: [],
-  });
-  const [isLiked, setIsLiked] = useState();
-  const [images, setImages] = useState([]);
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: "AIzaSyC2u2OzBNo53GxJJdN3Oc_W6Yc42OmdZcE",
     libraries: GoogleMapsOptions.libraries,
@@ -283,6 +283,45 @@ export default function AdDynamicPage({
     }),
     []
   );
+
+  const updateMark = async (id: number) => {
+    console.log(user);
+    if (!user)
+      {
+        toast({
+          title: "Та нэвтэрнэ үү",
+          status: "warning",
+          duration: 5000,
+          isClosable: true,
+        });
+        return
+      }
+    if (!loading) {
+      try {
+        setLoading(true);
+        const body = mark.filter((m) => m != id);
+        const was = body.length != mark.length;
+        setMark((prev) => (!was ? [...prev, id] : body));
+        was
+          ? toast({
+              title: "Зар хүслээс хасагдлаа.",
+              status: "warning",
+              duration: 5000,
+              isClosable: true,
+            })
+          : toast({
+              title: "Зар хүсэлд нэмэгдлээ.",
+              status: "success",
+              duration: 5000,
+              isClosable: true,
+            });
+        await bookmark(id);
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+      }
+    }
+  };
   const mapCenter = useMemo(
     () => ({
       lat: parseFloat(data?.location?.lat?.toString() ?? "47.91887307876936"),
@@ -335,9 +374,15 @@ export default function AdDynamicPage({
     if (params.slug) getData();
   }, []);
   // const [open, setOpen] = useState(false);
-  // const copyToClipboard = (e) => {
-  //   navigator.clipboard.writeText(window.location.toString());
-  // };
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(window.location.toString());
+    toast({
+      title: `Холбоосыг хуулж авлаа`,
+      status: "info",
+      isClosable: true,
+      duration: 1500,
+    });
+  };
 
   return (
     <Box m={2} as="section" id="main__product">
@@ -366,49 +411,16 @@ export default function AdDynamicPage({
                     <AdButton
                       icon={<FaHeart />}
                       color={
-                        // bookmarks?.find((b) => b == data._id) != undefined
-                        "red"
-                        //   ? "red"
-                        //   : "gray"
+                        mark?.find((b) => b == data?.num) != undefined
+                          ? "red"
+                          : "gray"
                       }
-                      onClick={() => {
-                        // if (bookmarks != undefined) {
-                        //   dispatch(setBookmark(data._id));
-                        //   if (bookmarks.includes(data._id)) {
-                        //     toast({
-                        //       title: "Зар хүслээс хасагдлаа.",
-                        //       status: "warning",
-                        //       duration: 5000,
-                        //       isClosable: true,
-                        //     });
-                        //   } else {
-                        //     toast({
-                        //       title: "Зар хүсэлд нэмэгдлээ.",
-                        //       status: "success",
-                        //       duration: 5000,
-                        //       isClosable: true,
-                        //     });
-                        //   }
-                        // } else {
-                        //   toast({
-                        //     title: "Та нэвтэрнэ үү",
-                        //     status: "warning",
-                        //     duration: 5000,
-                        //     isClosable: true,
-                        //   });
-                        // }
-                      }}
+                      onClick={() => updateMark(data!.num)}
                     />
                     <AdButton
                       icon={<FaCopy />}
                       onClick={() => {
-                        // copyToClipboard(),
-                        //   toast({
-                        //     title: `Холбоосыг хуулж авлаа`,
-                        //     status: "info",
-                        //     isClosable: true,
-                        //     duration: 1500,
-                        //   });
+                        copyToClipboard();
                       }}
                     />
                   </div>
@@ -648,49 +660,18 @@ export default function AdDynamicPage({
                       <AdButton
                         icon={<FaHeart />}
                         color={
-                          // bookmarks?.find((b) => b == data._id) != undefined
-                          //   ? "red"
-                          //   : "gray"
-                          "gray"
+                          mark?.find((b) => b == data.num) != undefined
+                            ? "red"
+                            : "gray"
                         }
                         onClick={() => {
-                          //   if (bookmarks != undefined) {
-                          //     dispatch(setBookmark(data._id));
-                          //     if (bookmarks.includes(data._id)) {
-                          //       toast({
-                          //         title: "Зар хүслээс хасагдлаа.",
-                          //         status: "warning",
-                          //         duration: 5000,
-                          //         isClosable: true,
-                          //       });
-                          //     } else {
-                          //       toast({
-                          //         title: "Зар хүсэлд нэмэгдлээ.",
-                          //         status: "success",
-                          //         duration: 5000,
-                          //         isClosable: true,
-                          //       });
-                          //     }
-                          //   } else {
-                          //     toast({
-                          //       title: "Та нэвтэрнэ үү",
-                          //       status: "warning",
-                          //       duration: 5000,
-                          //       isClosable: true,
-                          //     });
-                          //   }
+                          updateMark(data!.num);
                         }}
                       />
                       <AdButton
                         icon={<FaCopy />}
                         onClick={() => {
-                          // copyToClipboard(),
-                          toast({
-                            title: `Холбоосыг хуулж авлаа`,
-                            status: "info",
-                            isClosable: true,
-                            duration: 1500,
-                          });
+                          copyToClipboard();
                         }}
                       />
                     </div>

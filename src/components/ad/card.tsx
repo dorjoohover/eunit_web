@@ -13,7 +13,7 @@ import { AiFillEdit } from "react-icons/ai";
 import { BsThreeDots } from "react-icons/bs";
 
 import { useAppContext } from "@/app/_context";
-import mergeNames, { stopPropagation } from "@/utils/functions";
+import mergeNames, { getSellType, stopPropagation } from "@/utils/functions";
 import Tip from "../global/tip";
 import Alerting from "../global/alert";
 import { DButton, ImageCount, PButton } from "../global/button";
@@ -282,7 +282,7 @@ function AdCard({
               {(item?.subCategory as CategoryModel)?.name ?? ""}
             </p>
             <p className={mergeNames("font-semibold text-white mt-0")}>
-              {item?.sellType}
+              {getSellType(item?.sellType)}
             </p>
           </div>
 
@@ -326,7 +326,7 @@ function AdCard({
               {/* <p>{item.updatedAt}</p> */}
             </>
           )}
-          {user._id == item?.user &&
+          {user?._id == item?.user &&
             (item?.adStatus == "created" || item.adStatus == "deleted") && (
               <>
                 <p

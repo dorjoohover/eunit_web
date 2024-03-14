@@ -49,7 +49,9 @@ export class AuthApi {
 export class UserApi {
   static me = `${user}me`;
   static sendFeedback = `${user}feedback`;
+  static bookmark = `${user}bookmark/`;
 }
+
 export class AdApi {
   static view = `${ad}get/`;
   static search = `${ad}search/{value}?value=`;
@@ -105,6 +107,8 @@ export const SellTypes = [
     name: "Зарах, түрээслүүлэх",
   },
 ];
+
+export const SellTypesString = ["Зарах", "Түрээслүүлэх", "Зарах & түрээслүүлэх"]
 
 export const CommitteeData = [
   {

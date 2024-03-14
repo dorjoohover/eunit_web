@@ -37,16 +37,7 @@ export default function AdCreatePage() {
 
   const [currentStep, setCurrentStep] = useState<number>(-1);
   const [steps, setSteps] = useState<CategoryStepsModel[]>([]);
-  const { user } = useAppContext();
-  const [categories, setCategories] = useState<CategoryModel[]>([]);
-  const getCategories = async () => {
-    await getConstants(ConstantApi.category, Api.GET).then((d) =>
-      setCategories(d)
-    );
-  };
-  useEffect(() => {
-    getCategories();
-  }, []);
+  const { user, categories } = useAppContext();
 
   const [types, setTypes] = useState<CreateAdType>({
     categoryId: -1,
@@ -91,22 +82,8 @@ export default function AdCreatePage() {
       filterCategory(types.subCategoryId);
     }
     if (types.categoryName && types.subCategoryId) {
-      // try {
-      //   categories[types.categoryId].subCategory.filter((item) => {
-      //     if (item.href == types.subCategoryId) {
-      //       axios
-      //         .get(`${urls["test"]}/category/filters/${item._id}`)
-      //         .then((res) => {
-      //           setSubCategory(res.data);
-      //         });
-      //     }
-      //   });
-      // } catch (e) {
-      //   console.log(e);
-      // }
     } else {
     }
-    // }, [categories, types.categoryId, types.subCategoryId, types.categoryName]);
   }, [types]);
   const [isLoading, setIsLoading] = useState(false);
   // checking validation of steps in here
@@ -160,7 +137,6 @@ export default function AdCreatePage() {
 
     setTypes((prev) => ({
       ...prev,
-      category_ID: categories[types.categoryId]._id,
     }));
     let fImages = new FormData();
     images?.map((prev, i) => {
@@ -168,11 +144,13 @@ export default function AdCreatePage() {
         fImages.append(`files`, prev);
       }
     });
+    let cateId = categories[types.categoryId!]._id;
     await createAd(
       fImages,
       { ...locationData, ...generalData, ...moreData },
       types,
-      steps
+      steps,
+      cateId
     ).then((d) => {
       if (d) {
         toast({
@@ -181,7 +159,7 @@ export default function AdCreatePage() {
           duration: 1000,
           isClosable: true,
         });
-        // router.push("/account/myads");
+        router.push("/account/myads");
       }
     });
     setIsLoading(false);
@@ -298,7 +276,7 @@ export default function AdCreatePage() {
                         if (selected) {
                           setLocationData((prev) => ({
                             ...prev,
-                            map: { latLng: selected },
+                            map: selected,
                           }));
                         }
                       }}
@@ -307,9 +285,9 @@ export default function AdCreatePage() {
                       mapTypeId={google.maps.MapTypeId.ROADMAP}
                       mapContainerStyle={{ width: "100%", height: "40vh" }}
                     >
-                      {locationData?.map?.latLng && (
+                      {locationData?.map && (
                         <MarkerF
-                          position={locationData.map.latLng}
+                          position={locationData.map}
                           onClick={() => {}}
                           animation={google.maps.Animation.DROP}
                         />
@@ -356,6 +334,7 @@ export default function AdCreatePage() {
           onPrev={() => {
             handlePrevStep(), top();
           }}
+          isLoaded={isLoaded}
           data={{ ...locationData, ...generalData, ...moreData }}
           filter={steps}
           loading={isLoading}

@@ -1,6 +1,7 @@
 "use client";
 import { ItemDetailModel } from "@/models/items.model";
 import mergeNames from "@/utils/functions";
+import { ItemType } from "@/utils/type";
 import { DetailedHTMLProps, HTMLAttributes, ReactNode, useState } from "react";
 import { BiCheck } from "react-icons/bi";
 import { CgChevronDown } from "react-icons/cg";
@@ -17,7 +18,7 @@ const Select = ({
   onToggle?: () => void;
   label?: string;
   data?: ItemDetailModel[];
-  Item: any;
+  Item: ({ text, id, isSelected, onClick, className }: ItemType) => JSX.Element;
   requirement?: boolean;
 }) => {
   const [show, setShow] = useState<boolean>(false);
@@ -67,15 +68,18 @@ const Select = ({
         >
           {data?.map((props: any, key: number) => {
             const isActive = selectedIdx === key;
+         
             return (
               <Item
                 id={props.id}
                 key={key}
-                data={props.value}
+                text={props.value}
                 onClick={() => {
                   setShow(false);
                   setSelectedIdx(key);
                   setValue(props.value);
+                
+
                 }}
                 className={mergeNames(
                   isActive ? " bg-blue-100" : "bg-white",

@@ -165,11 +165,12 @@ const DownLink = ({
 };
 
 const UserDrawer = () => {
-  const { user, setUser } = useAppContext();
+  const { user, setUser, setMark } = useAppContext();
   const [active, setActive] = useState(false);
   const getUserData = async () => {
     await getUser().then((d) => {
       setUser(d);
+      setMark(d.bookmarks)
     });
   };
   useEffect(() => {

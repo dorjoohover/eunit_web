@@ -17,9 +17,12 @@ export default function AccountDynamicPage({
 }: {
   params: { slug: string };
 }) {
-  const { user, setUser } = useAppContext();
+  const { user, setUser , setMark} = useAppContext();
   const updateUser = async () => {
-    await getUser().then((d) => setUser(d));
+    await getUser().then((d) => {
+      setUser(d),
+      setMark(d.bookmarks)
+    });
   };
   const [ads, setAds] = useState<FetchAdUnitType>({ ads: [], limit: 0 });
   const [loading, setLoading] = useState(false);

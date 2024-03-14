@@ -13,24 +13,24 @@ export const stopPropagation = (
 export const getSellType = (type: AdSellType | string) => {
   switch (type) {
     case "Зарах":
-      return "sell";
+      return AdSellType.sell;
     case "Түрээслүүлэх":
-      return "rent";
+      return AdSellType.rent;
     case "Зарах, түрээслүүлэх":
-      return "sellRent";
+      return AdSellType.sellRent;
     case "Зарсан":
-      return "sold";
+      return AdSellType.sold;
     case "Түрээслэсэн":
-      return "rented";
-    case "sell":
+      return AdSellType.rented;
+    case AdSellType.sell:
       return "Зарах";
-    case "rent":
+    case AdSellType.rent:
       return "Түрээслүүлэх";
-    case "sellRent":
+    case AdSellType.sellRent:
       return "Зарах, түрээслүүлэх";
-    case "sold":
+    case AdSellType.sold:
       return "Зарсан";
-    case "rented":
+    case AdSellType.rented:
       return "Түрээслүүлсэн";
 
     default:

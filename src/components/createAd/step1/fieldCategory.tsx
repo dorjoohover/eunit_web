@@ -9,18 +9,20 @@ const FieldCategory = ({
   categories = [],
   setTypes = () => {},
   line = false,
+  file
 }: {
   types: CreateAdType;
   categories: CategoryModel[];
   setTypes: React.Dispatch<React.SetStateAction<CreateAdType>>;
   line?: boolean;
+  file?: string
 }) => {
   return (
     <>
       <div className="flex justify-center w-full">
         <div className="grid w-full grid-cols-3 gap-4 py-4 lg:grid-cols-6 lg:gap-4 auto-rows-fr md:w-4/5">
           {categories?.map((item, key) => {
-            const isSelected = key.toString() === types.categoryId.toString();
+            const isSelected = key.toString() === types.categoryId?.toString();
             if (item.parent == null) {
               return (
                 <CategoryButtonSelect

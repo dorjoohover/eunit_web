@@ -17,7 +17,7 @@ const ProductInfoValue: FC<ProductInfoValueType> = ({
         query: { num: 0, value: value, cateId: cateId },
       }}
     >
-      {JSON.stringify(value)}
+   
       <Text
         fontSize={{ base: "13px", xl: "15px" }}
         cursor={"pointer"}

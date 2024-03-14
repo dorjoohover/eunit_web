@@ -12,22 +12,26 @@ import ProAdContent from "@/components/ad/proAdContent";
 import AdContent from "@/components/ad/adContent";
 import SwiperHeader from "@/components/swiperHeader";
 import CategorySelect from "@/components/categorySelect";
-import { getConstants } from "./(api)/constants.api";
-import { ConstantApi } from "@/utils/values";
-import { Api } from "@/config/enum";
-import { CategoryModel } from "@/models/category.model";
 
 export default function Home() {
-  const { ads, setAds, setCurrent, current, user, setUser } = useAppContext();
+  const {
+    ads,
+    setAds,
+    setCurrent,
+    categories,
+    current,
+    user,
+    setUser,
+    mark,
+    setMark,
+  } = useAppContext();
   const { data: session, status } = useSession();
-  const [categories, setCategories] = useState<CategoryModel[]>();
+
   const [loading, setLoading] = useState(false);
   const getData = async () => {
     setLoading(true);
     await getAds(0).then((d) => setAds(d));
-    await getConstants(ConstantApi.category, Api.GET, {}).then((d) =>
-      setCategories(d)
-    );
+
     setLoading(false);
   };
   useEffect(() => {
@@ -54,6 +58,7 @@ export default function Home() {
     try {
       await getUser().then((d) => {
         setUser(d);
+        setMark(d.bookmarks);
       });
     } catch (error) {
       setCurrent({

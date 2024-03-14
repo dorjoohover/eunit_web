@@ -1,13 +1,15 @@
 import React from "react";
 // import CategoryIcon from "./categoryIcon";
 import mergeNames from "@/utils/functions";
+import { CategoryModel } from "@/models/category.model";
+import CategoryIcon from "./categoryIcon";
 
 const CategoryButtonSelect = ({
-  item = {},
+  item ,
   isSelected = false,
   onClick = () => {},
 }: {
-  item: any;
+  item: CategoryModel;
   isSelected: boolean;
   onClick: () => void;
 }) => {
@@ -26,15 +28,15 @@ const CategoryButtonSelect = ({
         )}
       >
         {/* <Icon  /> */}
-        {/* <CategoryIcon
-          href={item?.href ?? item?.id}
+        <CategoryIcon
+          href={item?.href ?? item?._id}
           size={40}
           className={mergeNames(
             isSelected ? "text-blue-200" : "text-blue-500/60",
             "transition-all ease-in-out",
             "text-[30px] group-hover:scale-125"
           )}
-        /> */}
+        />
       </div>
       <p
         className={mergeNames(
@@ -43,7 +45,7 @@ const CategoryButtonSelect = ({
           // "group-hover:text-white "
         )}
       >
-        {item?.name || item?.categoryName}
+        {item?.name }
       </p>
     </button>
   );

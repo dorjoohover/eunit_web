@@ -7,13 +7,14 @@ const ButtonSelectItem = ({
   isSelected = false,
   LeftItem = () => <></>,
   RightItem = () => <></>,
+  children
 }: {
   text: string;
   onClick: () => void;
   isSelected: boolean;
   LeftItem?: any;
   RightItem?: any;
-  children: ReactNode;
+  children?: ReactNode;
 }) => {
   return (
     <button

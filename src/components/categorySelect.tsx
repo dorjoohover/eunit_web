@@ -60,6 +60,7 @@ const CategorySelect = ({ categories }: { categories?: CategoryModel[] }) => {
                           <Image
                             src={`/assets/images/HeaderSlider/${category.href.toLowerCase()}.jpg`}
                             objectFit="cover"
+                            h={'full'}
                             alt="category image"
                             className={transition}
                           />

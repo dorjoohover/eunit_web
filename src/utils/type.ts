@@ -15,6 +15,7 @@ export type AdFilterType = {
   min?: number;
 
   max?: number;
+  parent?: string
 };
 
 export type FetchAdType = {
@@ -42,12 +43,13 @@ export type SocialType = { name: SocialsEnum; url: string };
 
 // zasna
 export type CreateAdType = {
-  categoryId: number;
-  categoryName: string;
+  categoryId?: number;
+  categoryName?: string;
   subCategoryId: string;
   category_ID?: string;
   sellType?: AdSellType;
-  adType: string;
+  adType?: string;
+  file?: string
 };
 export type GeneralDataType = {
   price: number;
@@ -60,7 +62,8 @@ export type GeneralDataType = {
   phone: number;
 };
 export type GoogleMapsType = {
-  latLng?: google.maps.LatLng | google.maps.LatLngLiteral;
+  lat: number, 
+  lng: number
 };
 
 export type CacheVarType = {
@@ -96,9 +99,11 @@ export type StepTypes = {
 };
 export type ItemType = {
   text: string;
-  onClick: () => void;
-  id: string;
-  isSelected: boolean;
+  className?: string
+  onClick?: () => void;
+  id?: string;
+  children?: ReactNode
+  isSelected?: boolean;
 };
 
 export type ProfileType = {

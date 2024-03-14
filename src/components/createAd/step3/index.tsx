@@ -96,14 +96,17 @@ const Step3 = ({
                 cols={30}
                 rows={13}
                 placeholder="Дэлгэрэнгүй"
-                maxLength={1000}
+                maxLength={500}
                 value={generalData?.desc || ""}
                 onChange={
                   (e) =>
-                    setGeneralData((prev) => ({
-                      ...prev,
-                      desc: e.target.value,
-                    }))
+                  
+                        setGeneralData((prev) => ({
+                          ...prev,
+                          desc: e.target.value,
+                        }))
+                      
+                    
                   // setGeneralData((prev) => ({ ...prev, desc: e.target.value }))
                 }
                 className={mergeNames(

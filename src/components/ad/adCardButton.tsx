@@ -2,7 +2,7 @@ import { FaHeart } from "react-icons/fa";
 
 import { Tooltip, useToast } from "@chakra-ui/react";
 
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { BiGitCompare } from "react-icons/bi";
 
 import { UserModel } from "@/models/user.model";

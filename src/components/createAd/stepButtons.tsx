@@ -39,7 +39,7 @@ const StepButtons = ({
   onNext = () => {},
   sharing = false,
   data,
-
+  isLoaded,
   txt = "Дараах",
   filter = [],
   step,
@@ -50,7 +50,7 @@ const StepButtons = ({
   onNext?: () => void;
   sharing?: boolean;
   data: StepTypes;
-
+  isLoaded: boolean;
   txt?: string;
   filter?: CategoryStepsModel[];
   step?: number;
@@ -61,14 +61,15 @@ const StepButtons = ({
 
   // const { categories, setAds } = useAuth();
 
-  const { isLoaded } = useLoadScript({
-    googleMapsApiKey: "AIzaSyC2u2OzBNo53GxJJdN3Oc_W6Yc42OmdZcE",
-    libraries: GoogleMapsOptions.libraries,
-  });
+  // const { isLoaded } = useLoadScript({
+  //   googleMapsApiKey: "AIzaSyC2u2OzBNo53GxJJdN3Oc_W6Yc42OmdZcE",
+  //   libraries: GoogleMapsOptions.libraries,
+  //   // libraries: libraries,
+  // });
   const mapOptions = useMemo(
     () => ({
       disableDefaultUI: true,
-      clickableIcons: true,
+      // clickableIcons: true,
       scrollwheel: true,
     }),
     []
@@ -76,10 +77,10 @@ const StepButtons = ({
   const mapCenter = useMemo<GoogleMapsType>(
     () =>
       ({
-        lat: data?.map?.latLng?.lat ?? 47.91887307876936,
-        lng: data?.map?.latLng?.lng ?? 106.91757202148438,
+        lat: data?.map?.lat ?? 47.91887307876936,
+        lng: data?.map?.lng ?? 106.91757202148438,
       } as GoogleMapsType),
-    [data?.map?.latLng]
+    []
   );
 
   const top = () => {
@@ -208,31 +209,31 @@ const StepButtons = ({
                         }}
                         options={mapOptions}
                         zoom={14}
-                        center={mapCenter.latLng}
+                        center={mapCenter}
                         mapTypeId={google.maps.MapTypeId.ROADMAP}
                         mapContainerStyle={{ width: "100%", height: "30vh" }}
                       >
-                        {(
+                        {
                           {
                             lat:
-                              data?.map?.latLng?.lat ?? mapCenter.latLng?.lat,
+                              data?.map?.lat ?? mapCenter?.lat,
                             lng:
-                              data?.map?.latLng?.lng ?? mapCenter.latLng?.lng,
-                          } as GoogleMapsType
-                        ).latLng && (
+                              data?.map?.lng ?? mapCenter?.lng,
+                          } 
+                        && (
                           <div>
                             <MarkerF
                               position={
-                                (
+                                
                                   {
                                     lat:
-                                      data?.map?.latLng?.lat ??
-                                      mapCenter.latLng?.lat,
+                                      data?.map?.lat ??
+                                      mapCenter?.lat,
                                     lng:
-                                      data?.map?.latLng?.lng ??
-                                      mapCenter.latLng?.lng,
-                                  } as GoogleMapsType
-                                ).latLng!
+                                      data?.map?.lng ??
+                                      mapCenter?.lng,
+                                  } 
+                                
                               }
                               animation={google.maps.Animation.DROP}
                               // className={mergeNames("group")}

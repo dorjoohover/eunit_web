@@ -22,7 +22,7 @@ const Bottom = ({
   categories,
   current,
 }: {
-  current: string | undefined;
+  current: boolean ;
   categories: CategoryModel[] | undefined;
 }) => {
   // const [isHoveringId, setIsHoveringId] = useState(true);
@@ -69,7 +69,7 @@ const Bottom = ({
             >
               <HiOutlineSearch />
             </button>
-            <Link href={"/account?tab=Bookmark"}>
+            <Link href={"/account/mark"}>
               <WhiteHeartIcon />
             </Link>
 

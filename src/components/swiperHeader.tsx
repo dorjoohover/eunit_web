@@ -57,6 +57,7 @@ const SwiperHeader = () => {
               <Image
                 src={props.image}
                 objectFit="cover"
+                // height={'full'}
                 alt="swiper image"
                 className="absolute"
               />

@@ -1,4 +1,4 @@
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { AiOutlineArrowRight } from "react-icons/ai";
 
 import { STYLES } from "@/styles/index";

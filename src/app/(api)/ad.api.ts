@@ -45,7 +45,8 @@ export async function createAd(
   images: FormData,
   data: StepTypes,
   types: CreateAdType,
-  steps: CategoryStepsModel[]
+  steps: CategoryStepsModel[],
+  cateId: string
 ) {
   try {
     const token = cookies().get("token");
@@ -81,15 +82,16 @@ export async function createAd(
       images: imagesRes.file,
       title: data.title,
       description: data.desc,
-      location: data.map?.latLng,
+      location: data.map,
       subCategory: types.subCategoryId,
-      category: types.category_ID,
+      category: cateId,
       sellType: types.sellType,
       items: filters,
       adType: types.adType == "sharing" ? "sharing" : "default",
       adStatus: "pending",
       view: "hide",
     };
+    
 
     let res = await fetch(`${api}${AdApi.create}`, {
       method: "POST",
@@ -107,6 +109,8 @@ export async function createAd(
     throw new Error(ErrorMessages.occured);
   }
 }
+
+
 
 export async function getManyAds(
   num: number,
@@ -131,7 +135,7 @@ export async function getManyAds(
         }),
       }
     ).then((d) => d.json());
-
+console.log(res);
     return res;
   } catch (error) {
     console.error(error);

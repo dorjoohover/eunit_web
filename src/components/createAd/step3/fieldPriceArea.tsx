@@ -17,9 +17,17 @@ const FieldPriceArea = ({
         <CurrencyInput
           placeholder="Үнэ"
           value={generalData?.price || 0}
-          onChange={(val) =>
-            setGeneralData((prev) => ({ ...prev, price: parseFloat(val) ?? 0 }))
-          }
+          onChange={(val) => {
+            const price = parseInt(val);
+            const unitPrice = parseInt(
+              ((price ?? 0) / (generalData?.area ?? 1)).toString()
+            );
+            setGeneralData((prev) => ({
+              ...prev,
+              price: parseFloat(val) ?? 0,
+              unitPrice: unitPrice,
+            }));
+          }}
         />
       </div>
       {/* <p className="text-sm indent-2">Тоон утга оруулна уу.</p> */}
@@ -32,7 +40,10 @@ const FieldPriceArea = ({
           suffix="м.кв"
           onChange={(val) => {
             const area = parseFloat(val);
-            const unitPrice = generalData?.price ?? 0 / area;
+            const unitPrice = parseInt(
+              ((generalData?.price ?? 0) / (area ?? 1)).toString()
+            );
+
             setGeneralData((prev) => ({
               ...prev,
               area: area,
@@ -45,15 +56,16 @@ const FieldPriceArea = ({
       <div>
         <AtomLabel>Нэгж талбайн үнэ:</AtomLabel>
         <div className="flex items-center gap-1 indent-2">
-          {generalData?.price && generalData?.area ? (
+          {generalData.unitPrice ? (
             <AtomPriceText>
-              {formatNumber(generalData?.price / generalData?.area) || "-"}
+              {formatNumber(generalData?.unitPrice) || "-"}
             </AtomPriceText>
           ) : (
             <AtomPriceText>0</AtomPriceText>
           )}
           <p className="font-semibold">₮ (м.кв)</p>
         </div>
+ 
       </div>
     </>
   );

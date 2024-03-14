@@ -38,13 +38,8 @@ const MyAds = ({
 
   const toast = useToast();
 
-  // useEffect(() => {
-  //   updateBookmarks(bookmarks);
-  // }, []);
 
-  // const adStatusChecker = async () => {
-  //   getAds;
-  // };
+
 
   const restoreAd = async (id: string) => {
     //   try {

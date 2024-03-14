@@ -16,9 +16,12 @@ const Account = () => {
   const pathname = usePathname();
   const params = useSearchParams();
   const [content, setContent] = useState(params.get("tab"));
-  const { user, setUser } = useAppContext();
+  const { user, setUser, setMark } = useAppContext();
   const updateUser = async () => {
-    await getUser().then((d) => setUser(d));
+    await getUser().then((d) => {
+      setUser(d), 
+      setMark(d.bookmarks)
+    });
   };
   useEffect(() => {
     if (user == undefined) {

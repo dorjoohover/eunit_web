@@ -8,8 +8,8 @@ import {
 import FormLabel from "./formLabel";
 import { ItemContainer } from "./step4";
 import { DateYearSelector } from "../global/dateSelector";
-import { FC } from "react";
-import { DateType, TextType } from "@/utils/type";
+import { Component, ComponentClass, FC, ReactNode } from "react";
+import { DateType, ItemType, TextType } from "@/utils/type";
 import mergeNames from "@/utils/functions";
 import Counter from "../global/counter";
 import Input from "../global/input";
@@ -113,11 +113,11 @@ export const FilterText: FC<TextType> = ({
 export const FilterButtonSelector = ({
   title,
   data,
-  Item = () => <></>,
+  Item,
   selected,
 }: {
   title: string;
-  Item: any;
+  Item: ({ text, id, isSelected, onClick, children }: ItemType) => JSX.Element;
   selected: string;
   data?: ItemDetailModel[];
 }) => {
@@ -125,14 +125,19 @@ export const FilterButtonSelector = ({
     <ItemContainer>
       <FormLabel req={selected ? false : true} title={title} />
       <div className="flex flex-row justify-center gap-4">
-        {data?.map((text, id) => {
+        {data?.map((d, id) => {
           return (
-            <Item
-              key={id}
-              text={text.value}
-              isSelected={text.value == selected}
-              onClick={() => {}}
-            />
+            <>
+              {
+                <Item
+                  key={id}
+                  text={d.value}
+                  id={d.id}
+                  isSelected={d.value == selected}
+                  onClick={() => {}}
+                />
+              }
+            </>
           );
         })}
       </div>

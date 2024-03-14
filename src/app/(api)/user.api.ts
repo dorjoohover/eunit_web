@@ -52,3 +52,28 @@ export const sendFeedback = async (message: string, title: string) => {
   }
   return false;
 };
+
+
+
+export const bookmark = async (id: number) => {
+  let token = cookies().get("token");
+  if (token) {
+    try {
+      const res = await fetch(`${api}${UserApi.bookmark}${id}`, {
+        method: "PATCH",
+
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token?.value ?? ""}`,
+        },
+       
+      }).then((d) => d.json());
+
+      return true;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
+  }
+  return false;
+};

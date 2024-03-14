@@ -96,27 +96,23 @@ const Step4 = ({
               title={f.name}
               data={f.value}
               selected={state?.[key] as string}
-              Item={({
-                items,
-                children,
-              }: {
-                items: ItemType;
-                children: ReactNode;
-              }) => {
-                const { text, id, isSelected, onClick } = items;
+              Item={(items : ItemType) => {
+                let { text, id, isSelected, onClick } = items;
+
                 return (
                   <ButtonSelectItem
-                    text={text}
                     key={id}
-                    isSelected={isSelected}
-                    // {...props}
+                    {...items}
+                    
                     onClick={() => {
-                      handle((prev) => ({ ...prev, [key]: text }));
+                      handle((prev) => ({ ...prev, [key]: items.text }));
                       onClick();
                     }}
                   >
-                    {text}
-                    {children}
+                    <>
+                      {text}
+                      {items.children}
+                    </>
                   </ButtonSelectItem>
                 );
               }}

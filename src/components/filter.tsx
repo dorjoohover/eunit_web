@@ -1,10 +1,10 @@
 import { filterCategoryById } from "@/app/(api)/category.api";
-import { AdSellType } from "@/config/enum";
+import { AdSellType, AdTypes } from "@/config/enum";
 import { CategoryModel, CategoryStepsModel } from "@/models/category.model";
 import { ItemDetailModel, ItemModel } from "@/models/items.model";
 import { STYLES } from "@/styles";
 import mergeNames from "@/utils/functions";
-import { AdFilterType, StepTypes } from "@/utils/type";
+import { AdFilterType, ItemType, StepTypes } from "@/utils/type";
 import {
   Button,
   Checkbox,
@@ -23,11 +23,14 @@ import {
   VStack,
 } from "@chakra-ui/react";
 
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { MdFilterList } from "react-icons/md";
 import FilterStack from "./global/filterStack";
 import Select from "./global/select";
+import { getFilteredAd } from "@/app/(api)/ad.api";
+import { SellTypesString } from "@/utils/values";
+import { useAppContext } from "@/app/_context";
 
 const FilterLayout = ({
   data,
@@ -37,70 +40,73 @@ const FilterLayout = ({
   isOpenMap: () => void;
 }) => {
   const [category, setCategory] = useState<CategoryModel>();
+  const [step, setSteps] = useState<CategoryStepsModel[]>([]);
   const router = useRouter();
   const [value, setValue] = useState(data);
   const [adType, setAdType] = useState([0]);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = useRef<HTMLInputElement>(null);
-  const [values, setValues] = useState<AdFilterType[]>([]);
-  // const [values, handle, typeId, min, max, clear] = useFilter();
-
-  const getItems = async (id: string) => {
+  const [values, setValues] = useState<StepTypes>();
+  const { setAds } = useAppContext();
+  const getItems = async (id: string, step: boolean) => {
     try {
       await filterCategoryById(id).then((d) => {
-        setCategory(d);
+        step ? setSteps(d.steps) : setCategory(d);
       });
     } catch (e) {
       console.log(e);
     }
   };
   useEffect(() => {
-    getItems(data);
+    getItems(data, false);
   }, []);
   const filterAd = async () => {
     try {
-      let types: AdSellType[] = [];
+      let items: AdFilterType[] = [];
+      let types: string[] = [];
       adType.map((a) => {
-        switch (a) {
-          case 0:
-            types.push(AdSellType.sell);
-            break;
-          case 1:
-            types.push(AdSellType.rent);
-            break;
-          case 2:
-            types.push(AdSellType.sellRent);
-            break;
-        }
+        SellTypesString[a];
       });
+      if (values != undefined) {
+        for (const [k, v] of Object.entries(values!)) {
+          let arr = k.split("-");
+          if (arr.length > 1) {
+            let item = items.filter((i) => i.id == arr[0]);
+            let val = Number(v);
+            item.length > 0
+              ? arr[1] == "min"
+                ? (item[0].min = val)
+                : (item[0].max = val)
+              : arr[1] == "min"
+              ? item.push({
+                  id: arr[0],
+                  min: val,
+                })
+              : item.push({
+                  id: arr[0],
+                  max: val,
+                });
+          } else {
+            items.push({
+              id: arr[0],
+              value: v.toString(),
+            });
+          }
+        }
+      }
+      let cateId: string | undefined = (
+        category?.subCategory as CategoryModel[]
+      )?.filter((f) => f.href == value)?.[0]._id;
 
-      // step?.map((s) => {
-      //   (s.values as ItemModel[]).map((v) => {
-      //     let key: keyof StepTypes;
-      //     key = v.type as keyof StepTypes;
-      //     if (values?.[key] != undefined)
-      //       filters.push({
-      //         id: key,
-      //         value: values[key],
-      //       });
-      //     if (values?.[key] != undefined && values?.[key] != undefined)
-      //       filters.push({
-      //         id: key,
-      //         min: min[key],
-      //         max: max[key],
-      //       });
-      //   });
-      // });
-      // await axios
-      //   .post(`${urls["test"]}/ad/filter/1`, {
-      //     items: filters,
-      //     types: types,
-      //     cateId: subCategory._id,
-      //   })
-      //   .then((d) => {
-      //     clear();
-      //     onClose();
-      //   });
+      if (cateId == undefined) cateId = category?._id;
+
+      await getFilteredAd(cateId!, 0, AdTypes.all, types, items).then((d) => {
+        console.log(d);
+        setAds(d);
+        close();
+        setValues(undefined);
+        setAdType([0]);
+      });
     } catch (e) {
       console.log(e);
     }
@@ -147,7 +153,7 @@ const FilterLayout = ({
                 >
                   {(data == category?._id ||
                     (category?.subCategory as CategoryModel[])?.findIndex(
-                      (s) => s.href == router?.query?.slug
+                      (s) => s.href == data
                     ) > -1) &&
                     (category?.subCategory as CategoryModel[])?.map(
                       ({ href, _id, name }, i) => {
@@ -157,7 +163,7 @@ const FilterLayout = ({
                               value={href}
                               key={i}
                               onChange={(e) => {
-                                getItems(e.target.value);
+                                getItems(e.target.value, true);
                               }}
                               _selected={{ font: "bold" }}
                             >
@@ -175,7 +181,7 @@ const FilterLayout = ({
               <Heading variant={"smallHeading"} mb={2}>
                 Борлуулах төрөл
               </Heading>
-              {["Зарах", "Түрээслүүлэх", "Зарах & түрээслүүлэх"].map((s, i) => {
+              {SellTypesString.map((s, i) => {
                 return (
                   <Checkbox
                     key={i}
@@ -209,84 +215,108 @@ const FilterLayout = ({
               </button>
             </FilterStack>
 
-            <FilterStack>
-              <Heading variant={"smallHeading"}>Нэмэлт хайлт</Heading>
+            {step.length > 0 && (
+              <FilterStack>
+                <Heading variant={"smallHeading"}>Нэмэлт хайлт</Heading>
 
-              {(category?.steps as CategoryStepsModel[])?.map((f) => {
-                return (f.values as ItemModel[])?.map((v, i) => {
-                  return v.isSearch &&
-                    (v.value as ItemDetailModel[])?.length > 0 ? (
-                    <Select
-                      requirement={false}
-                      label={v.name}
-                      width="large"
-                      data={
-                        v.value
-                        // typeId[v.parentId] != null
-                        //   ? v.value.filter(
-                        //       (vv) => typeId[vv.parent] == vv.parentId
-                        //     )
-                        //   : v.value
-                      }
-                      key={i}
-                      Item={({ ...props }) => {
-                        return (
-                          <button
-                            {...props}
-                            onClick={() => {
-                              // handle(v.type, data, id);
-                              // onClick();
-                            }}
-                          >
-                            {/* {data} */}
-                            {props.children}
-                          </button>
-                        );
-                      }}
-                    >
-                      {/* {(v.value as ItemDetailModel[])?.map((item, i) => {
+                {step?.map((f) => {
+                  return (f.values as ItemModel[])?.map((v, i) => {
+                    let key: keyof StepTypes;
+                    key = v.type as keyof StepTypes;
+
+                    let parentKey: keyof StepTypes;
+                    parentKey = v.parentId as keyof StepTypes;
+                    let value = v.value?.filter(
+                      (a) => a.id == (values?.[key] as string)
+                    )?.[0];
+                    return v.isSearch &&
+                      (v.value as ItemDetailModel[])?.length > 0 ? (
+                      <Select
+                        requirement={false}
+                        label={value?.value ?? v.name}
+                        width="large"
+                        data={
+                          v.parentId != null
+                            ? v.value?.filter(
+                                (val) => val.parentId == values?.[parentKey]
+                              )
+                            : v.value
+                        }
+                        key={i}
+                        Item={(props: ItemType) => {
+                          return (
+                            <button
+                              {...props}
+                              onClick={() => {
+                                setValues((prev) => ({
+                                  ...prev,
+                                  [key]: props.id,
+                                }));
+
+                                props.onClick();
+                              }}
+                            >
+                              {props.text}
+
+                              {props.children}
+                            </button>
+                          );
+                        }}
+                      >
+                        {/* {(v.value as ItemDetailModel[])?.map((item, i) => {
                         return (
                           <option key={i} value={item.value}>
                             {item.value}
                           </option>
                         );
                       })} */}
-                    </Select>
-                  ) : (
-                    v.isSearch && (
-                      <VStack flex={1} key={i}>
-                        <Heading variant={"smallHeading"}>{v.name}</Heading>
-                        <Flex alignItems={"center"} gap={2}>
-                          <Input
-                            type="number"
-                            placeholder="Доод"
-                            className="border-blue-400 rounded-full lue-400 border-1"
-                            onChange={
-                              (e) => {}
-                              // handle(v.type, e.target.value, "", "true")
-                            }
-                          />
-                          <Text>-</Text>
-                          <Input
-                            type="number"
-                            placeholder="Дээд"
-                            className="border-blue-400 rounded-full lue-400 border-1 focus:outline-none"
-                            onChange={
-                              (e) => {}
-                              // handle(v.type, e.target.value, "", "false")
-                            }
-                          />
-                        </Flex>
-                      </VStack>
-                    )
-                  );
-                });
-              })}
+                      </Select>
+                    ) : (
+                      v.isSearch && (
+                        <VStack flex={1} key={i}>
+                          <Heading variant={"smallHeading"}>{v.name}</Heading>
+                          <Flex alignItems={"center"} gap={2}>
+                            <Input
+                              type="number"
+                              placeholder="Доод"
+                              className="border-blue-400 rounded-full lue-400 border-1"
+                              onChange={(e) => {
+                                setValues((prev) => ({
+                                  ...prev,
+                                  [`${key}-min` as keyof StepTypes]:
+                                    e.target.value,
+                                }));
+                              }}
+                            />
+                            <Text>-</Text>
+                            <Input
+                              type="number"
+                              placeholder="Дээд"
+                              className="border-blue-400 rounded-full lue-400 border-1 focus:outline-none"
+                              onChange={(e) => {
+                                setValues((prev) => ({
+                                  ...prev,
+                                  [`${key}-max` as keyof StepTypes]:
+                                    e.target.value,
+                                }));
+                              }}
+                            />
+                          </Flex>
+                        </VStack>
+                      )
+                    );
+                  });
+                })}
 
-              <Button variant={"blueButton"} mx={4} onClick={() => filterAd()}>
-                Хайх
-              </Button>
-            </FilterStack>
+                <Button
+                  variant={"blueButton"}
+                  mx={4}
+                  onClick={() => filterAd()}
+                >
+                  Хайх
+                </Button>
+              </FilterStack>
+            )}
           </DrawerBody>
         </DrawerContent>
       </Drawer>

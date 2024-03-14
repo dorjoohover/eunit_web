@@ -1,21 +1,24 @@
+"use client";
 import { getConstants } from "@/app/(api)/constants.api";
 import CategoryBottom from "./bottom";
 import UpperNav from "./upper";
 
 import { Api } from "@/config/enum";
-import { CategoryModel } from "@/models/category.model";
-import { cookies } from "next/headers";
-import { UserModel } from "@/models/models";
-import { getUser } from "@/app/(api)/user.api";
 import { ConstantApi } from "@/utils/values";
 import { useAppContext } from "@/app/_context";
+import { useEffect } from "react";
 
-const Navbar = async () => {
-  const categories = (await getConstants(ConstantApi.category, Api.GET, {})) as
-    | CategoryModel[]
-    | undefined;
+const Navbar = () => {
+  const { categories, setCategories, current } = useAppContext();
+  const getCategories = async () => {
+    await getConstants(ConstantApi.category, Api.GET, {}).then((d) =>
+      setCategories(d)
+    );
+  };
+  useEffect(() => {
+    getCategories();
+  }, []);
 
-  const current = cookies().get("current");
   return (
     <>
       <div
@@ -24,7 +27,7 @@ const Navbar = async () => {
 
         // pos={sticky ? 'sticky' : 'relative'}
       >
-        <CategoryBottom categories={categories} current={current?.value} />
+        <CategoryBottom categories={categories} current={current?.user} />
         <UpperNav />
       </div>
     </>
