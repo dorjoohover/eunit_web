@@ -11,7 +11,7 @@ import { GoogleIcon } from "@/components/global/icons";
 import { Assets } from "@/utils/assets";
 export default function LoginPage() {
   const handleGoogleSignIn = () => {
-    signIn("google", { callbackUrl: "https://www.eunit.mn" });
+    signIn("google", { callbackUrl: "/" });
   };
 
   return (
