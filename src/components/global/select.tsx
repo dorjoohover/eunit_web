@@ -18,7 +18,7 @@ const Select = ({
   onToggle?: () => void;
   label?: string;
   data?: ItemDetailModel[];
-  Item: ({ text, id, isSelected, onClick, className }: ItemType) => JSX.Element;
+  Item: ({ data, id, isSelected, onClick, className }: ItemType) => JSX.Element;
   requirement?: boolean;
 }) => {
   const [show, setShow] = useState<boolean>(false);
@@ -72,8 +72,8 @@ const Select = ({
             return (
               <Item
                 id={props.id}
-                key={key}
-                text={props.value}
+                key={props.id}
+                data={props.value}
                 onClick={() => {
                   setShow(false);
                   setSelectedIdx(key);

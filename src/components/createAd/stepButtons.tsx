@@ -15,12 +15,12 @@ import mergeNames from "@/utils/functions";
 import WhiteBox from "./product/whiteBox";
 import ImageGallery from "react-image-gallery";
 
-import { GoogleMapsOptions } from "@/utils/values";
+import { GoogleMapsOptions, imageApi } from "@/utils/values";
 import { GoogleMapsType, StepTypes } from "@/utils/type";
 import { CategoryStepsModel } from "@/models/category.model";
 import { CreateAdSteps } from "@/config/enum";
 import { ItemModel } from "@/models/items.model";
-import { ProductInfo } from "@/app/ad/[slug]/page";
+import ProductInfo from "./product/info";
 
 const ButtonProcess = () => {
   return (
@@ -146,9 +146,11 @@ const StepButtons = ({
                       thumbnailPosition="left"
                       showNav={false}
                       showFullscreenButton={false}
-                      items={data?.images.map((i: any) => ({
-                        original: i,
-                        thumbnail: i,
+                      items={data?.images?.map((i) => ({
+                        original: `${imageApi}${i}`,
+                        thumbnail: `${imageApi}${i}`,
+                        loading: "lazy",
+                        thumbnailLoading: "lazy",
                       }))}
                       // className="object-contain"
                     />
@@ -168,7 +170,7 @@ const StepButtons = ({
                       return (p.values as ItemModel[]).map((v, i) => {
                         let key: keyof StepTypes;
                         key = v.type as keyof StepTypes;
-
+                        // return <></>
                         return (
                           <ProductInfo
                             key={i}
@@ -213,28 +215,16 @@ const StepButtons = ({
                         mapTypeId={google.maps.MapTypeId.ROADMAP}
                         mapContainerStyle={{ width: "100%", height: "30vh" }}
                       >
-                        {
-                          {
-                            lat:
-                              data?.map?.lat ?? mapCenter?.lat,
-                            lng:
-                              data?.map?.lng ?? mapCenter?.lng,
-                          } 
-                        && (
+                        {{
+                          lat: data?.map?.lat ?? mapCenter?.lat,
+                          lng: data?.map?.lng ?? mapCenter?.lng,
+                        } && (
                           <div>
                             <MarkerF
-                              position={
-                                
-                                  {
-                                    lat:
-                                      data?.map?.lat ??
-                                      mapCenter?.lat,
-                                    lng:
-                                      data?.map?.lng ??
-                                      mapCenter?.lng,
-                                  } 
-                                
-                              }
+                              position={{
+                                lat: data?.map?.lat ?? mapCenter?.lat,
+                                lng: data?.map?.lng ?? mapCenter?.lng,
+                              }}
                               animation={google.maps.Animation.DROP}
                               // className={mergeNames("group")}
                             />
@@ -291,6 +281,7 @@ const StepButtons = ({
                           let key: keyof StepTypes;
                           key = v.type as keyof StepTypes;
                           return (
+                            // <></>
                             <ProductInfo
                               key={i}
                               title={v.name}

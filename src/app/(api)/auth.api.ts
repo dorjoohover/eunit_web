@@ -21,8 +21,10 @@ export const loginUser = async (
         }),
       }).then((d) => d.json());
       if (res) {
+        cookies().delete('next-auth.session-token')
+        cookies().delete('next-auth.csrf-token')
+        cookies().delete('next-auth.callback-url')
         cookies().set("token", res.token);
-        cookies().set("status", res.status);
       }
 
       return res;

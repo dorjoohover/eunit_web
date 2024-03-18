@@ -1,5 +1,6 @@
 import Tip from "@/components/global/tip";
 import mergeNames from "@/utils/functions";
+import { ItemType } from "@/utils/type";
 import Link from "next/link";
 
 const ItemContainer = ({
@@ -13,14 +14,14 @@ const ItemContainer = ({
   cateId,
   txtWhite = false,
 }: {
-  Icon: any;
+  Icon: ({ data, onClick, id, ...props }: ItemType) => JSX.Element;
   text?: string;
   lbl?: string;
   name?: string;
   href?: boolean;
-  value?: any;
-  id?: any;
-  cateId?: any;
+  value?: string;
+  id?: string;
+  cateId?: string;
   txtWhite?: boolean;
 }) => {
   return (

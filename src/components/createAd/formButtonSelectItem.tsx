@@ -2,18 +2,18 @@ import mergeNames from "@/utils/functions";
 import { ReactNode } from "react";
 
 const ButtonSelectItem = ({
-  text = "",
+  data = "",
   onClick,
   isSelected = false,
   LeftItem = () => <></>,
   RightItem = () => <></>,
   children
 }: {
-  text: string;
+  data: string;
   onClick: () => void;
-  isSelected: boolean;
-  LeftItem?: any;
-  RightItem?: any;
+  isSelected?: boolean;
+  LeftItem?: () => JSX.Element;
+  RightItem?: () => JSX.Element;
   children?: ReactNode;
 }) => {
   return (
@@ -37,7 +37,7 @@ const ButtonSelectItem = ({
           isSelected ? "text-white" : "text-blue-500/80"
         )}
       >
-        {text}
+        {data}
       </p>
       <RightItem />
     </button>

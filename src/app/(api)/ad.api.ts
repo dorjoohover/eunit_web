@@ -1,5 +1,12 @@
 "use server";
-import { AdStatus, AdTypes, Api, CreateAdSteps } from "@/config/enum";
+import {
+  AdStatus,
+  AdTypes,
+  Api,
+  CreateAdSteps,
+  ItemPosition,
+  ItemTypes,
+} from "@/config/enum";
 import { CategoryStepsModel } from "@/models/category.model";
 import { ItemModel } from "@/models/items.model";
 import { UserModel } from "@/models/user.model";
@@ -15,6 +22,7 @@ import { AdApi, api } from "@/utils/values";
 
 import { cookies } from "next/headers";
 import { getUser } from "./user.api";
+import { imageUploader } from "./constants.api";
 
 export async function getAds(num: number): Promise<FetchAdType> {
   try {
@@ -51,66 +59,69 @@ export async function createAd(
   try {
     const token = cookies().get("token");
 
-    const filters: any[] = [];
+    const filters: {
+      name?: string;
+      id?: string;
+      value?: string;
+      position?: ItemPosition;
+      type?: ItemTypes;
+      index?: number;
+      isSearch?: boolean;
+      isUse?: boolean;
+    }[] = [];
 
-    let imagesRes = await fetch(`${api}upload`, {
-      method: "POST",
-      headers: {
-        cache: "no-store",
-        Authorization: `Bearer ${token?.value ?? ""}`,
-      },
-      body: images,
-    }).then((d) => d.json());
-    steps.map((step) => {
-      (step.values as ItemModel[]).map((value) => {
-        let key: keyof StepTypes;
-        key = value.type as keyof StepTypes;
+    let imagesRes = await imageUploader(images);
+    if (imagesRes != null) {
+      steps.map((step) => {
+        (step.values as ItemModel[]).map((value) => {
+          let key: keyof StepTypes;
+          key = value.type as keyof StepTypes;
 
-        filters.push({
-          name: value.name,
-          id: value.type,
-          value: data[key],
-          position: value.position,
-          type: value.types,
-          index: value.index,
-          isSearch: value.isSearch ?? false,
-          isUse: value.isUse ?? false,
+          filters.push({
+            name: value.name,
+            id: value.type,
+            value: data[key] as string,
+            position: value.position,
+            type: value.types,
+            index: value.index,
+            isSearch: value.isSearch ?? false,
+            isUse: value.isUse ?? false,
+          });
         });
       });
-    });
-    const body = {
-      images: imagesRes.file,
-      title: data.title,
-      description: data.desc,
-      location: data.map,
-      subCategory: types.subCategoryId,
-      category: cateId,
-      sellType: types.sellType,
-      items: filters,
-      adType: types.adType == "sharing" ? "sharing" : "default",
-      adStatus: "pending",
-      view: "hide",
-    };
-    
+      const body = {
+        images: imagesRes.file,
+        title: data.title,
+        description: data.desc,
+        location: data.map,
+        subCategory: types.subCategoryId,
+        category: cateId,
+        sellType: types.sellType,
+        items: filters,
+        adType: types.adType == "sharing" ? "sharing" : "default",
+        adStatus: "pending",
+        view: "hide",
+      };
 
-    let res = await fetch(`${api}${AdApi.create}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token?.value ?? ""}`,
-        charset: "UTF-8",
-      },
-      body: JSON.stringify(body),
-    }).then((d) => d.json());
+      let res = await fetch(`${api}${AdApi.create}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token?.value ?? ""}`,
+          charset: "UTF-8",
+        },
+        body: JSON.stringify(body),
+      }).then((d) => d.json());
 
-    return res;
+      return res;
+    } else {
+      return false;
+    }
   } catch (error) {
     console.error(error);
     throw new Error(ErrorMessages.occured);
   }
 }
-
-
 
 export async function getManyAds(
   num: number,
@@ -135,7 +146,7 @@ export async function getManyAds(
         }),
       }
     ).then((d) => d.json());
-console.log(res);
+
     return res;
   } catch (error) {
     console.error(error);
@@ -152,16 +163,18 @@ export async function getMyAds(
 ) {
   try {
     const currentUser = await getUser();
-    const res = await getManyAds(
-      num,
-      true,
-      limit,
-      status,
-      type,
-      currentUser.ads,
-      id
-    );
-    return res;
+    if (currentUser) {
+      const res = await getManyAds(
+        num,
+        true,
+        limit,
+        status,
+        type,
+        currentUser.ads,
+        id
+      );
+      return res;
+    }
   } catch (error) {
     console.error(error);
     throw new Error(ErrorMessages.occured);
@@ -209,6 +222,29 @@ export async function getFilteredAd(
 export async function getAdById(id: string) {
   try {
     let res = await fetch(`${api}${AdApi.id}${id}`).then((d) => d.json());
+
+    return res;
+  } catch (error) {
+    console.error(error);
+    throw new Error(ErrorMessages.occured);
+  }
+}
+
+export async function getAdminAds(
+  type: AdTypes,
+  num: number,
+  status: AdStatus
+) {
+  try {
+    console.log("asdf");
+    const token = cookies().get("token");
+    let res = await fetch(`${api}${AdApi.admin}${type}/${num}/${status}`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token?.value ?? ""}`,
+        charset: "UTF-8",
+      },
+    }).then((d) => d.json());
 
     return res;
   } catch (error) {

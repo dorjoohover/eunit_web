@@ -45,7 +45,7 @@ const config: Config = {
         "5xl": "3.052rem",
       },
       backgroundImage: {
-        "calc-banner": "url('/utils/banner/calc-banner-blue.svg')",
+        "calc-banner": "url('/assets/utils/banner/calc-banner-blue.svg')",
       },
       gridAutoColumns: {
         "1fr": "minmax(200px, 1fr)",

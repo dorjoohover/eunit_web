@@ -7,6 +7,10 @@ import { BiGitCompare } from "react-icons/bi";
 
 import { UserModel } from "@/models/user.model";
 import mergeNames, { stopPropagation } from "@/utils/functions";
+import { useState } from "react";
+import { useAppContext } from "@/app/_context";
+import { bookmark } from "@/app/(api)/user.api";
+import { AdCateIdType } from "@/utils/type";
 
 const AdCardButton = ({
   id,
@@ -14,71 +18,99 @@ const AdCardButton = ({
   cateId,
   user,
 }: {
-  cateId?: string;
+  cateId: string;
   adId: string;
   id: number;
   user?: UserModel;
 }) => {
+  const [loading, setLoading] = useState(false);
+  const {
+    mark,
+    setMark,
+    compare,
+    setCompare,
+  }: {
+    mark: number[];
+    compare: AdCateIdType[];
+    setMark: React.Dispatch<React.SetStateAction<number[]>>;
+    setCompare: React.Dispatch<React.SetStateAction<AdCateIdType[]>>;
+  } = useAppContext();
   const toast = useToast();
-
-  // const { bookmarks } = useSelector((state) => state.bookmarks);
-  // const { compare } = useSelector((state) => state.compare);
-
-  const addToBookmark = async () => {
-    // if (bookmarks != undefined) {
-    //   dispatch(setBookmark(adId));
-    //   if (bookmarks.includes(adId)) {
-    //     toast({
-    //       title: "Зар хүслээс хасагдлаа.",
-    //       status: "warning",
-    //       duration: 5000,
-    //       isClosable: true,
-    //     });
-    //   } else {
-    //     toast({
-    //       title: "Зар хүсэлд нэмэгдлээ.",
-    //       status: "success",
-    //       duration: 5000,
-    //       isClosable: true,
-    //     });
-    //   }
-    // } else {
-    //   toast({
-    //     title: "Та нэвтэрнэ үү",
-    //     status: "warning",
-    //     duration: 5000,
-    //     isClosable: true,
-    //   });
-    // }
+  const updateMark = async () => {
+    if (!user) {
+      toast({
+        title: "Та нэвтэрнэ үү",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+      });
+      return;
+    }
+    if (!loading) {
+      try {
+        setLoading(true);
+        const body = mark.filter((m) => m != id);
+        const was = body.length != mark.length;
+        setMark((prev) => (!was ? [...prev, id] : body));
+        was
+          ? toast({
+              title: "Зар хүслээс хасагдлаа.",
+              status: "warning",
+              duration: 5000,
+              isClosable: true,
+            })
+          : toast({
+              title: "Зар хүсэлд нэмэгдлээ.",
+              status: "success",
+              duration: 5000,
+              isClosable: true,
+            });
+        await bookmark(id);
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+      }
+    }
   };
-  const getCompareAd = async () => {
-    // compare.map((c) => {
-    //   console.log(c.subCategory._id, cateId);
-    // });
-    // if (compare != undefined && compare.length < 4) {
-    //   if (
-    //     compare.find((c) => c.subCategory._id != cateId || c.id == adId) ==
-    //     undefined
-    //   ) {
-    //     await axios
-    //       .get(`${urls["test"]}/ad/id/${id}`)
-    //       .then((d) => dispatch(setCompare(d.data)));
-    //   } else {
-    //     toast({
-    //       title: "Өөр төрлийн зар эсвэл сонгогдсон зар байна.",
-    //       status: "warning",
-    //       duration: 5000,
-    //       isClosable: true,
-    //     });
-    //   }
-    // } else {
-    //   toast({
-    //     title: "Дүүрсэн байна.",
-    //     status: "warning",
-    //     duration: 5000,
-    //     isClosable: true,
-    //   });
-    // }
+
+  const getCompare = async () => {};
+
+  const updateCompare = async () => {
+    if (compare.length <= 4) {
+      if (compare.length == 0) {
+        setCompare([
+          {
+            id: adId,
+            cateId: cateId,
+          },
+        ]);
+      }
+      compare.map((c) => {
+        if (c.cateId == cateId && c.id != adId) {
+          setCompare((prev) => [
+            ...prev,
+            {
+              id: adId,
+              cateId: cateId,
+            },
+          ]);
+        } else {
+          toast({
+            title: "Өөр төрлийн зар эсвэл сонгогдсон зар байна.",
+            status: "warning",
+            duration: 5000,
+            isClosable: true,
+          });
+        }
+      });
+    } else {
+      toast({
+        title: "Дүүрсэн байна.",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
   };
 
   const cardIcon = {
@@ -93,17 +125,17 @@ const AdCardButton = ({
           className={mergeNames(cardIcon.div)}
           onClick={(e) => {
             stopPropagation(e);
-            addToBookmark();
+            updateMark();
           }}
         >
           <FaHeart
             className={mergeNames(
               "hover:text-red-400 ",
-              cardIcon.icon
+              cardIcon.icon,
 
-              // bookmarks && user && bookmarks.find((b) => b == adId) != undefined
-              //   ? "text-red-500/90"
-              //   : "text-slate-200/90"
+              mark?.find((b) => b == id) != undefined
+                ? "text-red-500/90"
+                : "text-slate-200/90"
             )}
           />
         </button>
@@ -114,7 +146,7 @@ const AdCardButton = ({
           className={mergeNames(cardIcon.div)}
           onClick={(e) => {
             stopPropagation(e);
-            getCompareAd();
+            updateCompare();
           }}
         >
           <BiGitCompare

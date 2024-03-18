@@ -11,8 +11,8 @@ const FieldPhotoUpload = <T,>({
   setData,
   label,
 }: {
-  setData: Dispatch<SetStateAction<any>>;
-  data: any;
+  setData: Dispatch<SetStateAction<StepTypes>>;
+  data: StepTypes;
 
   label?: string;
   images: File[];
@@ -20,9 +20,7 @@ const FieldPhotoUpload = <T,>({
 }) => {
   const hiddenFileInput = React.useRef<HTMLInputElement>(null);
   // saving IMAGES locally
-  const [selectedImages, setSelectedImages] = React.useState<string[]>(
-    data.images
-  );
+  const [selectedImages, setSelectedImages] = React.useState(data.images);
   const [isImageSelected, setIsImageSelected] = React.useState(
     data?.imgSelected
   );
@@ -46,7 +44,7 @@ const FieldPhotoUpload = <T,>({
         })
         .slice(0, 8 - selectedImages.length);
       if (selectedImages.length < 8) {
-        setSelectedImages((prev: typeof data) => [...prev!, ...imagesArray]);
+        setSelectedImages((prev) => [...prev!, ...imagesArray]);
         Object.values(files)?.map((f, i) => {
           setImages((images) => [...images, f]);
         });

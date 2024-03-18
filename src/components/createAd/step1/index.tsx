@@ -34,11 +34,12 @@ const Step1 = ({
         {types?.categoryId != -1 && (
           // SUBCATEGORY
           <>
+         
             <FormLabel title="Дэд төрөл" num="2" />
             <FieldSubCategory
               {...{ types, setTypes }}
               localCategory={
-                categories[types.categoryId].subCategory as CategoryModel[]
+                categories[types.categoryId!].subCategory as CategoryModel[]
               }
             />
           </>

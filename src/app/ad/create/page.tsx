@@ -1,5 +1,5 @@
 "use client";
-import { getConstants } from "@/app/(api)/constants.api";
+
 import { useAppContext } from "@/app/_context";
 import { ContainerX } from "@/components/container";
 import StepProgress from "@/components/global/stepProgress";
@@ -7,7 +7,7 @@ import useAd from "@/components/global/useAd";
 import { AdSellType, Api, CreateAdSteps } from "@/config/enum";
 import { CategoryModel, CategoryStepsModel } from "@/models/category.model";
 import { ConstantApi, GoogleMapsOptions } from "@/utils/values";
-import { Heading, useToast } from "@chakra-ui/react";
+import { Heading, Spinner, useToast } from "@chakra-ui/react";
 import { useEffect, useMemo, useState } from "react";
 import {
   GoogleMap,
@@ -212,7 +212,7 @@ export default function AdCreatePage() {
   // const libraries = useMemo(() => ["places"], []);
 
   const { isLoaded } = useLoadScript({
-    googleMapsApiKey: "AIzaSyC2u2OzBNo53GxJJdN3Oc_W6Yc42OmdZcE",
+    googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY as string,
     libraries: GoogleMapsOptions.libraries,
     // libraries: libraries,
   });
@@ -267,7 +267,7 @@ export default function AdCreatePage() {
                   <Heading variant="mediumHeading" className="mb-5 text-center">
                     Газрын зураг дээр байршлаа сонгоно уу
                   </Heading>
-                  {isLoaded && (
+                  {isLoaded ? (
                     <GoogleMap
                       // className="shadow aspect-video"
                       options={mapOptions}
@@ -293,7 +293,7 @@ export default function AdCreatePage() {
                         />
                       )}
                     </GoogleMap>
-                  )}
+                  ) : <div className="w-full h-[40vh]"><Spinner/></div>}
                 </div>
               );
             if (index == 1)

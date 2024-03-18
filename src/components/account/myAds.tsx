@@ -251,7 +251,7 @@ const MyAds = ({
           })}
       </div>
 
-      {!loading && <NoAds data={ads?.ads} />}
+      {!loading && <NoAds data={ads?.ads?.length ?? 0} />}
       {loading && (
         <div className="min-h-[20vh] md:min-h-[40vh] h-full flex justify-center items-center w-full text-xl">
           {<Spinner />}
@@ -312,15 +312,15 @@ const MyAds = ({
 export default MyAds;
 
 export const NoAds = ({
-  data = [],
+  data = 0,
   info = "Зар байхгүй байна",
 }: {
-  data: AdModel[];
+  data: number;
   info?: string;
 }) => {
   return (
     <>
-      {data.length == 0 && (
+      {data == 0 && (
         <div className="min-h-[20vh] md:min-h-[40vh] h-full flex justify-center items-center w-full text-xl">
           {info}
         </div>

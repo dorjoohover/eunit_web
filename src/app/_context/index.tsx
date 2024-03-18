@@ -1,7 +1,8 @@
 "use client";
+import { UserType } from "@/config/enum";
 import { CategoryModel } from "@/models/category.model";
 import { UserModel } from "@/models/user.model";
-import { FetchAdType } from "@/utils/type";
+import { AdCateIdType, FetchAdType } from "@/utils/type";
 import { ReactNode, createContext, useState, useContext } from "react";
 
 const AppContext = createContext<any>(undefined);
@@ -18,14 +19,17 @@ export function AppWrapper({ children }: { children: ReactNode }) {
     },
   });
 
-  let [categories, setCategories] = useState<CategoryModel[]>()
+  let [compare, setCompare] = useState<AdCateIdType[]>([]);
 
-  let [mark, setMark] = useState<number[]>([])
+  let [categories, setCategories] = useState<CategoryModel[]>();
+
+  let [mark, setMark] = useState<number[]>([]);
 
   let [user, setUser] = useState<UserModel | undefined>(undefined);
-  let [current, setCurrent] = useState<{ status: boolean; user: boolean }>({
+  let [current, setCurrent] = useState<{ status: boolean; type?: UserType, user: boolean }>({
     status: false,
     user: false,
+    type: undefined
   });
   return (
     <AppContext.Provider
@@ -36,9 +40,12 @@ export function AppWrapper({ children }: { children: ReactNode }) {
         setUser,
         current,
         setCurrent,
-        mark, 
+        mark,
         setMark,
-        categories, setCategories
+        compare,
+        setCompare,
+        categories,
+        setCategories,
       }}
     >
       {children}

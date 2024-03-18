@@ -12,27 +12,25 @@ import ProAdContent from "@/components/ad/proAdContent";
 import AdContent from "@/components/ad/adContent";
 import SwiperHeader from "@/components/swiperHeader";
 import CategorySelect from "@/components/categorySelect";
+import { UserModel } from "@/models/user.model";
+import { UserStatus } from "@/config/enum";
 
 export default function Home() {
   const {
     ads,
     setAds,
-    setCurrent,
     categories,
     current,
+    setCurrent,
     user,
     setUser,
-    mark,
     setMark,
   } = useAppContext();
   const { data: session, status } = useSession();
 
   const [loading, setLoading] = useState(false);
   const getData = async () => {
-    setLoading(true);
     await getAds(0).then((d) => setAds(d));
-
-    setLoading(false);
   };
   useEffect(() => {
     if (!loading) {
@@ -46,30 +44,30 @@ export default function Home() {
       session!.user!.image!,
       session!.user!.name!
     );
-
-    if (res) {
-      setCurrent({
-        status: res.status,
-        user: true,
-      });
-    }
+    res ? setUser(undefined) : getUserData();
   };
   const getUserData = async () => {
-    try {
-      await getUser().then((d) => {
-        setUser(d);
-        setMark(d.bookmarks);
+    setLoading(true);
+    await getUser()
+      .then((d) => {
+        if (d != null) {
+          setUser(d);
+          setMark(d?.bookmarks);
+          setCurrent({
+            user: true,
+            status: d.status != UserStatus.banned,
+            type: d.userType
+          });
+        }
+      })
+      .catch(() => {
+        setUser(undefined);
       });
-    } catch (error) {
-      setCurrent({
-        status: false,
-        user: false,
-      });
-    }
+    setLoading(false);
   };
   useEffect(() => {
     if (
-      !current.user &&
+      !user &&
       session &&
       session?.user?.email &&
       session?.user?.image &&
@@ -77,12 +75,13 @@ export default function Home() {
     ) {
       login();
     }
-
-    if (!user) {
+    if (!user && current.user) {
       getUserData();
     }
-  }, [session, current.user]);
-  return (
+  }, [session]);
+  return loading ? (
+    <Loading />
+  ) : (
     <>
       <SwiperHeader />
       <CategorySelect categories={categories} />

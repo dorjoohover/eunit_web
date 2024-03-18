@@ -19,13 +19,33 @@ const FieldAdType = ({
       <div className="flex flex-row flex-wrap justify-center gap-4 mt-2">
         {Object.keys(SharingView).map((type, key) => {
           const isSelected = type === types?.adType;
+          let k: keyof {
+            show: {
+              id: string;
+              name: string;
+            };
+            hide: {
+              id: string;
+              name: string;
+            };
+          };
+          k = type as keyof {
+            show: {
+              id: string;
+              name: string;
+            };
+            hide: {
+              id: string;
+              name: string;
+            };
+          };
           return (
             <ButtonSelectItem
               key={key}
               isSelected={isSelected}
-              text={SharingView[type].name}
+              data={SharingView[k].name ?? ""}
               onClick={() => {
-                setTypes((prev: any) => ({
+                setTypes((prev) => ({
                   ...prev,
                   adType: type,
                 }));

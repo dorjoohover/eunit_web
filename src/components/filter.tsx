@@ -253,10 +253,10 @@ const FilterLayout = ({
                                   [key]: props.id,
                                 }));
 
-                                props.onClick();
+                                if (props.onClick != null) props.onClick();
                               }}
                             >
-                              {props.text}
+                              {props.data}
 
                               {props.children}
                             </button>

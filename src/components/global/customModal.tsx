@@ -28,7 +28,7 @@ function CustomModal({
   children: ReactNode;
   header?: string;
   onclick: () => void;
-  btnClose: ReactNode;
+  btnClose?: ReactNode;
   btnClose2: string;
   btnOpen: ReactNode;
   onClose: () => void;

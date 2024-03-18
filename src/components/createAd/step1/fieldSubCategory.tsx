@@ -21,7 +21,7 @@ const FieldSubCategory = ({
             <ButtonSelectItem
               key={key}
               isSelected={isSelected}
-              text={item?.name ?? ""}
+              data={item?.name ?? ""}
               onClick={() => {
                 setTypes((prev) => ({
                   ...prev,

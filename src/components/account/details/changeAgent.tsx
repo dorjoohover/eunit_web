@@ -10,6 +10,7 @@ import {
 } from "@/models/user.model";
 import { STYLES } from "@/styles/index";
 import mergeNames from "@/utils/functions";
+import { StepTypes } from "@/utils/type";
 
 import { useDisclosure } from "@chakra-ui/react";
 import React, { ReactNode } from "react";
@@ -39,8 +40,8 @@ const ChangeAgent = ({
   image,
 }: {
   image: File[];
-  agent: boolean;
-  setAgent: React.Dispatch<React.SetStateAction<AgentAdditionModel>>;
+  agent: StepTypes;
+  setAgent: React.Dispatch<React.SetStateAction<StepTypes>>;
   org: boolean;
   setOrg: React.Dispatch<React.SetStateAction<OrganizationAdditionModel>>;
   setImage: React.Dispatch<React.SetStateAction<File[]>>;

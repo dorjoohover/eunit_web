@@ -9,9 +9,9 @@ import { useAppContext } from "@/app/_context";
 import { useEffect } from "react";
 
 const Navbar = () => {
-  const { categories, setCategories, current } = useAppContext();
+  const { categories, setCategories } = useAppContext();
   const getCategories = async () => {
-    await getConstants(ConstantApi.category, Api.GET, {}).then((d) =>
+    await getConstants(`${ConstantApi.category}false`, Api.GET).then((d) =>
       setCategories(d)
     );
   };
@@ -27,7 +27,7 @@ const Navbar = () => {
 
         // pos={sticky ? 'sticky' : 'relative'}
       >
-        <CategoryBottom categories={categories} current={current?.user} />
+        <CategoryBottom categories={categories} />
         <UpperNav />
       </div>
     </>

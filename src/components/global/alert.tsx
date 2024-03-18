@@ -17,6 +17,7 @@ const Alerting = ({
   bg = "bg-red-500 hover:bg-red-900",
   body,
   isDelete = "",
+  className,
   title = "Зар",
 }: {
   title?: string;
@@ -25,6 +26,7 @@ const Alerting = ({
   bg?: string;
   onClick?: () => void;
   btn?: ReactNode;
+  className?: string
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = useRef<HTMLInputElement>(null);

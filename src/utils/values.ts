@@ -11,9 +11,12 @@ import { Libraries } from "@react-google-maps/api";
 import { AdSellType } from "@/config/enum";
 import { GridOptions, SwiperOptions } from "swiper/types";
 // export const api = "http://localhost:5050/api/";
-export const api = "http://localhost:5050/api/";
+
+// export const url = "http://localhost:3000";
+export const url = "http://103.50.206.58";
+export const api = "http://103.50.206.58:5050/api/";
+export const imageApi = `${api}file/`;
 // export const url = "http://localhost:3000/";
-export const url = "http://localhost:3000";
 // export const url = "https://chat-app-web-xi.vercel.app";
 export const navbar = [
   {
@@ -35,10 +38,16 @@ const ad = "ad/";
 const category = "category/";
 const user = "user/";
 const auth = "auth/";
+const estimate = "estimate/";
 
 export class ConstantApi {
-  static category = `${category}all`;
+  static category = `${category}all/`;
   static upload = ``;
+}
+export class EstimateApi {
+  static create = `${estimate}`;
+  static update = `${estimate}update/`;
+  // static upload = ``;
 }
 
 export class AuthApi {
@@ -60,6 +69,7 @@ export class AdApi {
   static filter = `${ad}filter/`;
   static category = `${ad}category/`;
   static id = `${ad}id/`;
+  static admin = `${ad}admin/`;
 }
 export class CategoryApi {
   static filter = `${category}filters/`;
@@ -80,6 +90,73 @@ export const createAdNav = [
         href: "ad/sharing",
       },
     ],
+  },
+];
+
+export const adminNav = [
+  {
+    tabName: "Хүсэлт өгсөн зарууд",
+    id: "request",
+
+    submenu: [
+      {
+        tab: "Үл хөдлөх",
+        href: "request/realState",
+      },
+
+      {
+        tab: "Тээврийн хэрэгсэл",
+        href: "request/vehicle",
+      },
+      {
+        tab: "Компьютер",
+        href: "request/computer",
+      },
+      {
+        tab: "Цахилгаан бараа",
+        href: "request/electronic",
+      },
+      {
+        tab: "Гэр ахуйн бараа",
+        href: "request/household-items",
+      },
+    ],
+  },
+  {
+    tabName: "Агент байгууллагын хүсэлт",
+    id: "users",
+
+    submenu: [
+      {
+        tab: "Агент",
+        href: "users/agent",
+      },
+      {
+        tab: "Байгууллага",
+        href: "users/organization",
+      },
+      {
+        tab: "Энгийн",
+        href: "users/default",
+      },
+    ],
+  },
+  {
+    tabName: "EUnit хэтэвч",
+    id: "wallet",
+  },
+
+  {
+    tabName: "Хуваалцсан зар",
+    id: "shared",
+  },
+  {
+    tabName: "Санал хүсэлт",
+    id: "feedback",
+  },
+  {
+    tabName: "Үнэлгээ",
+    id: "estimating",
   },
 ];
 
@@ -108,7 +185,11 @@ export const SellTypes = [
   },
 ];
 
-export const SellTypesString = ["Зарах", "Түрээслүүлэх", "Зарах & түрээслүүлэх"]
+export const SellTypesString = [
+  "Зарах",
+  "Түрээслүүлэх",
+  "Зарах & түрээслүүлэх",
+];
 
 export const CommitteeData = [
   {

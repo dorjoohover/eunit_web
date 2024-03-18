@@ -1,6 +1,7 @@
 import { DateYearSelector } from "@/components/global/dateSelector";
 import Input from "@/components/global/input";
 import Select from "@/components/global/select";
+import { ItemType } from "@/utils/type";
 import {
   Box,
   NumberDecrementStepper,
@@ -32,7 +33,7 @@ export const FiltersContainer = ({
 
   label: string;
   selectedOther: boolean;
-  Item: any;
+  Item: ({ data, onClick, id, ...props }: ItemType) => JSX.Element;
   onChange: (value: string) => void;
 }) => {
   if (other == true && value.find((v: any) => v.id == "other") == undefined)

@@ -37,3 +37,18 @@ export const getSellType = (type: AdSellType | string) => {
       return;
   }
 };
+
+
+export const getEstimateEnums = (est: string) => {
+  switch (est) {
+    case 'estimated':
+      return 'Үнэлсэн';
+    case 'finished':
+      return 'Дууссан';
+    case 'pending':
+      return 'Хүлээгдэж байгаа';
+    case 'returned':
+      return 'Буцаагдсан';
+    default:
+  }
+};

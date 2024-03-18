@@ -1,4 +1,4 @@
-import { AdSellType, ProfileEnumType, SocialsEnum } from "@/config/enum";
+import { AdSellType, AdStatus, ItemTypes, ProfileEnumType, SocialsEnum } from "@/config/enum";
 import { AdModel } from "@/models/ad.model";
 import React, { ReactNode } from "react";
 
@@ -6,6 +6,11 @@ export type FetchAdUnitType = {
   ads: AdModel[];
   limit: number;
 };
+
+export type AdCateIdType = {
+  id: string, 
+  cateId: string
+}
 
 export type AdFilterType = {
   id: string;
@@ -37,7 +42,7 @@ export type ProductInfoValueType = {
   href: boolean;
   value: string;
   id: string;
-  cateId: number;
+  cateId: number | string;
 };
 export type SocialType = { name: SocialsEnum; url: string };
 
@@ -49,8 +54,27 @@ export type CreateAdType = {
   category_ID?: string;
   sellType?: AdSellType;
   adType?: string;
-  file?: string
+  file?: File
+  fileUrl?: string
 };
+
+export type EstimateItemType = {
+  name: string;
+  id: string;
+  value: string;
+  type?: ItemTypes;
+}
+export type EstimateType = 
+  {
+    fileUrl?: string
+    file?: File;
+    items: EstimateItemType[];
+    subCategory: string;
+    category: string;
+    sellType: AdSellType;
+    status: AdStatus;
+  }
+
 export type GeneralDataType = {
   price: number;
   area: number;
@@ -98,7 +122,7 @@ export type StepTypes = {
   phone?: number;
 };
 export type ItemType = {
-  text: string;
+  data?: string;
   className?: string
   onClick?: () => void;
   id?: string;

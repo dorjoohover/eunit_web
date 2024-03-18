@@ -23,8 +23,9 @@ import { AdStatus } from "@/config/enum";
 import { UserModel } from "@/models/user.model";
 import { CategoryModel } from "@/models/category.model";
 import { Assets } from "@/utils/assets";
-import { api } from "@/utils/values";
+import { api, imageApi } from "@/utils/values";
 import Link from "next/link";
+import { ItemType } from "@/utils/type";
 
 // import { detectContentType } from "next/dist/server/image-optimizer";
 
@@ -44,8 +45,8 @@ function AdCard({
 
   admin?: boolean;
   changeAd?: () => void;
-  mine?: any;
-  setType?: any;
+  mine?: boolean;
+  setType?: React.Dispatch<React.SetStateAction<string>>;
 }) {
   const [drop, setDrop] = useState(false);
 
@@ -99,7 +100,7 @@ function AdCard({
           <div className="absolute top-0 bottom-0 left-0 right-0 z-0 w-full h-full cursor-pointer">
             {item?.images && (
               <Image
-                src={api + item?.images?.[0] ?? "/images/noImage.png"}
+                src={imageApi + item?.images?.[0] ?? "/images/noImage.png"}
                 alt=" зар"
                 objectFit="cover"
                 className={mergeNames(
@@ -124,7 +125,7 @@ function AdCard({
             <button
               className={mergeNames(
                 "relative overflow-hidden rounded-full w-9 h-9 bg-mainBlossom",
-                mine && "pointer-events-none "
+                mine ? "pointer-events-none " : ""
               )}
               onClick={(e) => {
                 stopPropagation(e);
@@ -214,10 +215,12 @@ function AdCard({
                     <Alerting
                       body={
                         <div className="flex flex-col gap-2">
-                          "Танаас eunit wallet-с хасагдах болохыг анхаарна уу"
+                          &quot;Танаас eunit wallet-с хасагдах болохыг анхаарна уу&quot;
                           <Select
                             placeholder="Онцгой зарын төрөл сонгох"
-                            onChange={(e) => setType(e.target.value)}
+                            onChange={(e) => {
+                              if (setType != null) setType(e.target.value);
+                            }}
                           >
                             <option value="special">
                               10000 eunit = 5 хоног
@@ -295,7 +298,7 @@ function AdCard({
                   {p.id === "area" && (
                     <ItemContainer
                       lbl={p.name}
-                      Icon={(props: any) => <BiArea {...props} text="" />}
+                      Icon={({ data, onClick, id, ...props }: ItemType) => <BiArea {...props}  />}
                       text={calcValue(p.value, "байхгүй", "м.кв")}
                     />
                   )}
@@ -396,20 +399,20 @@ export const ApartmentIconInfo = ({ p }: { p: AdItemsModel }) => {
         <ItemContainer
           lbl={p.name}
           text={calcValue(p.value, "байхгүй")}
-          Icon={(props: any) => <BiDoorOpen {...props} text="" />}
+          Icon={({ data, onClick, id, ...props }: ItemType) => <BiDoorOpen {...props}  />}
         />
       )}
       {p && p.id === "masterBedroom" && (
         <ItemContainer
           lbl={p.name}
-          Icon={(props: any) => <IoBedOutline {...props} text="" />}
+          Icon={({ data, onClick, id, ...props }: ItemType) => <IoBedOutline {...props}  />}
           text={calcValue(p.value, "байхгүй")}
         />
       )}
       {p && p.id === "bathroom" && (
         <ItemContainer
           lbl={p.name}
-          Icon={(props: any) => <TbBath {...props} text="" />}
+          Icon={({ data, onClick, id, ...props }: ItemType) => <TbBath {...props}  />}
           text={calcValue(p.value, "байхгүй")}
         />
       )}
@@ -422,7 +425,7 @@ const ItemContainer = ({
   text = "",
   lbl,
 }: {
-  Icon: any;
+  Icon: ({ data, onClick, id, ...props }: ItemType) => JSX.Element;
   text: string;
   lbl: string;
 }) => {

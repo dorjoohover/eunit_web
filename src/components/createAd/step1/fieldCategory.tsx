@@ -35,6 +35,7 @@ const FieldCategory = ({
                       categoryId: key,
                       categoryName: item?.href,
                       subCategoryId: "",
+                      category_ID: item?._id
                     }));
                   }}
                 />

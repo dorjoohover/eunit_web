@@ -11,23 +11,14 @@ import MyAds from "@/components/account/myAds";
 import MainContainer from "@/components/containers/mainContainer";
 import mergeNames from "@/utils/functions";
 import { getUser } from "../(api)/user.api";
+import { UserStatus } from "@/config/enum";
 
 const Account = () => {
   const pathname = usePathname();
   const params = useSearchParams();
   const [content, setContent] = useState(params.get("tab"));
-  const { user, setUser, setMark } = useAppContext();
-  const updateUser = async () => {
-    await getUser().then((d) => {
-      setUser(d), 
-      setMark(d.bookmarks)
-    });
-  };
-  useEffect(() => {
-    if (user == undefined) {
-      updateUser();
-    }
-  }, [user]);
+  const { user } = useAppContext();
+
   const tabs = [
     {
       tabHeader: "Хувийн мэдээлэл",

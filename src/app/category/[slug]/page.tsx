@@ -1,6 +1,6 @@
 "use client";
 import { getAdByCategory, getFilteredAd } from "@/app/(api)/ad.api";
-import { getConstants } from "@/app/(api)/constants.api";
+
 import { useAppContext } from "@/app/_context";
 import AdContent from "@/components/ad/adContent";
 import MapCard from "@/components/ad/mapCard";
@@ -42,20 +42,19 @@ const Category = ({ params }: { params: { slug: string } }) => {
   const { ads, setAds } = useAppContext();
   const [isLoading, setIsLoading] = useState(false);
   const getAds = async (num: number) => {
-    setIsLoading(true)
+    setIsLoading(true);
     if (params.slug) {
       await getFilteredAd(params.slug, num, AdTypes.all, [], []).then((d) => {
-        setAds(d)
+        setAds(d);
       });
     }
-    setIsLoading(false)
+    setIsLoading(false);
   };
 
   useEffect(() => {
     getAds(0);
   }, []);
 
- 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const libraries = useMemo(() => ["places"], []);
@@ -90,7 +89,7 @@ const Category = ({ params }: { params: { slug: string } }) => {
             <FilterLayout data={params.slug} isOpenMap={onOpen} />
           )}
 
-          {isLoading && <CategoryDynamicLoading/>}
+          {isLoading && <CategoryDynamicLoading />}
 
           <Box className="max-w-[100%] w-full rounded-[5px]">
             {/* //TODO Engiin zar */}
@@ -164,17 +163,15 @@ const Category = ({ params }: { params: { slug: string } }) => {
                             {markerActive == i && (
                               <InfoWindow
                                 options={{ zIndex: 120 }}
-                                children={
-                                  
-                                  <MapCard data={m} />
-                                }
                                 position={{
                                   lat: parseFloat(m.location?.lat ?? 47.74604),
                                   lng: parseFloat(
                                     m.location?.lng ?? 107.341515
                                   ),
                                 }}
-                              />
+                              >
+                                <MapCard data={m} />
+                              </InfoWindow>
                             )}
                           </MarkerF>
                         </div>

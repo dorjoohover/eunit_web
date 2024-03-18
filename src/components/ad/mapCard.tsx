@@ -11,6 +11,7 @@ import { Image } from "@chakra-ui/react";
 import { CategoryModel } from "@/models/category.model";
 import { ApartmentIconInfo, calcValue } from "./card";
 import ItemContainer from "../createAd/product/itemContainer";
+import { ItemType } from "@/utils/type";
 
 const MapCard = ({ data }: { data: AdModel }) => {
   const router = useRouter();
@@ -114,7 +115,7 @@ const MapCard = ({ data }: { data: AdModel }) => {
                   <ItemContainer
                     txtWhite={true}
                     lbl={p.name}
-                    Icon={(props: any) => <BiArea {...props} text="" />}
+                    Icon={({ data, onClick, id, ...props }: ItemType) => <BiArea {...props}  />}
                     text={calcValue(p.value ?? 0, "байхгүй", "м.кв")}
                   />
                 )}

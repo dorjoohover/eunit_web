@@ -117,7 +117,7 @@ export const FilterButtonSelector = ({
   selected,
 }: {
   title: string;
-  Item: ({ text, id, isSelected, onClick, children }: ItemType) => JSX.Element;
+  Item: ({ data, id, isSelected, onClick, children }: ItemType) => JSX.Element;
   selected: string;
   data?: ItemDetailModel[];
 }) => {
@@ -131,7 +131,7 @@ export const FilterButtonSelector = ({
               {
                 <Item
                   key={id}
-                  text={d.value}
+                  data={d.value}
                   id={d.id}
                   isSelected={d.value == selected}
                   onClick={() => {}}
@@ -158,7 +158,7 @@ export const FilterSelect = ({
   requirement: boolean;
   label: string;
   title: string;
-  Item: any;
+  Item: ({ data, onClick, id, ...props }: ItemType) => JSX.Element;
 }) => {
   return (
     <ItemContainer>

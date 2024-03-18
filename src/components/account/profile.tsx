@@ -229,7 +229,7 @@ const Profile = ({ user }: { user: UserModel }) => {
               : userData?.userType}
             {edit && user && (
               <Fragment>
-                <ChangeAgent
+                {/* <ChangeAgent
                   setAgent={setAgentData}
                   setOrg={setOrgData}
                   org={userData?.userType == "default"}
@@ -244,7 +244,7 @@ const Profile = ({ user }: { user: UserModel }) => {
                   setImage={setImages}
                   image={images}
                   agent={userData?.userType == "default"}
-                />
+                /> */}
               </Fragment>
             )}
           </p>

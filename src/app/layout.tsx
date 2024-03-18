@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 // import { Inter } from "next/font/google";
 import "@/styles/globals.scss";
 import { logoMiniWhite } from "@/utils/assets";
-
+import { APIProvider } from "@vis.gl/react-google-maps";
 import Head from "next/head";
 import Navbar from "@/components/navbar";
 import { AppWrapper, useAppContext } from "./_context";
@@ -11,7 +11,11 @@ import { fonts } from "./_fonts/rubik";
 import NextAuthProvider from "./_context/auth";
 
 import ScrollTop from "@/components/global/scrollTop";
-import { getUser } from "./(api)/user.api";
+
+import { Suspense } from "react";
+import Loading from "./loading";
+import { headers } from "next/headers";
+import AdminBar from "@/components/navbar/adminBar";
 
 export const metadata: Metadata = {
   title: {
@@ -27,7 +31,9 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  
+  const headerList = headers();
+  const referer = headerList.get("referer");
+
   return (
     <html lang="en" className={fonts.rubik.variable}>
       <Head>
@@ -41,13 +47,14 @@ export default async function RootLayout({
       <body>
         <NextAuthProvider>
           <Providers>
-     
-              <AppWrapper>
-                <Navbar />
+            <AppWrapper>
+              <Suspense fallback={<Loading />}>
+                {referer?.includes("admin") ? <AdminBar /> : <Navbar />}
                 {children}
+
                 <ScrollTop />
-              </AppWrapper>
-        
+              </Suspense>
+            </AppWrapper>
           </Providers>
         </NextAuthProvider>
       </body>

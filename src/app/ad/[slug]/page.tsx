@@ -3,10 +3,7 @@ import {
   Box,
   Button,
   GridItem,
-  HStack,
   IconButton,
-  Image,
-  Select,
   Stack,
   Text,
   useToast,
@@ -40,8 +37,8 @@ import { AppProps } from "next/app";
 import ScrollTop from "@/components/global/scrollTop";
 import MainContainer from "@/components/containers/mainContainer";
 import Engage from "@/components/product/engage";
-import { GeneralDataType } from "@/utils/type";
-import { GoogleMapsOptions, api } from "@/utils/values";
+import { GeneralDataType, ItemType } from "@/utils/type";
+import { GoogleMapsOptions, api, imageApi } from "@/utils/values";
 import ProductInfoValue from "@/components/createAd/product/productInfoValue";
 import { ItemModel } from "@/models/items.model";
 import { ItemTypes } from "@/config/enum";
@@ -61,190 +58,9 @@ import WhiteBox from "@/components/createAd/product/whiteBox";
 import ProductHeader from "@/components/product/productHeader";
 import { useAppContext } from "@/app/_context";
 import { bookmark } from "@/app/(api)/user.api";
+import ProductInfo from "@/components/createAd/product/info";
 
-export const ProductInfo = ({
-  title,
-  value,
-  id,
-  children,
-  href = false,
-  type = "",
-  tt = "capitalize",
-  func = () => {},
-  setEditData,
-  edit = false,
-  editData,
-  classnames,
-  admin,
-  cateId,
-  editFunc = () => {},
-}: {
-  title: string;
-  value: string;
-  id?: string;
-  children?: ReactNode;
-  href?: boolean;
-  type?: string;
-  tt?: string;
-  func?: () => void;
-  setEditData?: any;
-  edit?: boolean;
-  editData?: any;
-  classnames?: string;
-  admin?: any;
-  cateId?: any;
-  editFunc?: () => void;
-}) => {
-  const [localData, setData] = useState<ItemModel>();
-  const [other, setOther] = useState(false);
 
-  let dummy = { ...editData };
-  return (
-    <Fragment>
-      {href && (
-        <p
-          className={mergeNames(
-            id === "price"
-              ? "mt-3 text-xl font-bold col-span-full block"
-              : "hidden"
-          )}
-        >
-          Бусад мэдээлэл
-        </p>
-      )}
-      <GridItem
-        className={mergeNames(
-          title.length > 30
-            ? "product__info col-span-full md:col-span-2 lg:col-span-1 row-start-1"
-            : "product__info",
-          "bg-white shadow rounded-md",
-          classnames ?? ""
-        )}
-      >
-        <Stack
-          direction={"row"}
-          className={mergeNames("p-2 rounded-md")}
-          onClick={href ? () => {} : func}
-        >
-          <div className="flex flex-col w-full pl-2 text-left sm:pl-5">
-            <Text fontSize={{ base: "13px", xl: "15px" }}>{title}: </Text>
-            {!localData && (
-              <ProductInfoValue
-                href={href}
-                id={id ?? ""}
-                value={value}
-                cateId={cateId}
-              />
-            )}
-
-            {localData && (
-              <FiltersContainer
-                selectedOther={other}
-                other={localData.other ?? false}
-                value={localData.value}
-                name={localData.name}
-                defValue={value}
-                types={localData.types}
-                ph={value}
-                label={value}
-                onChange={(e) => {
-                  if (typeof e == "string" || typeof e == "number") {
-                    dummy?.filters.map((df: any) => {
-                      if (df.type == localData.type) {
-                        df.input = e;
-                      }
-                    });
-                    if (!admin) {
-                      setEditData(dummy);
-                    }
-                  } else {
-                    dummy?.filters.map((df: any) => {
-                      if (df.type == localData.type) {
-                        df.input = e;
-                      }
-                    });
-                    if (!admin) {
-                      setEditData(dummy);
-                    }
-                  }
-                }}
-                Item={({
-                  data,
-                  onClick,
-                  id,
-                  ...props
-                }: {
-                  data: any;
-                  onClick: any;
-                  id: any;
-                  props: any;
-                }) => {
-                  return (
-                    <button
-                      {...props}
-                      onClick={() => {
-                        if (data == "Бусад") {
-                          setOther(true);
-                        } else {
-                          setOther(false);
-                          dummy?.filters.map((df: any) => {
-                            if (df.type == localData.type) {
-                              df.input = data;
-                            }
-                          });
-                          if (!admin) {
-                            setEditData(dummy);
-                          }
-                        }
-                        onClick();
-                      }}
-                    >
-                      {data}
-                      {/* {props.children} */}
-                    </button>
-                  );
-                }}
-              />
-            )}
-          </div>
-          {edit && (
-            <Button
-              onClick={async () => {
-                if (type != "sellType") {
-                  // await axios.get(`${urls["test"]}/items/${type}`).then((d) => {
-                  //   setData(d.data);
-                  // });
-                } else {
-                  setData({
-                    value: [
-                      {
-                        id: "sell",
-                        value: "Зарах",
-                      },
-                      {
-                        id: "rent",
-                        value: "Түрээслүүлэх",
-                      },
-                      {
-                        id: "sellRent",
-                        value: "Зарах, түрээслүүлэх",
-                      },
-                    ],
-                    name: "Борлуулах төрөл",
-                    types: ItemTypes.dropdown,
-                    type: type,
-                  });
-                }
-              }}
-            >
-              edit
-            </Button>
-          )}
-        </Stack>
-      </GridItem>
-    </Fragment>
-  );
-};
 
 export default function AdDynamicPage({
   params,
@@ -259,9 +75,9 @@ export default function AdDynamicPage({
     mark,
     setMark,
     user,
-    setUser
+    setUser,
   }: {
-    user: UserModel,
+    user: UserModel;
     mark: number[];
     setMark: React.Dispatch<React.SetStateAction<number[]>>;
     setUser: React.Dispatch<React.SetStateAction<UserModel>>;
@@ -285,17 +101,15 @@ export default function AdDynamicPage({
   );
 
   const updateMark = async (id: number) => {
-    console.log(user);
-    if (!user)
-      {
-        toast({
-          title: "Та нэвтэрнэ үү",
-          status: "warning",
-          duration: 5000,
-          isClosable: true,
-        });
-        return
-      }
+    if (!user) {
+      toast({
+        title: "Та нэвтэрнэ үү",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+      });
+      return;
+    }
     if (!loading) {
       try {
         setLoading(true);
@@ -472,8 +286,8 @@ export default function AdDynamicPage({
                         // showIndex={true}
                         items={
                           data?.images?.map((i) => ({
-                            original: `${api}${i}`,
-                            thumbnail: `${api}${i}`,
+                            original: `${imageApi}${i}`,
+                            thumbnail: `${imageApi}${i}`,
                             loading: "lazy",
                             thumbnailLoading: "lazy",
                           })) ?? []
@@ -506,36 +320,30 @@ export default function AdDynamicPage({
                               value={p.value}
                               id={p.id}
                               cateId={(data.subCategory as CategoryModel)?._id}
-                              Icon={(props: any) => {
+                              Icon={({ data, onClick, id, ...props }: ItemType) => {
                                 switch (p.id) {
                                   case "room":
                                     return (
                                       <BiDoorOpen
                                         {...props}
-                                        text=""
                                         className="text-xl"
                                       />
                                     );
                                   case "area":
-                                    return <BiArea {...props} text="" />;
+                                    return <BiArea {...props} />;
                                   case "masterBedroom":
                                     return (
                                       <IoBedOutline
                                         {...props}
-                                        text=""
                                         className="text-xl"
                                       />
                                     );
                                   case "bathroom":
                                     return (
-                                      <TbBath
-                                        {...props}
-                                        text=""
-                                        className="text-xl"
-                                      />
+                                      <TbBath {...props} className="text-xl" />
                                     );
                                   default:
-                                    return;
+                                    return <></>;
                                 }
                               }}
                               text={calcValue(
@@ -605,6 +413,7 @@ export default function AdDynamicPage({
                           value={p.value}
                           // onClick={() => getFilterByItem(p.id, p.value)}
                         />
+                        // <></>
                       );
                     } else {
                       return <Fragment key={i}></Fragment>;
@@ -638,6 +447,7 @@ export default function AdDynamicPage({
                           value={p.value}
                           // onClick={() => getFilterByItem(p.id, p.value)}
                         />
+                        // <></>
                       );
                     }
                   })}

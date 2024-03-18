@@ -12,7 +12,7 @@
 // import { LoadingButton } from "../global/button";
 // import mergeNames from "@/utils/functions";
 // import WhiteBox from "../createAd/product/whiteBox";
-// import { ProductInfo } from "@/app/ad/[slug]/page";
+
 
 // const EditAd = ({
 //   onNext = () => {},

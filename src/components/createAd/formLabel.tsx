@@ -1,8 +1,8 @@
 import React from "react";
 
-const Text = (props: any) => (
+const Text = ({children}: {children: React.ReactNode}) => (
   <p className="text-lg font-semibold text-gray-700 md:text-2xl">
-    {props.children}
+    {children}
   </p>
 );
 

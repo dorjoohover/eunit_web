@@ -10,7 +10,7 @@ import { NavContainer } from "../container";
 
 import { Assets } from "@/utils/assets";
 import { CategoryModel } from "@/models/category.model";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { EstimatorIcon, UserIcon, WhiteHeartIcon } from "./icons";
 import UserDrawer from "./userDrawer";
 import { UserModel } from "@/models/user.model";
@@ -18,13 +18,36 @@ import { getSearchAds } from "@/app/(api)/ad.api";
 import { motion } from "framer-motion";
 import { useAppContext } from "@/app/_context";
 import { Image } from "@chakra-ui/react";
+import { getUser } from "@/app/(api)/user.api";
+import { UserStatus } from "@/config/enum";
 const Bottom = ({
   categories,
-  current,
 }: {
-  current: boolean ;
   categories: CategoryModel[] | undefined;
 }) => {
+  const { user, setUser, setMark, setCurrent } = useAppContext();
+  const getUserData = async () => {
+    await getUser()
+      .then((d) => {
+        if (d != null) {
+          setUser(d);
+          setMark(d?.bookmarks);
+          setCurrent({
+            user: true,
+            status: d.status != UserStatus.banned,
+            type: d.userType,
+          });
+        }
+      })
+      .catch(() => {
+        setUser(undefined);
+      });
+  };
+  useEffect(() => {
+    if (!user) {
+      getUserData();
+    }
+  }, []);
   // const [isHoveringId, setIsHoveringId] = useState(true);
   const [activeSearch, setActiveSearch] = useState<boolean>(false);
   // const handleMouseOver = (id) => {
@@ -73,7 +96,7 @@ const Bottom = ({
               <WhiteHeartIcon />
             </Link>
 
-            {current ? (
+            {user != undefined ? (
               <UserDrawer />
             ) : (
               <Link href={"/login"}>

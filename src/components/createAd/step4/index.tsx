@@ -96,21 +96,23 @@ const Step4 = ({
               title={f.name}
               data={f.value}
               selected={state?.[key] as string}
-              Item={(items : ItemType) => {
-                let { text, id, isSelected, onClick } = items;
+              Item={(items: ItemType) => {
+                let { data, id, onClick } = items;
 
                 return (
                   <ButtonSelectItem
+                    data={data!}
                     key={id}
                     {...items}
-                    
                     onClick={() => {
-                      handle((prev) => ({ ...prev, [key]: items.text }));
-                      onClick();
+                      handle((prev) => ({ ...prev, [key]: items.data }));
+                      if (onClick != null) {
+                        onClick();
+                      }
                     }}
                   >
                     <>
-                      {text}
+                      {data}
                       {items.children}
                     </>
                   </ButtonSelectItem>
@@ -137,34 +139,30 @@ const Step4 = ({
                       ? false
                       : true
                   }
-                  Item={({
-                    data,
-                    onClick,
-                    id,
-                    children,
-                    ...props
-                  }: {
-                    data: string;
-                    onClick: () => void;
-                    id: string;
-                    children: ReactNode;
-                  }) => {
+                  Item={(items: ItemType) => {
+                    const { id, data, onClick, children } = items;
                     return (
                       <button
                         key={id}
-                        {...props}
+                        {...items}
                         onClick={(e) => {
                           e.persist();
                           handle((prev) => ({ ...prev, [key]: data }));
                           if (cacheParent != undefined) {
-                            cacheParent.value = data;
-                            cacheParent.id = id;
+                            cacheParent.value = data!;
+                            cacheParent.id = id!;
                           } else {
-                            cache.push({ id: id, value: data, parent: f.type });
+                            cache.push({
+                              id: id!,
+                              value: data!,
+                              parent: f.type,
+                            });
                           }
                           setCache((prev) => [...prev]);
 
-                          onClick();
+                          if (onClick != null) {
+                            onClick();
+                          }
                         }}
                       >
                         {data}
@@ -188,18 +186,7 @@ const Step4 = ({
                 title={f.name}
                 data={f.value}
                 label={(state?.[key] as string) ?? f.name}
-                Item={({
-                  data,
-                  onClick,
-                  id,
-                  children,
-                  ...props
-                }: {
-                  data: string;
-                  onClick: () => void;
-                  id: string;
-                  children: ReactNode;
-                }) => {
+                Item={({ data, onClick, id, children, ...props }: ItemType) => {
                   return (
                     <button
                       key={id}
@@ -212,19 +199,19 @@ const Step4 = ({
                           [key]: data,
                         }));
                         if (cacheSelf != undefined) {
-                          cacheSelf.value = data;
-                          cacheSelf.id = id;
+                          cacheSelf.value = data!;
+                          cacheSelf.id = id!;
                         } else {
                           cache.push({
-                            id: id,
-                            value: data,
+                            id: id!,
+                            value: data!,
                             parent: f.type,
                             position: f.position,
                           });
                         }
                         setCache((prev) => [...prev]);
 
-                        onClick();
+                        if (onClick != null) onClick();
                       }}
                     >
                       {data}
@@ -268,62 +255,33 @@ const Step4 = ({
                               parseInt(cacheParent.value ?? "0") >=
                                 parseInt(v.id)
                           )
-                      // f.value.filter(
-                      //   (v) =>
-                      //     (f.parentId == v.parentId &&
-                      //       cacheParent.id == v.parentId) ||
-                      //     v.id == "other"
-                      // ).length > 0
-                      //   ? f.value.filter(
-                      //       (v) =>
-                      //         (f.parentId == v.parentId &&
-                      //           cacheParent.id == v.parentId) ||
-                      //         v.id == "other"
-                      //     )
-                      //   : filter
-                      //       .filter((fil) => fil.type == f.parentId)[0]
-                      //       .value.filter(
-                      //         (v) =>
-                      //           v.id == "B2" ||
-                      //           v.id == "B1" ||
-                      //           parseInt(cacheParent.value ?? "0") >=
-                      //             parseInt(v.id)
-                      //       )
                     }
                     label={(state?.[key] as string) ?? f.name}
-                    Item={({
-                      data,
-                      onClick,
-                      id,
-                      children,
-                      ...props
-                    }: {
-                      data: string;
-                      onClick: () => void;
-                      id: string;
-                      children: ReactNode;
-                    }) => {
+                    Item={(items: ItemType) => {
+                      const { data, id, onClick, children } = items;
                       return (
                         <button
                           key={id}
-                          {...props}
+                          {...items}
                           onClick={(e) => {
                             e.persist();
 
                             handle((prev) => ({ ...prev, [key]: data }));
                             if (cacheSelf != undefined) {
-                              cacheSelf.value = data;
-                              cacheSelf.id = id;
+                              cacheSelf.value = data!;
+                              cacheSelf.id = id!;
                             } else {
                               cache.push({
-                                id: id,
-                                value: data,
+                                id: id!,
+                                value: data!,
                                 parent: f.type,
                               });
                             }
                             setCache((prev) => [...prev]);
 
-                            onClick();
+                            if (onClick != null) {
+                              onClick();
+                            }
                           }}
                         >
                           {data}

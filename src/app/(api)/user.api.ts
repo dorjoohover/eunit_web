@@ -3,26 +3,40 @@ import { UserModel } from "@/models/user.model";
 import { ErrorMessages } from "@/utils/string";
 import { UserApi, api } from "@/utils/values";
 import { cookies } from "next/headers";
-
-export async function getUser(): Promise<UserModel> {
+function clearCookie() {
+  const cookie = cookies();
+  const hasToken = cookie.has("token");
+  const hasCurrent = cookie.has("current");
+  if (hasCurrent) cookie.delete("current");
+  if (hasToken) cookie.delete("token");
+}
+export async function getUser(): Promise<UserModel | null> {
   try {
-    let token = cookies().get("token");
-    if (token?.value != "") {
+    const cookie = cookies();
+    let token = cookie.get("token");
+    let hasCurrent = cookie.has('current')
+    let hasType = cookie.has('type')
+    if (token?.value != "" && token) {
       let res = await fetch(`${api}${UserApi.me}`, {
         headers: {
           Authorization: `Bearer ${token?.value ?? ""}`,
         },
-      }).then((d) => d.json());
-      cookies().set("current", res._id);
+      })
+        .then((d) => d.json())
+        .catch((e) => {
+          clearCookie();
+          return null;
+        });
+      if(!hasCurrent) cookie.set("current", res._id);
+      if(!hasType) cookie.set("type", res.userType);
+    
       return res;
     }
-    cookies().delete("token");
-    cookies().delete("current");
-    throw new Error(ErrorMessages.cookieExpired);
+    clearCookie();
+    return null;
   } catch (error) {
     console.error(error);
-    cookies().delete("current");
-    cookies().delete("token");
+    clearCookie();
     throw new Error(ErrorMessages.occured);
   }
 }
@@ -53,8 +67,6 @@ export const sendFeedback = async (message: string, title: string) => {
   return false;
 };
 
-
-
 export const bookmark = async (id: number) => {
   let token = cookies().get("token");
   if (token) {
@@ -66,7 +78,6 @@ export const bookmark = async (id: number) => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token?.value ?? ""}`,
         },
-       
       }).then((d) => d.json());
 
       return true;

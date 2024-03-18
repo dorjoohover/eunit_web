@@ -4,7 +4,7 @@
 // import WhiteBox from "@/util/product/WhiteBox";
 // import { Box, Heading,  useDisclosure } from "@chakra-ui/react";
 // import { GoogleMap, MarkerF, useLoadScript } from "@react-google-maps/api";
-// import { ProductInfo } from "pages/ad/[slug]";
+
 // import { useMemo } from "react";
 // import { FiArrowLeft, FiArrowRight } from "react-icons/fi";
 // import ImageGallery from "react-image-gallery";

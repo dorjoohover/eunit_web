@@ -52,11 +52,11 @@ export default function LoginPage() {
   );
 }
 
-const GoogleSignButton = (props: any) => {
+const GoogleSignButton = ({ onClick }: { onClick: () => void }) => {
   return (
     <div className="flex flex-col gap-3 my-auto">
       <Button
-        {...props}
+        onClick={onClick}
         // onClick={() => handleGoogleSignIn()}
         className="gap-3 p-0 px-2 border-gray-200 rounded-lg"
       >

@@ -31,20 +31,21 @@ import { calcValue } from "./card";
 import { AdItemsModel, AdModel } from "@/models/ad.model";
 import { CategoryModel } from "@/models/category.model";
 import { UserModel } from "@/models/user.model";
+import { ItemType } from "@/utils/type";
 
 function ProCard({
   item,
   deleteFunc,
   isDelete = false,
-  data,
-  setData,
+  // data,
+  // setData,
   admin = false,
 }: {
   item: AdModel;
   deleteFunc?: () => void;
   isDelete?: boolean;
-  data?: any;
-  setData?: any;
+  // data?: string;
+  // setData?: ;
   admin?: boolean;
 }) {
   const router = useRouter();
@@ -110,7 +111,11 @@ function ProCard({
               />
             </Fragment>
           ) : (
-            <AdCardButton id={item?.num} adId={item?._id} />
+            <AdCardButton
+              cateId={(item.category as CategoryModel)._id}
+              id={item?.num}
+              adId={item?._id}
+            />
           )}
         </div>
         <div className="grid flex-1 w-full h-full grid-cols-1 md:grid-cols-2">
@@ -187,7 +192,7 @@ function ProCard({
                       {p.id === "area" && (
                         <ItemContainer
                           lbl={p.name}
-                          Icon={(props: any) => <BiArea {...props} text="" />}
+                          Icon={({ data, onClick, id, ...props }: ItemType) => <BiArea {...props}  />}
                           text={calcValue(p.value, "байхгүй", "м.кв")}
                         />
                       )}
@@ -336,7 +341,7 @@ const ApartmentIconInfo = ({ p }: { p: AdItemsModel }) => {
         <ItemContainer
           lbl={p.name}
           text={calcValue(p.value, "байхгүй")}
-          Icon={(props) => {
+          Icon={({ data, onClick, id, ...props }: ItemType) => {
             switch (p.id) {
               case "room":
                 return <BiDoorOpen {...props} />;
@@ -344,6 +349,8 @@ const ApartmentIconInfo = ({ p }: { p: AdItemsModel }) => {
                 return <IoBedOutline {...props} />;
               case "bathroom":
                 return <TbBath {...props} />;
+              default:
+                return <></>;
             }
           }}
         />
@@ -357,7 +364,7 @@ const ItemContainer = ({
   text = "",
   lbl,
 }: {
-  Icon: (props: { [x: string]: any }) => any;
+  Icon: ({ data, onClick, id, ...props }: ItemType) => JSX.Element;
   text: string;
   lbl: string;
 }) => {

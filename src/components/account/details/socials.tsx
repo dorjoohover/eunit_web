@@ -8,7 +8,7 @@ import Link from "next/link";
 import React, { useState } from "react";
 import { Fragment } from "react";
 
-const capitalizeFirst = (str: any): string =>
+const capitalizeFirst = (str: string): string =>
   str.toString().slice(0, 1).toUpperCase() +
   str.toString().slice(1).toLowerCase();
 

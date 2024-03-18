@@ -1,13 +1,18 @@
 "use client";
 
-import { getMyAds } from "@/app/(api)/ad.api";
+import { getManyAds, getMyAds } from "@/app/(api)/ad.api";
+import { getMyEstimate } from "@/app/(api)/estimate.api";
 import { getUser } from "@/app/(api)/user.api";
 import { useAppContext } from "@/app/_context";
+import Estimated from "@/components/account/estimated";
+import Mark from "@/components/account/mark";
 import MyAds from "@/components/account/myAds";
 import Profile from "@/components/account/profile";
 import { AdStatus, AdTypes } from "@/config/enum";
 import { CategoryModel } from "@/models/category.model";
+import { EstimateModel } from "@/models/estimate.model";
 import { FetchAdUnitType } from "@/utils/type";
+
 
 import { notFound } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -17,15 +22,11 @@ export default function AccountDynamicPage({
 }: {
   params: { slug: string };
 }) {
-  const { user, setUser , setMark} = useAppContext();
-  const updateUser = async () => {
-    await getUser().then((d) => {
-      setUser(d),
-      setMark(d.bookmarks)
-    });
-  };
+  const { user, mark } = useAppContext();
+
   const [ads, setAds] = useState<FetchAdUnitType>({ ads: [], limit: 0 });
   const [loading, setLoading] = useState(false);
+  const [estimate, setEstimate] = useState<EstimateModel[]>([]);
   const [category, setCategory] = useState<{
     category: CategoryModel[];
     subCategory: CategoryModel[];
@@ -50,18 +51,45 @@ export default function AccountDynamicPage({
   const getAds = async (status: AdStatus, id?: string, n?: number) => {
     setLoading(true);
     await getMyAds(n ?? 0, 12, status, AdTypes.all, id).then((d) => {
-      update(d);
+      if (d != null) {
+        update(d);
+      }
+    });
+    setLoading(false);
+  };
+  const getMarks = async (num?: number) => {
+    setLoading(true);
+    await getManyAds(num ?? 0, false, 10, AdStatus.created, AdTypes.all, mark).then(
+      (d) => setAds(d)
+    );
+   
+    setLoading(false)
+  };
+  const getEstimate = async () => {
+    setLoading(true);
+    await getMyEstimate().then((d) => {
+      setEstimate(d);
     });
     setLoading(false);
   };
 
   useEffect(() => {
-    updateUser();
-  }, []);
-
-  useEffect(() => {
     if (params.slug.toLowerCase() == "myads" && user != undefined && !loading) {
       getAds(AdStatus.created, undefined, 0);
+    }
+    if (
+      params.slug.toLowerCase() == "estimated" &&
+      user != undefined &&
+      !loading
+    ) {
+      getEstimate();
+    }
+    if (
+      params.slug.toLowerCase() == "mark" &&
+      user != undefined &&
+      !loading
+    ) {
+      getMarks();
     }
   }, [params.slug, user]);
   switch (params.slug.toLowerCase()) {
@@ -79,6 +107,10 @@ export default function AccountDynamicPage({
       );
     case "profile":
       return <Profile user={user} />;
+    case "estimated":
+      return <Estimated estimate={estimate} setEstimate={setEstimate} />;
+    case "mark":
+      return <Mark ads={ads} category={category?.category} loading={loading}/>;
     default:
       return notFound();
   }

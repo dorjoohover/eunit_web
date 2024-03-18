@@ -27,7 +27,7 @@ const AdContent = ({
 }: {
   inCat: boolean;
   pg?: boolean;
-  showLink: any;
+  showLink: string;
   data: FetchAdUnitType;
   title?: string;
   url?: string;

@@ -32,7 +32,7 @@ const FieldSellType = ({
             <ButtonSelectItem
               key={key}
               isSelected={isSelected}
-              text={text}
+              data={text}
               onClick={() =>
                 setTypes((prev) => ({
                   ...prev,

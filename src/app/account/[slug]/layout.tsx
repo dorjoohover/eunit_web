@@ -25,7 +25,7 @@ export default function AccountDetailLayout({
     },
     {
       tabHeader: "Миний хүслүүд",
-      title: "Bookmark",
+      title: "Mark",
     },
     {
       tabHeader: "Хэтэвч",
