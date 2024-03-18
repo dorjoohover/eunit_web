@@ -7,7 +7,7 @@ import Head from "next/head";
 import Navbar from "@/components/navbar";
 import { AppWrapper, useAppContext } from "./_context";
 import { Providers } from "./_providers/chakra.provider";
-import { fonts } from "./_fonts/rubik";
+// import { fonts } from "./_fonts/rubik";
 import NextAuthProvider from "./_context/auth";
 
 import ScrollTop from "@/components/global/scrollTop";
@@ -35,7 +35,8 @@ export default async function RootLayout({
   const referer = headerList.get("referer");
 
   return (
-    <html lang="en" className={fonts.rubik.variable}>
+    // <html lang="en" className={fonts.rubik.variable}>
+    <html lang="en">
       <Head>
         <link
           rel=" shortcut icon"

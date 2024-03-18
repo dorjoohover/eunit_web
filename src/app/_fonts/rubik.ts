@@ -1,10 +1,11 @@
-import { Rubik } from 'next/font/google'
+// import { Rubik } from 'next/font/google'
 
-const rubik = Rubik({
-  subsets: ['latin'],
-  variable: '--font-rubik',
-})
+// const rubik 
+// const rubik = Rubik({
+//   subsets: ['latin'],
+//   variable: '--font-rubik',
+// })
 
 export const fonts = {
-  rubik,
+  // rubik,
 }
