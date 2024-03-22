@@ -72,9 +72,9 @@ export interface Social {
 export interface PointHistory {
   point: number;
 
-  sender: string;
+  sender: string | UserModel;
 
-  receiver: string;
+  receiver: string | UserModel;
   type: PointSendType;
 
   title: PointTitle | undefined;

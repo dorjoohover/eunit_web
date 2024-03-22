@@ -51,7 +51,7 @@ const drawerItem = [
   {
     icon: <IoWalletOutline />,
     text: "Хэтэвч",
-    href: "walletpage",
+    href: "wallet",
   },
   {
     icon: <AiOutlineCalculator />,
@@ -112,7 +112,8 @@ const BodyDrawer = ({
         <div className="w-full h-[1px] mt-4 mb-4 bg-gray-200 inline-block" />
         <div className="flex flex-col space-y-2 ">
           <Feedback />
-          <button
+          <Link
+            href={"/"}
             onClick={() => {
               signOut();
               logOut();
@@ -120,7 +121,7 @@ const BodyDrawer = ({
             className="py-2 font-semibold text-white rounded-md bg-mainBlossom hover:bg-red-500 "
           >
             Гарах
-          </button>
+          </Link>
         </div>
       </div>
     </DrawerBody>

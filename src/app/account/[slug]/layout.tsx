@@ -29,7 +29,7 @@ export default function AccountDetailLayout({
     },
     {
       tabHeader: "Хэтэвч",
-      title: "WalletPage",
+      title: "wallet",
     },
     {
       tabHeader: "Үнэлгээ",

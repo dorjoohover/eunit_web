@@ -9,6 +9,7 @@ import Mark from "@/components/account/mark";
 import MyAds from "@/components/account/myAds";
 import Profile from "@/components/account/profile";
 import SharingAds from "@/components/account/sharedAds";
+import WalletPage from "@/components/account/wallet";
 import { AdStatus, AdTypes } from "@/config/enum";
 import { CategoryModel } from "@/models/category.model";
 import { EstimateModel } from "@/models/estimate.model";
@@ -136,6 +137,8 @@ export default function AccountDynamicPage({
       );
     case "estimated":
       return <Estimated estimate={estimate} setEstimate={setEstimate} />;
+    case "wallet":
+      return <WalletPage user={user} />;
     case "mark":
       return <Mark ads={ads} category={category?.category} loading={loading} />;
     default:
