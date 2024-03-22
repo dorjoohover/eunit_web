@@ -8,11 +8,11 @@ import Estimated from "@/components/account/estimated";
 import Mark from "@/components/account/mark";
 import MyAds from "@/components/account/myAds";
 import Profile from "@/components/account/profile";
+import SharingAds from "@/components/account/sharedAds";
 import { AdStatus, AdTypes } from "@/config/enum";
 import { CategoryModel } from "@/models/category.model";
 import { EstimateModel } from "@/models/estimate.model";
 import { FetchAdUnitType } from "@/utils/type";
-
 
 import { notFound } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -48,22 +48,34 @@ export default function AccountDynamicPage({
     });
     setCategory({ category: cate, subCategory: sub });
   };
-  const getAds = async (status: AdStatus, id?: string, n?: number) => {
+  const getAds = async (
+    status: AdStatus,
+    id?: string,
+    n?: number,
+    type?: AdTypes
+  ) => {
     setLoading(true);
-    await getMyAds(n ?? 0, 12, status, AdTypes.all, id).then((d) => {
+    console.log(type);
+    await getMyAds(n ?? 0, 12, status, type ?? AdTypes.all, id).then((d) => {
       if (d != null) {
         update(d);
+        console.log(d);
       }
     });
     setLoading(false);
   };
   const getMarks = async (num?: number) => {
     setLoading(true);
-    await getManyAds(num ?? 0, false, 10, AdStatus.created, AdTypes.all, mark).then(
-      (d) => setAds(d)
-    );
-   
-    setLoading(false)
+    await getManyAds(
+      num ?? 0,
+      false,
+      10,
+      AdStatus.created,
+      AdTypes.all,
+      mark
+    ).then((d) => setAds(d));
+
+    setLoading(false);
   };
   const getEstimate = async () => {
     setLoading(true);
@@ -75,6 +87,13 @@ export default function AccountDynamicPage({
 
   useEffect(() => {
     if (params.slug.toLowerCase() == "myads" && user != undefined && !loading) {
+      getAds(AdStatus.created, undefined, 0, AdTypes.sharing);
+    }
+    if (
+      params.slug.toLowerCase() == "sharedads" &&
+      user != undefined &&
+      !loading
+    ) {
       getAds(AdStatus.created, undefined, 0);
     }
     if (
@@ -84,11 +103,7 @@ export default function AccountDynamicPage({
     ) {
       getEstimate();
     }
-    if (
-      params.slug.toLowerCase() == "mark" &&
-      user != undefined &&
-      !loading
-    ) {
+    if (params.slug.toLowerCase() == "mark" && user != undefined && !loading) {
       getMarks();
     }
   }, [params.slug, user]);
@@ -107,10 +122,22 @@ export default function AccountDynamicPage({
       );
     case "profile":
       return <Profile user={user} />;
+    case "sharedads":
+      return (
+        <SharingAds
+          userAds={user?.ads?.length ?? 0}
+          ads={ads}
+          getAds={(status, id, n) => getAds(status, id, n, AdTypes.sharing)}
+          loading={loading}
+          setAds={setAds}
+          category={category?.category}
+          subCategory={category?.subCategory}
+        />
+      );
     case "estimated":
       return <Estimated estimate={estimate} setEstimate={setEstimate} />;
     case "mark":
-      return <Mark ads={ads} category={category?.category} loading={loading}/>;
+      return <Mark ads={ads} category={category?.category} loading={loading} />;
     default:
       return notFound();
   }

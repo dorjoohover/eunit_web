@@ -112,7 +112,7 @@ export async function createAd(
         },
         body: JSON.stringify(body),
       }).then((d) => d.json());
-
+   
       return res;
     } else {
       return false;

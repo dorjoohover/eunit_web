@@ -120,6 +120,7 @@ export type StepTypes = {
   imgSelected?: boolean;
   images?: string[];
   phone?: number;
+  files?: File[]
 };
 export type ItemType = {
   data?: string;

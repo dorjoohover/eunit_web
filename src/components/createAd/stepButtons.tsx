@@ -147,8 +147,8 @@ const StepButtons = ({
                       showNav={false}
                       showFullscreenButton={false}
                       items={data?.images?.map((i) => ({
-                        original: `${imageApi}${i}`,
-                        thumbnail: `${imageApi}${i}`,
+                        original: `${i}`,
+                        thumbnail: `${i}`,
                         loading: "lazy",
                         thumbnailLoading: "lazy",
                       }))}
