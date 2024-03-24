@@ -79,7 +79,7 @@ export class CategoryApi {
 export const createAdNav = [
   {
     tabName: "Зар нэмэх",
-    id: "create",
+    id: "ad/create",
 
     submenu: [
       {

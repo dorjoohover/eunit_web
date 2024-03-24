@@ -404,7 +404,7 @@ export default function EstimatorPage() {
                         cacheParent.id != "country"
                           ? CommitteeData
                           : f.value?.filter(
-                              (v) => v.parentId == cachePosition.id
+                              (v) => v.parentId == cachePosition?.id
                             )
                       }
                       Item={(items: ItemType) => {

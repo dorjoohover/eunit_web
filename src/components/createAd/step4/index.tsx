@@ -132,7 +132,7 @@ const Step4 = ({
                   data={
                     cacheParent.id != "country"
                       ? CommitteeData
-                      : f.value?.filter((v) => v.parentId == cachePosition.id)
+                      : f.value?.filter((v) => v.parentId == cachePosition?.id)
                   }
                   requirement={
                     cacheParent.id != undefined && cacheParent.id != ""

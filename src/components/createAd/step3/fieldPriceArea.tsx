@@ -43,7 +43,6 @@ const FieldPriceArea = ({
             const unitPrice = parseInt(
               ((generalData?.price ?? 0) / (area ?? 1)).toString()
             );
-
             setGeneralData((prev) => ({
               ...prev,
               area: area,
@@ -65,7 +64,6 @@ const FieldPriceArea = ({
           )}
           <p className="font-semibold">₮ (м.кв)</p>
         </div>
- 
       </div>
     </>
   );

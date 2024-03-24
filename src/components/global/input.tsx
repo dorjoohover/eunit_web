@@ -169,12 +169,15 @@ export const FormattedNumberInput = ({
       <CurrencyInputField
         // prefix="MNT "
         // suffix={suffix}
-        value={value}
+        // value={value}
         id="input-example"
         name="input-name"
-        decimalsLimit={2}
+
         placeholder={placeholder}
-        onValueChange={(value, name) => onChange(value ?? "")}
+        onValueChange={(value, name) => {
+          console.log(value);
+          onChange(value ?? "")
+        }}
         className={mergeNames("w-full py-2 border-none outline-none ring-0")}
       />
       {suffix}
