@@ -2,6 +2,7 @@
 import {
   AdStatus,
   AdTypes,
+  AdView,
   Api,
   CreateAdSteps,
   ItemPosition,
@@ -112,7 +113,7 @@ export async function createAd(
         },
         body: JSON.stringify(body),
       }).then((d) => d.json());
-   
+
       return res;
     } else {
       return false;
@@ -230,13 +231,40 @@ export async function getAdById(id: string) {
   }
 }
 
+export async function updateAdStatus(
+  id: string,
+  status: AdStatus,
+  view: AdView,
+  message: string
+) {
+  try {
+    const token = cookies().get("token");
+    if (token?.value) {
+      let res = await fetch(
+        `${api}${AdApi.update}${id}/${status}/${view}/{message}?message=${message}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token.value}`,
+            "Access-Control-Allow-Headers": "*",
+          },
+        }
+      ).then((d) => d.json());
+      return res.num;
+    } else {
+      return -1;
+    }
+  } catch (error) {
+    console.error(error);
+    return -2;
+  }
+}
+
 export async function getAdminAds(
   type: AdTypes,
   num: number,
   status: AdStatus
 ) {
   try {
-    console.log("asdf");
     const token = cookies().get("token");
     let res = await fetch(`${api}${AdApi.admin}${type}/${num}/${status}`, {
       headers: {
@@ -245,6 +273,43 @@ export async function getAdminAds(
         charset: "UTF-8",
       },
     }).then((d) => d.json());
+
+    return res;
+  } catch (error) {
+    console.error(error);
+    throw new Error(ErrorMessages.occured);
+  }
+}
+export async function getSuggestionAds(
+  id: string,
+  body: {
+    id: string;
+    value: string;
+  },
+  num: number
+) {
+
+  try {
+    let res = await fetch(`${api}${AdApi.suggestion}${id}/4/${num}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        charset: "UTF-8",
+      },
+      body: JSON.stringify(body),
+    }).then((d) => d.json());
+
+    return res;
+  } catch (error) {
+    console.error(error);
+    throw new Error(ErrorMessages.occured);
+  }
+}
+export async function getSuggestionAdsByCategory(id: string) {
+  try {
+    let res = await fetch(`${api}${AdApi.suggestion}${id}/0`, {}).then((d) =>
+      d.json()
+    );
 
     return res;
   } catch (error) {

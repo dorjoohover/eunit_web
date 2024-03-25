@@ -4,14 +4,21 @@ import React, { useRef } from "react";
 const ProfileImage = ({
   selectedImage,
   setSelectedImage,
+  images,
+  setImages,
 }: {
   selectedImage: string | undefined;
+  images?: File;
+  setImages: React.Dispatch<React.SetStateAction<File | undefined>>;
   setSelectedImage: React.Dispatch<React.SetStateAction<string | undefined>>;
 }) => {
   const imageChange = (files: FileList | null) => {
     if (files != null) {
       const selectedFilesArray = Array.from(files).map((file, i) => {
         return URL.createObjectURL(file);
+      });
+      Object.values(files)?.map((f, i) => {
+        setImages(f);
       });
       setSelectedImage(selectedFilesArray[0]);
     }
@@ -57,7 +64,7 @@ const ProfileImage = ({
               onClick={removeSelectedImage}
               className="float-right font-bold text-red-400 cursor-pointer"
             >
-              Усгтах
+              Устгах
             </p>
           </div>
         </div>

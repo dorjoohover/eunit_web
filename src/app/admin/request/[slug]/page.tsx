@@ -1,11 +1,11 @@
 "use client";
 
-import { getAdminAds } from "@/app/(api)/ad.api";
+import { getAdminAds, updateAdStatus } from "@/app/(api)/ad.api";
 import FilterAd from "@/components/account/details/filterAd";
 import CustomToast from "@/components/customToast";
 import { LoadingButton } from "@/components/global/button";
 import CustomModal from "@/components/global/customModal";
-import { AdStatus, AdTypes, ItemPosition } from "@/config/enum";
+import { AdStatus, AdTypes, AdView, ItemPosition } from "@/config/enum";
 import { AdItemsModel, AdModel } from "@/models/ad.model";
 import { CategoryModel } from "@/models/category.model";
 import { STYLES, brk } from "@/styles";
@@ -35,6 +35,7 @@ import WhiteBox from "@/components/createAd/product/whiteBox";
 import { GoogleMap, MarkerF, useLoadScript } from "@react-google-maps/api";
 import { GoogleMapsOptions, imageApi } from "@/utils/values";
 import ProductInfo from "@/components/createAd/product/info";
+import { ErrorMessages } from "@/utils/string";
 
 // const Tab = ({ num, children }) => {
 //   const [activeTab, setActiveTab] = useState("");
@@ -120,50 +121,36 @@ export default function RequestDynamicPage({
     getAds(AdStatus.all);
   }, []);
   const verify = async (id: string) => {
-    // try {
-    //   await axios
-    //     .get(
-    //       `${
-    //         urls["test"]
-    //       }/ad/update/${id}/created/show/{message}?message=${" "}`,
-    //       {
-    //         headers: {
-    //           Authorization: `Bearer ${token}`,
-    //           "Access-Control-Allow-Headers": "*",
-    //         },
-    //       }
-    //     )
-    //     .then((d) => {
-    //       toast({
-    //         title: `${d?.data?.num ?? ""}-р зарыг нэмлээ.`,
-    //         status: "success",
-    //         duration: 3000,
-    //         isClosable: true,
-    //       });
-    //     });
-    // } catch (error) {
-    //   console.error(error);
-    // }
+    const res = await updateAdStatus(id, AdStatus.created, AdView.show, "%20");
+    res > -1
+      ? toast({
+          title: `${res ?? ""}-р зарыг нэмлээ.`,
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        })
+      : toast({
+          title: ErrorMessages.tryAgain,
+          status: "warning",
+          duration: 3000,
+          isClosable: true,
+        });
   };
   const deleteAd = async (id: string) => {
-    // await axios
-    //   .get(
-    //     `${urls["test"]}/ad/update/${id}/deleted/hide/{message}?message=%20`,
-    //     {
-    //       headers: {
-    //         Authorization: `Bearer ${token}`,
-    //         "Access-Control-Allow-Headers": "*",
-    //       },
-    //     }
-    //   )
-    //   .then((d) => {
-    //     toast({
-    //       title: `${d?.data?.num ?? ""} Зарыг устгалаа.`,
-    //       status: "warning",
-    //       duration: 3000,
-    //       isClosable: true,
-    //     });
-    //   });
+    const res = await updateAdStatus(id, AdStatus.deleted, AdView.hide, "%20");
+    res > -1
+      ? toast({
+          title: `${res ?? ""} Зарыг устгалаа.`,
+          status: "warning",
+          duration: 3000,
+          isClosable: true,
+        })
+      : toast({
+          title: ErrorMessages.tryAgain,
+          status: "warning",
+          duration: 3000,
+          isClosable: true,
+        });
   };
   const getSheetData = (data: string) => {
     // let fields = Object.keys(data[0]);
@@ -406,9 +393,9 @@ export default function RequestDynamicPage({
                                   STYLES.button,
                                   "bg-teal-500 justify-center w-7 h-7 "
                                 )}
-                                toastH="Амжилттай нэмэгдлээ"
+                                toastH="Хүсэлт явлаа"
                                 onClick={() => verify(a._id)}
-                                status="error"
+                                status="warning"
                                 toastBtn={<SiVerizon />}
                               />
                             )}
@@ -418,9 +405,9 @@ export default function RequestDynamicPage({
                                 STYLES.button,
                                 "bg-red-500 w-7 h-7 justify-center"
                               )}
-                              toastH="Амжилттай устгагдлаа"
+                              toastH="Хүсэлт явлаа"
                               onClick={() => deleteAd(a._id)}
-                              status="error"
+                              status="warning"
                               toastBtn={<MdDelete />}
                             />
 
@@ -547,7 +534,6 @@ export default function RequestDynamicPage({
                           }}
                           href={false}
                         />
-                   
                       );
                     }
                   })}

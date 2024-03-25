@@ -81,7 +81,7 @@ const FieldPhotoUpload = <T,>({
     <div className="">
       <div className="flex items-center justify-between w-full">
         <AtomLabel>{label ?? "Зураг оруулах"}</AtomLabel>
-        <p className="font-semibold">{selectedImages!.length}/8</p>
+        <p className="font-semibold">{selectedImages?.length ?? 0}/8</p>
       </div>
       <>
         <input

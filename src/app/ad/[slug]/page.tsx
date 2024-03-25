@@ -3,7 +3,10 @@ import {
   Box,
   Button,
   GridItem,
+  Heading,
+  HStack,
   IconButton,
+  Select,
   Stack,
   Text,
   useToast,
@@ -30,20 +33,24 @@ import { FaCopy, FaHeart } from "react-icons/fa";
 import { IoBedOutline } from "react-icons/io5";
 import { TbBath } from "react-icons/tb";
 
-import mergeNames, { getSellType } from "@/utils/functions";
+import mergeNames, { getSellType, getSuggestionValue } from "@/utils/functions";
 // import ProductInfoValue from "@/components/createAd/product/productInfoValue";
 import { FiltersContainer } from "@/components/createAd/step4/filter";
 import { AppProps } from "next/app";
 import ScrollTop from "@/components/global/scrollTop";
 import MainContainer from "@/components/containers/mainContainer";
 import Engage from "@/components/product/engage";
-import { GeneralDataType, ItemType } from "@/utils/type";
+import { FetchAdUnitType, GeneralDataType, ItemType } from "@/utils/type";
 import { GoogleMapsOptions, api, imageApi } from "@/utils/values";
 import ProductInfoValue from "@/components/createAd/product/productInfoValue";
 import { ItemModel } from "@/models/items.model";
 import { ItemTypes } from "@/config/enum";
 import { AdModel } from "@/models/ad.model";
-import { getAdById } from "@/app/(api)/ad.api";
+import {
+  getAdById,
+  getSuggestionAds,
+  getSuggestionAdsByCategory,
+} from "@/app/(api)/ad.api";
 import moment from "moment";
 import UserInfo, {
   SmallProductHeader,
@@ -59,8 +66,10 @@ import ProductHeader from "@/components/product/productHeader";
 import { useAppContext } from "@/app/_context";
 import { bookmark } from "@/app/(api)/user.api";
 import ProductInfo from "@/components/createAd/product/info";
-
-
+import { STYLES } from "@/styles";
+import MapCard from "@/components/ad/mapCard";
+import AdContent from "@/components/ad/adContent";
+import { NoAds } from "@/components/account/myAds";
 
 export default function AdDynamicPage({
   params,
@@ -83,9 +92,9 @@ export default function AdDynamicPage({
     setUser: React.Dispatch<React.SetStateAction<UserModel>>;
   } = useAppContext();
   const [loading, setLoading] = useState(false);
-
+  const [markerActive, setMarkerActive] = useState(0);
   const [suggestion, setSuggestion] = useState("map");
-
+  const [suggestedAds, setSuggestedAds] = useState<FetchAdUnitType>();
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: "AIzaSyC2u2OzBNo53GxJJdN3Oc_W6Yc42OmdZcE",
     libraries: GoogleMapsOptions.libraries,
@@ -143,49 +152,38 @@ export default function AdDynamicPage({
     }),
     []
   );
-  // const getSuggestion = async (suggest, sd) => {
-  //   if (suggest != "map") {
-  //     try {
-  //       if (sd?.subCategory?._id) {
-  //         await axios
-  //           .post(`${urls["test"]}/ad/suggestion/${sd?.subCategory?._id}/1`, {
-  //             items: [
-  //               {
-  //                 id: suggest,
-  //                 value: sd.items.filter((s) => s.id == suggest)[0].value,
-  //               },
-  //             ],
-  //             types: [],
-  //           })
-  //           .then((d) => {
-  //             setsData([]);
-  //             console.log(d.data);
-  //             let ads = d.data?.ads?.filter((da) => da._id != sd._id);
-  //             setsData({ limit: ads.length, ads: ads });
-  //           });
-  //       }
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   } else {
-  //     try {
-  //       await axios
-  //         .get(`${urls["test"]}/ad/category/${sd?.subCategory?.href}/0`)
-  //         .then((d) => {
-  //           setCategoryAds(d.data.defaultAds.ads.concat(d.data.specialAds.ads));
-  //         });
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   }
-  // };
+  const getSuggestion = async (suggest: string) => {
+    try {
+      await getSuggestionAds(
+        data?._id ?? "",
+        {
+          id: suggest,
+          value:
+            suggest != "map"
+              ? data?.items.filter((s) => s.id == suggest)?.[0].value ?? ""
+              : "",
+        },
+        0
+      ).then((d: FetchAdUnitType) => {
+        console.log(d);
+        setSuggestedAds(d);
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const getData = async () => {
     await getAdById(params.slug).then((d) => setData(d));
   };
 
   useEffect(() => {
-    if (params.slug) getData();
+    if (data) getSuggestion(suggestion);
+  }, [data]);
+  useEffect(() => {
+    if (params.slug) {
+      getData();
+    }
   }, []);
   // const [open, setOpen] = useState(false);
   const copyToClipboard = () => {
@@ -320,7 +318,12 @@ export default function AdDynamicPage({
                               value={p.value}
                               id={p.id}
                               cateId={(data.subCategory as CategoryModel)?._id}
-                              Icon={({ data, onClick, id, ...props }: ItemType) => {
+                              Icon={({
+                                data,
+                                onClick,
+                                id,
+                                ...props
+                              }: ItemType) => {
                                 switch (p.id) {
                                   case "room":
                                     return (
@@ -581,88 +584,99 @@ export default function AdDynamicPage({
           </Box>
         </Stack>
       </MainContainer>
-      {/*      
-          <MainContainer py={"50px"}>
-            <div className={mergeNames(STYLES.flexBetween, "flex-row")}>
-              <h1
-                variant={"mediumHeading"}
-                className="text-sm font-bold uppercase md:text-lg"
-              >
-                Санал болгох зарууд
-              </h1>
-        
-              <Box>
-                <Select
-                  className="h-[30px] text-sm border-2 pr-3 border-blue-700 rounded-full"
-                  onChange={(e) => {
-                    setSuggestion(e.target.value);
-                    getSuggestion(e.target.value, data);
-                  }}
-                >
-                  <Fragment>
-                    {data?.subCategory?.suggestionItem?.map((sug, i) => {
-                      return getSuggestionValue(sug, i);
-                    })}
-                    <option value={"map"}>Газрын зургаар</option>
-                  </Fragment>
-                </Select>
-              </Box>
-         
-            </div>
-            {suggestion == "map" && categoryAds?.length > 0 ? (
-              <GoogleMap
-                options={mapOptions}
-                onClick={(e) => {
-                  // setMap(e.latLng.toJSON());
-                  console.log(e.latLng.toJSON());
-                }}
-                zoom={14}
-                center={mapCenter}
-                mapTypeId={google.maps.MapTypeId.ROADMAP}
-                mapContainerStyle={{ width: "100%", height: "50vh" }}
-              >
-                {isLoaded &&
-                  categoryAds?.map((m, i) => {
+
+      <MainContainer py={"50px"}>
+        <div className={mergeNames(STYLES.flexBetween, "flex-row")}>
+          <Heading
+            variant={"mediumHeading"}
+            className="text-sm font-bold uppercase md:text-lg"
+          >
+            Санал болгох зарууд
+          </Heading>
+
+          <Box>
+            <Select
+              className="h-[30px] text-sm border-2 pr-3 border-blue-700 rounded-full"
+              onChange={(e) => {
+                setSuggestion(e.target.value);
+                getSuggestion(e.target.value);
+              }}
+            >
+              <Fragment>
+                {(data?.subCategory as CategoryModel)?.suggestionItem?.map(
+                  (sug, i) => {
+                    let value = getSuggestionValue(sug);
                     return (
-                      <HStack key={i}>
-                        <MarkerF
-                          position={{
-                            lat: parseFloat(m.location?.lat ?? 47.74604),
-                            lng: parseFloat(m.location?.lng ?? 107.341515),
-                          }}
-                          // onMouseOver={() => setMarkerActive(i)}
-                          onMouseOver={() => setMarkerActive(i)}
-                          onClick={() => setMarkerActive(i)}
-                          animation={google.maps.Animation.DROP}
-                        >
-           
-                          {markerActive == i && (
-                            <InfoWindow
-                              position={{
-                                lat: parseFloat(m.location?.lat ?? 47.74604),
-                                lng: parseFloat(m.location?.lng ?? 107.341515),
-                              }}
-                              options={{
-                                maxWidth: "100%",
-                                width: "100%",
-                                minWidth: "100%",
-                                position: "relative",
-                                zIndex: 120,
-                              }}
-                            >
-                              <MapCard data={m} />
-                            
-                            </InfoWindow>
-                          )}
-                        </MarkerF>
-                      </HStack>
+                      <option value={value?.id ?? ""} key={i}>
+                        {value?.value ?? ""}
+                      </option>
                     );
-                  })}
-              </GoogleMap>
-            ) : (
-              sData?.ads?.length > 0 && <AdContent data={sData} n={10} />
-            )}
-          </MainContainer> */}
+                  }
+                )}
+                <option value={"map"}>Газрын зургаар</option>
+              </Fragment>
+            </Select>
+          </Box>
+        </div>
+
+        {suggestedAds != undefined ? (
+          suggestion == "map" && suggestedAds!.limit > 0 ? (
+            <GoogleMap
+              options={mapOptions}
+              onClick={(e) => {
+                // setMap(e.latLng.toJSON());
+                // console.log(e.latLng.toJSON());
+              }}
+              zoom={14}
+              center={mapCenter}
+              mapTypeId={google.maps.MapTypeId.ROADMAP}
+              mapContainerStyle={{ width: "100%", height: "50vh" }}
+            >
+              {isLoaded &&
+                suggestedAds?.ads?.map((m, i) => {
+                  return (
+                    <HStack key={i}>
+                      <MarkerF
+                        position={{
+                          lat: parseFloat(m.location?.lat ?? 47.74604),
+                          lng: parseFloat(m.location?.lng ?? 107.341515),
+                        }}
+                        // onMouseOver={() => setMarkerActive(i)}
+                        onMouseOver={() => setMarkerActive(i)}
+                        onClick={() => setMarkerActive(i)}
+                        animation={google.maps.Animation.DROP}
+                      >
+                        {markerActive == i && (
+                          <InfoWindow
+                            options={{
+                              // maxWidth: "100%",
+                              // width: "100%",
+                              // minWidth: "100%",
+                              // position: "relative",
+                              zIndex: 120,
+                            }}
+                            position={{
+                              lat: parseFloat(m.location?.lat ?? 47.74604),
+                              lng: parseFloat(m.location?.lng ?? 107.341515),
+                            }}
+                          >
+                            <MapCard data={m} />
+                          </InfoWindow>
+                        )}
+                      </MarkerF>
+                    </HStack>
+                  );
+                })}
+            </GoogleMap>
+          ) : suggestedAds.limit > 0 ? (
+            <AdContent data={suggestedAds!} n={4} inCat={false} showLink="" />
+          ) : (
+            <NoAds data={0} />
+          )
+        ) : (
+          <NoAds data={0} />
+        )}
+      </MainContainer>
     </Box>
   );
 }

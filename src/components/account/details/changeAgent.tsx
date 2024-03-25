@@ -13,7 +13,7 @@ import mergeNames from "@/utils/functions";
 import { StepTypes } from "@/utils/type";
 
 import { useDisclosure } from "@chakra-ui/react";
-import React, { ReactNode } from "react";
+import React, { ReactNode, useState } from "react";
 import { BiEdit } from "react-icons/bi";
 
 const FlexDiv = ({
@@ -40,13 +40,33 @@ const ChangeAgent = ({
   image,
 }: {
   image: File[];
-  agent: StepTypes;
-  setAgent: React.Dispatch<React.SetStateAction<StepTypes>>;
+  agent: boolean;
+  setAgent: React.Dispatch<React.SetStateAction<AgentAdditionModel>>;
   org: boolean;
   setOrg: React.Dispatch<React.SetStateAction<OrganizationAdditionModel>>;
   setImage: React.Dispatch<React.SetStateAction<File[]>>;
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [data, setData] = useState<StepTypes>({});
+  const hiddenFileInput = React.useRef<HTMLInputElement>(null);
+  const handleClick = () => {
+    if (hiddenFileInput != null) {
+      hiddenFileInput!.current!.click();
+    }
+  };
+
+  const handleChange = (files: FileList | null, isAgent: boolean) => {
+    if (files != null) {
+      let file: File[] = [];
+      Object.values(files)?.map((f, i) => {
+        file.push(f);
+      });
+      isAgent
+        ? setAgent((prev) => ({ ...prev, orgCertificationFile: file }))
+        : setOrg((prev) => ({ ...prev, orgCertificationFile: file }));
+    }
+    // FOR BUG IN CHROME
+  };
 
   return agent || org ? (
     <CustomModal
@@ -124,23 +144,19 @@ const ChangeAgent = ({
               <FlexDiv title="">
                 <AtomLabel>Байгууллагатай байгуулсан гэрээ</AtomLabel>
                 <input
+                  ref={hiddenFileInput}
                   type="file"
                   accept="image/*,application/pdf"
                   multiple
-                  onChange={(e) =>
-                    setAgent((prev) => ({
-                      ...prev,
-                      orgCertification: e.target.files,
-                    }))
-                  }
+                  onChange={(e) => handleChange(e.target.files, true)}
                 />
               </FlexDiv>
               <FlexDiv title="">
                 <FieldPhotoUpload
-                  data={agent}
+                  data={data}
                   images={image}
                   label="Иргэний үнэмлэх зураг"
-                  setData={setAgent}
+                  setData={setData}
                   setImages={setImage}
                 />
               </FlexDiv>
@@ -156,7 +172,7 @@ const ChangeAgent = ({
                 <input
                   className={mergeNames(STYLES.input)}
                   onChange={(e) =>
-                    setOrg((prev) => ({ ...prev, orgName: e.target.value }))
+                    setOrg((prev) => ({ ...prev, organizationName: e.target.value }))
                   }
                   placeholder="Байгууллагын нэр"
                 />
@@ -166,7 +182,7 @@ const ChangeAgent = ({
                 <input
                   className={mergeNames(STYLES.input)}
                   onChange={(e) =>
-                    setOrg((prev) => ({ ...prev, orgRegister: e.target.value }))
+                    setOrg((prev) => ({ ...prev, organizationRegisterNumber: e.target.value }))
                   }
                   placeholder="Байгууллагын регистрийн дугаар"
                 />
@@ -175,17 +191,13 @@ const ChangeAgent = ({
           </WhiteBox>
           <WhiteBox heading="Зураг оруулах" className="grid grid-cols-2 gap-5 ">
             <FlexDiv title="">
-              <AtomLabel>Копманы гэрчилгээ хуулбар</AtomLabel>
+              <AtomLabel>Компаны гэрчилгээ хуулбар</AtomLabel>
               <input
+                ref={hiddenFileInput}
                 type="file"
                 accept="image/*,application/pdf"
                 multiple
-                onChange={(e) =>
-                  setOrg((prev) => ({
-                    ...prev,
-                    orgCertification: e.target.files,
-                  }))
-                }
+                onChange={(e) => handleChange(e.target.files, false)}
               />
             </FlexDiv>
           </WhiteBox>

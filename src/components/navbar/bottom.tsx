@@ -20,12 +20,13 @@ import { useAppContext } from "@/app/_context";
 import { Image } from "@chakra-ui/react";
 import { getUser } from "@/app/(api)/user.api";
 import { UserStatus } from "@/config/enum";
+import { usePathname, useRouter } from "next/navigation";
 const Bottom = ({
   categories,
 }: {
   categories: CategoryModel[] | undefined;
 }) => {
-  const { user, setUser, setMark, setCurrent } = useAppContext();
+  const { user, setUser, setMark, setCurrent , setAds } = useAppContext();
   const getUserData = async () => {
     await getUser()
       .then((d) => {
@@ -61,9 +62,17 @@ const Bottom = ({
 
   // Search start
   const [search, setSearch] = useState<string>("");
-
+  const pathname = usePathname()
+  const router = useRouter()
   const searchAds = async () => {
-    await getSearchAds(search);
+  
+    await getSearchAds(search).then((d) => {
+      setAds(d)
+      console.log(d);
+      if(pathname.startsWith('account')) {
+        router.push('/ad')
+      }
+    });
   };
 
   // Search end
@@ -141,11 +150,11 @@ const Bottom = ({
                 onChange={(e) => setSearch(e.target.value)}
                 type="text"
                 placeholder="Зараа хайна уу"
-                // onKeyDown={(event: KeyboardEvent<HTMLInputElement> ) => {
-                //   if (event.key === "Enter") {
-                //     () => func(search), console.log("Searching!!");
-                //   }
-                // }}
+                onKeyDown={(event: any ) => {
+                  if (event.key === "Enter") {
+                    searchAds()
+                  }
+                }}
                 value={search}
                 className={mergeNames(
                   "h-full w-full p-2 text-base ml-2 border-none rounded-md placeholder-blue-300/40 bg-mainBlossom bg-opacity-40  focus:ring-0 "

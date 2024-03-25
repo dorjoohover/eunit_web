@@ -1,9 +1,10 @@
 "use server";
-import { PointSendType, PointTitle } from "@/config/enum";
+import { PointSendType, PointTitle, UserStatus, UserType } from "@/config/enum";
 import { UserModel } from "@/models/user.model";
 import { ErrorMessages } from "@/utils/string";
 import { UserApi, api } from "@/utils/values";
 import { cookies } from "next/headers";
+import { imageUploader } from "./constants.api";
 function clearCookie() {
   const cookie = cookies();
   const hasToken = cookie.has("token");
@@ -116,3 +117,121 @@ export const bookmark = async (id: number) => {
   }
   return false;
 };
+
+export const getUsers = async (): Promise<UserModel[] | boolean> => {
+  try {
+    const token = cookies().get("token");
+    if (token?.value) {
+      const res = await fetch(`${api}${UserApi.user}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token?.value ?? ""}`,
+        },
+      }).then((d) => d.json());
+      
+      return res;
+    }
+    return false;
+  } catch (error) {
+    return false;
+  }
+};
+
+export const updateProfile = async (
+  images: FormData,
+  oFile: FormData,
+  isImage: boolean,
+  isFile: boolean,
+  body: any,
+  agent: any,
+  org: any,
+  profileImage: string,
+  isAgent: boolean,
+  isOrg: boolean
+) => {
+  try {
+    const token = cookies().get("token");
+    if (token) {
+      const profile = isImage
+        ? await imageUploader(images).then((d) => d?.file?.[0])
+        : profileImage;
+      const file = isFile
+        ? await imageUploader(oFile).then((d) => d?.file)
+        : null;
+
+      const agentAddition = isAgent
+        ? {
+            ...agent,
+            organizationContract: file?.[0],
+            identityCardFront: file?.[1],
+            identityCardBack: file?.[2],
+          }
+        : null;
+      const orgAddition = isOrg
+        ? {
+            ...org,
+            organizationCertificationCopy: file?.[0],
+          }
+        : null;
+
+      let userType = agent
+        ? UserType.agent
+        : org
+        ? UserType.organization
+        : UserType.default;
+      const res = await fetch(`${api}${UserApi.user}`, {
+        method: "PUT",
+        body: JSON.stringify({
+          ...body,
+          agentAddition: agentAddition,
+          organizationAddition: orgAddition,
+          profileImg: profile,
+          userType: userType,
+          status: UserStatus.pending,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token?.value ?? ""}`,
+        },
+      }).then((d) => d.json());
+    }
+    return true;
+  } catch (error) {
+    return false;
+  }
+};
+
+
+
+export const updateUserStatus = async (id: string, status: UserStatus, message?: string) => {
+  try {
+    const token = cookies().get('token')
+    if(token?.value) {
+      const res = await fetch(`${api}${UserApi.update}${id}/${status}/{message}?message=${message ?? ''}`, {
+        headers: {
+          "Content-Type": "application/json",
+          // charset: "UTF-8",
+          Authorization: `Bearer ${token?.value ?? ""}`,
+        },
+      }).then((d) => d.json())
+    
+      return true 
+    } 
+    return false
+  } catch (error) {
+    console.error(error)
+    return false
+    
+  }
+}
+
+
+export const getUserById = async (id: string):Promise<UserModel | boolean> => {
+  try {
+    const user = await fetch(`${api}${UserApi.get}${id}`).then((d) => d.json())
+    return user
+  } catch (error) {
+    console.error(error)
+    return false
+  }
+}

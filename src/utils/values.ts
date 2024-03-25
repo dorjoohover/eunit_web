@@ -12,7 +12,7 @@ import { AdSellType } from "@/config/enum";
 import { GridOptions, SwiperOptions } from "swiper/types";
 // export const api = "http://localhost:5050/api/";
 
-export const url = "http://localhost:3000";
+// export const url = "http://localhost:3000";
 // export const url = "http://103.50.206.58";
 export const api = "http://103.50.206.58:5050/api/";
 export const imageApi = `${api}file/`;
@@ -56,10 +56,13 @@ export class AuthApi {
 }
 
 export class UserApi {
+  static user = `${user}`;
+  static get = `${user}get/`;
   static me = `${user}me`;
   static sendFeedback = `${user}feedback`;
   static bookmark = `${user}bookmark/`;
   static point = `${user}point/`;
+  static update = `${user}update/`;
 }
 
 export class AdApi {
@@ -71,6 +74,8 @@ export class AdApi {
   static category = `${ad}category/`;
   static id = `${ad}id/`;
   static admin = `${ad}admin/`;
+  static suggestion = `${ad}suggestion/`;
+  static update = `${ad}update/`;
 }
 export class CategoryApi {
   static filter = `${category}filters/`;

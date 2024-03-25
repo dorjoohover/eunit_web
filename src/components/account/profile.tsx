@@ -3,8 +3,8 @@ import {
   OrganizationAdditionModel,
   UserModel,
 } from "@/models/user.model";
-import mergeNames from "@/utils/functions";
-import { Image, useToast } from "@chakra-ui/react";
+import mergeNames, { imageExists } from "@/utils/functions";
+import { Image, Spinner, useToast } from "@chakra-ui/react";
 
 import moment from "moment";
 
@@ -15,6 +15,8 @@ import ChangeAgent from "./details/changeAgent";
 import { SocialType } from "@/utils/type";
 import Socials from "./details/socials";
 import ProfileImage from "./details/profileImage";
+import { updateProfile } from "@/app/(api)/user.api";
+import { ErrorMessages } from "@/utils/string";
 
 const GroupLayout = ({
   title,
@@ -34,17 +36,23 @@ const GroupLayout = ({
 );
 
 const Profile = ({ user }: { user: UserModel }) => {
-  //   const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [edit, setEdit] = useState(false);
   const [userData, setUserData] = useState<UserModel>(user);
   const [orgData, setOrgData] = useState<OrganizationAdditionModel>(
-    user?.organizationAddition
+    user?.organizationAddition ?? {
+      organizationName: "",
+    }
   );
+  const [profile, setProfile] = useState<string>()
   const [agentData, setAgentData] = useState<AgentAdditionModel>(
-    user?.agentAddition
+    user?.agentAddition ?? {
+      organizationName: "",
+    }
   );
   const toast = useToast();
-  const [images, setImages] = useState<File[]>([]);
+  const [images, setImages] = useState<File>();
+  const [files, setFiles] = useState<File[]>([]);
   const [selectedImage, setSelectedImage] = useState(user?.profileImg);
   // const router = useRouter();
   const initialSocials = [
@@ -62,132 +70,117 @@ const Profile = ({ user }: { user: UserModel }) => {
     },
   ];
   const [socials, setSocials] = useState<SocialType[]>(initialSocials);
+  useEffect(() => {
+    setUserData(user);
 
+    setSocials([
+      {
+        name: SocialsEnum.facebook,
+        url: user?.socials?.[0]?.url ?? "",
+      },
+      {
+        name: SocialsEnum.instagram,
+        url: user?.socials?.[1]?.url ?? "",
+      },
+      {
+        name: SocialsEnum.telegram,
+        url: user?.socials?.[2]?.url ?? "",
+      },
+    ]);
+    imageExists(user?.profileImg ?? "")
+  }, [user]);
   const handleEdit = async () => {
-    //     setIsLoading(true);
-    //     if (edit) {
-    //       const token = getCookie("token");
-    //       toast({
-    //         title: "Та түр хүлээнэ үү",
-    //       });
-    //       let image = new FormData();
-    //       image.append("images", selectedImage);
-    //       let profileImg = user.profileImg ?? "";
-    //       await axios
-    //         .post(`${urls["test"]}/ad/uploadFields`, image, {
-    //           headers: {
-    //             Authorization: `Bearer ${token}`,
-    //             "Access-Control-Allow-Headers": "*",
-    //           },
-    //         })
-    //         .then((d) => {
-    //           profileImg = d.data[0];
-    //         });
-    //       let agentFiles = [];
-    //       let orgFiles = [];
-    //       let userType = user.userType;
-    //       if (orgData.orgCertification != "") {
-    //         userType = "organization";
-    //         let oFile = new FormData();
-    //         orgData.orgCertification?.map((prev) => {
-    //           oFile.append("images", prev);
-    //         });
-    //         await axios
-    //           .post(`${urls["test"]}/ad/uploadFields`, oFile, {
-    //             headers: {
-    //               Authorization: `Bearer ${token}`,
-    //               "Access-Control-Allow-Headers": "*",
-    //             },
-    //           })
-    //           .then((d) => {
-    //             orgFiles = d.data;
-    //           });
-    //       }
-    //       if (agentData.orgCertification != "") {
-    //         userType = "agent";
-    //         let oFile = new FormData();
-    //         agentData.orgCertification?.map((prev) => {
-    //           oFile.append("images", prev);
-    //         });
-    //         agentPersonalCard?.map((prev) => {
-    //           oFile.append("images", prev);
-    //         });
-    //         await axios
-    //           .post(`${urls["test"]}/ad/uploadFields`, oFile, {
-    //             headers: {
-    //               Authorization: `Bearer ${token}`,
-    //               "Access-Control-Allow-Headers": "*",
-    //             },
-    //           })
-    //           .then((d) => {
-    //             agentFiles = d.data;
-    //           });
-    //       }
-    //       try {
-    //         await axios
-    //           .put(
-    //             `${urls["test"]}/user`,
-    //             {
-    //               profileImg: profileImg,
-    //               socials: [
-    //                 {
-    //                   url: socials[0].url,
-    //                   name: socials[0].name,
-    //                 },
-    //                 {
-    //                   url: socials[1].url,
-    //                   name: socials[1].name,
-    //                 },
-    //                 {
-    //                   url: socials[2].url,
-    //                   name: socials[2].name,
-    //                 },
-    //               ],
-    //               phone: userData.phone,
-    //               birthday: userData.birthday,
-    //               username: userData.username,
-    //               userType: userType,
-    //               status: "pending",
-    //               agentAddition: {
-    //                 organizationName: agentData.orgName,
-    //                 organizationContract: agentFiles[0],
-    //                 identityCardFront: agentFiles[1],
-    //                 identityCardBack: agentFiles[2],
-    //                 firstName: agentData.firstName,
-    //                 lastName: agentData.lastName,
-    //                 registerNumber: agentData.register,
-    //                 location: {
-    //                   lng: agentData.orgLocation,
-    //                   lat: agentData.orgLocation,
-    //                 },
-    //               },
-    //               organizationAddition: {
-    //                 organizationName: orgData.orgName,
-    //                 organizationCertificationCopy: orgFiles[0],
-    //                 location: {
-    //                   lng: orgData.orgLocation,
-    //                   lat: orgData.orgLocation,
-    //                 },
-    //                 organizationRegisterNumber: orgData.orgRegister,
-    //               },
-    //             },
-    //             {
-    //               headers: {
-    //                 Authorization: `Bearer ${token}`,
-    //                 "Access-Control-Allow-Headers": "*",
-    //                 charset: "UTF-8",
-    //               },
-    //             }
-    //           )
-    //           .then((d) => router.reload());
-    //       } catch (error) {
-    //         console.log(error);
-    //         setIsLoading(false);
-    //         setEdit(!edit);
-    //       }
-    //     }
-    //     setEdit(!edit);
-    //     setIsLoading(false);
+    setEdit(!edit);
+    if (edit) {
+      setIsLoading(true);
+
+      let image = new FormData();
+      let isImage = images != undefined;
+      let isFile =
+        agentData.orgCertificationFile != undefined ||
+        orgData.orgCertificationFile != undefined;
+      let userType = user.userType;
+      if (isImage) image.append("files", images!);
+      let isOrg = orgData.organizationName != "" && orgData != undefined;
+      let isAgent = agentData.organizationName != "" && agentData != undefined;
+      let file = new FormData();
+      if (isAgent) {
+        agentData.orgCertificationFile?.map((f) => file.append("files", f));
+        files?.map((d) => file.append("files", d));
+      }
+      if (isOrg)
+        orgData.orgCertificationFile?.map((d) => file.append("files", d));
+      let agent = isAgent
+        ? {
+            organizationName: agentData.organizationName,
+            firstName: agentData.firstName,
+            lastName: agentData.lastName,
+            registerNumber: agentData.registerNumber,
+            location: {
+              lng: agentData.location?.lng,
+              lat: agentData.location?.lat,
+            },
+            address: agentData.address,
+          }
+        : null;
+      let org = isOrg
+        ? {
+            organizationName: orgData.organizationName,
+            location: {
+              lng: orgData.location?.lng,
+              lat: orgData.location?.lat,
+            },
+            address: orgData.address,
+            organizationRegisterNumber: orgData.organizationRegisterNumber,
+          }
+        : null;
+
+      let body = {
+        socials: [
+          {
+            url: socials[0].url,
+            name: socials[0].name,
+          },
+          {
+            url: socials[1].url,
+            name: socials[1].name,
+          },
+          {
+            url: socials[2].url,
+            name: socials[2].name,
+          },
+        ],
+        phone: userData.phone,
+        birthday: userData.birthday,
+        username: userData.username,
+        userType: userType,
+      };
+      const res = await updateProfile(
+        image,
+        file,
+        isImage,
+        isFile,
+        body,
+        agent,
+        org,
+        user.profileImg ?? "",
+        isAgent,
+        isOrg
+      );
+
+      res
+        ? toast({
+            title: "Амжилттай.",
+            status: "success",
+          })
+        : toast({
+            title: ErrorMessages.tryAgain,
+            status: "warning",
+          });
+
+      setIsLoading(false);
+      setEdit(false);
+    }
   };
 
   return (
@@ -229,22 +222,22 @@ const Profile = ({ user }: { user: UserModel }) => {
               : userData?.userType}
             {edit && user && (
               <Fragment>
-                {/* <ChangeAgent
+                <ChangeAgent
                   setAgent={setAgentData}
                   setOrg={setOrgData}
                   org={userData?.userType == "default"}
-                  setImage={setImages}
-                  image={images}
+                  setImage={setFiles}
+                  image={files}
                   agent={false}
                 />
                 <ChangeAgent
                   setAgent={setAgentData}
                   setOrg={setOrgData}
                   org={false}
-                  setImage={setImages}
-                  image={images}
+                  setImage={setFiles}
+                  image={files}
                   agent={userData?.userType == "default"}
-                /> */}
+                />
               </Fragment>
             )}
           </p>
@@ -271,6 +264,8 @@ const Profile = ({ user }: { user: UserModel }) => {
             <ProfileImage
               selectedImage={selectedImage}
               setSelectedImage={setSelectedImage}
+              setImages={setImages}
+              images={images}
             />
           ) : (
             <div className="border-2 border-blue-200 rounded-md border-500">
@@ -278,7 +273,7 @@ const Profile = ({ user }: { user: UserModel }) => {
                 className="object-cover object-center  h-[25vh] overflow-hidden bg-gray-300 aspect-square "
                 alt="Current Profile"
                 src={
-                  user?.profileImg ??
+               profile ??
                   "https://www.pikpng.com/pngl/m/80-805068_my-profile-icon-blank-profile-picture-circle-clipart.png"
                 }
                 referrerPolicy="no-referrer"
@@ -293,17 +288,21 @@ const Profile = ({ user }: { user: UserModel }) => {
         </div>
       </div>
 
-      <button
-        className={mergeNames(
-          // 'hidden',
-          "text-white  transition-all ease-linear",
-          "float-right mt-5 px-5 py-2 font-bold w-32 rounded-[30px]",
-          edit ? "bg-mainBlue hover:bg-blue-900" : "bg-red-500"
-        )}
-        onClick={handleEdit}
-      >
-        <p>{edit ? "Хадгалах" : "Засварлах"}</p>
-      </button>
+      {isLoading ? (
+        <Spinner />
+      ) : (
+        <button
+          className={mergeNames(
+            // 'hidden',
+            "text-white  transition-all ease-linear",
+            "float-right mt-5 px-5 py-2 font-bold w-32 rounded-[30px]",
+            edit ? "bg-mainBlue hover:bg-blue-900" : "bg-red-500"
+          )}
+          onClick={handleEdit}
+        >
+          <p>{edit ? "Хадгалах" : "Засварлах"}</p>
+        </button>
+      )}
     </div>
   );
 };

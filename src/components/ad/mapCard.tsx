@@ -12,6 +12,7 @@ import { CategoryModel } from "@/models/category.model";
 import { ApartmentIconInfo, calcValue } from "./card";
 import ItemContainer from "../createAd/product/itemContainer";
 import { ItemType } from "@/utils/type";
+import { imageApi } from "@/utils/values";
 
 const MapCard = ({ data }: { data: AdModel }) => {
   const router = useRouter();
@@ -29,7 +30,7 @@ const MapCard = ({ data }: { data: AdModel }) => {
             src={
               data?.images[0] == ""
                 ? "/images/noImage.png"
-                : data?.images[0] ?? "/images/noImage.png"
+                : imageApi + data?.images[0] ?? "/images/noImage.png"
             }
             alt=" зар"
             objectFit="cover"
@@ -115,7 +116,9 @@ const MapCard = ({ data }: { data: AdModel }) => {
                   <ItemContainer
                     txtWhite={true}
                     lbl={p.name}
-                    Icon={({ data, onClick, id, ...props }: ItemType) => <BiArea {...props}  />}
+                    Icon={({ data, onClick, id, ...props }: ItemType) => (
+                      <BiArea {...props} />
+                    )}
                     text={calcValue(p.value ?? 0, "байхгүй", "м.кв")}
                   />
                 )}

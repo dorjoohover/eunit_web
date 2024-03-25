@@ -100,7 +100,7 @@ function AdCard({
           <div className="absolute top-0 bottom-0 left-0 right-0 z-0 w-full h-full cursor-pointer">
             {item?.images && (
               <Image
-                src={imageApi + item?.images?.[0] ?? "/images/noImage.png"}
+                src={item?.images?.[0] != undefined ? imageApi + item?.images?.[0] : "/assets/images/noImage.png"}
                 alt=" зар"
                 objectFit="cover"
                 className={mergeNames(

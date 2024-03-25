@@ -41,7 +41,8 @@ export interface AgentAdditionModel {
 
   identityCardFront?: string;
 
-  orgCertification?: FileList | null;
+  orgCertification?: string;
+  orgCertificationFile?: File[];
 
   identityCardBack?: string;
 
@@ -52,6 +53,8 @@ export interface AgentAdditionModel {
   lastName?: string;
 
   registerNumber?: string;
+
+  address?: string
 }
 export interface OrganizationAdditionModel {
   organizationName: string;
@@ -60,7 +63,8 @@ export interface OrganizationAdditionModel {
 
   location: UserLocationModel;
   address: string;
-  orgCertification: FileList | null;
+  orgCertification?: string;
+  orgCertificationFile?: File[];
 
   organizationRegisterNumber: string;
 }

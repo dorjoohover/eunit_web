@@ -180,7 +180,7 @@ export default function WalletPage({ user }: { user: UserModel }) {
       </div>
       <div className="h-[2px] bg-bgGrey" />
       
-      <WHistory pointHistory={user?.pointHistory ?? []} />
+      {user?.pointHistory?.length > 0 && <WHistory pointHistory={user?.pointHistory ?? []} />}
     </div>
   );
 }

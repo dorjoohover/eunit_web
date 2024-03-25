@@ -1,4 +1,5 @@
 import { AdSellType } from "@/config/enum";
+import { imageApi } from "./values";
 
 export default function mergeNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -38,19 +39,61 @@ export const getSellType = (type: AdSellType | string) => {
   }
 };
 
-
 export const getEstimateEnums = (est: string) => {
   switch (est) {
-    case 'estimated':
-      return 'Үнэлсэн';
-    case 'finished':
-      return 'Дууссан';
-    case 'pending':
-      return 'Хүлээгдэж байгаа';
-    case 'returned':
-      return 'Буцаагдсан';
+    case "estimated":
+      return "Үнэлсэн";
+    case "finished":
+      return "Дууссан";
+    case "pending":
+      return "Хүлээгдэж байгаа";
+    case "returned":
+      return "Буцаагдсан";
     default:
   }
 };
+const isImage = (url: string) =>
+  new Promise((resolve, reject) => {
+    // check that is a valid url
+    // then if valid url
+    const image = new Image();
+    image.src = url;
+    image.onload = resolve;
+    image.onerror = reject;
+  });
+export const imageExists = async (url: string) => {
+  let img = "";
+  await isImage(url)
+    .then((d) => {
+      img = url;
+    })
+    .catch((d) => {
+      img = imageApi + url;
+    });
 
+  if (img == "") return undefined;
+  return img;
+};
 
+export const getSuggestionValue = (suggestion: string) => {
+  switch (suggestion) {
+    case "room":
+      return {
+        id: "room",
+        value: "Өрөөгөөр",
+      };
+    case "location":
+      return {
+        id: "location",
+        value: "Байршлаар",
+      };
+    case "landUsage":
+      return {
+        id: "landUsage",
+        value: "Зориулалтаар",
+      };
+
+    default:
+      return;
+  }
+};

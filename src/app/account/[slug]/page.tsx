@@ -2,7 +2,7 @@
 
 import { getManyAds, getMyAds } from "@/app/(api)/ad.api";
 import { getMyEstimate } from "@/app/(api)/estimate.api";
-import { getUser } from "@/app/(api)/user.api";
+import { getUser, getUserById } from "@/app/(api)/user.api";
 import { useAppContext } from "@/app/_context";
 import Estimated from "@/components/account/estimated";
 import Mark from "@/components/account/mark";
@@ -56,7 +56,6 @@ export default function AccountDynamicPage({
     type?: AdTypes
   ) => {
     setLoading(true);
-    console.log(type);
     await getMyAds(n ?? 0, 12, status, type ?? AdTypes.all, id).then((d) => {
       if (d != null) {
         update(d);
@@ -107,6 +106,7 @@ export default function AccountDynamicPage({
     if (params.slug.toLowerCase() == "mark" && user != undefined && !loading) {
       getMarks();
     }
+    
   }, [params.slug, user]);
   switch (params.slug.toLowerCase()) {
     case "myads":

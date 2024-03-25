@@ -101,7 +101,7 @@ export const UserIcon: FC<IconsType> = ({
     <button
       onClick={onClick}
       className={mergeNames(
-        "animated__account-white",
+        "animated__account-white ",
         rowLayout,
         word ? "" : "",
         className && className
@@ -111,7 +111,7 @@ export const UserIcon: FC<IconsType> = ({
         <span className=" w-6 h-6 animated__icon" />
 
         {/* <UserIcon className="p-0" /> */}
-        <p className="px-[12px]">{text}</p>
+        <p className="px-[12px] lg:text-[13px] text-[11px]">{text}</p>
       </>
     </button>
   );
