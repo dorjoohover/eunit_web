@@ -28,7 +28,8 @@ export default function ComparePage() {
       4,
       AdStatus.all,
       AdTypes.all,
-      ids
+      ids,
+      0
     ).then((d) => setAds(d?.ads ?? []));
   };
   useEffect(() => {

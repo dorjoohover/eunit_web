@@ -60,7 +60,8 @@ const CompareSelect = ({ btnView = true }) => {
       4,
       AdStatus.all,
       AdTypes.all,
-      ids
+      ids,
+      0
     ).then((d) => setAds(d?.ads ?? []));
   };
   const updateCompare = (id: string, action: boolean) => {

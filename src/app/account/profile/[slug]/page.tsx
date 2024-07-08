@@ -28,12 +28,28 @@ export default function ProfileDynamicPage({
   const [profile, setProfile] = useState<string>();
   const [content, setContent] = useState("UserAds");
   const getAds = async (data: string[]) => {
-    getManyAds(0, false, 10, AdStatus.created, AdTypes.all, data).then((d) =>
-      setAds(d)
+    const res = await getManyAds(
+      0,
+      false,
+      10,
+      AdStatus.created,
+      AdTypes.all,
+      data,
+      0
     );
-    getManyAds(0, false, 10, AdStatus.created, AdTypes.sharing, data).then(
-      (d) => setSharedAds(d)
+    setAds(res);
+
+    const shared = await getManyAds(
+      0,
+      false,
+      10,
+      AdStatus.created,
+      AdTypes.sharing,
+      data,
+      0
     );
+
+    setSharedAds(shared);
   };
 
   const getUser = async () => {
@@ -198,4 +214,3 @@ export default function ProfileDynamicPage({
     </MainContainer>
   );
 }
-
