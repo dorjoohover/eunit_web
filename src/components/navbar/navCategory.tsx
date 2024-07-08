@@ -35,7 +35,7 @@ const NavCategory = ({
             <div className="h-full">
               <div className="flex flex-col justify-center h-full px-2 py-4 lg:py-3 lg:px-4">
                 <Link
-                  href={`/category/${category._id}`}
+                  href={`/category/${category.href}`}
                   className="text-[11px] font-medium text-center h-full text-white lg:text-[13px]"
                 >
                   {category.name}
@@ -64,7 +64,7 @@ const NavCategory = ({
                         <motion.a
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
-                          href={`/category/${sub._id}`}
+                          href={`/category/${sub.href}`}
                           className={mergeNames(
                             "px-2 lg:px-4 py-3 text-[10px] xl:text-sm font-medium text-white transition-colors ease-in cursor-pointer bg-blue-900/[96] hover:bg-blue-700 first-letter:uppercase whitespace-nowrap z-30",
                             subkey === category.subCategory.length - 1

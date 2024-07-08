@@ -20,10 +20,8 @@ export const loginUser = async (
           name: name,
         }),
       }).then((d) => d.json());
+      
       if (res) {
-        cookies().delete('next-auth.session-token')
-        cookies().delete('next-auth.csrf-token')
-        cookies().delete('next-auth.callback-url')
         cookies().set("token", res.token);
       }
 
@@ -38,7 +36,9 @@ export const loginUser = async (
 };
 
 export const logOut = async () => {
-  await cookies().delete('token')
-  await cookies().delete('status')
+  await cookies().delete("token");
+  await cookies().delete("status");
+  await cookies().delete("current");
+  await cookies().delete("type");
   // return true
-}
+};

@@ -21,7 +21,7 @@ const AdContent = ({
 
   title = "Үл хөдлөх хөрөнгө",
   url = "realState",
-  n = 20,
+  n = 12,
   nm = 0,
   func,
 }: {
@@ -33,7 +33,7 @@ const AdContent = ({
   url?: string;
   n?: number;
   nm?: number;
-  func?: (num: number) => {};
+  func?: (num: number) => void;
 }) => {
   const [num, setNum] = useState(nm);
   const router = useRouter();
@@ -77,20 +77,22 @@ const AdContent = ({
       {!data && <Skeleton height={"300px"} />}
 
       {pg && data?.limit > n && (
-        <ul className="flex float-right list-style-none">
-          <li className="mx-2 disabled">
-            <button
-              className={mergeNames(STYLES.notActive)}
-              onClick={() => {
-                if (num > 0) {
-                  if (func != null) func(num - 1);
-                  setNum(num - 1);
-                }
-              }}
-            >
-              Өмнөх
-            </button>
-          </li>
+        <ul className="flex float-right list-style-none mt-4">
+          {num != 0 && (
+            <li className="mx-2 disabled">
+              <button
+                className={mergeNames(STYLES.notActive)}
+                onClick={() => {
+                  if (num > 0) {
+                    if (func != null) func(num - 1);
+                    setNum(num - 1);
+                  }
+                }}
+              >
+                Өмнөх
+              </button>
+            </li>
+          )}
 
           {data?.limit &&
             [...Array(Math.ceil(data.limit / n)).keys()].map((l, i) => {
@@ -112,19 +114,19 @@ const AdContent = ({
               );
             })}
 
-          <li className="mx-2 disabled">
-            <button
-              className={mergeNames(STYLES.notActive)}
-              onClick={() => {
-                if (data.limit > 20) {
+          {data?.limit / n > num + 1 && (
+            <li className="mx-2 disabled">
+              <button
+                className={mergeNames(STYLES.notActive)}
+                onClick={() => {
                   if (func != null) func(num);
                   setNum(num + 1);
-                }
-              }}
-            >
-              Дараах
-            </button>
-          </li>
+                }}
+              >
+                Дараах
+              </button>
+            </li>
+          )}
         </ul>
       )}
     </ContainerXP>

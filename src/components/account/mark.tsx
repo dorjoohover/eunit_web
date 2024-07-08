@@ -36,13 +36,14 @@ const Mark = ({
       />
 
       {/* <AdContent data={ads} tlc={toLowerCase} title=" " showLink="hidden" /> */}
+      {/* {JSON.stringify(ads)} */}
       <div className="grid grid-cols-2 gap-5 mt-5 2xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-3">
         {ads?.ads?.map((item, key) => (
           <AdCard key={key} item={item || {}} />
         ))}
       </div>
       {ads?.ads?.length == 0 && (
-        <div className="h-[20vh] flex justify-center items-center w-full text-xl">
+        <div className="h-[60vh] flex justify-center items-center w-full text-xl">
           Зар байхгүй байна
         </div>
       )}

@@ -24,11 +24,12 @@ export async function getUser(): Promise<UserModel | null> {
           Authorization: `Bearer ${token?.value ?? ""}`,
         },
       })
-        .then((d) => d.json())
-        .catch((e) => {
-          clearCookie();
-          return null;
-        });
+      .then((d) => d.json())
+      .catch((e) => {
+        clearCookie();
+        return null;
+      });
+      // const t = localStorage.setItem('token', res._id)
       if (!hasCurrent) cookie.set("current", res._id);
       if (!hasType) cookie.set("type", res.userType);
 

@@ -32,7 +32,7 @@ const ProAdContent = ({
   url?: string;
   n?: number;
   nm?: number;
-  func?: (num: number) => {};
+  func?: (num: number) => void;
 }) => {
   const [num, setNum] = useState<number>(nm ?? 0);
   const router = useRouter();

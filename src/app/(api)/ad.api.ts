@@ -25,11 +25,17 @@ import { cookies } from "next/headers";
 import { getUser } from "./user.api";
 import { imageUploader } from "./constants.api";
 
-export async function getAds(num: number): Promise<FetchAdType> {
+export async function getAds(
+  num: number,
+  limit: number,
+  type: AdTypes,
+  length: number
+): Promise<FetchAdUnitType> {
   try {
-    let res = await fetch(`${api}${AdApi.view}${num}`, {}).then((d) =>
-      d.json()
-    );
+    let res = await fetch(
+      `${api}${AdApi.view}${num}/${limit}/${type}/${length}`,
+      {}
+    ).then((d) => d.json());
 
     return res;
   } catch (error) {
@@ -131,11 +137,12 @@ export async function getManyAds(
   status: AdStatus,
   type: AdTypes,
   ads: string[],
-  id?: string
+  length: number,
+  id?: string,
 ): Promise<FetchAdUnitType> {
   try {
     let res = await fetch(
-      `${api}${AdApi.many}${num}/${self}/${limit}/${status}/${type}`,
+      `${api}${AdApi.many}${num}/${self}/${limit}/${status}/${type}/${length}`,
       {
         method: "POST",
         headers: {
@@ -160,7 +167,8 @@ export async function getMyAds(
   limit: number,
   status: AdStatus,
   type: AdTypes,
-  id?: string
+  length: number,
+  id?: string,
 ) {
   try {
     const currentUser = await getUser();
@@ -172,8 +180,10 @@ export async function getMyAds(
         status,
         type,
         currentUser.ads,
-        id
+        length,
+        id,
       );
+      
       return res;
     }
   } catch (error) {
@@ -197,22 +207,27 @@ export async function getAdByCategory(id: string, num: number) {
 export async function getFilteredAd(
   id: string,
   num: number,
-  type: AdTypes,
   types: string[],
-  items: AdFilterType[] = []
+  items: AdFilterType[] = [],
+  type: AdTypes,
+  limit: number,
+  length: number
 ) {
   try {
-    let res = await fetch(`${api}${AdApi.filter}${num}/${type}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        cateId: id,
-        types: types,
-        items: items,
-      }),
-    }).then((d) => d.json());
+    let res = await fetch(
+      `${api}${AdApi.filter}${num}/${type}/${limit}/${length}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          cateId: id,
+          sellTypes: types,
+          items: items,
+        }),
+      }
+    ).then((d) => d.json());
 
     return res;
   } catch (error) {
@@ -288,7 +303,6 @@ export async function getSuggestionAds(
   },
   num: number
 ) {
-
   try {
     let res = await fetch(`${api}${AdApi.suggestion}${id}/4/${num}`, {
       method: "POST",

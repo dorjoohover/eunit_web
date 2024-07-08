@@ -41,19 +41,39 @@ import CategoryDynamicLoading from "./loading";
 const Category = ({ params }: { params: { slug: string } }) => {
   const { ads, setAds } = useAppContext();
   const [isLoading, setIsLoading] = useState(false);
-  const getAds = async (num: number) => {
+  const [page, setPage] = useState({
+    default: 0,
+    special: 0,
+  });
+  const getAds = async () => {
     setIsLoading(true);
     if (params.slug) {
-      await getFilteredAd(params.slug, num, AdTypes.all, [], []).then((d) => {
-        setAds(d);
-      });
+      const defaultAds = await getFilteredAd(
+        params.slug,
+        page.default,
+        [],
+        [],
+        AdTypes.default,
+        6,
+        ads.defaultAds?.limit ?? 0
+      );
+      const specialAds = await getFilteredAd(
+        params.slug,
+        page.special,
+        [],
+        [],
+        AdTypes.special,
+        4,
+        ads.specialAds?.limit ?? 0
+      );
+      setAds({ defaultAds, specialAds });
     }
     setIsLoading(false);
   };
 
   useEffect(() => {
-    getAds(0);
-  }, []);
+    getAds();
+  }, [page]);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -99,7 +119,7 @@ const Category = ({ params }: { params: { slug: string } }) => {
                 title={""}
                 showLink="hidden"
                 inCat={true}
-                func={(n) => getAds(n)}
+                func={(n) => setPage((prev) => ({ ...prev, special: n }))}
               />
             )}
           </Box>
@@ -107,11 +127,13 @@ const Category = ({ params }: { params: { slug: string } }) => {
             {/* //TODO Engiin zar */}
             {ads?.defaultAds && (
               <AdContent
+                pg={true}
                 data={ads.defaultAds}
                 title={""}
+                n={6}
                 showLink="hidden"
                 inCat={true}
-                func={(n) => getAds(n)}
+                func={(n) => setPage((prev) => ({ ...prev, default: n }))}
               />
             )}
             {ads?.defaultAds?.limit <= 0 && ads?.specialAds?.limit <= 0 && (
@@ -144,7 +166,7 @@ const Category = ({ params }: { params: { slug: string } }) => {
                 >
                   {isLoaded &&
                     (
-                      ads?.defaultAds?.ads.concat(
+                      ads?.defaultAds?.ads?.concat(
                         ads?.specialAds?.ads
                       ) as AdModel[]
                     )?.map((m, i) => {

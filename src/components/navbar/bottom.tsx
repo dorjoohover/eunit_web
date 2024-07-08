@@ -45,10 +45,8 @@ const Bottom = ({
       });
   };
   useEffect(() => {
-    if (!user) {
-      getUserData();
-    }
-  }, []);
+    getUserData()
+  }, [user]);
   // const [isHoveringId, setIsHoveringId] = useState(true);
   const [activeSearch, setActiveSearch] = useState<boolean>(false);
   // const handleMouseOver = (id) => {

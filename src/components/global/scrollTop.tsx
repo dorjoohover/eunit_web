@@ -19,7 +19,7 @@ const ScrollTop = () => {
     window.scrollTo(0, 0);
   };
   return (
-    <div className="fixed md:bottom-[60px] bottom-[80px] md:right-[50px] right-[10px] sm:block hidden">
+    <div className="fixed md:bottom-[60px] bottom-[80px] z-50 md:right-[50px] right-[10px] sm:block hidden">
       <button
         onClick={top}
         className={mergeNames(

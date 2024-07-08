@@ -13,7 +13,7 @@ import AdContent from "@/components/ad/adContent";
 import SwiperHeader from "@/components/swiperHeader";
 import CategorySelect from "@/components/categorySelect";
 import { UserModel } from "@/models/user.model";
-import { UserStatus } from "@/config/enum";
+import { AdTypes, UserStatus } from "@/config/enum";
 
 export default function Home() {
   const {
@@ -27,10 +27,28 @@ export default function Home() {
     setMark,
   } = useAppContext();
   const { data: session, status } = useSession();
-
+  const [page, setPage] = useState({
+    default: 0,
+    special: 0,
+  });
   const [loading, setLoading] = useState(false);
   const getData = async () => {
-    await getAds(0).then((d) => setAds(d));
+    const defaultAds = await getAds(
+      page.default,
+      12,
+      AdTypes.default,
+      ads.defaultAds?.limit ?? 0
+    );
+    const specialAds = await getAds(
+      page.special,
+      4,
+      AdTypes.special,
+      ads.specialAds?.limit ?? 0
+    );
+    setAds({
+      defaultAds,
+      specialAds,
+    });
   };
   useEffect(() => {
     if (!loading) {
@@ -38,14 +56,6 @@ export default function Home() {
     }
   }, []);
 
-  const login = async () => {
-    const res = await loginUser(
-      session!.user!.email!,
-      session!.user!.image!,
-      session!.user!.name!
-    );
-    res ? setUser(undefined) : getUserData();
-  };
   const getUserData = async () => {
     setLoading(true);
     await getUser()
@@ -56,7 +66,7 @@ export default function Home() {
           setCurrent({
             user: true,
             status: d.status != UserStatus.banned,
-            type: d.userType
+            type: d.userType,
           });
         }
       })
@@ -65,17 +75,9 @@ export default function Home() {
       });
     setLoading(false);
   };
+
   useEffect(() => {
-    if (
-      !user &&
-      session &&
-      session?.user?.email &&
-      session?.user?.image &&
-      session?.user?.name
-    ) {
-      login();
-    }
-    if (!user && current.user) {
+    if (session?.user && !user) {
       getUserData();
     }
   }, [session]);

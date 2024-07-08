@@ -18,6 +18,7 @@ import {
   Input,
   Radio,
   RadioGroup,
+  Stack,
   Text,
   useDisclosure,
   VStack,
@@ -29,7 +30,7 @@ import { MdFilterList } from "react-icons/md";
 import FilterStack from "./global/filterStack";
 import Select from "./global/select";
 import { getFilteredAd } from "@/app/(api)/ad.api";
-import { SellTypesString } from "@/utils/values";
+import { SellTypes, SellTypesString } from "@/utils/values";
 import { useAppContext } from "@/app/_context";
 
 const FilterLayout = ({
@@ -47,12 +48,17 @@ const FilterLayout = ({
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = useRef<HTMLInputElement>(null);
   const [values, setValues] = useState<StepTypes>();
-  const { setAds } = useAppContext();
-  const getItems = async (id: string, step: boolean) => {
+  const [filters, setFilters] = useState<StepTypes>();
+  const { ads, setAds } = useAppContext();
+  const getItems = async (id: string, s: boolean) => {
     try {
       await filterCategoryById(id).then((d) => {
-        step ? setSteps(d.steps) : setCategory(d);
+        if (!s) setCategory(d);
+        setSteps(d.steps);
       });
+
+      setValues(undefined);
+      setFilters(undefined);
     } catch (e) {
       console.log(e);
     }
@@ -63,12 +69,12 @@ const FilterLayout = ({
   const filterAd = async () => {
     try {
       let items: AdFilterType[] = [];
-      let types: string[] = [];
+      let types: string[] = adType.map((a) => SellTypes[a].id);
       adType.map((a) => {
         SellTypesString[a];
       });
-      if (values != undefined) {
-        for (const [k, v] of Object.entries(values!)) {
+      if (filters != undefined) {
+        for (const [k, v] of Object.entries(filters!)) {
           let arr = k.split("-");
           if (arr.length > 1) {
             let item = items.filter((i) => i.id == arr[0]);
@@ -96,20 +102,42 @@ const FilterLayout = ({
       }
       let cateId: string | undefined = (
         category?.subCategory as CategoryModel[]
-      )?.filter((f) => f.href == value)?.[0]._id;
+      )?.filter((f) => f.href == value)?.[0]?._id ?? category?._id;
 
       if (cateId == undefined) cateId = category?._id;
-
-      await getFilteredAd(cateId!, 0, AdTypes.all, types, items).then((d) => {
-        console.log(d);
-        setAds(d);
-        close();
-        setValues(undefined);
-        setAdType([0]);
+      const defaultAds = await getFilteredAd(
+        cateId!,
+        0,
+        types,
+        items,
+        AdTypes.default,
+        12,
+        0
+      );
+      const specialAds = await getFilteredAd(
+        cateId!,
+        0,
+        types,
+        items,
+        AdTypes.special,
+        4,
+        0
+      );
+      setAds({
+        defaultAds,
+        specialAds,
       });
+      close();
+      setAdType([0]);
+      console.log(defaultAds, specialAds)
     } catch (e) {
       console.log(e);
     }
+  };
+
+  const clear = () => {
+    setFilters(undefined);
+    setValues(undefined);
   };
 
   return (
@@ -151,28 +179,25 @@ const FilterLayout = ({
                   value={value}
                   className="flex flex-col gap-2"
                 >
-                  {(data == category?._id ||
-                    (category?.subCategory as CategoryModel[])?.findIndex(
-                      (s) => s.href == data
-                    ) > -1) &&
-                    (category?.subCategory as CategoryModel[])?.map(
-                      ({ href, _id, name }, i) => {
-                        return (
-                          href != "shared" && (
-                            <Radio
-                              value={href}
-                              key={i}
-                              onChange={(e) => {
-                                getItems(e.target.value, true);
-                              }}
-                              _selected={{ font: "bold" }}
-                            >
-                              <Text>{name}</Text>
-                            </Radio>
-                          )
-                        );
-                      }
-                    )}
+                  {(category.subCategory.length > 0
+                    ? (category?.subCategory as CategoryModel[])
+                    : [category]
+                  )?.map(({ href, _id, name }, i) => {
+                    return (
+                      href != "shared" && (
+                        <Radio
+                          value={href}
+                          key={i}
+                          onChange={(e) => {
+                            getItems(e.target.value, true);
+                          }}
+                          _selected={{ font: "bold" }}
+                        >
+                          <Text>{name}</Text>
+                        </Radio>
+                      )
+                    );
+                  })}
                 </RadioGroup>
               )}
             </FilterStack>
@@ -229,6 +254,7 @@ const FilterLayout = ({
                     let value = v.value?.filter(
                       (a) => a.id == (values?.[key] as string)
                     )?.[0];
+
                     return v.isSearch &&
                       (v.value as ItemDetailModel[])?.length > 0 ? (
                       <Select
@@ -251,6 +277,10 @@ const FilterLayout = ({
                                 setValues((prev) => ({
                                   ...prev,
                                   [key]: props.id,
+                                }));
+                                setFilters((prev) => ({
+                                  ...prev,
+                                  [key]: props.data,
                                 }));
 
                                 if (props.onClick != null) props.onClick();
@@ -307,16 +337,17 @@ const FilterLayout = ({
                     );
                   });
                 })}
-
-                <Button
-                  variant={"blueButton"}
-                  mx={4}
-                  onClick={() => filterAd()}
-                >
-                  Хайх
-                </Button>
               </FilterStack>
             )}
+            <VStack>
+              
+            <Button variant={"blueButton"} mx={4} onClick={() => filterAd()}>
+              Хайх
+            </Button>
+            <Button variant={"blueButton"} mx={4} onClick={() => clear()}>
+              Цэвэрлэх
+            </Button>
+            </VStack>
           </DrawerBody>
         </DrawerContent>
       </Drawer>

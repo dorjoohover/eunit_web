@@ -56,7 +56,7 @@ export default function AccountDynamicPage({
     type?: AdTypes
   ) => {
     setLoading(true);
-    await getMyAds(n ?? 0, 12, status, type ?? AdTypes.all, id).then((d) => {
+    await getMyAds(n ?? 0, 12, status, type ?? AdTypes.all, 0, id).then((d) => {
       if (d != null) {
         update(d);
         console.log(d);
@@ -72,7 +72,8 @@ export default function AccountDynamicPage({
       10,
       AdStatus.created,
       AdTypes.all,
-      mark
+      mark,
+      0
     ).then((d) => setAds(d));
 
     setLoading(false);
@@ -106,7 +107,6 @@ export default function AccountDynamicPage({
     if (params.slug.toLowerCase() == "mark" && user != undefined && !loading) {
       getMarks();
     }
-    
   }, [params.slug, user]);
   switch (params.slug.toLowerCase()) {
     case "myads":
