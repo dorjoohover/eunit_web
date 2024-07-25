@@ -19,7 +19,7 @@ import { GridOptions, SwiperOptions } from "swiper/types";
 
 
 
-export const api = "http://srv549330.hstgr.cloud:5050/api/";
+export const api = "https://srv549330.hstgr.cloud:5050/api/";
 // export const api = "http://93.127.186.77:5050/api/";
 export const imageApi = `${api}file/`;
 // export const url = "http://localhost:3000/";
