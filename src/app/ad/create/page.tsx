@@ -146,13 +146,7 @@ export default function AdCreatePage() {
       }
     });
     let cateId = categories[types.categoryId!]._id;
-    console.log(
-      fImages,
-      { ...locationData, ...generalData, ...moreData },
-      types,
-      steps,
-      cateId
-    );
+    
     await createAd(
       fImages,
       { ...locationData, ...generalData, ...moreData },

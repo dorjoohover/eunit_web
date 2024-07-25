@@ -83,7 +83,6 @@ export default function RequestDynamicPage({
   const getAds = async (status: AdStatus, n?: number, cate?: string) => {
     await getAdminAds(AdTypes.all, n ?? num, status, 20, 0, cate ?? "").then(
       (d) => {
-        console.log(d)
         if (d != null) {
           setAds(d);
         }

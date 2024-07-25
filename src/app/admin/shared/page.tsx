@@ -33,7 +33,6 @@ const SharedPage = () => {
   const getAds = async (status: AdStatus, n?: number, cate?: string) => {
     await getAdminAds(AdTypes.sharing, n ?? num, status, page, ads.limit, cate ?? "").then(
       (d) => {
-        console.log(d)
         if (d != null) {
           setAds(d);
         }

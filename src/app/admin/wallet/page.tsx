@@ -73,7 +73,6 @@ const AdminWalletPage = () => {
 
   const txthover =
     "font-semibold text-gray-500 duration-100 hover:text-gray-800";
-  console.log(user)
   return (
     <ContainerX className="min-h-[80vh]">
       <div className="flex flex-col gap-10">

@@ -169,7 +169,6 @@ const Profile = ({ user }: { user: UserModel }) => {
         isOrg
       );
 
-      console.log(res)
 
       res
         ? toast({

@@ -160,7 +160,6 @@ export default function AdSharingPage() {
       true,
       fileUrl
     ).then((d) => {
-      console.log(d);
       if (d) {
         toast({
           title: "Амжилттай нэмэгдлээ.",

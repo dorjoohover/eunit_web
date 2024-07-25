@@ -80,7 +80,7 @@ export async function createAd(
     }[] = [];
 
     let imagesRes = await imageUploader(images);
-    let fileRes = file != undefined ? await imageUploader(file) : null
+    let fileRes = file != undefined ? await imageUploader(file) : null;
     if (imagesRes != null) {
       steps.map((step) => {
         (step.values as ItemModel[]).map((value) => {
@@ -172,7 +172,11 @@ export async function getManyAds(
         }),
       }
     ).then((d) => d.json());
-
+    if (res.statusCode == 404)
+      return {
+        ads: [],
+        limit: 0,
+      };
     return res;
   } catch (error) {
     console.error(error);

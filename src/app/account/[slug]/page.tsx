@@ -49,10 +49,10 @@ export default function AccountDynamicPage({
       ads.limit,
       type ?? AdTypes.all
     ).then((d) => {
-      console.log(d);
+      
       if (d != null) {
         setAds(d);
-        console.log(d);
+      
       }
     });
     setLoading(false);
@@ -95,7 +95,7 @@ export default function AccountDynamicPage({
       user != undefined &&
       !loading
     ) {
-      console.log("asdf");
+
       getEstimate();
     }
     if (params.slug.toLowerCase() == "mark" && user != undefined && !loading) {
@@ -124,14 +124,14 @@ export default function AccountDynamicPage({
           getAds={(status, id, n) => getAds(status, id, n, AdTypes.sharing)}
           loading={loading}
           setAds={setAds}
-          category={categories?.category}
-          subCategory={categories?.subCategory}
+          category={categories}
+   
         />
       );
     case "estimated":
       return <Estimated estimate={estimate} setEstimate={setEstimate} />;
     case "wallet":
-      return <WalletPage user={user} />;
+      return <WalletPage  />;
     case "mark":
       return <Mark ads={ads} category={categories} loading={loading} />;
     default:

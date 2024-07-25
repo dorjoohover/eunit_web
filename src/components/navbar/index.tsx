@@ -26,7 +26,6 @@ const Navbar = () => {
     await getUser()
       .then((d) => {
         if (d != null) {
-          console.log(d);
           setUser(d);
           setMark(d?.bookmarks);
           setCurrent({

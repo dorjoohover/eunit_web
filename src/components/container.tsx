@@ -37,7 +37,7 @@ export const ContainerXP:FC<ContainerType> = ({ children, className } ) => (
 export const NavContainer:FC<ContainerType> = ({ children } ) => {
   return (
     // <div className="lg:w-[1150px] w-[1000px] mx-auto">
-    <div className="lg:w-[1150px] w-[1000px] mx-auto px-4 lg:px-12 md:px-2 sm:px-14 xs:px-6">
+    <div className="mx-auto px-4 lg:px-12 md:px-2 sm:px-14 xs:px-6">
       {children}
     </div>
   );

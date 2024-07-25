@@ -62,7 +62,6 @@ const EstimatedCard = ({
     try {
       if (price)
         await updatePriceEstimateById(price, id).then((d) => {
-          console.log(d);
           onClose(),
             toast({
               title: "Амжилттай үнийн дүн нэмлээ.",

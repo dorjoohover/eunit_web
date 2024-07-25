@@ -214,7 +214,7 @@ export const updateProfile = async (
           Authorization: `Bearer ${token?.value ?? ""}`,
         },
       }).then((d) => d.json());
-      console.log(res)
+      
     }
     return true;
   } catch (error) {

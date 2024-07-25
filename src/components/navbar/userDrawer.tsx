@@ -26,6 +26,7 @@ import { signOut } from "next-auth/react";
 import { logOut } from "@/app/(api)/auth.api";
 import { useAppContext } from "@/app/_context";
 import { getUser } from "@/app/(api)/user.api";
+import { imageApi } from "@/utils/values";
 
 const drawerItem = [
   {
@@ -84,7 +85,7 @@ const BodyDrawer = ({
           <Image
             // src={user?.image}
             src={
-              user?.profileImg ??
+              user?.profileImg ? `${imageApi}${user?.profileImg}`:
               "https://www.pikpng.com/pngl/m/80-805068_my-profile-icon-blank-profile-picture-circle-clipart.png"
             }
             alt="user image"

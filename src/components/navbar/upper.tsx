@@ -54,7 +54,7 @@ const UpperNav = () => {
     <div className="sticky z-30 shadow-lg md:bg-white bg-mainBlossom md:hidden">
       <NavContainer>
         <div className="flex items-center justify-between gap-2 py-2 ">
-          <Link href={"/"}>
+          <Link href={"/"} className="w-6 h-6">
             {/* <a> */}
             <Image
               src={Assets.logoWhite}

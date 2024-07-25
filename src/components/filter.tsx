@@ -129,7 +129,6 @@ const FilterLayout = ({
       });
       close();
       setAdType([0]);
-      console.log(defaultAds, specialAds)
     } catch (e) {
       console.log(e);
     }

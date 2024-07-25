@@ -37,19 +37,20 @@ function AdCard({
   admin = false,
   changeAd = () => {},
   mine,
+  isUser,
   setType,
 }: {
   item: AdModel;
   deleteFunc?: () => void;
   isDelete?: boolean;
-
+  isUser?: boolean
   admin?: boolean;
   changeAd?: () => void;
   mine?: boolean;
   setType?: React.Dispatch<React.SetStateAction<string>>;
 }) {
   const [drop, setDrop] = useState(false);
-
+  console.log(item);
   const pushRouter = async () => {
     //     try {
     //       item?._id && router.push(`/ad/${item.num}`);
@@ -100,7 +101,11 @@ function AdCard({
           <div className="absolute top-0 bottom-0 left-0 right-0 z-0 w-full h-full cursor-pointer">
             {item?.images && (
               <Image
-                src={item?.images?.[0] != undefined ? imageApi + item?.images?.[0] : "/assets/images/noImage.png"}
+                src={
+                  item?.images?.[0] != undefined
+                    ? imageApi + item?.images?.[0]
+                    : "/assets/images/noImage.png"
+                }
                 alt=" зар"
                 objectFit="cover"
                 className={mergeNames(
@@ -134,17 +139,18 @@ function AdCard({
             >
               <Image
                 src={
-                  (item?.user as UserModel)?.profileImg == ""
-                    ? Assets.logoMiniWhite
-                    : `${imageApi}${(item?.user as UserModel)?.profileImg}`??
+                  (item?.user as UserModel)?.profileImg == "" ||
+                  (item?.user as UserModel)?.profileImg == undefined
+                    ? isUser ? `${imageApi}${user.profileImg}` : Assets.logoMiniWhite 
+                    : `${imageApi}${(item?.user as UserModel)?.profileImg}` ??
                       Assets.logoMiniWhite
                 }
                 referrerPolicy="no-referrer"
                 alt="BOM logo"
                 objectFit="cover"
                 className={mergeNames(
-                  (item?.user as UserModel)?.profileImg ? "" : "", 
-                  'h-full'
+                  (item?.user as UserModel)?.profileImg ? "" : "",
+                  "h-full"
                 )}
               />
             </button>
@@ -216,7 +222,8 @@ function AdCard({
                     <Alerting
                       body={
                         <div className="flex flex-col gap-2">
-                          &quot;Танаас eunit wallet-с хасагдах болохыг анхаарна уу&quot;
+                          &quot;Танаас eunit wallet-с хасагдах болохыг анхаарна
+                          уу&quot;
                           <Select
                             placeholder="Онцгой зарын төрөл сонгох"
                             onChange={(e) => {
@@ -241,9 +248,7 @@ function AdCard({
               </div>
             </div>
           ) : (
-            <ImageCount onClick={() => console.log("Zurag")}>
-              {item?.images?.length}
-            </ImageCount>
+            <ImageCount onClick={() => {}}>{item?.images?.length}</ImageCount>
           )}
         </div>
 
@@ -299,7 +304,9 @@ function AdCard({
                   {p.id === "area" && (
                     <ItemContainer
                       lbl={p.name}
-                      Icon={({ data, onClick, id, ...props }: ItemType) => <BiArea {...props}  />}
+                      Icon={({ data, onClick, id, ...props }: ItemType) => (
+                        <BiArea {...props} />
+                      )}
                       text={calcValue(p.value, "байхгүй", "м.кв")}
                     />
                   )}
@@ -400,20 +407,26 @@ export const ApartmentIconInfo = ({ p }: { p: AdItemsModel }) => {
         <ItemContainer
           lbl={p.name}
           text={calcValue(p.value, "байхгүй")}
-          Icon={({ data, onClick, id, ...props }: ItemType) => <BiDoorOpen {...props}  />}
+          Icon={({ data, onClick, id, ...props }: ItemType) => (
+            <BiDoorOpen {...props} />
+          )}
         />
       )}
       {p && p.id === "masterBedroom" && (
         <ItemContainer
           lbl={p.name}
-          Icon={({ data, onClick, id, ...props }: ItemType) => <IoBedOutline {...props}  />}
+          Icon={({ data, onClick, id, ...props }: ItemType) => (
+            <IoBedOutline {...props} />
+          )}
           text={calcValue(p.value, "байхгүй")}
         />
       )}
       {p && p.id === "bathroom" && (
         <ItemContainer
           lbl={p.name}
-          Icon={({ data, onClick, id, ...props }: ItemType) => <TbBath {...props}  />}
+          Icon={({ data, onClick, id, ...props }: ItemType) => (
+            <TbBath {...props} />
+          )}
           text={calcValue(p.value, "байхгүй")}
         />
       )}

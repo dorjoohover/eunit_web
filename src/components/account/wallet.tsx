@@ -1,6 +1,6 @@
 import { STYLES } from "@/styles";
 import mergeNames from "@/utils/functions";
-import { Heading, Image, useToast } from "@chakra-ui/react";
+import { Heading, Image, Spinner, useToast } from "@chakra-ui/react";
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -8,89 +8,63 @@ import WalletCard from "./wallet/walletCard";
 import { UserModel } from "@/models/user.model";
 import DialogBox from "../global/dialog";
 import WHistory from "./wallet/history";
-import { sendPointByUser } from "@/app/(api)/user.api";
+import { getUser, sendPointByUser } from "@/app/(api)/user.api";
 import { PointTitle } from "@/config/enum";
 import { ErrorMessages } from "@/utils/string";
+import { useAppContext } from "@/app/_context";
 
-export default function WalletPage({ user }: { user: UserModel }) {
+export default function WalletPage() {
   const [point, setPoint] = useState({
     email: "",
     point: "",
     message: "",
   });
   const toast = useToast();
-  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const { setUser, user } = useAppContext();
+
+  const update = async () => {
+    await getUser()
+      .then((d) => {
+        if (d != null) {
+          setUser(d);
+        }
+      })
+      .catch(() => {
+        setUser(undefined);
+      });
+    setPoint({
+      email: "",
+      point: "",
+      message: "",
+    });
+  };
   const sendPoint = async () => {
     if (point.email != "" && point.point != "") {
+      setLoading(true);
       const res = await sendPointByUser(
         point.email,
         parseInt(point.point),
         PointTitle.default,
         point.message
       );
-      
-      if(res) {
-        router.push('/account/wallet')
-        toast({
-            title: 'Амжилттай шилжүүллээ.',
-            status: 'success',
-            duration: 1000
-        })
-    } else {
-          toast({
-              title: ErrorMessages.tryAgain,
-              status: 'warning',
-              duration: 1000
-          })
 
+      if (res) {
+        toast({
+          title: "Амжилттай шилжүүллээ.",
+          status: "success",
+          duration: 1000,
+        });
+        setLoading(false);
+        update()
+      } else {
+        toast({
+          title: ErrorMessages.tryAgain,
+          status: "warning",
+          duration: 1000,
+        });
       }
-   
     }
-    // try {
-    //   if (token && point.email && point.point) {
-    //     await axios
-    //       .get(
-    //         `${
-    //           urls["test"]
-    //         }/user/point/${point.email.toLowerCase()}/${parseFloat(
-    //           point.point
-    //         )}/default/{message}?message=${point.message}`,
-    //         {
-    //           headers: {
-    //             Authorization: `Bearer ${token}`,
-    //             "Access-Control-Allow-Headers": "*",
-    //           },
-    //         }
-    //       )
-    //       .then((d) => {
-    //         if (d.data.message == "success") {
-    //           toast({
-    //             title: "Амжилттай илгээлээ.",
-    //             status: "success",
-    //             duration: 1000,
-    //             isClosable: true,
-    //           });
-    //         }
-    //         if (d.data.message == "not found receiver") {
-    //           toast({
-    //             title: "Хүлээн авагч олдсонгүй",
-    //             status: "warning",
-    //             duration: 1000,
-    //             isClosable: true,
-    //           });
-    //         }
-    //         if (d.data.message == "not enough points") {
-    //           toast({
-    //             title: "Үлдэгдэл хүрэлцэхгүй байна",
-    //             status: "warning",
-    //             duration: 1000,
-    //             isClosable: true,
-    //           });
-    //         }
-    //         router.reload();
-    //       });
-    //   }
-    // } catch (error) {}
   };
 
   return (
@@ -112,8 +86,9 @@ export default function WalletPage({ user }: { user: UserModel }) {
             onChange={(e) => {
               setPoint((prev) => ({ ...prev, email: e.target.value }));
             }}
+            value={point.email}
             required
-          />
+            />
 
           <input
             type="number"
@@ -122,12 +97,14 @@ export default function WalletPage({ user }: { user: UserModel }) {
             onChange={(e) => {
               setPoint((prev) => ({ ...prev, point: e.target.value }));
             }}
-            required
-          />
+              value={point.point}
+              required
+              />
 
           <textarea
             placeholder="Мэссэж"
             maxLength={30}
+            value={point.message}
             className={mergeNames(
               STYLES.input,
               "rounded-md col-span-full resize-none"
@@ -140,14 +117,25 @@ export default function WalletPage({ user }: { user: UserModel }) {
 
           <DialogBox
             btnDialog={
-              <div
-                className={mergeNames(
-                  STYLES.blueButton,
-                  "text-center w-full p-2"
-                )}
-              >
-                Шилжүүлэх
-              </div>
+              loading ? (
+                <div
+                  className={mergeNames(
+                    STYLES.blueButton,
+                    "text-center w-full p-2"
+                  )}
+                >
+                  <Spinner />
+                </div>
+              ) : (
+                <div
+                  className={mergeNames(
+                    STYLES.blueButton,
+                    "text-center w-full p-2"
+                  )}
+                >
+                  Шилжүүлэх
+                </div>
+              )
             }
             dlHeader="Та шилжүүлэхдээ итгэлтэй байна уу?"
             dlBody={
@@ -179,8 +167,10 @@ export default function WalletPage({ user }: { user: UserModel }) {
         {/* <WalletForm onClick={() => sendPoint()} /> */}
       </div>
       <div className="h-[2px] bg-bgGrey" />
-      
-      {user?.pointHistory?.length > 0 && <WHistory pointHistory={user?.pointHistory ?? []} />}
+
+      {user?.pointHistory?.length > 0 && (
+        <WHistory pointHistory={user?.pointHistory ?? []} />
+      )}
     </div>
   );
 }

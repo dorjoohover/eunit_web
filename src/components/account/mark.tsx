@@ -34,9 +34,7 @@ const Mark = ({
       // category={category}
       // subCategory={subCategory}
       />
-
       {/* <AdContent data={ads} tlc={toLowerCase} title=" " showLink="hidden" /> */}
-      {/* {JSON.stringify(ads)} */}
       <div className="grid grid-cols-2 gap-5 mt-5 2xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-3">
         {ads?.ads?.map((item, key) => (
           <AdCard key={key} item={item || {}} />

@@ -175,7 +175,6 @@ export const FormattedNumberInput = ({
 
         placeholder={placeholder}
         onValueChange={(value, name) => {
-          console.log(value);
           onChange(value ?? "")
         }}
         className={mergeNames("w-full py-2 border-none outline-none ring-0")}

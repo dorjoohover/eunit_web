@@ -22,15 +22,14 @@ const SharingAds = ({
 
   setAds,
   category,
-  subCategory,
-}: {
+  }: {
   setAds: React.Dispatch<React.SetStateAction<FetchAdUnitType>>;
   userAds: number;
   loading: boolean;
   ads: FetchAdUnitType;
   getAds: (status: AdStatus, id?: string, n?: number) => void;
   category?: CategoryModel[];
-  subCategory?: CategoryModel[];
+  
 }) => {
   //   const [ads, setAds] = useState({ ads: [], limit: 0 });
   //   const [data, setData] = useState({ ads: [], limit: 0 });
@@ -166,7 +165,7 @@ const SharingAds = ({
               })}
             </FilterAd>
             <FilterAd plc="Бүх дэд төрөл" onChange={(e) => filterAd(e)}>
-              {subCategory?.map((p, i) => {
+              {(category?.[0].subCategory as CategoryModel[])?.map((p, i) => {
                 return (
                   <option value={p._id} key={i}>
                     {p.name}

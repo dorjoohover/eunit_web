@@ -29,7 +29,6 @@ const SharingUpload = ({
       if (selectedFile && fileType.includes(selectedFile.type)) {
         onChange(selectedFile);
       } else {
-        console.log("pls select");
       }
     }
   }

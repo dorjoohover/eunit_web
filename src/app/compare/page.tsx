@@ -33,7 +33,6 @@ export default function ComparePage() {
     ).then((d) => setAds(d?.ads ?? []));
   };
   useEffect(() => {
-    console.log(compare);
     if (compare.length > 0) getAds();
   }, []);
   return (

@@ -165,7 +165,6 @@ export default function AdDynamicPage({
         },
         0
       ).then((d: FetchAdUnitType) => {
-        console.log(d);
         setSuggestedAds(d);
       });
     } catch (error) {

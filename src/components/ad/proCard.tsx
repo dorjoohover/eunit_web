@@ -69,11 +69,11 @@ function ProCard({
       <div className="max-w-[800px] mx-auto relative overflow-hidden rounded-2xl md:min-h-[350px] min-h-[400px]  shadow-md  group flex flex-col w-full h-full mb-2">
         <div className="absolute top-0 left-0 z-10 flex items-center justify-between flex-1 w-full px-3 py-2">
           {item?.images?.length != 0 ? (
-            <ImageCount onClick={() => console.log("Zurag")}>
+            <ImageCount onClick={() => {}}>
               {image}/{item?.images?.length}
             </ImageCount>
           ) : (
-            <ImageCount onClick={() => console.log("Zurag")}>0</ImageCount>
+            <ImageCount onClick={() => {}}>0</ImageCount>
           )}
           {isDelete ? (
             // <DButton onClick={deleteFunc} />

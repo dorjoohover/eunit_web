@@ -232,6 +232,7 @@ const MyAds = ({
                   // stopPropagation(e);
                   changeAdType(item._id, item.adStatus);
                 }}
+                isUser={true}
                 item={item || {}}
                 isDelete={true}
                 deleteFunc={() => {

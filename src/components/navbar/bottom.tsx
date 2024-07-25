@@ -46,7 +46,6 @@ const Bottom = ({
   const searchAds = async () => {
     await getSearchAds(search).then((d) => {
       setAds(d);
-      console.log(d);
       if (pathname.startsWith("account")) {
         router.push("/ad");
       }

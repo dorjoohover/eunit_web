@@ -1,5 +1,6 @@
+import { imageApi } from "@/utils/values";
 import { Image } from "@chakra-ui/react";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 
 const ProfileImage = ({
   selectedImage,
@@ -12,6 +13,7 @@ const ProfileImage = ({
   setImages: React.Dispatch<React.SetStateAction<File | undefined>>;
   setSelectedImage: React.Dispatch<React.SetStateAction<string | undefined>>;
 }) => {
+  const [selected, setSelected] = useState(false)
   const imageChange = (files: FileList | null) => {
     if (files != null) {
       const selectedFilesArray = Array.from(files).map((file, i) => {
@@ -20,8 +22,10 @@ const ProfileImage = ({
       Object.values(files)?.map((f, i) => {
         setImages(f);
       });
+      setSelected(true)
       setSelectedImage(selectedFilesArray[0]);
     }
+    
   };
 
   const removeSelectedImage = () => {
@@ -49,7 +53,7 @@ const ProfileImage = ({
       {selectedImage ? (
         <div className="h-[25vh] relative rounded-md flex-col justify-center items-center ">
           <Image
-            src={selectedImage}
+            src={selected ? selectedImage : `${imageApi}${selectedImage}`}
             className="object-cover object-center w-full h-full overflow-hidden bg-gray-300 rounded-md aspect-square"
             alt="Thumb"
           />
