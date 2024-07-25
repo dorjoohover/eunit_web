@@ -136,14 +136,15 @@ function AdCard({
                 src={
                   (item?.user as UserModel)?.profileImg == ""
                     ? Assets.logoMiniWhite
-                    : (item?.user as UserModel)?.profileImg ??
+                    : `${imageApi}${(item?.user as UserModel)?.profileImg}`??
                       Assets.logoMiniWhite
                 }
                 referrerPolicy="no-referrer"
                 alt="BOM logo"
                 objectFit="cover"
                 className={mergeNames(
-                  (item?.user as UserModel)?.profileImg ? "" : " p-2"
+                  (item?.user as UserModel)?.profileImg ? "" : "", 
+                  'h-full'
                 )}
               />
             </button>
