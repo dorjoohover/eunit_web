@@ -2,11 +2,44 @@
 import mergeNames from "@/utils/functions";
 import { Image } from "@chakra-ui/react";
 import Link from "next/link";
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { NavContainer } from "../container";
-import { adminNav } from "@/utils/values";
+import { adminNav, ConstantApi } from "@/utils/values";
+import { useAppContext } from "@/app/_context";
+import { getConstants } from "@/app/(api)/constants.api";
+import { Api, UserStatus } from "@/config/enum";
+import { getUser } from "@/app/(api)/user.api";
 
 const AdminBar = () => {
+  const { categories, setCategories, setUser, user, setMark, setCurrent } =
+    useAppContext();
+  const getConst = async () => {
+    await getConstants(`${ConstantApi.category}false`, Api.GET).then((d) =>
+      setCategories(d)
+    );
+  };
+  useEffect(() => {
+    getConst();
+    getUserData();
+  }, []);
+
+  const getUserData = async () => {
+    await getUser()
+      .then((d) => {
+        if (d != null) {
+          setUser(d);
+          setMark(d?.bookmarks);
+          setCurrent({
+            user: true,
+            status: d.status != UserStatus.banned,
+            type: d.userType,
+          });
+        }
+      })
+      .catch(() => {
+        setUser(undefined);
+      });
+  };
   const [isHoveringId, setIsHoveringId] = useState<boolean | string>(true);
   const handleMouseOver = (id: string) => {
     setIsHoveringId(id);

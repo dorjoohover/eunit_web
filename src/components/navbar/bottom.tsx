@@ -26,27 +26,8 @@ const Bottom = ({
 }: {
   categories: CategoryModel[] | undefined;
 }) => {
-  const { user, setUser, setMark, setCurrent , setAds } = useAppContext();
-  const getUserData = async () => {
-    await getUser()
-      .then((d) => {
-        if (d != null) {
-          setUser(d);
-          setMark(d?.bookmarks);
-          setCurrent({
-            user: true,
-            status: d.status != UserStatus.banned,
-            type: d.userType,
-          });
-        }
-      })
-      .catch(() => {
-        setUser(undefined);
-      });
-  };
-  useEffect(() => {
-    getUserData()
-  }, [user]);
+  const { user, setAds } = useAppContext();
+
   // const [isHoveringId, setIsHoveringId] = useState(true);
   const [activeSearch, setActiveSearch] = useState<boolean>(false);
   // const handleMouseOver = (id) => {
@@ -60,15 +41,14 @@ const Bottom = ({
 
   // Search start
   const [search, setSearch] = useState<string>("");
-  const pathname = usePathname()
-  const router = useRouter()
+  const pathname = usePathname();
+  const router = useRouter();
   const searchAds = async () => {
-  
     await getSearchAds(search).then((d) => {
-      setAds(d)
+      setAds(d);
       console.log(d);
-      if(pathname.startsWith('account')) {
-        router.push('/ad')
+      if (pathname.startsWith("account")) {
+        router.push("/ad");
       }
     });
   };
@@ -148,9 +128,9 @@ const Bottom = ({
                 onChange={(e) => setSearch(e.target.value)}
                 type="text"
                 placeholder="Зараа хайна уу"
-                onKeyDown={(event: any ) => {
+                onKeyDown={(event: any) => {
                   if (event.key === "Enter") {
-                    searchAds()
+                    searchAds();
                   }
                 }}
                 value={search}

@@ -40,6 +40,7 @@ const Step4 = ({
         let cacheSelf = cache.filter((c) => c.parent == f.type)?.[0];
         let cacheParent = cache.filter((c) => c.parent == f.parentId)?.[0];
         let cachePosition = cache.filter((c) => c.parent == f.position)?.[0];
+
         if (
           f.other == true &&
           f.value?.find((v) => v.id == "other") == undefined
@@ -158,6 +159,7 @@ const Step4 = ({
                               parent: f.type,
                             });
                           }
+                          
                           setCache((prev) => [...prev]);
 
                           if (onClick != null) {
@@ -177,6 +179,7 @@ const Step4 = ({
         }
         if (f.types == ItemTypes.dropdown)
           if (f.parentId == null) {
+            
             return (
               <FilterSelect
                 key={i}
@@ -278,7 +281,7 @@ const Step4 = ({
                               });
                             }
                             setCache((prev) => [...prev]);
-
+                            
                             if (onClick != null) {
                               onClick();
                             }

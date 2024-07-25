@@ -45,7 +45,6 @@ export async function createEstimate(
 export async function getMyEstimate() {
   try {
     const token = cookies().get("token");
- 
 
     let res = await fetch(`${api}${EstimateApi.create}`, {
       headers: {
@@ -53,6 +52,7 @@ export async function getMyEstimate() {
       },
     }).then((d) => d.json());
 
+    
     return res;
   } catch (error) {
     console.error(error);
@@ -62,9 +62,24 @@ export async function getMyEstimate() {
 export async function getEstimateByStatus(status: EstimateStatus) {
   try {
     const token = cookies().get("token");
- 
 
     let res = await fetch(`${api}${EstimateApi.create}${status}`, {
+      headers: {
+        Authorization: `Bearer ${token?.value ?? ""}`,
+      },
+    }).then((d) => d.json());
+
+    if (res?.statusCode == 404) return [];
+    return res;
+  } catch (error: any) {
+    throw new Error(ErrorMessages.occured);
+  }
+}
+export async function updateEstimateById(status: EstimateStatus, id: string) {
+  try {
+    const token = cookies().get("token");
+
+    let res = await fetch(`${api}${EstimateApi.update}${status}/${id}`, {
       headers: {
         Authorization: `Bearer ${token?.value ?? ""}`,
       },
@@ -76,12 +91,11 @@ export async function getEstimateByStatus(status: EstimateStatus) {
     throw new Error(ErrorMessages.occured);
   }
 }
-export async function updateEstimateById(status: EstimateStatus, id:string) {
+export async function updatePriceEstimateById(price: number, id: string) {
   try {
     const token = cookies().get("token");
- 
 
-    let res = await fetch(`${api}${EstimateApi.update}${status}/${id}`, {
+    let res = await fetch(`${api}${EstimateApi.price}${id}/${price}`, {
       headers: {
         Authorization: `Bearer ${token?.value ?? ""}`,
       },

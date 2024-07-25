@@ -25,8 +25,8 @@ import { GoogleMapsOptions } from "@/utils/values";
 import Loading from "@/app/loading";
 import { ContainerX } from "@/components/container";
 import StepProgress from "@/components/global/stepProgress";
-import FieldPhotoUpload from "@/components/createAd/step3/fieldPhotoUpload";
 import { createAd } from "@/app/(api)/ad.api";
+import SharingUpload from "@/components/createAd/sharingUpload";
 
 export default function AdSharingPage() {
   const toast = useToast();
@@ -65,6 +65,7 @@ export default function AdSharingPage() {
     images: [],
     phone: parseInt(user?.phone ? user.phone : 0),
   });
+  const [file, setFile] = useState<File | null>(null);
   // STEP 3IIN RAW IMAGE FILES
   const [images, setImages] = useState<File[]>([]);
   const filterCategory = async (id: string) => {
@@ -133,30 +134,33 @@ export default function AdSharingPage() {
         });
   };
 
-  const sendAd = async () => {-
-    setIsLoading(true);
+  const sendAd = async () => {
+    // setIsLoading(true);
 
     setTypes((prev) => ({
       ...prev,
-      adType: AdTypes.sharing
+      adType: AdTypes.sharing,
     }));
-    let fImages = new FormData();
-    images?.map((prev, i) => {
+    let fileUrl = new FormData();
+    if (file != null) fileUrl.append("files", file);
+    let imageUrl = new FormData();
+    if (images != null) images?.map((prev, i) => {
       if (i < 8) {
-        fImages.append(`files`, prev);
+        imageUrl.append(`files`, prev);
       }
     });
-    let fileUrl = new FormData();
-    generalData.files?.map((prev) => fileUrl.append("files", prev));
-    
     let cateId = categories[types.categoryId!]._id;
+
     await createAd(
-      fImages,
+      imageUrl,
       { ...locationData, ...generalData, ...moreData },
       types,
       steps,
-      cateId
+      cateId,
+      true,
+      fileUrl
     ).then((d) => {
+      console.log(d);
       if (d) {
         toast({
           title: "Амжилттай нэмэгдлээ.",
@@ -166,98 +170,8 @@ export default function AdSharingPage() {
         });
         router.push("/account/sharedads");
       }
-    }); 
+    });
     setIsLoading(false);
-    // const filters = [];
-    // const pushedImages = [];
-    // const pushedFile = [];
-    // subCategory.steps.map((s) => {
-    //   s.values.map((v) => {
-    //     if (s.step != "general") {
-    //       filters.push({
-    //         name: v.name,
-    //         id: v.type,
-    //         value: values[v.type],
-    //         position: v.position,
-    //         type: v.types,
-    //         index: v.index,
-    //         isSearch: v.isSearch ?? false,
-    //         isUse: v.isUse ?? false,
-    //       });
-    //     } else {
-    //       filters.push({
-    //         name: v.name,
-    //         id: v.type,
-    //         value: generalData[v.type],
-    //         position: v.position,
-    //         type: v.types,
-    //         index: v.index,
-    //         isSearch: v.isSearch ?? false,
-    //         isUse: v.isUse ?? false,
-    //       });
-    //     }
-    //   });
-    // });
-    // let fImages = new FormData();
-    // images?.map((prev, i) => {
-    //   if (i < 8) {
-    //     fImages.append("images", prev);
-    //   }
-    // });
-    // let fileUrl = new FormData();
-    // generalData.file?.map((prev) => fileUrl.append("images", prev));
-    // try {
-    //   toast({
-    //     title: "Амжилттай нэмэгдлээ.",
-    //     status: "success",
-    //     duration: 1000,
-    //     isClosable: true,
-    //   });
-    //   await axios
-    //     .post(`${urls["test"]}/ad/uploadFields`, fImages, {
-    //       headers: {
-    //         Authorization: `Bearer ${token}`,
-    //         "Access-Control-Allow-Headers": "*",
-    //       },
-    //     })
-    //     .then((d) => (pushedImages = d.data));
-    //   await axios
-    //     .post(`${urls["test"]}/ad/uploadFields`, fileUrl, {
-    //       headers: {
-    //         Authorization: `Bearer ${token}`,
-    //         "Access-Control-Allow-Headers": "*",
-    //       },
-    //     })
-    //     .then((d) => (pushedFile = d.data[0]));
-    //   ad = await axios.post(
-    //     `${urls["test"]}/ad`,
-    //     {
-    //       images: pushedImages,
-    //       title: generalData.title,
-    //       description: generalData.desc,
-    //       location: map,
-    //       subCategory: subCategory._id,
-    //       category: categories[types.categoryId]._id,
-    //       sellType: getSellType(types.sellType),
-    //       items: filters,
-    //       adType: "sharing",
-    //       file: pushedFile,
-    //       adStatus: "checking",
-    //       view: types.adType,
-    //     },
-    //     {
-    //       headers: {
-    //         Authorization: `Bearer ${token}`,
-    //         "Access-Control-Allow-Headers": "*",
-    //         charset: "UTF-8",
-    //       },
-    //     }
-    //   );
-    //   router.push("/account?tab=SharedAds");
-    // } catch (error) {
-    //   setIsLoading(false);
-    //   console.error(error);
-    // }
   };
   const validateStep4 = async () => {
     setIsLoading(true);
@@ -352,21 +266,18 @@ export default function AdSharingPage() {
         }
         {currentStep === 2 && (
           <>
-            <FieldPhotoUpload
+            {/* <FieldPhotoUpload
               images={images}
               setImages={setImages}
               data={generalData}
               setData={setGeneralData}
-            />
-            {/* <SharingUpload
-              generalData={generalData.file}
-              onChange={(e) => {
-                setGeneralData((prev) => ({
-                  ...prev,
-                  file: [e.target.files[0]],
-                }));
-              }}
             /> */}
+            <SharingUpload
+              data={file}
+              onChange={(e) => {
+                if (e != null) setFile(e);
+              }}
+            />
           </>
         )}
 
@@ -419,6 +330,7 @@ export default function AdSharingPage() {
             if (index - 1 == 0)
               return (
                 <Step3
+                  sharing={true}
                   key={index}
                   filter={step.values as ItemModel[]}
                   images={images}
@@ -428,7 +340,7 @@ export default function AdSharingPage() {
                 />
               );
 
-            if (index - 1 == 1)
+            if (index - 1 == 1) {
               return (
                 <div key={index}>
                   <FormTitle>Дэлгэрэнгүй мэдээлэл</FormTitle>
@@ -443,6 +355,7 @@ export default function AdSharingPage() {
                   </div>
                 </div>
               );
+            }
           }
         })}
 

@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import {
   getEstimateByStatus,
   updateEstimateById,
@@ -95,14 +95,13 @@ const EstimatingPage = () => {
           <div className="flex flex-col w-full gap-2">
             {estimates &&
               estimates.map((est, i) => {
-            
                 return (
                   <div className="flex items-center gap-2" key={i}>
                     <h1>{i + 1}</h1>
                     <EstimatedCard
                       est={est}
                       key={i}
-                      adminBtn={
+                      AdminBtn={
                         est.status == "estimated" ? (
                           <button
                             onClick={() => updateEstimate(est._id ?? "")}

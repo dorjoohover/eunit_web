@@ -46,7 +46,7 @@ const drawerItem = [
   {
     icon: <FiHeart />,
     text: "Миний хүслүүд",
-    href: "bookmark",
+    href: "mark",
   },
   {
     icon: <IoWalletOutline />,

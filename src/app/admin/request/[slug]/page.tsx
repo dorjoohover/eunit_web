@@ -5,7 +5,7 @@ import FilterAd from "@/components/account/details/filterAd";
 import CustomToast from "@/components/customToast";
 import { LoadingButton } from "@/components/global/button";
 import CustomModal from "@/components/global/customModal";
-import { AdStatus, AdTypes, AdView, ItemPosition } from "@/config/enum";
+import { AdStatus, AdTypes, AdView, Api, ItemPosition } from "@/config/enum";
 import { AdItemsModel, AdModel } from "@/models/ad.model";
 import { CategoryModel } from "@/models/category.model";
 import { STYLES, brk } from "@/styles";
@@ -33,27 +33,13 @@ import { utils, writeFileXLSX } from "xlsx";
 import WhiteBox from "@/components/createAd/product/whiteBox";
 
 import { GoogleMap, MarkerF, useLoadScript } from "@react-google-maps/api";
-import { GoogleMapsOptions, imageApi } from "@/utils/values";
+import { ConstantApi, GoogleMapsOptions, imageApi } from "@/utils/values";
 import ProductInfo from "@/components/createAd/product/info";
 import { ErrorMessages } from "@/utils/string";
+import { useAppContext } from "@/app/_context";
+import { FaCcAmazonPay } from "react-icons/fa";
+import { getConstants } from "@/app/(api)/constants.api";
 
-// const Tab = ({ num, children }) => {
-//   const [activeTab, setActiveTab] = useState("");
-//   const handleClick = (event) => {
-//     setActiveTab(event.target.id);
-//   };
-//   return (
-//     <p
-//       className={mergeNames(
-//         "flex justify-between py-2 font-bold cursor-pointer",
-//         activeTab === num ? "text-green-200" : "text-red-200"
-//       )}
-//       onClick={() => setActiveTab(num)}
-//     >
-//       {children}
-//     </p>
-//   );
-// };
 export default function RequestDynamicPage({
   params,
 }: {
@@ -62,7 +48,7 @@ export default function RequestDynamicPage({
   const [ads, setAds] = useState<FetchAdUnitType>({ ads: [], limit: 0 });
   const [data, setData] = useState<AdModel>();
   const { isOpen, onOpen, onClose } = useDisclosure();
-
+  const { categories } = useAppContext();
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: "AIzaSyC2u2OzBNo53GxJJdN3Oc_W6Yc42OmdZcE",
     libraries: GoogleMapsOptions.libraries,
@@ -93,32 +79,28 @@ export default function RequestDynamicPage({
   const [num, setNum] = useState(0);
   const toast = useToast();
   const router = useRouter();
-  const update = (data: FetchAdUnitType) => {
-    setAds(data);
-    let cate: CategoryModel[] = [],
-      sub: CategoryModel[] = [];
-    data?.ads.map((ad) => {
-      let c = ad.category as CategoryModel,
-        s = ad.subCategory as CategoryModel;
 
-      if (cate.find((cat) => cat._id == c._id) == undefined) {
-        cate.push(c);
+  const getAds = async (status: AdStatus, n?: number, cate?: string) => {
+    await getAdminAds(AdTypes.all, n ?? num, status, 20, 0, cate ?? "").then(
+      (d) => {
+        console.log(d)
+        if (d != null) {
+          setAds(d);
+        }
       }
-      if (sub.find((sc) => sc._id == s._id) == undefined) {
-        sub.push(s);
-      }
-    });
-    setCategory({ category: cate, subCategory: sub });
+    );
   };
-  const getAds = async (status: AdStatus, n?: number) => {
-    await getAdminAds(AdTypes.all, n ?? num, status).then((d) => {
-      if (d != null) {
-        update(d);
-      }
-    });
+  const getCategories = async () => {
+    await getConstants(`${ConstantApi.category}false`, Api.GET).then((d) =>
+      setCategory({
+        category: d as CategoryModel[],
+        subCategory: d?.[0].subCategory,
+      })
+    );
   };
   useEffect(() => {
     getAds(AdStatus.all);
+    getCategories();
   }, []);
   const verify = async (id: string) => {
     const res = await updateAdStatus(id, AdStatus.created, AdView.show, "%20");
@@ -195,17 +177,13 @@ export default function RequestDynamicPage({
 
           <div className={mergeNames("flex flex-col gap-4 mt-5", brk)}>
             <div className="flex w-full gap-4">
-              <FilterAd
+              {/* <FilterAd
                 plc="Бүх төрөл"
                 onChange={(e) => {
                   if (e != "") {
-                    // let ad = data.ads.filter((d) => d.category.name == e);
-                    // setAds({
-                    //   ads: ad,
-                    //   limit: ads.limit,
-                    // });
+                    getAds(check, 0, e);
                   } else {
-                    // getAds(check);
+                    getAds(check);
                   }
                 }}
               >
@@ -216,18 +194,14 @@ export default function RequestDynamicPage({
                     </option>
                   );
                 })}
-              </FilterAd>
+              </FilterAd> */}
               <FilterAd
                 plc="Бүх дэд төрөл"
                 onChange={(e) => {
                   if (e != "") {
-                    // let ad = data.ads.filter((d) => d.subCategory.name == e);
-                    // setAds({
-                    //   ads: ad,
-                    //   limit: ads.limit,
-                    // });
+                    getAds(check, 0, e);
                   } else {
-                    // getAds(check);
+                    getAds(check);
                   }
                 }}
               >
@@ -240,7 +214,21 @@ export default function RequestDynamicPage({
                 })}
               </FilterAd>
             </div>
-            <RadioGroup className="flex flex-col justify-end" defaultValue="1">
+            <RadioGroup className="flex flex-col justify-end" defaultValue="0">
+              <Radio
+                colorScheme="blue"
+                className="font-bold text-green-400 whitespace-nowrap"
+                onChange={(e) => {
+                  if (e.target.checked) {
+                    getAds(AdStatus.all, 0);
+                    setCheck(AdStatus.all);
+                    setNum(0);
+                  }
+                }}
+                value="0"
+              >
+                Бүх зарууд
+              </Radio>
               <Radio
                 colorScheme="green"
                 className="font-bold text-green-400 whitespace-nowrap"

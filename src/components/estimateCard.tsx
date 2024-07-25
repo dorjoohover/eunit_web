@@ -29,13 +29,14 @@ import { CategoryModel } from "@/models/category.model";
 import { EstimateStatus } from "@/config/enum";
 import { BomArea } from "./bomInput";
 import { imageApi } from "@/utils/values";
+import { updatePriceEstimateById } from "@/app/(api)/estimate.api";
 
 const EstimatedCard = ({
   est,
-  adminBtn,
+  AdminBtn,
 }: {
   est: EstimateModel;
-  adminBtn?: ReactNode;
+  AdminBtn?: ReactNode;
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const router = useRouter();
@@ -59,22 +60,18 @@ const EstimatedCard = ({
   const toast = useToast();
   const updatePrice = async (id: string) => {
     try {
-      //   await axios
-      //     .get(`${urls["test"]}/estimate/price/${id}/${price}`, {
-      //       headers: {
-      //         Authorization: `Bearer ${token}`,
-      //       },
-      //     })
-      //     .then((d) => {
-      //       onClose(),
-      //         toast({
-      //           title: "Амжилттай үнийн дүн нэмлээ.",
-      //           status: "success",
-      //           duration: 2000,
-      //           isClosable: true,
-      //         });
-      //       router.reload();
-      //     });
+      if (price)
+        await updatePriceEstimateById(price, id).then((d) => {
+          console.log(d);
+          onClose(),
+            toast({
+              title: "Амжилттай үнийн дүн нэмлээ.",
+              status: "success",
+              duration: 2000,
+              isClosable: true,
+            });
+          router.refresh();
+        });
     } catch (error) {
       console.error(error);
     }
@@ -117,7 +114,7 @@ const EstimatedCard = ({
     <div className="w-full text-left">
       <div className="bg-white shadow-md flex gap-5 rounded-md p-5 border border-gray-200  h-[125px]">
         <Link
-          href={imageApi+ est.file ?? ""}
+          href={imageApi + est.file ?? ""}
           target="_blank"
           className="relative flex items-center"
         >
@@ -197,7 +194,6 @@ const EstimatedCard = ({
                 body={
                   <>
                     <BomArea
-
                       placeholder="Нэмэлт тайлбар"
                       onChange={(e) => setNote(e)}
                     />
@@ -212,7 +208,7 @@ const EstimatedCard = ({
                   <EstimateButton icon="return" />
                 }
                 onClick={() => {
-                  updateMessageEstimate(est._id ?? "", "returned", '');
+                  updateMessageEstimate(est._id ?? "", "returned", "");
                   // updateMessageEstimate(est._id ?? "", "returned", {
                   //   message: '',
                   // });
@@ -265,7 +261,7 @@ const EstimatedCard = ({
                   )}
 
                   <p className={mergeNames("text-center")}></p>
-                  {adminBtn != undefined && est.price == undefined && (
+                  {est.price == undefined && (
                     <div className="flex flex-col gap-3 text-lg">
                       <NumberInput
                         onChange={(e) => {
@@ -293,7 +289,7 @@ const EstimatedCard = ({
                   )}
                 </div>
               </CustomModal>
-              {adminBtn}
+              {AdminBtn}
             </div>
           </div>
         </div>
@@ -315,10 +311,12 @@ export const EstimateButton = ({
 }) => {
   return (
     <div className="relative flex flex-row items-center space-x-2">
-      <button
+      <div
         className={mergeNames(
           cardIcon.div,
-          label ? "px-2 rounded-md bg-red-200/40" : ""
+          label
+            ? "px-2 rounded-md bg-red-200/40 cursor-pointer"
+            : "cursor-pointer"
         )}
         onClick={() => {
           if (onClick != null) {
@@ -339,7 +337,7 @@ export const EstimateButton = ({
         )}
 
         {label && <p className="text-sm text-red-400 ">Үнэлгээг хоослох</p>}
-      </button>
+      </div>
     </div>
   );
 };

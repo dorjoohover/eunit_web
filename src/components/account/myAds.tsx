@@ -20,9 +20,7 @@ const MyAds = ({
   ads,
   getAds,
 
-  setAds,
   category,
-  subCategory,
 }: {
   setAds: React.Dispatch<React.SetStateAction<FetchAdUnitType>>;
   userAds: number;
@@ -30,16 +28,13 @@ const MyAds = ({
   ads: FetchAdUnitType;
   getAds: (status: AdStatus, id?: string, n?: number) => void;
   category?: CategoryModel[];
-  subCategory?: CategoryModel[];
+  // subCategory?: CategoryModel[];
 }) => {
   const [num, setNum] = useState(0);
   const [check, setCheck] = useState(AdStatus.created);
   const [type, setType] = useState("");
 
   const toast = useToast();
-
-
-
 
   const restoreAd = async (id: string) => {
     //   try {
@@ -159,7 +154,7 @@ const MyAds = ({
               })}
             </FilterAd>
             <FilterAd plc="Бүх дэд төрөл" onChange={(e) => filterAd(e)}>
-              {subCategory?.map((p, i) => {
+              {(category?.[0].subCategory as CategoryModel[])?.map((p, i) => {
                 return (
                   <option value={p._id} key={i}>
                     {p.name}

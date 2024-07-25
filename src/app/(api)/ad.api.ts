@@ -61,7 +61,9 @@ export async function createAd(
   data: StepTypes,
   types: CreateAdType,
   steps: CategoryStepsModel[],
-  cateId: string
+  cateId: string,
+  isFile = false,
+  file?: FormData
 ) {
   try {
     const token = cookies().get("token");
@@ -78,6 +80,7 @@ export async function createAd(
     }[] = [];
 
     let imagesRes = await imageUploader(images);
+    let fileRes = file != undefined ? await imageUploader(file) : null
     if (imagesRes != null) {
       steps.map((step) => {
         (step.values as ItemModel[]).map((value) => {
@@ -96,19 +99,34 @@ export async function createAd(
           });
         });
       });
-      const body = {
-        images: imagesRes.file,
-        title: data.title,
-        description: data.desc,
-        location: data.map,
-        subCategory: types.subCategoryId,
-        category: cateId,
-        sellType: types.sellType,
-        items: filters,
-        adType: types.adType == "sharing" ? "sharing" : "default",
-        adStatus: "pending",
-        view: "hide",
-      };
+      const body = isFile
+        ? {
+            images: imagesRes.file,
+            title: data.title,
+            description: data.desc,
+            location: data.map,
+            subCategory: types.subCategoryId,
+            category: cateId,
+            sellType: types.sellType,
+            items: filters,
+            adType: types.adType == "sharing" ? "sharing" : "default",
+            adStatus: "pending",
+            view: "hide",
+            file: fileRes?.file[0],
+          }
+        : {
+            images: imagesRes.file,
+            title: data.title,
+            description: data.desc,
+            location: data.map,
+            subCategory: types.subCategoryId,
+            category: cateId,
+            sellType: types.sellType,
+            items: filters,
+            adType: types.adType == "sharing" ? "sharing" : "default",
+            adStatus: "pending",
+            view: "hide",
+          };
 
       let res = await fetch(`${api}${AdApi.create}`, {
         method: "POST",
@@ -138,7 +156,7 @@ export async function getManyAds(
   type: AdTypes,
   ads: string[],
   length: number,
-  id?: string,
+  id?: string
 ): Promise<FetchAdUnitType> {
   try {
     let res = await fetch(
@@ -166,24 +184,22 @@ export async function getMyAds(
   num: number,
   limit: number,
   status: AdStatus,
-  type: AdTypes,
+  cate: string,
   length: number,
-  id?: string,
+  type: AdTypes
 ) {
   try {
-    const currentUser = await getUser();
-    if (currentUser) {
-      const res = await getManyAds(
-        num,
-        true,
-        limit,
-        status,
-        type,
-        currentUser.ads,
-        length,
-        id,
-      );
-      
+    const token = cookies().get("token");
+    if (token?.value) {
+      let res = await fetch(
+        `${api}${AdApi.my}${num}/${limit}/${cate}/${status}/${type}/${length}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token.value}`,
+            "Access-Control-Allow-Headers": "*",
+          },
+        }
+      ).then((d) => d.json());
       return res;
     }
   } catch (error) {
@@ -264,7 +280,8 @@ export async function updateAdStatus(
           },
         }
       ).then((d) => d.json());
-      return res.num;
+
+      return res.success ? 1 : -1;
     } else {
       return -1;
     }
@@ -277,17 +294,26 @@ export async function updateAdStatus(
 export async function getAdminAds(
   type: AdTypes,
   num: number,
-  status: AdStatus
+  status: AdStatus,
+  limit: number,
+  length: number,
+  cate: string
 ) {
   try {
     const token = cookies().get("token");
-    let res = await fetch(`${api}${AdApi.admin}${type}/${num}/${status}`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token?.value ?? ""}`,
-        charset: "UTF-8",
-      },
-    }).then((d) => d.json());
+
+    let res = await fetch(
+      `${api}${AdApi.admin}${
+        cate == "" ? "%20" : cate
+      }/${type}/${num}/${limit}/${status}/${length}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token?.value ?? ""}`,
+          charset: "UTF-8",
+        },
+      }
+    ).then((d) => d.json());
 
     return res;
   } catch (error) {

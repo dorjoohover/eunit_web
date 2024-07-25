@@ -14,7 +14,7 @@ import ScrollTop from "@/components/global/scrollTop";
 
 import { Suspense } from "react";
 import Loading from "./loading";
-import { headers } from "next/headers";
+import { cookies, headers } from "next/headers";
 import AdminBar from "@/components/navbar/adminBar";
 
 export const metadata: Metadata = {
@@ -33,7 +33,7 @@ export default async function RootLayout({
 }>) {
   const headerList = headers();
   const referer = headerList.get("referer");
-
+  const type = cookies().get('type')
   return (
     <html lang="en" className={fonts.rubik.variable}>
     {/* <html lang="en"> */}
@@ -50,7 +50,7 @@ export default async function RootLayout({
           <Providers>
             <AppWrapper>
               <Suspense fallback={<Loading />}>
-                {referer?.includes("admin") ? <AdminBar /> : <Navbar />}
+                {type?.value == 'admin' || type?.value == 'system' ? <AdminBar /> : <Navbar />}
                 {children}
 
                 <ScrollTop />

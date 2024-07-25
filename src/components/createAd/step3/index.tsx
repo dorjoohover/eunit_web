@@ -74,17 +74,19 @@ const Step3 = ({
                 />
               </NumberInput>
             </div>
-            <div className="hidden md:block">
-              <FieldPhotoUpload
-                images={images}
-                setImages={setImages}
-                data={generalData}
-                setData={setGeneralData}
-              />
-            </div>
+            {!sharing && (
+              <div className="hidden md:block">
+                <FieldPhotoUpload
+                  images={images}
+                  setImages={setImages}
+                  data={generalData}
+                  setData={setGeneralData}
+                />
+              </div>
+            )}
           </div>
 
-          {sharing ?? (
+          {!sharing && (
             <div className="flex-1 pb-2">
               <div className="flex justify-between">
                 <AtomLabel>Зарын дэлгэрэнгүй</AtomLabel>
@@ -100,13 +102,11 @@ const Step3 = ({
                 value={generalData?.desc || ""}
                 onChange={
                   (e) =>
-                  
-                        setGeneralData((prev) => ({
-                          ...prev,
-                          desc: e.target.value,
-                        }))
-                      
-                    
+                    setGeneralData((prev) => ({
+                      ...prev,
+                      desc: e.target.value,
+                    }))
+
                   // setGeneralData((prev) => ({ ...prev, desc: e.target.value }))
                 }
                 className={mergeNames(

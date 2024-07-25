@@ -9,12 +9,13 @@ export function middleware(request: NextRequest) {
   if (current?.value && request.nextUrl.pathname.startsWith("/login")) {
     return Response.redirect(new URL("/", request.url));
   }
+  const url = request.nextUrl.pathname;
 
   const needUser =
-    request.nextUrl.pathname.startsWith("/ad/create") ||
-    request.nextUrl.pathname.startsWith("/ad/sharing") ||
-    request.nextUrl.pathname.startsWith("/ad/create") ||
-    request.nextUrl.pathname.startsWith("/account");
+    url.startsWith("/ad/create") ||
+    url.startsWith("/ad/sharing") ||
+    url.startsWith("/ad/create") ||
+    url.startsWith("/account");
   if (!current?.value && needUser) {
     return Response.redirect(new URL("/login", request.url));
   }
@@ -28,9 +29,15 @@ export function middleware(request: NextRequest) {
     if (needAdmin && !admin) {
       return Response.redirect(new URL("/", request.url));
     } else {
-      const red = request.nextUrl.pathname == '/admin' || request.nextUrl.pathname.toLowerCase().startsWith('/admin/request')
-      if(red)
-      return Response.redirect(new URL("/admin/request/realstate", request.url));
+      const red =
+        request.nextUrl.pathname == "/admin" ||
+        request.nextUrl.pathname.toLowerCase().startsWith("/admin/request");
+      if (red && !url.toLocaleLowerCase().startsWith('/admin/request/'))
+        return Response.redirect(
+          new URL("/admin/request/realState", request.url)
+        );
+      const users = url.toLocaleLowerCase() == '/admin/users'
+      if(users) return Response.redirect(new URL('/admin/users/default', request.url))
     }
   }
 }
@@ -41,6 +48,6 @@ export const config = {
     "/login/:path*",
     "/ad/:path*",
     "/account/:path*",
-    "/admin/:path",
+    "/admin/:path*",
   ],
 };

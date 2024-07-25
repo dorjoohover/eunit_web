@@ -6,11 +6,11 @@ import { UserApi, api } from "@/utils/values";
 import { cookies } from "next/headers";
 import { imageUploader } from "./constants.api";
 function clearCookie() {
-  const cookie = cookies();
-  const hasToken = cookie.has("token");
-  const hasCurrent = cookie.has("current");
-  if (hasCurrent) cookie.delete("current");
-  if (hasToken) cookie.delete("token");
+  // const cookie = cookies();
+  // const hasToken = cookie.has("token");
+  // const hasCurrent = cookie.has("current");
+  // if (hasCurrent) cookie.delete("current");
+  // if (hasToken) cookie.delete("token");
 }
 export async function getUser(): Promise<UserModel | null> {
   try {
@@ -69,6 +69,25 @@ export const sendFeedback = async (message: string, title: string) => {
   }
   return false;
 };
+
+
+export const getFeedback = async () => {
+  try {
+    const token = cookies().get("token");
+
+    let res = await fetch(`${api}${UserApi.feedbackGet}`, {
+      headers: {
+        Authorization: `Bearer ${token?.value ?? ""}`,
+      },
+    }).then((d) => d.json());
+
+    
+    return res;
+  } catch (error) {
+    console.error(error);
+    throw new Error(ErrorMessages.occured);
+  }
+}
 
 export const sendPointByUser = async (
   email: string,

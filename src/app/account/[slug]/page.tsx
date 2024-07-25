@@ -23,42 +23,35 @@ export default function AccountDynamicPage({
 }: {
   params: { slug: string };
 }) {
-  const { user, mark } = useAppContext();
+  const { user, mark, categories } = useAppContext();
 
   const [ads, setAds] = useState<FetchAdUnitType>({ ads: [], limit: 0 });
   const [loading, setLoading] = useState(false);
   const [estimate, setEstimate] = useState<EstimateModel[]>([]);
-  const [category, setCategory] = useState<{
-    category: CategoryModel[];
-    subCategory: CategoryModel[];
-  }>();
-  const update = (data: FetchAdUnitType) => {
-    setAds(data);
-    let cate: CategoryModel[] = [],
-      sub: CategoryModel[] = [];
-    data?.ads.map((ad) => {
-      let c = ad.category as CategoryModel,
-        s = ad.subCategory as CategoryModel;
-
-      if (cate.find((cat) => cat._id == c._id) == undefined) {
-        cate.push(c);
-      }
-      if (sub.find((sc) => sc._id == s._id) == undefined) {
-        sub.push(s);
-      }
-    });
-    setCategory({ category: cate, subCategory: sub });
-  };
   const getAds = async (
     status: AdStatus,
     id?: string,
     n?: number,
-    type?: AdTypes
+    type?: AdTypes,
+    res?: boolean
   ) => {
+    if (res)
+      setAds({
+        ads: [],
+        limit: 0,
+      });
     setLoading(true);
-    await getMyAds(n ?? 0, 12, status, type ?? AdTypes.all, 0, id).then((d) => {
+    await getMyAds(
+      n ?? 0,
+      12,
+      status,
+      id ?? "%20",
+      ads.limit,
+      type ?? AdTypes.all
+    ).then((d) => {
+      console.log(d);
       if (d != null) {
-        update(d);
+        setAds(d);
         console.log(d);
       }
     });
@@ -88,26 +81,27 @@ export default function AccountDynamicPage({
 
   useEffect(() => {
     if (params.slug.toLowerCase() == "myads" && user != undefined && !loading) {
-      getAds(AdStatus.created, undefined, 0, AdTypes.sharing);
+      getAds(AdStatus.created, undefined, 0, AdTypes.all, true);
     }
     if (
       params.slug.toLowerCase() == "sharedads" &&
       user != undefined &&
       !loading
     ) {
-      getAds(AdStatus.created, undefined, 0);
+      getAds(AdStatus.created, undefined, 0, AdTypes.sharing, true);
     }
     if (
       params.slug.toLowerCase() == "estimated" &&
       user != undefined &&
       !loading
     ) {
+      console.log("asdf");
       getEstimate();
     }
     if (params.slug.toLowerCase() == "mark" && user != undefined && !loading) {
       getMarks();
     }
-  }, [params.slug, user]);
+  }, [params.slug]);
   switch (params.slug.toLowerCase()) {
     case "myads":
       return (
@@ -117,8 +111,7 @@ export default function AccountDynamicPage({
           getAds={(status, id, n) => getAds(status, id, n)}
           loading={loading}
           setAds={setAds}
-          category={category?.category}
-          subCategory={category?.subCategory}
+          category={categories}
         />
       );
     case "profile":
@@ -131,8 +124,8 @@ export default function AccountDynamicPage({
           getAds={(status, id, n) => getAds(status, id, n, AdTypes.sharing)}
           loading={loading}
           setAds={setAds}
-          category={category?.category}
-          subCategory={category?.subCategory}
+          category={categories?.category}
+          subCategory={categories?.subCategory}
         />
       );
     case "estimated":
@@ -140,7 +133,7 @@ export default function AccountDynamicPage({
     case "wallet":
       return <WalletPage user={user} />;
     case "mark":
-      return <Mark ads={ads} category={category?.category} loading={loading} />;
+      return <Mark ads={ads} category={categories} loading={loading} />;
     default:
       return notFound();
   }

@@ -15,6 +15,10 @@ import { GridOptions, SwiperOptions } from "swiper/types";
 // export const url = "http://localhost:3000";
 // export const url = "http://103.50.206.58";
 // export const api = "http://103.50.206.58:5050/api/";
+
+
+
+
 export const api = "http://93.127.186.77:5050/api/";
 export const imageApi = `${api}file/`;
 // export const url = "http://localhost:3000/";
@@ -40,6 +44,7 @@ const category = "category/";
 const user = "user/";
 const auth = "auth/";
 const estimate = "estimate/";
+const feedback = "feedback/";
 
 export class ConstantApi {
   static category = `${category}all/`;
@@ -48,8 +53,10 @@ export class ConstantApi {
 export class EstimateApi {
   static create = `${estimate}`;
   static update = `${estimate}update/`;
+  static price = `${estimate}price/`;
   // static upload = ``;
 }
+
 
 export class AuthApi {
   static register = `${auth}register`;
@@ -64,6 +71,8 @@ export class UserApi {
   static bookmark = `${user}bookmark/`;
   static point = `${user}point/`;
   static update = `${user}update/`;
+  static feedback = `${this.user}feedback/`;
+  static feedbackGet = `${this.feedback}get/`;
 }
 
 export class AdApi {
@@ -77,6 +86,7 @@ export class AdApi {
   static admin = `${ad}admin/`;
   static suggestion = `${ad}suggestion/`;
   static update = `${ad}update/`;
+  static my = `${ad}my/`;
 }
 export class CategoryApi {
   static filter = `${category}filters/`;
