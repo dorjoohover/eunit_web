@@ -8,8 +8,10 @@ import { NavContainer } from "../container";
 
 import { Assets } from "@/utils/assets";
 import { Image } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
+import useBreakpoints from "@/hooks/useBreakpoints";
 
-const calcSize = (pt: string) => {
+const calcSize = (pt?: string) => {
   switch (pt) {
     case "3xl":
     case "2xl":
@@ -28,18 +30,18 @@ const calcSize = (pt: string) => {
     }
   }
 };
+
 const UpperNav = () => {
   // const router = useRouter();
-  // const pt = useBreakpoints();
+  const pt = useBreakpoints();
 
-  // const [size, setSize] = useState(() => calcSize(pt));
-  // const [showSideMenu, setShowSideMenu] = useState(false);
+  const [size, setSize] = useState(() => calcSize(pt));
 
-  // const { logout } = useAuth();
+  const [showSideMenu, setShowSideMenu] = useState(false);
 
-  // useEffect(() => {
-  //   setSize(calcSize(pt));
-  // }, [pt]);
+  useEffect(() => {
+    setSize(calcSize(pt));
+  }, [pt]);
 
   // const searchAds = async (value) => {
   //   try {
@@ -54,13 +56,13 @@ const UpperNav = () => {
     <div className="sticky z-30 shadow-lg md:bg-white bg-mainBlossom md:hidden">
       <NavContainer>
         <div className="flex items-center justify-between gap-2 py-2 ">
-          <Link href={"/"} className="w-6 h-6">
+          <Link href={"/"}>
             {/* <a> */}
             <Image
               src={Assets.logoWhite}
               alt="BOM logo"
-              // width={size.width}
-              // height={size.height}
+              width={size.width}
+              height={size.height}
               objectFit="contain"
             />
             {/* </a> */}
@@ -77,9 +79,9 @@ const UpperNav = () => {
               onClick={() => router.push("/account?tab=Bookmark")}
             /> */}
             <button
-            // onClick={() => {
-            //   setShowSideMenu(true);
-            // }}
+            onClick={() => {
+              setShowSideMenu(true);
+            }}
 
             // onClick={openNav}
             >
@@ -92,13 +94,13 @@ const UpperNav = () => {
         </div>
         {/* </div> */}
       </NavContainer>
-      {/* <SideMenu
+      <SideMenu
         show={showSideMenu}
         closeNav={() => {
           setShowSideMenu(false);
         }}
         openNav={() => setShowSideMenu(true)}
-      /> */}
+      />
       <BottomMenu />
     </div>
   );

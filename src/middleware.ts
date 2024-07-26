@@ -14,7 +14,7 @@ export function middleware(request: NextRequest) {
   const needUser =
     url.startsWith("/ad/create") ||
     url.startsWith("/ad/sharing") ||
-    url.startsWith("/ad/create") ||
+    url.startsWith("/estimator") ||
     url.startsWith("/account");
   if (!current?.value && needUser) {
     return Response.redirect(new URL("/login", request.url));
@@ -49,5 +49,6 @@ export const config = {
     "/ad/:path*",
     "/account/:path*",
     "/admin/:path*",
+    "/estimator",
   ],
 };
