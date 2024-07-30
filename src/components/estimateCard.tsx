@@ -113,7 +113,7 @@ const EstimatedCard = ({
     <div className="w-full text-left">
       <div className="bg-white shadow-md flex gap-5 rounded-md p-5 border border-gray-200  h-[125px]">
         <Link
-          href={imageApi + est.file ?? ""}
+          href={est.file && est.file != '' ? imageApi + est.file : "https://www.pikpng.com/pngl/m/80-805068_my-profile-icon-blank-profile-picture-circle-clipart.png"}
           target="_blank"
           className="relative flex items-center"
         >

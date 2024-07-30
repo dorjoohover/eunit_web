@@ -105,6 +105,7 @@ const FilterLayout = ({
       )?.filter((f) => f.href == value)?.[0]?._id ?? category?._id;
 
       if (cateId == undefined) cateId = category?._id;
+     
       const defaultAds = await getFilteredAd(
         cateId!,
         0,
@@ -123,6 +124,7 @@ const FilterLayout = ({
         4,
         0
       );
+ 
       setAds({
         defaultAds,
         specialAds,

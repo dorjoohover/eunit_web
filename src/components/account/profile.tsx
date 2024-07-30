@@ -275,7 +275,7 @@ const Profile = ({ user }: { user: UserModel }) => {
                 className="object-cover object-center  h-[25vh] overflow-hidden bg-gray-300 aspect-square "
                 alt="Current Profile"
                 src={
-                  user?.profileImg ? `${imageApi}${user?.profileImg}`  :
+                  user?.profileImg && user?.profileImg != '' ? `${imageApi}${user?.profileImg}`  :
                   "https://www.pikpng.com/pngl/m/80-805068_my-profile-icon-blank-profile-picture-circle-clipart.png"
                 }
                 referrerPolicy="no-referrer"
