@@ -88,7 +88,7 @@ export default function AdCreatePage() {
   const [isLoading, setIsLoading] = useState(false);
   // checking validation of steps in here
   const handleNextStep = () => {
-    
+
     if (currentStep === -1)
       return checkConditionOnNextStep(
         types.categoryName != "" &&

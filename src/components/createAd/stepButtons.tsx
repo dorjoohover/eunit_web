@@ -80,7 +80,7 @@ const StepButtons = ({
         lat: data?.map?.lat ?? 47.91887307876936,
         lng: data?.map?.lng ?? 106.91757202148438,
       } as GoogleMapsType),
-    []
+    [data]
   );
 
   const top = () => {

@@ -14,6 +14,7 @@ import SwiperHeader from "@/components/swiperHeader";
 import CategorySelect from "@/components/categorySelect";
 import { UserModel } from "@/models/user.model";
 import { AdTypes, UserStatus } from "@/config/enum";
+import CompareSelect from "@/components/account/details/compareSelect";
 
 export default function Home() {
   const {
@@ -81,6 +82,7 @@ export default function Home() {
       getUserData();
     }
   }, [session]);
+  const { compare } = useAppContext();
   return loading ? (
     <Loading />
   ) : (

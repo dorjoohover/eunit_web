@@ -49,10 +49,8 @@ export default function AccountDynamicPage({
       ads.limit,
       type ?? AdTypes.all
     ).then((d) => {
-      
       if (d != null) {
         setAds(d);
-      
       }
     });
     setLoading(false);
@@ -67,7 +65,10 @@ export default function AccountDynamicPage({
       AdTypes.all,
       mark,
       0
-    ).then((d) => setAds(d));
+    ).then((d) => {
+      console.log(d);
+      setAds(d);
+    });
 
     setLoading(false);
   };
@@ -95,13 +96,13 @@ export default function AccountDynamicPage({
       user != undefined &&
       !loading
     ) {
-
       getEstimate();
     }
+
     if (params.slug.toLowerCase() == "mark" && user != undefined && !loading) {
       getMarks();
     }
-  }, [params.slug]);
+  }, [params.slug, user]);
   switch (params.slug.toLowerCase()) {
     case "myads":
       return (
@@ -125,13 +126,12 @@ export default function AccountDynamicPage({
           loading={loading}
           setAds={setAds}
           category={categories}
-   
         />
       );
     case "estimated":
       return <Estimated estimate={estimate} setEstimate={setEstimate} />;
     case "wallet":
-      return <WalletPage  />;
+      return <WalletPage />;
     case "mark":
       return <Mark ads={ads} category={categories} loading={loading} />;
     default:

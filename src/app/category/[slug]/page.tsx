@@ -37,9 +37,10 @@ import {
 
 import { useEffect, useMemo, useState } from "react";
 import CategoryDynamicLoading from "./loading";
+import CompareSelect from "@/components/account/details/compareSelect";
 
 const Category = ({ params }: { params: { slug: string } }) => {
-  const { ads, setAds } = useAppContext();
+  const { ads, setAds, compare } = useAppContext();
   const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState({
     default: 0,
@@ -145,6 +146,9 @@ const Category = ({ params }: { params: { slug: string } }) => {
             )}
           </Box>
         </div>
+
+        <CompareSelect btnView={false} />
+        {compare.length > 0 && <div className="h-[250px]" />}
         {/* <CustomModal></CustomModal> */}
         <Modal onClose={onClose} isOpen={isOpen} isCentered size={"4xl"}>
           <ModalContent>

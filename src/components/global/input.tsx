@@ -172,10 +172,10 @@ export const FormattedNumberInput = ({
         // value={value}
         id="input-example"
         name="input-name"
-
+        value={value}
         placeholder={placeholder}
         onValueChange={(value, name) => {
-          onChange(value ?? "")
+          onChange(value ?? "");
         }}
         className={mergeNames("w-full py-2 border-none outline-none ring-0")}
       />

@@ -68,7 +68,7 @@ export default function RequestDynamicPage({
         lat: data?.location?.lat ?? 47.91887307876936,
         lng: data?.location?.lng ?? 106.91757202148438,
       } as GoogleMapsType),
-    []
+    [data]
   );
   const [check, setCheck] = useState<AdStatus>(AdStatus.all);
   const [category, setCategory] = useState<{

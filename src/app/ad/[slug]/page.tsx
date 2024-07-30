@@ -150,7 +150,7 @@ export default function AdDynamicPage({
       lat: parseFloat(data?.location?.lat?.toString() ?? "47.91887307876936"),
       lng: parseFloat(data?.location?.lng?.toString() ?? "106.91757202148438"),
     }),
-    []
+    [data]
   );
   const getSuggestion = async (suggest: string) => {
     try {

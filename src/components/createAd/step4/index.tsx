@@ -40,7 +40,7 @@ const Step4 = ({
         let cacheSelf = cache.filter((c) => c.parent == f.type)?.[0];
         let cacheParent = cache.filter((c) => c.parent == f.parentId)?.[0];
         let cachePosition = cache.filter((c) => c.parent == f.position)?.[0];
-
+        let others = [];
         if (
           f.other == true &&
           f.value?.find((v) => v.id == "other") == undefined
@@ -159,7 +159,7 @@ const Step4 = ({
                               parent: f.type,
                             });
                           }
-                          
+
                           setCache((prev) => [...prev]);
 
                           if (onClick != null) {
@@ -179,7 +179,6 @@ const Step4 = ({
         }
         if (f.types == ItemTypes.dropdown)
           if (f.parentId == null) {
-            
             return (
               <FilterSelect
                 key={i}
@@ -259,7 +258,11 @@ const Step4 = ({
                                 parseInt(v.id)
                           )
                     }
-                    label={(state?.[key] as string) ?? f.name}
+                    label={
+                      cache.filter((c) => c.parent == key)?.[0]?.id == "other"
+                        ? "Бусад"
+                        : (state?.[key] as string) ?? f.name
+                    }
                     Item={(items: ItemType) => {
                       const { data, id, onClick, children } = items;
                       return (
@@ -268,7 +271,6 @@ const Step4 = ({
                           {...items}
                           onClick={(e) => {
                             e.persist();
-
                             handle((prev) => ({ ...prev, [key]: data }));
                             if (cacheSelf != undefined) {
                               cacheSelf.value = data!;
@@ -281,7 +283,7 @@ const Step4 = ({
                               });
                             }
                             setCache((prev) => [...prev]);
-                            
+
                             if (onClick != null) {
                               onClick();
                             }
@@ -293,7 +295,7 @@ const Step4 = ({
                       );
                     }}
                   />
-                  {cacheParent.id == "other" ? (
+                  {cache.find((c) => c.id == "other" && c.parent == key) ? (
                     <Fragment>
                       <Box h={4} />
                       <Input

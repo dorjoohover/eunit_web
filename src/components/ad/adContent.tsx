@@ -12,6 +12,8 @@ import mergeNames from "@/utils/functions";
 import AdCard from "./card";
 import SwiperNav from "../global/swiperNav";
 import { useRouter } from "next/navigation";
+import CompareSelect from "../account/details/compareSelect";
+import { useAppContext } from "@/app/_context";
 
 const AdContent = ({
   inCat = true,
@@ -75,7 +77,6 @@ const AdContent = ({
         </SwiperNav>
       )}
       {!data && <Skeleton height={"300px"} />}
-
       {pg && data?.limit > n && (
         <ul className="flex float-right list-style-none mt-4">
           {num != 0 && (

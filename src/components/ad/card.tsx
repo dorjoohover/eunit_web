@@ -50,7 +50,7 @@ function AdCard({
   setType?: React.Dispatch<React.SetStateAction<string>>;
 }) {
   const [drop, setDrop] = useState(false);
-  console.log(item);
+  
   const pushRouter = async () => {
     //     try {
     //       item?._id && router.push(`/ad/${item.num}`);
@@ -125,7 +125,8 @@ function AdCard({
           //   stopPropagation(e);
           //   pushRouter();
           // }}
-        >
+          >
+          {/* {JSON.stringify(item.user)} */}
           <Tip lbl="Зарын эзэн">
             <button
               className={mergeNames(
@@ -275,10 +276,10 @@ function AdCard({
             </p>
           </div>
           <div className="relative flex flex-row justify-between w-full">
-            {/* <TextContainer
+            <TextContainer
               title={item.title}
-              description={item.positions?.location_id ?? ""}
-            /> */}
+              description={item.items?.filter((f) => f.id == 'location')?.[0]?.value}
+            />
             <AdCardButton
               user={user}
               id={item?.num}
