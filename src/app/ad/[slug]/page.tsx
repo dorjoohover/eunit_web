@@ -239,11 +239,11 @@ export default function AdDynamicPage({
                 {data && (
                   <div className="flex items-end justify-between xl:hidden">
                     <SmallUserInfo
-                      id={(data.user as UserModel)._id ?? ""}
-                      email={(data.user as UserModel).email}
-                      username={(data.user as UserModel)?.username}
+                      id={(data.user as UserModel)?._id ?? ""}
+                      email={(data.user as UserModel)?.email ?? ""}
+                      username={(data.user as UserModel)?.username ?? ""}
                       phone={
-                        data.items?.filter((f) => f.id == "phone")[0].value
+                        data.items?.filter((f) => f.id == "phone")?.[0]?.value
                       }
                       agent={
                         (data.user as UserModel)?.userType == "default"
@@ -307,6 +307,7 @@ export default function AdDynamicPage({
                 >
                   <div className="grid items-center justify-between w-full grid-cols-2 gap-3 md:grid-cols-4">
                     {data?.items?.map((p, i) => {
+                      console.log(p);
                       return (
                         <Fragment key={i}>
                           {(p.position == "top" || p.position == "any") && (
@@ -490,11 +491,12 @@ export default function AdDynamicPage({
                     <div>
                       <div className="p-2 bg-white rounded-md w-auto xl:w-[320px]">
                         <UserInfo
-                          id={(data.user as UserModel)._id!}
-                          email={(data.user as UserModel).email}
+                          id={(data.user as UserModel)?._id ?? ""}
+                          email={(data.user as UserModel)?.email ?? ""}
                           username={(data.user as UserModel)?.username}
                           phone={
-                            data.items?.filter((f) => f.id == "phone")[0].value
+                            data.items?.filter((f) => f.id == "phone")?.[0]
+                              ?.value
                           }
                           agent={
                             (data.user as UserModel)?.userType == "default"

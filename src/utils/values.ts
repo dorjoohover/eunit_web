@@ -14,7 +14,7 @@ import { GridOptions, SwiperOptions } from "swiper/types";
 
 // export const url = "http://localhost:3000";
 // export const url = "http://103.50.206.58";
-// export const api = "http://103.50.206.58:5050/api/";
+// export const api = "http://172.24.48.1:5050/api/";
 
 
 
