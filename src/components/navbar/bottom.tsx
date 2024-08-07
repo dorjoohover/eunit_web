@@ -126,6 +126,7 @@ const Bottom = ({
               <input
                 onChange={(e) => setSearch(e.target.value)}
                 type="text"
+                autoFocus
                 placeholder="Зараа хайна уу"
                 onKeyDown={(event: any) => {
                   if (event.key === "Enter") {

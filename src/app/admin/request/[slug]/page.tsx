@@ -52,7 +52,7 @@ export default function RequestDynamicPage({
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { categories } = useAppContext();
   const { isLoaded } = useLoadScript({
-    googleMapsApiKey: "AIzaSyC2u2OzBNo53GxJJdN3Oc_W6Yc42OmdZcE",
+    googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY as string,
     libraries: GoogleMapsOptions.libraries,
     // libraries: libraries,
   });

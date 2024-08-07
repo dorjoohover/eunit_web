@@ -15,7 +15,7 @@ import mergeNames from "@/utils/functions";
 import WhiteBox from "./product/whiteBox";
 import ImageGallery from "react-image-gallery";
 
-import { GoogleMapsOptions, imageApi } from "@/utils/values";
+import { GoogleMapsOptions, imageApi, locationCenter } from "@/utils/values";
 import { GoogleMapsType, StepTypes } from "@/utils/type";
 import { CategoryStepsModel } from "@/models/category.model";
 import { CreateAdSteps } from "@/config/enum";
@@ -59,13 +59,6 @@ const StepButtons = ({
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  // const { categories, setAds } = useAuth();
-
-  // const { isLoaded } = useLoadScript({
-  //   googleMapsApiKey: "AIzaSyC2u2OzBNo53GxJJdN3Oc_W6Yc42OmdZcE",
-  //   libraries: GoogleMapsOptions.libraries,
-  //   // libraries: libraries,
-  // });
   const mapOptions = useMemo(
     () => ({
       disableDefaultUI: true,
@@ -77,8 +70,8 @@ const StepButtons = ({
   const mapCenter = useMemo<GoogleMapsType>(
     () =>
       ({
-        lat: data?.map?.lat ?? 47.91887307876936,
-        lng: data?.map?.lng ?? 106.91757202148438,
+        lat: data?.map?.lat ?? locationCenter.lat,
+        lng: data?.map?.lng ?? locationCenter.lng,
       } as GoogleMapsType),
     [data]
   );

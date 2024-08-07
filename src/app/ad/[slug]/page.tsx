@@ -34,23 +34,13 @@ import { IoBedOutline } from "react-icons/io5";
 import { TbBath } from "react-icons/tb";
 
 import mergeNames, { getSellType, getSuggestionValue } from "@/utils/functions";
-// import ProductInfoValue from "@/components/createAd/product/productInfoValue";
-import { FiltersContainer } from "@/components/createAd/step4/filter";
-import { AppProps } from "next/app";
 import ScrollTop from "@/components/global/scrollTop";
 import MainContainer from "@/components/containers/mainContainer";
 import Engage from "@/components/product/engage";
-import { FetchAdUnitType, GeneralDataType, ItemType } from "@/utils/type";
-import { GoogleMapsOptions, api, imageApi } from "@/utils/values";
-import ProductInfoValue from "@/components/createAd/product/productInfoValue";
-import { ItemModel } from "@/models/items.model";
-import { ItemTypes } from "@/config/enum";
+import { FetchAdUnitType, ItemType } from "@/utils/type";
+import { GoogleMapsOptions, imageApi, locationCenter } from "@/utils/values";
 import { AdModel } from "@/models/ad.model";
-import {
-  getAdById,
-  getSuggestionAds,
-  getSuggestionAdsByCategory,
-} from "@/app/(api)/ad.api";
+import { getAdById, getSuggestionAds } from "@/app/(api)/ad.api";
 import moment from "moment";
 import UserInfo, {
   SmallProductHeader,
@@ -96,7 +86,7 @@ export default function AdDynamicPage({
   const [suggestion, setSuggestion] = useState("map");
   const [suggestedAds, setSuggestedAds] = useState<FetchAdUnitType>();
   const { isLoaded } = useLoadScript({
-    googleMapsApiKey: "AIzaSyC2u2OzBNo53GxJJdN3Oc_W6Yc42OmdZcE",
+    googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY as string,
     libraries: GoogleMapsOptions.libraries,
   });
   // const token = getCookie("token");
@@ -147,8 +137,12 @@ export default function AdDynamicPage({
   };
   const mapCenter = useMemo(
     () => ({
-      lat: parseFloat(data?.location?.lat?.toString() ?? "47.91887307876936"),
-      lng: parseFloat(data?.location?.lng?.toString() ?? "106.91757202148438"),
+      lat: parseFloat(
+        data?.location?.lat?.toString() ?? locationCenter.lat.toString()
+      ),
+      lng: parseFloat(
+        data?.location?.lng?.toString() ?? locationCenter.lng.toString()
+      ),
     }),
     [data]
   );

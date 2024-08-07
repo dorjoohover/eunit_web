@@ -24,6 +24,12 @@ export const api = "https://srv549330.hstgr.cloud/api/";
 export const imageApi = `${api}file/`;
 // export const url = "http://localhost:3000/";
 // export const url = "https://chat-app-web-xi.vercel.app";
+
+export const locationCenter = {
+  lat: 47.91887307876936,
+  lng: 106.91757202148438
+}
+
 export const navbar = [
   {
     text: nav1,
@@ -201,16 +207,15 @@ export const SellTypes = [
     id: AdSellType.rent,
     name: "Түрээслүүлэх",
   },
-  {
-    id: AdSellType.sellRent,
-    name: "Зарах, түрээслүүлэх",
-  },
+  // {
+  //   id: AdSellType.sellRent,
+  //   name: "Зарах, түрээслүүлэх",
+  // },
 ];
 
 export const SellTypesString = [
   "Зарах",
   "Түрээслүүлэх",
-  "Зарах & түрээслүүлэх",
 ];
 
 export const CommitteeData = [

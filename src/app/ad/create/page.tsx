@@ -6,8 +6,8 @@ import StepProgress from "@/components/global/stepProgress";
 import useAd from "@/components/global/useAd";
 import { AdSellType, Api, CreateAdSteps } from "@/config/enum";
 import { CategoryModel, CategoryStepsModel } from "@/models/category.model";
-import { ConstantApi, GoogleMapsOptions } from "@/utils/values";
-import { Heading, Spinner, useToast } from "@chakra-ui/react";
+import { ConstantApi, GoogleMapsOptions, locationCenter } from "@/utils/values";
+import { Center, Heading, Spinner, useToast } from "@chakra-ui/react";
 import { useEffect, useMemo, useState } from "react";
 import {
   GoogleMap,
@@ -88,7 +88,6 @@ export default function AdCreatePage() {
   const [isLoading, setIsLoading] = useState(false);
   // checking validation of steps in here
   const handleNextStep = () => {
-
     if (currentStep === -1)
       return checkConditionOnNextStep(
         types.categoryName != "" &&
@@ -146,7 +145,7 @@ export default function AdCreatePage() {
       }
     });
     let cateId = categories[types.categoryId!]._id;
-    
+
     await createAd(
       fImages,
       { ...locationData, ...generalData, ...moreData },
@@ -228,14 +227,12 @@ export default function AdCreatePage() {
   );
   const mapCenter = useMemo(
     () => ({
-      lat: 47.91887307876936,
-      lng: 106.91757202148438,
+      lat: locationCenter.lat,
+      lng: locationCenter.lng,
     }),
     []
   );
-  if (!isLoaded) {
-    return <Loading />;
-  }
+  if (!isLoaded || isLoading) return <Loading />;
   return (
     <div className="min-h-[80vh] py-10">
       <ContainerX>
@@ -295,7 +292,11 @@ export default function AdCreatePage() {
                         />
                       )}
                     </GoogleMap>
-                  ) : <div className="w-full h-[40vh]"><Spinner/></div>}
+                  ) : (
+                    <div className="w-full h-[40vh]">
+                      <Spinner />
+                    </div>
+                  )}
                 </div>
               );
             if (index == 1)

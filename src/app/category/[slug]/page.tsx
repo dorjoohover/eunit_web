@@ -82,7 +82,7 @@ const Category = ({ params }: { params: { slug: string } }) => {
   const [markerActive, setMarkerActive] = useState<number | null>(null);
 
   const { isLoaded } = useLoadScript({
-    googleMapsApiKey: "AIzaSyC2u2OzBNo53GxJJdN3Oc_W6Yc42OmdZcE",
+    googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY as string,
     libraries: libraries as Libraries,
   });
   const mapOptions = useMemo(
@@ -95,10 +95,10 @@ const Category = ({ params }: { params: { slug: string } }) => {
   );
   const mapCenter = useMemo(
     () => ({
-      lat: 47.91887307876936,
-      lng: 106.91757202148438,
+      lat: ads?.defaultAds?.[0]?.location?.lat ?? 47.91887307876936,
+      lng: ads?.defaultAds?.[0]?.location?.lng ?? 106.91757202148438,
     }),
-    []
+    [ads, ads?.defaultAds]
   );
 
   return (
