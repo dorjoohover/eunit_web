@@ -60,7 +60,7 @@ export default function ProductInfo({
       )}
       <GridItem
         className={mergeNames(
-          title.length > 30
+          title?.length > 30
             ? "product__info col-span-full md:col-span-2 lg:col-span-1 row-start-1"
             : "product__info",
           "bg-white shadow rounded-md",
