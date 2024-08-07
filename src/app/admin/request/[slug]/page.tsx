@@ -14,9 +14,11 @@ import { FetchAdUnitType, GoogleMapsType } from "@/utils/type";
 import {
   Box,
   Button,
+  Center,
   Heading,
   Radio,
   RadioGroup,
+  Spinner,
   Text,
   useDisclosure,
   useToast,
@@ -77,10 +79,12 @@ export default function RequestDynamicPage({
   }>();
 
   const [num, setNum] = useState(0);
+  const [loading, setLoading] = useState(false);
   const toast = useToast();
   const router = useRouter();
 
   const getAds = async (status: AdStatus, n?: number, cate?: string) => {
+    setLoading(true);
     await getAdminAds(AdTypes.all, n ?? num, status, 20, 0, cate ?? "").then(
       (d) => {
         if (d != null) {
@@ -88,6 +92,7 @@ export default function RequestDynamicPage({
         }
       }
     );
+    setLoading(false);
   };
   const getCategories = async () => {
     await getConstants(`${ConstantApi.category}false`, Api.GET).then((d) =>
@@ -167,8 +172,8 @@ export default function RequestDynamicPage({
   };
   return (
     <Fragment>
-      <div className="flex flex-row justify-center p-5 min-h-[60vh]">
-        <div className="p-5 ">
+      <div className="flex flex-row justify-center p-5 min-h-[60vh] w-[90vw] mx-auto">
+        <div className="p-5 w-full">
           {/* <Text>Zariin dugaar: {a.num}</Text>
             <Button onClick={() => verify(a._id)}>verify</Button>
               <Button onClick={() => deleteAd(a._id)}>delete</Button> */}
@@ -282,150 +287,160 @@ export default function RequestDynamicPage({
                 </button>
               </Link>
             )}
-            <table className="w-full p-2 text-sm text-left border border-gray-400 table-auto">
-              <thead>
-                <tr>
-                  <th className="w-[10%]">Дугаар</th>
-                  <th>Гарчиг</th>
-                  {/* <th>Дэлгэрэнгүй</th> */}
-                  <th className="w-1/2">Зарын дэлгэрэнгүй</th>
-                  <th>Зарын статус</th>
-                  <th>Зөвшөөрөх</th>
-                  <th>Үйлдэл</th>
-                  {/* <th>Засах</th> */}
-                </tr>
-              </thead>
-              <tbody>
-                {ads?.ads?.map((a, i) => {
-                  let adData = { ...a };
-                  return (
-                    <tr key={i}>
-                      <td width="10%" className="flex justify-between">
-                        {a.num}{" "}
-                        <Button
-                          className={mergeNames(
-                            STYLES.blueButton,
-                            "text-sm h-[30px] px-2 py-1"
-                          )}
-                          onClick={() => view(a)}
-                        >
-                          Үзэх
-                        </Button>
-                      </td>
-                      <td className="truncate ...">{a.title}</td>
-                      <td className="w-1/2 truncate ... ">
-                        {a.description.slice(0, 75)}
-                      </td>
-                      <td
-                        className={mergeNames(
-                          "truncate ... font-bold",
-                          a.adType == AdTypes.special ? "text-purple-900" : "",
-                          a.adType == AdTypes.default ? "text-primary" : ""
-                        )}
-                      >
-                        {a.adType}
-                      </td>
-                      <td
-                        className={mergeNames(
-                          "truncate ... font-bold",
-                          a.adStatus == AdStatus.returned
-                            ? "text-yellow-400"
-                            : "",
-                          a.adStatus == AdStatus.created
-                            ? "text-green-500"
-                            : "",
-                          a.adStatus == AdStatus.pending
-                            ? "text-yellow-500"
-                            : "",
-                          a.adStatus == AdStatus.checking ? "text-primary" : ""
-                        )}
-                      >
-                        {a.adStatus}
-                      </td>
-                      <td>
-                        <div
-                          className={mergeNames(
-                            "flex flex-row justify-between"
-                            // 'p-2 rounded-md bg-white',
-                          )}
-                        >
-                          <button
-                            onClick={() => {
-                              if (expand == 0) {
-                                setExpand(i + 1);
-                              } else {
-                                setExpand(0);
-                              }
-                            }}
-                            className="float-left mx-0 text-lg text-black -rotate-90"
+            {loading ? (
+              <Center minH={"60vh"}>
+                <Spinner />
+              </Center>
+            ) : (
+              <table className="w-full p-2 text-sm text-left border border-gray-400 table-auto">
+                <thead>
+                  <tr>
+                    <th className="w-[10%]">Дугаар</th>
+                    <th>Гарчиг</th>
+                    {/* <th>Дэлгэрэнгүй</th> */}
+                    <th className="w-1/2">Зарын дэлгэрэнгүй</th>
+                    <th>Зарын статус</th>
+                    <th>Зөвшөөрөх</th>
+                    <th>Үйлдэл</th>
+                    {/* <th>Засах</th> */}
+                  </tr>
+                </thead>
+                <tbody>
+                  {ads?.ads?.map((a, i) => {
+                    let adData = { ...a };
+                    return (
+                      <tr key={i}>
+                        <td width="10%" className="flex justify-between">
+                          {a.num}{" "}
+                          <Button
+                            className={mergeNames(
+                              STYLES.blueButton,
+                              "text-sm h-[30px] px-2 py-1"
+                            )}
+                            onClick={() => view(a)}
                           >
-                            <MdOutlineArrowDropDownCircle
-                              className={mergeNames(
-                                expand == i + 1 ? "text-blue-600 " : ""
-                              )}
-                            />
-                          </button>
+                            Үзэх
+                          </Button>
+                        </td>
+                        <td className="truncate ...">{a.title}</td>
+                        <td className="w-1/2 truncate ... ">
+                          {a.description.slice(0, 75)}
+                        </td>
+                        <td
+                          className={mergeNames(
+                            "truncate ... font-bold",
+                            a.adType == AdTypes.special
+                              ? "text-purple-900"
+                              : "",
+                            a.adType == AdTypes.default ? "text-primary" : ""
+                          )}
+                        >
+                          {a.adType}
+                        </td>
+                        <td
+                          className={mergeNames(
+                            "truncate ... font-bold",
+                            a.adStatus == AdStatus.returned
+                              ? "text-yellow-400"
+                              : "",
+                            a.adStatus == AdStatus.created
+                              ? "text-green-500"
+                              : "",
+                            a.adStatus == AdStatus.pending
+                              ? "text-yellow-500"
+                              : "",
+                            a.adStatus == AdStatus.checking
+                              ? "text-primary"
+                              : ""
+                          )}
+                        >
+                          {a.adStatus}
+                        </td>
+                        <td>
                           <div
                             className={mergeNames(
-                              expand == i + 1 ? "flex" : "hidden",
-                              "justify-center  flex-end  gap-2"
+                              "flex flex-row justify-between"
+                              // 'p-2 rounded-md bg-white',
                             )}
-                            onClick={() => {
-                              setExpand(0);
-                            }}
                           >
-                            {a.adStatus != "created" && (
+                            <button
+                              onClick={() => {
+                                if (expand == 0) {
+                                  setExpand(i + 1);
+                                } else {
+                                  setExpand(0);
+                                }
+                              }}
+                              className="float-left mx-0 text-lg text-black -rotate-90"
+                            >
+                              <MdOutlineArrowDropDownCircle
+                                className={mergeNames(
+                                  expand == i + 1 ? "text-blue-600 " : ""
+                                )}
+                              />
+                            </button>
+                            <div
+                              className={mergeNames(
+                                expand == i + 1 ? "flex" : "hidden",
+                                "justify-center  flex-end  gap-2"
+                              )}
+                              onClick={() => {
+                                setExpand(0);
+                              }}
+                            >
+                              {a.adStatus != "created" && (
+                                <CustomToast
+                                  className={mergeNames(
+                                    STYLES.button,
+                                    "bg-teal-500 justify-center w-7 h-7 "
+                                  )}
+                                  toastH="Хүсэлт явлаа"
+                                  onClick={() => verify(a._id)}
+                                  status="warning"
+                                  toastBtn={<SiVerizon />}
+                                />
+                              )}
+
                               <CustomToast
                                 className={mergeNames(
                                   STYLES.button,
-                                  "bg-teal-500 justify-center w-7 h-7 "
+                                  "bg-red-500 w-7 h-7 justify-center"
                                 )}
                                 toastH="Хүсэлт явлаа"
-                                onClick={() => verify(a._id)}
+                                onClick={() => deleteAd(a._id)}
                                 status="warning"
-                                toastBtn={<SiVerizon />}
+                                toastBtn={<MdDelete />}
                               />
-                            )}
 
-                            <CustomToast
-                              className={mergeNames(
-                                STYLES.button,
-                                "bg-red-500 w-7 h-7 justify-center"
-                              )}
-                              toastH="Хүсэлт явлаа"
-                              onClick={() => deleteAd(a._id)}
-                              status="warning"
-                              toastBtn={<MdDelete />}
-                            />
-
-                            {/* <EditAd
-                              setData={setAds}
-                              ads={ads}
-                              data={a}
-                              admin={true}
-                              onNext={async () => {
-                                await axios
-                                  .put(`${urls['test']}/ad/${a._id}`, a, {
-                                    headers: {
-                                      Authorization: `Bearer ${token}`,
-                                      'Access-Control-Allow-Headers': '*',
-                                      'Content-Type': 'application/json',
-                                      charset: 'UTF-8',
-                                    },
-                                  })
-                                  .then((d) => console.log(d.data));
-                              }}
-                            >
-                              <BiEdit />
-                            </EditAd>  */}
+                              {/* <EditAd
+                                setData={setAds}
+                                ads={ads}
+                                data={a}
+                                admin={true}
+                                onNext={async () => {
+                                  await axios
+                                    .put(`${urls['test']}/ad/${a._id}`, a, {
+                                      headers: {
+                                        Authorization: `Bearer ${token}`,
+                                        'Access-Control-Allow-Headers': '*',
+                                        'Content-Type': 'application/json',
+                                        charset: 'UTF-8',
+                                      },
+                                    })
+                                    .then((d) => console.log(d.data));
+                                }}
+                              >
+                                <BiEdit />
+                              </EditAd>  */}
+                            </div>
                           </div>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            )}
 
             <ul className="flex float-right list-style-none">
               {num > 0 && (
@@ -441,7 +456,7 @@ export default function RequestDynamicPage({
                   </button>
                 </li>
               )}
-              {ads.limit == 20 && (
+              {ads.limit >= 20 && ads.limit >( num - 1) * 20 && (
                 <li className="mx-2">
                   <button
                     className={mergeNames(STYLES.notActive)}
