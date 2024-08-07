@@ -176,6 +176,10 @@ export const adminNav = [
     tabName: "Үнэлгээ",
     id: "estimating",
   },
+  {
+    tabName: "Гарах",
+    id: "logout",
+  },
 ];
 
 export const SharingSellTypes = [

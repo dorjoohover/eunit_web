@@ -45,9 +45,7 @@ export default function AccountDetailLayout({
 
         <div
           className={mergeNames(
-            params.slug.toLowerCase() === "profile"
-              ? "md:w-[800px] w-full"
-              : "w-[100%]",
+            "w-[100%]",
             "relative bg-white shadow-lg rounded-2xl w-full p-5 md:p-10",
             "transition-all duration-500"
           )}

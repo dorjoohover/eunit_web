@@ -51,7 +51,7 @@ export default function ComparePage() {
               />
             </div>
             <h2 className="relative font-bold bg-[#eef0f2] p-2 z-0 flex justify-around">
-              <span className="bg-[#eef0f2] absolute top-0 left-0 w-screen h-full z-[-1]" />
+              <span className="bg-[#eef0f2] absolute top-0 left-0 w-full h-full z-[-1]" />
               <span>Мэдээлэл</span> <span>\</span>
               <span className="text-green-700">Үнэ</span>
             </h2>

@@ -82,7 +82,6 @@ export default function Home() {
       getUserData();
     }
   }, [session]);
-  const { compare } = useAppContext();
   return loading ? (
     <Loading />
   ) : (

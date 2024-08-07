@@ -40,5 +40,5 @@ export const logOut = async () => {
   await cookies().delete("status");
   await cookies().delete("current");
   await cookies().delete("type");
-  // return true
+  return true
 };
