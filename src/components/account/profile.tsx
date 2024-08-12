@@ -17,7 +17,7 @@ import Socials from "./details/socials";
 import ProfileImage from "./details/profileImage";
 import { updateProfile } from "@/app/(api)/user.api";
 import { ErrorMessages } from "@/utils/string";
-import { api, imageApi } from "@/utils/values";
+import { api, gmailImageUrl, imageApi } from "@/utils/values";
 
 const GroupLayout = ({
   title,
@@ -169,7 +169,6 @@ const Profile = ({ user }: { user: UserModel }) => {
         isOrg
       );
 
-
       res
         ? toast({
             title: "Амжилттай.",
@@ -275,8 +274,11 @@ const Profile = ({ user }: { user: UserModel }) => {
                 className="object-cover object-center  h-[25vh] overflow-hidden bg-gray-300 aspect-square "
                 alt="Current Profile"
                 src={
-                  user?.profileImg && user?.profileImg != '' ? `${imageApi}${user?.profileImg}`  :
-                  "https://www.pikpng.com/pngl/m/80-805068_my-profile-icon-blank-profile-picture-circle-clipart.png"
+                  user?.profileImg && user?.profileImg != ""
+                    ? user?.profileImg.startsWith(gmailImageUrl)
+                      ? user?.profileImg
+                      : `${imageApi}${user?.profileImg}`
+                    : "https://www.pikpng.com/pngl/m/80-805068_my-profile-icon-blank-profile-picture-circle-clipart.png"
                 }
                 referrerPolicy="no-referrer"
               />

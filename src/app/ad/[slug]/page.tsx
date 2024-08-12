@@ -33,7 +33,11 @@ import { FaCopy, FaHeart } from "react-icons/fa";
 import { IoBedOutline } from "react-icons/io5";
 import { TbBath } from "react-icons/tb";
 
-import mergeNames, { getSellType, getSuggestionValue } from "@/utils/functions";
+import mergeNames, {
+  getSellType,
+  getSuggestionValue,
+  profileImgUrl,
+} from "@/utils/functions";
 import ScrollTop from "@/components/global/scrollTop";
 import MainContainer from "@/components/containers/mainContainer";
 import Engage from "@/components/product/engage";
@@ -248,10 +252,9 @@ export default function AdDynamicPage({
                           ? "Агент"
                           : (data.user as UserModel)?.userType
                       }
-                      avatar={
-                        (data.user as UserModel)?.profileImg ??
-                        "https://www.pikpng.com/pngl/m/80-805068_my-profile-icon-blank-profile-picture-circle-clipart.png"
-                      }
+                      avatar={profileImgUrl(
+                        (data.user as UserModel).profileImg
+                      )}
                     />
 
                     <SmallProductHeader
@@ -502,10 +505,9 @@ export default function AdDynamicPage({
                               ? "Агент"
                               : (data.user as UserModel)?.userType
                           }
-                          avatar={
-                            (data.user as UserModel)?.profileImg ??
-                            "https://www.pikpng.com/pngl/m/80-805068_my-profile-icon-blank-profile-picture-circle-clipart.png"
-                          }
+                          avatar={profileImgUrl(
+                            (data.user as UserModel).profileImg
+                          )}
                         />
                         {/* {user && user._id == data?.user?._id && (
                             <EditAd

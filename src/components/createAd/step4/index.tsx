@@ -41,6 +41,10 @@ const Step4 = ({
         let cacheParent = cache.filter((c) => c.parent == f.parentId)?.[0];
         let cachePosition = cache.filter((c) => c.parent == f.position)?.[0];
         let others = [];
+        console.log(cacheParent, "parent");
+        console.log(cacheSelf, "self");
+        console.log(cachePosition, "position");
+        console.log(cache);
         if (
           f.other == true &&
           f.value?.find((v) => v.id == "other") == undefined
@@ -127,7 +131,7 @@ const Step4 = ({
             cacheParent?.parent == f.parentId && (
               <>
                 <FilterSelect
-                  key={i}
+                  key={Math.random()}
                   label={(state?.[key] as string) ?? f.name}
                   title={f.name}
                   data={
@@ -227,7 +231,7 @@ const Step4 = ({
             return (
               cacheParent?.parent == f.parentId && (
                 <ItemContainer
-                  key={i}
+                  key={Math.random()}
                   className={"flex flex-col items-center justify-center"}
                 >
                   <FormLabel title={f.name} />

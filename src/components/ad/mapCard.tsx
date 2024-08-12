@@ -1,5 +1,9 @@
 import { AdModel } from "@/models/ad.model";
-import mergeNames, { getSellType, stopPropagation } from "@/utils/functions";
+import mergeNames, {
+  getSellType,
+  profileImgUrl,
+  stopPropagation,
+} from "@/utils/functions";
 import currency from "currency.js";
 
 import { useRouter } from "next/navigation";
@@ -13,6 +17,7 @@ import { ApartmentIconInfo, calcValue } from "./card";
 import ItemContainer from "../createAd/product/itemContainer";
 import { ItemType } from "@/utils/type";
 import { imageApi } from "@/utils/values";
+import { Assets } from "@/utils/assets";
 
 const MapCard = ({ data }: { data: AdModel }) => {
   const router = useRouter();
@@ -62,12 +67,10 @@ const MapCard = ({ data }: { data: AdModel }) => {
             }}
           >
             <Image
-              src={
-                (data?.user as UserModel)?.profileImg == ""
-                  ? "/assets/images/logo/bom-white.png"
-                  : (data?.user as UserModel)?.profileImg ??
-                    "/assets/images/logo/bom-white.png"
-              }
+              src={profileImgUrl(
+                (data?.user as UserModel).profileImg,
+                Assets.logoMiniWhite
+              )}
               alt="BOM logo"
               objectFit="cover"
               className={mergeNames(

@@ -13,7 +13,11 @@ import { AiFillEdit } from "react-icons/ai";
 import { BsThreeDots } from "react-icons/bs";
 
 import { useAppContext } from "@/app/_context";
-import mergeNames, { getSellType, stopPropagation } from "@/utils/functions";
+import mergeNames, {
+  getSellType,
+  profileImgUrl,
+  stopPropagation,
+} from "@/utils/functions";
 import Tip from "../global/tip";
 import Alerting from "../global/alert";
 import { DButton, ImageCount, PButton } from "../global/button";
@@ -23,7 +27,7 @@ import { AdStatus } from "@/config/enum";
 import { UserModel } from "@/models/user.model";
 import { CategoryModel } from "@/models/category.model";
 import { Assets } from "@/utils/assets";
-import { api, imageApi } from "@/utils/values";
+import { api, gmailImageUrl, imageApi } from "@/utils/values";
 import Link from "next/link";
 import { ItemType } from "@/utils/type";
 
@@ -43,14 +47,14 @@ function AdCard({
   item: AdModel;
   deleteFunc?: () => void;
   isDelete?: boolean;
-  isUser?: boolean
+  isUser?: boolean;
   admin?: boolean;
   changeAd?: () => void;
   mine?: boolean;
   setType?: React.Dispatch<React.SetStateAction<string>>;
 }) {
   const [drop, setDrop] = useState(false);
-  
+
   const pushRouter = async () => {
     //     try {
     //       item?._id && router.push(`/ad/${item.num}`);
@@ -125,7 +129,7 @@ function AdCard({
           //   stopPropagation(e);
           //   pushRouter();
           // }}
-          >
+        >
           {/* {JSON.stringify(item.user)} */}
           <Tip lbl="Зарын эзэн">
             <button
@@ -139,13 +143,10 @@ function AdCard({
               }}
             >
               <Image
-                src={
-                  (item?.user as UserModel)?.profileImg == "" ||
-                  (item?.user as UserModel)?.profileImg == undefined
-                    ? isUser ? `${imageApi}${user.profileImg}` : Assets.logoMiniWhite 
-                    : `${imageApi}${(item?.user as UserModel)?.profileImg}` ??
-                      Assets.logoMiniWhite
-                }
+                src={profileImgUrl(
+                  (item.user as UserModel).profileImg,
+                  Assets.logoMiniWhite
+                )}
                 referrerPolicy="no-referrer"
                 alt="BOM logo"
                 objectFit="cover"
@@ -278,7 +279,9 @@ function AdCard({
           <div className="relative flex flex-row justify-between w-full">
             <TextContainer
               title={item.title}
-              description={item.items?.filter((f) => f.id == 'location')?.[0]?.value}
+              description={
+                item.items?.filter((f) => f.id == "location")?.[0]?.value
+              }
             />
             <AdCardButton
               user={user}

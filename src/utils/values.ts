@@ -25,6 +25,9 @@ export const imageApi = `${api}file/`;
 // export const url = "http://localhost:3000/";
 // export const url = "https://chat-app-web-xi.vercel.app";
 
+
+
+export const gmailImageUrl = "https://lh3.googleusercontent.com"
 export const locationCenter = {
   lat: 47.91887307876936,
   lng: 106.91757202148438

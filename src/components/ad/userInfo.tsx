@@ -1,5 +1,6 @@
 import { STYLES } from "@/styles/index";
 import mergeNames from "@/utils/functions";
+import { gmailImageUrl, imageApi } from "@/utils/values";
 
 import { Avatar } from "@chakra-ui/react";
 import currency from "currency.js";
@@ -94,8 +95,11 @@ export const SmallUserInfo = ({
         <Link href={`/account/${id}`}>
           <Avatar
             src={
-              avatar ??
-              "https://www.pikpng.com/pngl/m/80-805068_my-profile-icon-blank-profile-picture-circle-clipart.png"
+              avatar
+                ? avatar.startsWith(gmailImageUrl)
+                  ? avatar
+                  : `${imageApi}${avatar}`
+                : "https://www.pikpng.com/pngl/m/80-805068_my-profile-icon-blank-profile-picture-circle-clipart.png"
             }
             size={{ base: "xs", lg: "sm" }}
             className="cursor-pointer"

@@ -9,7 +9,7 @@ import { FiHeart } from "react-icons/fi";
 import { IoWalletOutline } from "react-icons/io5";
 import { AiOutlineCalculator } from "react-icons/ai";
 import { MdShare } from "react-icons/md";
-import mergeNames from "@/utils/functions";
+import mergeNames, { profileImgUrl } from "@/utils/functions";
 import { UserModel } from "@/models/user.model";
 import {
   Drawer,
@@ -26,7 +26,7 @@ import { signOut } from "next-auth/react";
 import { logOut } from "@/app/(api)/auth.api";
 import { useAppContext } from "@/app/_context";
 import { getUser } from "@/app/(api)/user.api";
-import { imageApi } from "@/utils/values";
+import { gmailImageUrl, imageApi } from "@/utils/values";
 
 const drawerItem = [
   {
@@ -84,15 +84,13 @@ const BodyDrawer = ({
         >
           <Image
             // src={user?.image}
-            src={
-              user?.profileImg ? `${imageApi}${user?.profileImg}`:
-              "https://www.pikpng.com/pngl/m/80-805068_my-profile-icon-blank-profile-picture-circle-clipart.png"
-            }
+            src={profileImgUrl(user?.profileImg)}
             alt="user image"
             referrerPolicy="no-referrer"
             className="w-[100px] aspect-square rounded-full bg-gray-400 object-cover mt-10"
           />
           <h2 className="text-[22px] mt-2 font-bold">{user?.username ?? ""}</h2>
+
           <h2 className="text-[14px] font-semibold">{user?.email ?? ""}</h2>
         </div>
       </div>

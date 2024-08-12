@@ -22,7 +22,7 @@ import { STYLES } from "@/styles/index";
 import moment from "moment";
 import { DButton, ImageCount } from "../global/button";
 import Alerting from "../global/alert";
-import mergeNames, { getSellType } from "@/utils/functions";
+import mergeNames, { getSellType, profileImgUrl } from "@/utils/functions";
 
 import { Navigation } from "swiper/modules";
 import { SwiperSlide, Swiper } from "swiper/react";
@@ -32,6 +32,7 @@ import { AdItemsModel, AdModel } from "@/models/ad.model";
 import { CategoryModel } from "@/models/category.model";
 import { UserModel } from "@/models/user.model";
 import { ItemType } from "@/utils/type";
+import { Assets } from "@/utils/assets";
 
 function ProCard({
   item,
@@ -192,7 +193,9 @@ function ProCard({
                       {p.id === "area" && (
                         <ItemContainer
                           lbl={p.name}
-                          Icon={({ data, onClick, id, ...props }: ItemType) => <BiArea {...props}  />}
+                          Icon={({ data, onClick, id, ...props }: ItemType) => (
+                            <BiArea {...props} />
+                          )}
                           text={calcValue(p.value, "байхгүй", "м.кв")}
                         />
                       )}
@@ -281,8 +284,8 @@ function ProCard({
                 <Image
                   // Eniig user bolgood darahaar ordgoor
                   src={
-                    (item?.user as UserModel)?.profileImg ??
-                    "/assets/images/logo/bom-white.png"
+                    (profileImgUrl((item?.user as UserModel)?.profileImg),
+                    Assets.logoMiniWhite)
                   }
                   referrerPolicy="no-referrer"
                   alt="BOM logo"

@@ -1,5 +1,5 @@
 import { AdSellType } from "@/config/enum";
-import { imageApi } from "./values";
+import { gmailImageUrl, imageApi } from "./values";
 
 export default function mergeNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -9,6 +9,14 @@ export const stopPropagation = (
 ) => {
   e.stopPropagation();
   e.nativeEvent.stopImmediatePropagation();
+};
+export const profileImgUrl = (url?: string, assets?: string) => {
+  return url && url != ""
+    ? url.startsWith(gmailImageUrl)
+      ? url
+      : `${imageApi}${url}`
+    : assets ??
+        "https://www.pikpng.com/pngl/m/80-805068_my-profile-icon-blank-profile-picture-circle-clipart.pn";
 };
 
 export const getSellType = (type: AdSellType | string) => {
