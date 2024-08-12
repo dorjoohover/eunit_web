@@ -31,9 +31,8 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const headerList = headers();
-  const referer = headerList.get("referer");
   const type = cookies().get('type')
+  
   return (
     <html lang="en" className={fonts.rubik.variable}>
     {/* <html lang="en"> */}

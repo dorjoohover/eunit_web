@@ -1,11 +1,9 @@
 import { STYLES } from "@/styles";
 import mergeNames from "@/utils/functions";
-import { Heading, Image, Spinner, useToast } from "@chakra-ui/react";
+import { Spinner, useToast } from "@chakra-ui/react";
 
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import WalletCard from "./wallet/walletCard";
-import { UserModel } from "@/models/user.model";
 import DialogBox from "../global/dialog";
 import WHistory from "./wallet/history";
 import { getUser, sendPointByUser } from "@/app/(api)/user.api";
@@ -56,7 +54,7 @@ export default function WalletPage() {
           duration: 1000,
         });
         setLoading(false);
-        update()
+        update();
       } else {
         toast({
           title: ErrorMessages.tryAgain,
@@ -88,7 +86,7 @@ export default function WalletPage() {
             }}
             value={point.email}
             required
-            />
+          />
 
           <input
             type="number"
@@ -97,9 +95,9 @@ export default function WalletPage() {
             onChange={(e) => {
               setPoint((prev) => ({ ...prev, point: e.target.value }));
             }}
-              value={point.point}
-              required
-              />
+            value={point.point}
+            required
+          />
 
           <textarea
             placeholder="Мэссэж"

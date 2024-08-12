@@ -27,19 +27,14 @@ import Link from "next/link";
 import ImageGallery from "react-image-gallery";
 import { useRouter } from "next/navigation";
 import { Fragment, useEffect, useMemo, useState } from "react";
-import { FiArrowRight } from "react-icons/fi";
 import { MdDelete, MdOutlineArrowDropDownCircle } from "react-icons/md";
 import { SiVerizon } from "react-icons/si";
-
-import { utils, writeFileXLSX } from "xlsx";
 import WhiteBox from "@/components/createAd/product/whiteBox";
-
-import { GoogleMap, MarkerF, useLoadScript } from "@react-google-maps/api";
-import { ConstantApi, GoogleMapsOptions, imageApi } from "@/utils/values";
+import { GoogleMap, MarkerF } from "@react-google-maps/api";
+import { ConstantApi, imageApi } from "@/utils/values";
 import ProductInfo from "@/components/createAd/product/info";
 import { ErrorMessages } from "@/utils/string";
 import { useAppContext } from "@/app/_context";
-import { FaCcAmazonPay } from "react-icons/fa";
 import { getConstants } from "@/app/(api)/constants.api";
 
 export default function RequestDynamicPage({
@@ -50,12 +45,8 @@ export default function RequestDynamicPage({
   const [ads, setAds] = useState<FetchAdUnitType>({ ads: [], limit: 0 });
   const [data, setData] = useState<AdModel>();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { categories } = useAppContext();
-  const { isLoaded } = useLoadScript({
-    googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY as string,
-    libraries: GoogleMapsOptions.libraries,
-    // libraries: libraries,
-  });
+  const { categories, isLoaded } = useAppContext();
+
   const mapOptions = useMemo(
     () => ({
       disableDefaultUI: true,
@@ -456,7 +447,7 @@ export default function RequestDynamicPage({
                   </button>
                 </li>
               )}
-              {ads.limit >= 20 && ads.limit >( num - 1) * 20 && (
+              {ads.limit >= 20 && ads.limit > (num - 1) * 20 && (
                 <li className="mx-2">
                   <button
                     className={mergeNames(STYLES.notActive)}

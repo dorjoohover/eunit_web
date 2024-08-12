@@ -1,10 +1,9 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useAppContext } from "./_context";
 import { getAds } from "./(api)/ad.api";
 import { useSession } from "next-auth/react";
-import { loginUser } from "./(api)/auth.api";
 import { getUser } from "./(api)/user.api";
 import Loading from "./loading";
 import { ContainerX } from "@/components/container";
@@ -12,22 +11,12 @@ import ProAdContent from "@/components/ad/proAdContent";
 import AdContent from "@/components/ad/adContent";
 import SwiperHeader from "@/components/swiperHeader";
 import CategorySelect from "@/components/categorySelect";
-import { UserModel } from "@/models/user.model";
 import { AdTypes, UserStatus } from "@/config/enum";
-import CompareSelect from "@/components/account/details/compareSelect";
 
 export default function Home() {
-  const {
-    ads,
-    setAds,
-    categories,
-    current,
-    setCurrent,
-    user,
-    setUser,
-    setMark,
-  } = useAppContext();
-  const { data: session, status } = useSession();
+  const { ads, setAds, categories, setCurrent, user, setUser, setMark } =
+    useAppContext();
+  const { data: session } = useSession();
   const [page, setPage] = useState({
     default: 0,
     special: 0,
@@ -55,7 +44,7 @@ export default function Home() {
     if (!loading) {
       getData();
     }
-  }, []);
+  }, [page]);
 
   const getUserData = async () => {
     setLoading(true);

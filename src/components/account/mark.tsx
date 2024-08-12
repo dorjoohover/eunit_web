@@ -1,7 +1,4 @@
-import { useEffect, useState } from "react";
 import AdCard from "../ad/card";
-import { getManyAds } from "@/app/(api)/ad.api";
-import { AdStatus, AdTypes } from "@/config/enum";
 import { FetchAdUnitType } from "@/utils/type";
 import { useAppContext } from "@/app/_context";
 import CompareSelect from "./details/compareSelect";

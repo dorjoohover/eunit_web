@@ -1,9 +1,8 @@
 import { brk, radioGroup } from "@/styles/index";
 
-import { Radio, RadioGroup, useToast } from "@chakra-ui/react";
+import { Radio, RadioGroup } from "@chakra-ui/react";
 
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { NoAds } from "./myAds";
 import { FetchAdUnitType } from "@/utils/type";
 import { CategoryModel } from "@/models/category.model";
@@ -22,14 +21,13 @@ const SharingAds = ({
 
   setAds,
   category,
-  }: {
+}: {
   setAds: React.Dispatch<React.SetStateAction<FetchAdUnitType>>;
   userAds: number;
   loading: boolean;
   ads: FetchAdUnitType;
   getAds: (status: AdStatus, id?: string, n?: number) => void;
   category?: CategoryModel[];
-  
 }) => {
   //   const [ads, setAds] = useState({ ads: [], limit: 0 });
   //   const [data, setData] = useState({ ads: [], limit: 0 });

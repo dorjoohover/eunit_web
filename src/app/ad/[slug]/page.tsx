@@ -1,8 +1,6 @@
 "use client";
 import {
   Box,
-  Button,
-  GridItem,
   Heading,
   HStack,
   IconButton,
@@ -14,7 +12,6 @@ import {
 import React, {
   Fragment,
   ReactElement,
-  ReactNode,
   useEffect,
   useMemo,
   useState,
@@ -71,7 +68,7 @@ export default function AdDynamicPage({
   params: { slug: string };
 }) {
   const [data, setData] = useState<AdModel>();
-
+  const { isLoaded } = useAppContext();
   const toast = useToast();
   const router = useRouter();
   const {
@@ -89,10 +86,7 @@ export default function AdDynamicPage({
   const [markerActive, setMarkerActive] = useState(0);
   const [suggestion, setSuggestion] = useState("map");
   const [suggestedAds, setSuggestedAds] = useState<FetchAdUnitType>();
-  const { isLoaded } = useLoadScript({
-    googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY as string,
-    libraries: GoogleMapsOptions.libraries,
-  });
+
   // const token = getCookie("token");
   const mapOptions = useMemo(
     () => ({
@@ -176,12 +170,12 @@ export default function AdDynamicPage({
 
   useEffect(() => {
     if (data) getSuggestion(suggestion);
-  }, [data]);
+  }, [data, suggestion]);
   useEffect(() => {
     if (params.slug) {
       getData();
     }
-  }, []);
+  }, [params]);
   // const [open, setOpen] = useState(false);
   const copyToClipboard = () => {
     navigator.clipboard.writeText(window.location.toString());

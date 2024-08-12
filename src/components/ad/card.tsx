@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { BiArea, BiDoorOpen } from "react-icons/bi";
 
 import { IoBedOutline } from "react-icons/io5";
@@ -9,7 +9,6 @@ import { Image, Select, Skeleton } from "@chakra-ui/react";
 import currency from "currency.js";
 
 import { useState } from "react";
-import { AiFillEdit } from "react-icons/ai";
 import { BsThreeDots } from "react-icons/bs";
 
 import { useAppContext } from "@/app/_context";
@@ -27,7 +26,7 @@ import { AdStatus } from "@/config/enum";
 import { UserModel } from "@/models/user.model";
 import { CategoryModel } from "@/models/category.model";
 import { Assets } from "@/utils/assets";
-import { api, gmailImageUrl, imageApi } from "@/utils/values";
+import { imageApi } from "@/utils/values";
 import Link from "next/link";
 import { ItemType } from "@/utils/type";
 

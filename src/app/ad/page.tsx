@@ -1,9 +1,7 @@
 "use client";
 
-import mergeNames from "@/utils/functions";
 import { useAppContext } from "../_context";
 
-import { useState } from "react";
 import { ContainerX } from "@/components/container";
 import ProAdContent from "@/components/ad/proAdContent";
 import AdContent from "@/components/ad/adContent";

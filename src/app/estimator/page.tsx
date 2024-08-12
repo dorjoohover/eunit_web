@@ -22,26 +22,25 @@ import {
 
 import {
   Button,
+  Image,
   NumberInput,
   NumberInputField,
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
 
-import { useRouter } from "next/navigation";
-import React, { Fragment, ReactNode, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { BiX } from "react-icons/bi";
 
 import { BsChevronDoubleDown } from "react-icons/bs";
-import { useSelector } from "react-redux";
+
 import { useAppContext } from "../_context";
 import { CategoryModel } from "@/models/category.model";
 import { STYLES } from "@/styles";
 import { filterCategoryById } from "../(api)/category.api";
 import { getConstants } from "../(api)/constants.api";
-import { CategoryApi, CommitteeData, ConstantApi } from "@/utils/values";
+import { CommitteeData, ConstantApi } from "@/utils/values";
 import { AdSellType, AdStatus, Api, ItemTypes } from "@/config/enum";
-import FieldSellType from "@/components/createAd/step1/fieldSellType";
 import { ItemDetailModel, ItemModel } from "@/models/items.model";
 import Input from "@/components/global/input";
 import Select from "@/components/global/select";
@@ -236,13 +235,13 @@ export default function EstimatorPage() {
       <div className="flex flex-col items-center">
         {/* <Step1 categories={passcategory} /> */}
         <div className="relative w-full overflow-hidden rounded-b-[50px] ">
-          <img
+          <Image
             src="/assets/utils/banner/calc-banner-blue.svg"
             className="w-full h-[50vh] object-cover"
             alt=""
           />
           <div className="absolute top-0 left-0 grid items-center justify-around w-full h-full grid-cols-1 gap-20 p-10 pb-4 text-white lg:grid-cols-2 md:pb-16 ">
-            <img
+            <Image
               src="/assets/utils/banner/calc-image.svg"
               alt=""
               className="w-[200px] object-cover absolute top-[20%] left-[60%] lg:left-[20%] opacity-60"

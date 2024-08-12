@@ -1,16 +1,5 @@
 "use server";
-import {
-  AdStatus,
-  AdTypes,
-  AdView,
-  Api,
-  CreateAdSteps,
-  ItemPosition,
-  ItemTypes,
-} from "@/config/enum";
-import { CategoryStepsModel } from "@/models/category.model";
-import { ItemModel } from "@/models/items.model";
-import { UserModel } from "@/models/user.model";
+import { AdStatus, AdTypes, AdView } from "@/config/enum";
 import { ErrorMessages } from "@/utils/string";
 import {
   AdFilterType,
@@ -22,7 +11,6 @@ import {
 import { AdApi, api } from "@/utils/values";
 
 import { cookies } from "next/headers";
-import { getUser } from "./user.api";
 import { imageUploader } from "./constants.api";
 
 export async function getAds(
@@ -57,7 +45,7 @@ export async function getSearchAds(value: string): Promise<FetchAdType> {
 }
 
 export async function createAd(
-  images: string[],
+  images: (string | undefined)[],
   data: StepTypes,
   types: CreateAdType,
   filters: any,

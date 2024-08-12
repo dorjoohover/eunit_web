@@ -2,19 +2,15 @@
 
 import { STYLES } from "@/styles/index";
 
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 import { useEffect, useState } from "react";
 import { useAppContext } from "../_context";
 import Profile from "@/components/account/profile";
-import MyAds from "@/components/account/myAds";
 import MainContainer from "@/components/containers/mainContainer";
 import mergeNames from "@/utils/functions";
-import { getUser } from "../(api)/user.api";
-import { UserStatus } from "@/config/enum";
 
 const Account = () => {
-  const pathname = usePathname();
   const params = useSearchParams();
   const [content, setContent] = useState(params.get("tab"));
   const { user } = useAppContext();
@@ -60,7 +56,7 @@ const Account = () => {
     if (params.get("tab") != null) {
       setContent(params.get("tab")!);
     }
-  }, [params.get("tab")]);
+  }, [params]);
 
   // const { tabs, loading, error } = useRemoteData();
 

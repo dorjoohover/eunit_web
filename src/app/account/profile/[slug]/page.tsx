@@ -4,7 +4,6 @@ import { getManyAds } from "@/app/(api)/ad.api";
 import { getUserById } from "@/app/(api)/user.api";
 import { SharingAds, UserAds } from "@/components/account/card";
 import Socials from "@/components/account/details/socials";
-import AdContent from "@/components/ad/adContent";
 import MainContainer from "@/components/containers/mainContainer";
 import { AdStatus, AdTypes, SocialsEnum } from "@/config/enum";
 import { UserModel } from "@/models/user.model";
@@ -53,34 +52,34 @@ export default function ProfileDynamicPage({
   };
 
   const getUser = async () => {
-    if (params?.slug != "") {
-      await getUserById(params.slug).then(async (d) => {
-        if (typeof d != "boolean") {
-          setUser(d);
-          setSocials([
-            {
-              name: SocialsEnum.facebook,
-              url: d?.socials?.[0]?.url ?? "",
-            },
-            {
-              name: SocialsEnum.instagram,
-              url: d?.socials?.[1]?.url ?? "",
-            },
-            {
-              name: SocialsEnum.telegram,
-              url: d?.socials?.[2]?.url ?? "",
-            },
-          ]);
-          getAds(d.ads);
-          let p = await imageExists(d?.profileImg ?? "");
-          setProfile(p);
-        }
-      });
-    }
+    await getUserById(params.slug).then(async (d) => {
+      if (typeof d != "boolean") {
+        setUser(d);
+        setSocials([
+          {
+            name: SocialsEnum.facebook,
+            url: d?.socials?.[0]?.url ?? "",
+          },
+          {
+            name: SocialsEnum.instagram,
+            url: d?.socials?.[1]?.url ?? "",
+          },
+          {
+            name: SocialsEnum.telegram,
+            url: d?.socials?.[2]?.url ?? "",
+          },
+        ]);
+        getAds(d.ads);
+        let p = await imageExists(d?.profileImg ?? "");
+        setProfile(p);
+      }
+    });
   };
   useEffect(() => {
-    getUser();
-  }, [params.slug]);
+    if (params.slug != "") {
+      getUser();
+    }
+  }, [params]);
   const tabs = [
     {
       tabHeader: "Зарууд",

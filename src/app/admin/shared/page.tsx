@@ -22,22 +22,25 @@ const SharedPage = () => {
     limit: 0,
   });
   const [check, setCheck] = useState(AdStatus.checking);
-  const [category, setCategory] = useState([]);
-  const [subCategory, setSubCategory] = useState([]);
 
   const [num, setNum] = useState(0);
   const toast = useToast();
   const router = useRouter();
-  const page = 20
+  const page = 20;
   const { user } = useAppContext();
   const getAds = async (status: AdStatus, n?: number, cate?: string) => {
-    await getAdminAds(AdTypes.sharing, n ?? num, status, page, ads.limit, cate ?? "").then(
-      (d) => {
-        if (d != null) {
-          setAds(d);
-        }
+    await getAdminAds(
+      AdTypes.sharing,
+      n ?? num,
+      status,
+      page,
+      ads.limit,
+      cate ?? ""
+    ).then((d) => {
+      if (d != null) {
+        setAds(d);
       }
-    );
+    });
     // await axios
     //   .get(`${urls["test"]}/ad/admin/sharing/${n ?? num}/${status}`, {
     //     headers: {

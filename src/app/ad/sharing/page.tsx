@@ -12,16 +12,14 @@ import StepButtons from "@/components/createAd/stepButtons";
 
 import FormTitle from "@/components/createAd/title";
 
-import { GoogleMap, MarkerF, useLoadScript } from "@react-google-maps/api";
+import { GoogleMap, MarkerF } from "@react-google-maps/api";
 
-import { useSelector } from "react-redux";
 import { useAppContext } from "@/app/_context";
 import { AdSellType, AdTypes, ItemPosition, ItemTypes } from "@/config/enum";
 import { CacheVarType, CreateAdType, StepTypes } from "@/utils/type";
 import { CategoryStepsModel } from "@/models/category.model";
 import { filterCategoryById } from "@/app/(api)/category.api";
 import { ItemModel } from "@/models/items.model";
-import { GoogleMapsOptions } from "@/utils/values";
 import Loading from "@/app/loading";
 import { ContainerX } from "@/components/container";
 import StepProgress from "@/components/global/stepProgress";
@@ -36,7 +34,7 @@ export default function AdSharingPage() {
   // // if (!user) router.push("/login");
 
   const [currentStep, setCurrentStep] = useState<number>(-2);
-  const { user, categories } = useAppContext();
+  const { user, categories, isLoaded } = useAppContext();
 
   //  STEP 1 DATA => HURUHNGIIN TURUL, DED TURUL, ZARIIN TURUL, ZARAH TURUL
 
@@ -76,15 +74,8 @@ export default function AdSharingPage() {
   };
   // THIS EFFECT IS FOR FETCHING FILTER DATA FOR STEP2,STEP3,STEP4
   useEffect(() => {
-    if (
-      categories != undefined &&
-      types.subCategoryId != "" &&
-      steps.length == 0
-    ) {
+    if (types.subCategoryId != "") {
       filterCategory(types.subCategoryId);
-    }
-    if (types.categoryName && types.subCategoryId) {
-    } else {
     }
   }, [types]);
   const [isLoading, setIsLoading] = useState(false);
@@ -228,9 +219,9 @@ export default function AdSharingPage() {
           isClosable: true,
         });
         router.push("/account/sharedads");
-        } else {
-          router.push('/ad/sharing')
-        }
+      } else {
+        router.push("/ad/sharing");
+      }
     });
     clear();
 
@@ -281,13 +272,7 @@ export default function AdSharingPage() {
   const top = () => {
     window.scrollTo(0, 0);
   };
-  const libraries = useMemo(() => ["places"], []);
 
-  const { isLoaded } = useLoadScript({
-    googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY as string,
-    libraries: GoogleMapsOptions.libraries,
-    // libraries: libraries,
-  });
   const mapOptions = useMemo(
     () => ({
       disableDefaultUI: true,

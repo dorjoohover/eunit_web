@@ -3,15 +3,14 @@ import mergeNames from "@/utils/functions";
 
 import { Radio, RadioGroup, Spinner, useToast } from "@chakra-ui/react";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import FilterAd from "./details/filterAd";
 import { FetchAdUnitType } from "@/utils/type";
 import { CategoryModel } from "@/models/category.model";
 import Alerting from "../global/alert";
 import AdCard from "../ad/card";
-import { AdStatus, AdTypes } from "@/config/enum";
-import { AdModel } from "@/models/ad.model";
+import { AdStatus } from "@/config/enum";
 import CustomPagination from "../global/customPagination";
 
 const MyAds = ({

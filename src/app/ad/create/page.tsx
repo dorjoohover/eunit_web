@@ -3,30 +3,18 @@
 import { useAppContext } from "@/app/_context";
 import { ContainerX } from "@/components/container";
 import StepProgress from "@/components/global/stepProgress";
-import useAd from "@/components/global/useAd";
 import {
   AdSellType,
-  Api,
   CreateAdSteps,
   ItemPosition,
   ItemTypes,
 } from "@/config/enum";
-import { CategoryModel, CategoryStepsModel } from "@/models/category.model";
-import { ConstantApi, GoogleMapsOptions, locationCenter } from "@/utils/values";
-import { Center, Heading, Spinner, useToast } from "@chakra-ui/react";
+import { CategoryStepsModel } from "@/models/category.model";
+import { locationCenter } from "@/utils/values";
+import { Heading, Spinner, useToast } from "@chakra-ui/react";
 import { useEffect, useMemo, useState } from "react";
-import {
-  GoogleMap,
-  MarkerF,
-  MarkerProps,
-  useLoadScript,
-} from "@react-google-maps/api";
-import {
-  CacheVarType,
-  CreateAdType,
-  GeneralDataType,
-  StepTypes,
-} from "@/utils/type";
+import { GoogleMap, MarkerF } from "@react-google-maps/api";
+import { CacheVarType, CreateAdType, StepTypes } from "@/utils/type";
 import Step1 from "@/components/createAd/step1";
 import StepButtons from "@/components/createAd/stepButtons";
 import { filterCategoryById } from "@/app/(api)/category.api";
@@ -44,7 +32,7 @@ export default function AdCreatePage() {
 
   const [currentStep, setCurrentStep] = useState<number>(-1);
   const [steps, setSteps] = useState<CategoryStepsModel[]>([]);
-  const { user, categories } = useAppContext();
+  const { user, categories, isLoaded } = useAppContext();
 
   const [types, setTypes] = useState<CreateAdType>({
     categoryId: -1,
@@ -81,15 +69,8 @@ export default function AdCreatePage() {
   };
   // THIS EFFECT IS FOR FETCHING FILTER DATA FOR STEP2,STEP3,STEP4
   useEffect(() => {
-    if (
-      categories != undefined &&
-      types.subCategoryId != "" &&
-      steps.length == 0
-    ) {
+    if (types.subCategoryId != "") {
       filterCategory(types.subCategoryId);
-    }
-    if (types.categoryName && types.subCategoryId) {
-    } else {
     }
   }, [types]);
   const [isLoading, setIsLoading] = useState(false);
@@ -278,11 +259,6 @@ export default function AdCreatePage() {
   };
   // const libraries = useMemo(() => ["places"], []);
 
-  const { isLoaded } = useLoadScript({
-    googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY as string,
-    libraries: GoogleMapsOptions.libraries,
-    // libraries: libraries,
-  });
   const mapOptions = useMemo(
     () => ({
       disableDefaultUI: true,

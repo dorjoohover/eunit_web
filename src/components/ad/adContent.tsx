@@ -12,8 +12,6 @@ import mergeNames from "@/utils/functions";
 import AdCard from "./card";
 import SwiperNav from "../global/swiperNav";
 import { useRouter } from "next/navigation";
-import CompareSelect from "../account/details/compareSelect";
-import { useAppContext } from "@/app/_context";
 
 const AdContent = ({
   inCat = true,

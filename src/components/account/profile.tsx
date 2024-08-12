@@ -3,7 +3,7 @@ import {
   OrganizationAdditionModel,
   UserModel,
 } from "@/models/user.model";
-import mergeNames, { imageExists } from "@/utils/functions";
+import mergeNames, { imageExists, profileImgUrl } from "@/utils/functions";
 import { Image, Spinner, useToast } from "@chakra-ui/react";
 
 import moment from "moment";
@@ -17,7 +17,6 @@ import Socials from "./details/socials";
 import ProfileImage from "./details/profileImage";
 import { updateProfile } from "@/app/(api)/user.api";
 import { ErrorMessages } from "@/utils/string";
-import { api, gmailImageUrl, imageApi } from "@/utils/values";
 
 const GroupLayout = ({
   title,
@@ -273,13 +272,7 @@ const Profile = ({ user }: { user: UserModel }) => {
               <Image
                 className="object-cover object-center  h-[25vh] overflow-hidden bg-gray-300 aspect-square "
                 alt="Current Profile"
-                src={
-                  user?.profileImg && user?.profileImg != ""
-                    ? user?.profileImg.startsWith(gmailImageUrl)
-                      ? user?.profileImg
-                      : `${imageApi}${user?.profileImg}`
-                    : "https://www.pikpng.com/pngl/m/80-805068_my-profile-icon-blank-profile-picture-circle-clipart.png"
-                }
+                src={profileImgUrl(user.profileImg)}
                 referrerPolicy="no-referrer"
               />
             </div>

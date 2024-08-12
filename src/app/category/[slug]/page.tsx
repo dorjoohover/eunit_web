@@ -1,5 +1,5 @@
 "use client";
-import { getAdByCategory, getFilteredAd } from "@/app/(api)/ad.api";
+import { getFilteredAd } from "@/app/(api)/ad.api";
 
 import { useAppContext } from "@/app/_context";
 import AdContent from "@/components/ad/adContent";
@@ -8,16 +8,11 @@ import ProAdContent from "@/components/ad/proAdContent";
 import { ContainerX } from "@/components/container";
 import MainContainer from "@/components/containers/mainContainer";
 import FilterLayout from "@/components/filter";
-import SkeletonContent from "@/components/global/skeletonContent";
 import { AdTypes, Api } from "@/config/enum";
 import { AdModel } from "@/models/ad.model";
-import { CategoryModel } from "@/models/category.model";
-import mergeNames from "@/utils/functions";
-import { ConstantApi } from "@/utils/values";
 import {
   Box,
   Button,
-  Image,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -27,20 +22,14 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 
-import {
-  GoogleMap,
-  InfoWindow,
-  Libraries,
-  MarkerF,
-  useLoadScript,
-} from "@react-google-maps/api";
+import { GoogleMap, InfoWindow, MarkerF } from "@react-google-maps/api";
 
 import { useEffect, useMemo, useState } from "react";
 import CategoryDynamicLoading from "./loading";
 import CompareSelect from "@/components/account/details/compareSelect";
 
 const Category = ({ params }: { params: { slug: string } }) => {
-  const { ads, setAds, compare } = useAppContext();
+  const { ads, setAds, compare, isLoaded } = useAppContext();
   const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState({
     default: 0,
@@ -78,13 +67,8 @@ const Category = ({ params }: { params: { slug: string } }) => {
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const libraries = useMemo(() => ["places"], []);
   const [markerActive, setMarkerActive] = useState<number | null>(null);
 
-  const { isLoaded } = useLoadScript({
-    googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY as string,
-    libraries: libraries as Libraries,
-  });
   const mapOptions = useMemo(
     () => ({
       disableDefaultUI: true,

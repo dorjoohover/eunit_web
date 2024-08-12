@@ -1,9 +1,6 @@
 import React from "react";
-import { useState } from "react";
-import { useEffect } from "react";
 import { NoAds } from "./myAds";
 import EstimatedCard, { EstimateButton } from "../estimateCard";
-import { getMyEstimate } from "@/app/(api)/estimate.api";
 import { EstimateModel } from "@/models/estimate.model";
 
 const Estimated = ({

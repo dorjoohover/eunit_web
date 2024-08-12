@@ -2,7 +2,6 @@
 
 import { getManyAds, getMyAds } from "@/app/(api)/ad.api";
 import { getMyEstimate } from "@/app/(api)/estimate.api";
-import { getUser, getUserById } from "@/app/(api)/user.api";
 import { useAppContext } from "@/app/_context";
 import Estimated from "@/components/account/estimated";
 import Mark from "@/components/account/mark";
@@ -11,7 +10,6 @@ import Profile from "@/components/account/profile";
 import SharingAds from "@/components/account/sharedAds";
 import WalletPage from "@/components/account/wallet";
 import { AdStatus, AdTypes } from "@/config/enum";
-import { CategoryModel } from "@/models/category.model";
 import { EstimateModel } from "@/models/estimate.model";
 import { FetchAdUnitType } from "@/utils/type";
 
@@ -102,7 +100,7 @@ export default function AccountDynamicPage({
     if (params.slug.toLowerCase() == "mark" && user != undefined && !loading) {
       getMarks();
     }
-  }, [params.slug, user]);
+  }, [params, user]);
   switch (params.slug.toLowerCase()) {
     case "myads":
       return (

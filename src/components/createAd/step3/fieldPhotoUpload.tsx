@@ -3,7 +3,7 @@ import { BiX } from "react-icons/bi";
 import { FiUploadCloud } from "react-icons/fi";
 import { AtomLabel } from "./atom";
 import { StepTypes } from "@/utils/type";
-import { useToast } from "@chakra-ui/react";
+import { Image, useToast } from "@chakra-ui/react";
 
 const FieldPhotoUpload = <T,>({
   data,
@@ -117,7 +117,7 @@ const FieldPhotoUpload = <T,>({
                   key={key}
                   className="h-[20vh] relative rounded-md flex justify-center items-center"
                 >
-                  <img
+                  <Image
                     src={image}
                     alt="image"
                     className="object-cover object-center w-full h-full overflow-hidden bg-gray-300 rounded-md"
