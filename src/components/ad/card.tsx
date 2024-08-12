@@ -100,7 +100,7 @@ function AdCard({
         )}
       >
         {/* zarin zurag absolute  */}
-        <Link href={`/ad/${item.num}`}>
+        <Link href={`${item.adStatus == "created" ? "/ad/" + item.num : "#"}`}>
           <div className="absolute top-0 bottom-0 left-0 right-0 z-0 w-full h-full cursor-pointer">
             {item?.images && (
               <Image
@@ -167,7 +167,6 @@ function AdCard({
               <button onClick={() => {}} disabled>
                 <BsThreeDots className="z-10 w-8 h-8 p-1 text-lg bg-white rounded-full " />
               </button>
-
               <div
                 className={mergeNames(
                   drop
@@ -218,34 +217,35 @@ function AdCard({
 
                 <div className="h-1" />
 
-                {item.adType == "default" && (
-                  <Tip lbl="Онцгой зар болгох">
-                    <Alerting
-                      body={
-                        <div className="flex flex-col gap-2">
-                          &quot;Танаас eunit wallet-с хасагдах болохыг анхаарна
-                          уу&quot;
-                          <Select
-                            placeholder="Онцгой зарын төрөл сонгох"
-                            onChange={(e) => {
-                              if (setType != null) setType(e.target.value);
-                            }}
-                          >
-                            <option value="special">
-                              10000 eunit = 5 хоног
-                            </option>
-                            <option value="specialM">
-                              15000 eunit = 10 хоног
-                            </option>
-                          </Select>
-                        </div>
-                      }
-                      isDelete={"Онцгой зар болгох"}
-                      btn={<PButton onClick={deleteFunc} isDelete={false} />}
-                      onClick={changeAd}
-                    />
-                  </Tip>
-                )}
+                {item.adType == "default" &&
+                  item.adStatus == AdStatus.created && (
+                    <Tip lbl="Онцгой зар болгох">
+                      <Alerting
+                        body={
+                          <div className="flex flex-col gap-2">
+                            &quot;Танаас eunit wallet-с хасагдах болохыг
+                            анхаарна уу&quot;
+                            <Select
+                              placeholder="Онцгой зарын төрөл сонгох"
+                              onChange={(e) => {
+                                if (setType != null) setType(e.target.value);
+                              }}
+                            >
+                              <option value="special">
+                                10000 eunit = 5 хоног
+                              </option>
+                              <option value="specialM">
+                                15000 eunit = 10 хоног
+                              </option>
+                            </Select>
+                          </div>
+                        }
+                        isDelete={"Онцгой зар болгох"}
+                        btn={<PButton onClick={deleteFunc} isDelete={false} />}
+                        onClick={changeAd}
+                      />
+                    </Tip>
+                  )}
               </div>
             </div>
           ) : (
@@ -282,12 +282,14 @@ function AdCard({
                 item.items?.filter((f) => f.id == "location")?.[0]?.value
               }
             />
-            <AdCardButton
-              user={user}
-              id={item?.num}
-              adId={item?._id}
-              cateId={(item?.subCategory as CategoryModel)?._id}
-            />
+            {item.adStatus == "created" && (
+              <AdCardButton
+                user={user}
+                id={item?.num}
+                adId={item?._id}
+                cateId={(item?.subCategory as CategoryModel)?._id}
+              />
+            )}
           </div>
           <div className="flex items-center justify-between gap-4 text-sm text-white font-md">
             <p className={mergeNames("font-semibold text-white mt-0")}>
