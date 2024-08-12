@@ -4,7 +4,13 @@ import { useAppContext } from "@/app/_context";
 import { ContainerX } from "@/components/container";
 import StepProgress from "@/components/global/stepProgress";
 import useAd from "@/components/global/useAd";
-import { AdSellType, Api, CreateAdSteps } from "@/config/enum";
+import {
+  AdSellType,
+  Api,
+  CreateAdSteps,
+  ItemPosition,
+  ItemTypes,
+} from "@/config/enum";
 import { CategoryModel, CategoryStepsModel } from "@/models/category.model";
 import { ConstantApi, GoogleMapsOptions, locationCenter } from "@/utils/values";
 import { Center, Heading, Spinner, useToast } from "@chakra-ui/react";
@@ -31,6 +37,7 @@ import FormTitle from "@/components/createAd/title";
 import { createAd } from "@/app/(api)/ad.api";
 import { useRouter } from "next/navigation";
 import Loading from "@/app/loading";
+import { imageUploader } from "@/app/(api)/constants.api";
 
 export default function AdCreatePage() {
   const toast = useToast();
@@ -132,27 +139,83 @@ export default function AdCreatePage() {
         });
   };
 
+  const sendPhoto = async () => {
+    let imagesRes = await Promise.all(
+      images.map(async (i) => {
+        let fImages = new FormData();
+        fImages.append("files", i);
+        let res = await imageUploader(fImages);
+        return res?.file[0];
+      })
+    );
+    return imagesRes.filter((i) => i != undefined);
+  };
+  const clear = async () => {
+    setCurrentStep(-1);
+    setSteps([]);
+    setTypes({
+      categoryId: -1,
+      categoryName: "",
+      subCategoryId: "",
+      category_ID: "",
+      sellType: AdSellType.nothing,
+      adType: "",
+    });
+    setLocationData(undefined);
+    setMoreData(undefined);
+    setCache([]);
+    setGeneralData({
+      price: 0,
+      area: 0,
+      unitPrice: 0,
+      title: "",
+      desc: "",
+      imgSelected: false,
+      images: [],
+      phone: parseInt(user?.phone ? user.phone : 0),
+    });
+    setImages([]);
+  };
+
   const sendAd = async () => {
     setIsLoading(true);
 
     setTypes((prev) => ({
       ...prev,
     }));
-    let fImages = new FormData();
-    images?.map((prev, i) => {
-      if (i < 8) {
-        fImages.append(`files`, prev);
-      }
+
+    const filters: {
+      name?: string;
+      id?: string;
+      value?: string;
+      position?: ItemPosition;
+      type?: ItemTypes;
+      index?: number;
+      isSearch?: boolean;
+      isUse?: boolean;
+    }[] = [];
+    let imagesRes = await sendPhoto();
+    const data = { ...locationData, ...generalData, ...moreData };
+    steps.map((step) => {
+      (step.values as ItemModel[]).map((value) => {
+        let key: keyof StepTypes;
+        key = value.type as keyof StepTypes;
+
+        filters.push({
+          name: value.name,
+          id: value.type,
+          value: data[key] as string,
+          position: value.position,
+          type: value.types,
+          index: value.index,
+          isSearch: value.isSearch ?? false,
+          isUse: value.isUse ?? false,
+        });
+      });
     });
     let cateId = categories[types.categoryId!]._id;
 
-    await createAd(
-      fImages,
-      { ...locationData, ...generalData, ...moreData },
-      types,
-      steps,
-      cateId
-    ).then((d) => {
+    await createAd(imagesRes, data, types, filters, cateId).then((d) => {
       if (d) {
         toast({
           title: "Амжилттай нэмэгдлээ.",
@@ -161,8 +224,11 @@ export default function AdCreatePage() {
           isClosable: true,
         });
         router.push("/account/myads");
+      } else {
+        router.push("/ad/sharing");
       }
     });
+    clear();
     setIsLoading(false);
   };
   const validateStep4 = async () => {

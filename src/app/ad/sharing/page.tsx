@@ -16,7 +16,7 @@ import { GoogleMap, MarkerF, useLoadScript } from "@react-google-maps/api";
 
 import { useSelector } from "react-redux";
 import { useAppContext } from "@/app/_context";
-import { AdSellType, AdTypes } from "@/config/enum";
+import { AdSellType, AdTypes, ItemPosition, ItemTypes } from "@/config/enum";
 import { CacheVarType, CreateAdType, StepTypes } from "@/utils/type";
 import { CategoryStepsModel } from "@/models/category.model";
 import { filterCategoryById } from "@/app/(api)/category.api";
@@ -27,6 +27,7 @@ import { ContainerX } from "@/components/container";
 import StepProgress from "@/components/global/stepProgress";
 import { createAd } from "@/app/(api)/ad.api";
 import SharingUpload from "@/components/createAd/sharingUpload";
+import { imageUploader } from "@/app/(api)/constants.api";
 
 export default function AdSharingPage() {
   const toast = useToast();
@@ -133,26 +134,85 @@ export default function AdSharingPage() {
           isClosable: true,
         });
   };
-
+  const sendPhoto = async () => {
+    let imagesRes = await Promise.all(
+      images.map(async (i) => {
+        let fImages = new FormData();
+        fImages.append("files", i);
+        let res = await imageUploader(fImages);
+        return res?.file[0];
+      })
+    );
+    return imagesRes.filter((i) => i != undefined);
+  };
+  const clear = async () => {
+    setCurrentStep(-1);
+    setSteps([]);
+    setTypes({
+      categoryId: -1,
+      categoryName: "",
+      subCategoryId: "",
+      category_ID: "",
+      sellType: AdSellType.nothing,
+      adType: "",
+    });
+    setLocationData(undefined);
+    setMoreData(undefined);
+    setCache([]);
+    setGeneralData({
+      price: 0,
+      area: 0,
+      unitPrice: 0,
+      title: "",
+      desc: "",
+      imgSelected: false,
+      images: [],
+      phone: parseInt(user?.phone ? user.phone : 0),
+    });
+    setImages([]);
+  };
   const sendAd = async () => {
     // setIsLoading(true);
-
+    const filters: {
+      name?: string;
+      id?: string;
+      value?: string;
+      position?: ItemPosition;
+      type?: ItemTypes;
+      index?: number;
+      isSearch?: boolean;
+      isUse?: boolean;
+    }[] = [];
+    let imagesRes = await sendPhoto();
     setTypes((prev) => ({
       ...prev,
       adType: AdTypes.sharing,
     }));
-    let fileUrl = new FormData();
-    if (file != null) fileUrl.append("files", file);
-    let imageUrl = new FormData();
-    if (images != null) images?.map((prev, i) => {
-      if (i < 8) {
-        imageUrl.append(`files`, prev);
-      }
+    const data = { ...locationData, ...generalData, ...moreData };
+    steps.map((step) => {
+      (step.values as ItemModel[]).map((value) => {
+        let key: keyof StepTypes;
+        key = value.type as keyof StepTypes;
+
+        filters.push({
+          name: value.name,
+          id: value.type,
+          value: data[key] as string,
+          position: value.position,
+          type: value.types,
+          index: value.index,
+          isSearch: value.isSearch ?? false,
+          isUse: value.isUse ?? false,
+        });
+      });
     });
     let cateId = categories[types.categoryId!]._id;
 
+    let fileUrl = new FormData();
+    if (file != null) fileUrl.append("files", file);
+
     await createAd(
-      imageUrl,
+      imagesRes,
       { ...locationData, ...generalData, ...moreData },
       types,
       steps,
@@ -168,8 +228,12 @@ export default function AdSharingPage() {
           isClosable: true,
         });
         router.push("/account/sharedads");
-      }
+        } else {
+          router.push('/ad/sharing')
+        }
     });
+    clear();
+
     setIsLoading(false);
   };
   const validateStep4 = async () => {

@@ -57,10 +57,10 @@ export async function getSearchAds(value: string): Promise<FetchAdType> {
 }
 
 export async function createAd(
-  images: FormData,
+  images: string[],
   data: StepTypes,
   types: CreateAdType,
-  steps: CategoryStepsModel[],
+  filters: any,
   cateId: string,
   isFile = false,
   file?: FormData
@@ -68,40 +68,11 @@ export async function createAd(
   try {
     const token = cookies().get("token");
 
-    const filters: {
-      name?: string;
-      id?: string;
-      value?: string;
-      position?: ItemPosition;
-      type?: ItemTypes;
-      index?: number;
-      isSearch?: boolean;
-      isUse?: boolean;
-    }[] = [];
-
-    let imagesRes = await imageUploader(images);
     let fileRes = file != undefined ? await imageUploader(file) : null;
-    if (imagesRes != null) {
-      steps.map((step) => {
-        (step.values as ItemModel[]).map((value) => {
-          let key: keyof StepTypes;
-          key = value.type as keyof StepTypes;
-
-          filters.push({
-            name: value.name,
-            id: value.type,
-            value: data[key] as string,
-            position: value.position,
-            type: value.types,
-            index: value.index,
-            isSearch: value.isSearch ?? false,
-            isUse: value.isUse ?? false,
-          });
-        });
-      });
+    if (images != null) {
       const body = isFile
         ? {
-            images: imagesRes.file,
+            images: images,
             title: data.title,
             description: data.desc,
             location: data.map,
@@ -115,7 +86,7 @@ export async function createAd(
             file: fileRes?.file[0],
           }
         : {
-            images: imagesRes.file,
+            images: images,
             title: data.title,
             description: data.desc,
             location: data.map,
@@ -127,7 +98,7 @@ export async function createAd(
             adStatus: "pending",
             view: "hide",
           };
-
+      console.log(JSON.stringify(body).length, "bytes");
       let res = await fetch(`${api}${AdApi.create}`, {
         method: "POST",
         headers: {
@@ -139,6 +110,7 @@ export async function createAd(
       }).then((d) => d.json());
 
       return res;
+      return false;
     } else {
       return false;
     }

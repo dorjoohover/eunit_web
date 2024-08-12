@@ -38,10 +38,11 @@ export async function imageUploader(images: FormData): Promise<{
       },
       body: images,
     }).then((d) => d.json());
+    images.delete('files')
    
     return res
   } catch (error) {
     console.log(error);
-    throw new Error(ErrorMessages.occured)
+    return null
   }
 }

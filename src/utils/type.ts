@@ -91,7 +91,7 @@ export type GoogleMapsType = {
 };
 
 export type CacheVarType = {
-  parent: string;
+  parent?: string;
   position?: string;
   value: string;
   id: string;

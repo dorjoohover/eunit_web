@@ -154,13 +154,12 @@ const Step4 = ({
                           e.persist();
                           handle((prev) => ({ ...prev, [key]: data }));
                           if (cacheParent != undefined) {
-                            cacheParent.value = data!;
-                            cacheParent.id = id!;
+                            // cacheParent.value = data!;
+                            // cacheParent.id = id!;
                           } else {
                             cache.push({
                               id: id!,
                               value: data!,
-                              parent: f.type,
                             });
                           }
 
