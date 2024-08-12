@@ -33,7 +33,7 @@ export default function AdCreatePage() {
   const [currentStep, setCurrentStep] = useState<number>(-1);
   const [steps, setSteps] = useState<CategoryStepsModel[]>([]);
   const { user, categories, isLoaded } = useAppContext();
-
+  const [filled, setFilled] = useState(false);
   const [types, setTypes] = useState<CreateAdType>({
     categoryId: -1,
     categoryName: "",
@@ -75,49 +75,108 @@ export default function AdCreatePage() {
   }, [types]);
   const [isLoading, setIsLoading] = useState(false);
   // checking validation of steps in here
-  const handleNextStep = () => {
-    if (currentStep === -1)
-      return checkConditionOnNextStep(
-        types.categoryName != "" &&
-          types.sellType != AdSellType.nothing &&
-          types.subCategoryId != ""
-      );
-    if (currentStep == 0) {
-      let check = true;
-
-      (steps[0].values as ItemModel[]).map((s) => {
-        let key: keyof StepTypes;
-        key = s.type as keyof StepTypes;
-
-        if (
-          locationData == undefined ||
-          locationData?.[key] == undefined ||
-          locationData?.[key] == ""
-        )
+  const stepChecker = (stps: number[]) => {
+    let check = true;
+    let message: string[] = [];
+    stps.map((step) => {
+      if (step == -1) {
+        if (types.categoryName == "") {
           check = false;
-      });
-      return checkConditionOnNextStep(check);
+          message.push("хөрөнгийн төрөл");
+        }
+        if (types.sellType == AdSellType.nothing) {
+          check = false;
+          message.push("борлуулах төрөл");
+        }
+        if (types.subCategoryId == "") {
+          check = false;
+          message.push("дэд төрөл");
+        }
+      }
+      if (step == 0) {
+        (steps[0].values as ItemModel[]).map((s) => {
+          let key: keyof StepTypes;
+          key = s.type as keyof StepTypes;
+
+          if (
+            locationData == undefined ||
+            locationData?.[key] == undefined ||
+            locationData?.[key] == ""
+          ) {
+            message.push(s.name.toLowerCase());
+            check = false;
+          }
+        });
+        if (!locationData?.map) {
+          check = false;
+          message.push("газрын зураг");
+        }
+      }
+      if (step == 1) {
+        if (generalData.price == 0) {
+          check = false;
+          message.push("үнэ");
+        }
+        if (generalData.area == 0) {
+          check = false;
+          message.push("талбай");
+        }
+        if (generalData.unitPrice == 0) {
+          check = false;
+          message.push("нэгж үнэ");
+        }
+        if (generalData.title == "") {
+          check = false;
+          message.push("гарчиг");
+        }
+        if (generalData.desc == "") {
+          check = false;
+          message.push("дэлгэрэнгүй мэдээлэл");
+        }
+        if (
+          generalData.phone == 0 ||
+          generalData.phone == undefined ||
+          generalData.phone?.toString().length != 8
+        ) {
+          check = false;
+          message.push("утасны дугаар");
+        }
+        if (images.length == 0) {
+          check = false;
+          message.push("зурагнууд");
+        }
+      }
+      if (step == 2) {
+        (steps[2].values as ItemModel[]).map((f) => {
+          let key: keyof StepTypes;
+          key = f.type as keyof StepTypes;
+          if (moreData?.[key] == undefined) {
+            check = false;
+            message.push(f.name);
+          }
+        });
+      }
+    });
+    if (!stps.includes(2)) setFilled(false);
+    else {
+      setFilled(check);
     }
-    if (currentStep === 1)
-      return checkConditionOnNextStep(
-        generalData.price != 0 &&
-          generalData.area != 0 &&
-          generalData.unitPrice != 0 &&
-          generalData.title != "" &&
-          generalData.desc != ""
-      );
-    if (currentStep === 2) return validateStep4();
+    message.map((m) => {
+      toast({
+        title: `Та ${m} талбарыг бөглөнө үү`,
+        status: "warning",
+      });
+    });
+    return check;
+  };
+  const handleNextStep = (step = currentStep) => {
+    return step != 2
+      ? checkConditionOnNextStep(stepChecker([step]))
+      : validateStep4();
   };
 
   const checkConditionOnNextStep = (value: boolean) => {
-    return value
-      ? setCurrentStep((prev) => prev + 1)
-      : toast({
-          title: "Та бүх талбарыг бөглөнө үү.",
-          status: "warning",
-          duration: 2000,
-          isClosable: true,
-        });
+    return value ? setCurrentStep((prev) => prev + 1) : null;
   };
 
   const sendPhoto = async () => {
@@ -214,15 +273,9 @@ export default function AdCreatePage() {
   };
   const validateStep4 = async () => {
     setIsLoading(true);
-
     let emptyAd = true;
-    (steps[2].values as ItemModel[]).map((f) => {
-      let key: keyof StepTypes;
-      key = f.type as keyof StepTypes;
-      if (moreData?.[key] == undefined) {
-        emptyAd = false;
-      }
-    });
+    emptyAd = stepChecker([-1, 0, 1, 2]);
+    setFilled(emptyAd);
     if (emptyAd) {
       if (user?.status != "banned") {
         await sendAd();
@@ -280,7 +333,15 @@ export default function AdCreatePage() {
       <ContainerX>
         <StepProgress
           activeStep={currentStep}
-          handleClick={(stepId) => setCurrentStep(stepId)}
+          handleClick={(stepId) => {
+            // console.log(stepChecker(Array.from({length: })));
+
+            if (
+              stepChecker(Array.from({ length: stepId + 1 }, (_, i) => i - 1))
+            ) {
+              setCurrentStep(stepId);
+            }
+          }}
           hasFourStep={types?.categoryName === "realState"}
         />
 
@@ -385,6 +446,7 @@ export default function AdCreatePage() {
           loading={isLoading}
           txt={currentStep == 2 ? "Илгээх" : "Дараах"}
           step={currentStep}
+          filled={filled}
         />
       </ContainerX>
     </div>

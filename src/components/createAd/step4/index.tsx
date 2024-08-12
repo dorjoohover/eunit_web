@@ -40,11 +40,7 @@ const Step4 = ({
         let cacheSelf = cache.filter((c) => c.parent == f.type)?.[0];
         let cacheParent = cache.filter((c) => c.parent == f.parentId)?.[0];
         let cachePosition = cache.filter((c) => c.parent == f.position)?.[0];
-        let others = [];
-        console.log(cacheParent, "parent");
-        console.log(cacheSelf, "self");
-        console.log(cachePosition, "position");
-        console.log(cache);
+
         if (
           f.other == true &&
           f.value?.find((v) => v.id == "other") == undefined
@@ -129,54 +125,53 @@ const Step4 = ({
         if (f.type == ItemTypes.committee) {
           return (
             cacheParent?.parent == f.parentId && (
-              <>
-                <FilterSelect
-                  key={Math.random()}
-                  label={(state?.[key] as string) ?? f.name}
-                  title={f.name}
-                  data={
-                    cacheParent.id != "country"
-                      ? CommitteeData
-                      : f.value?.filter((v) => v.parentId == cachePosition?.id)
-                  }
-                  requirement={
-                    cacheParent.id != undefined && cacheParent.id != ""
-                      ? false
-                      : true
-                  }
-                  Item={(items: ItemType) => {
-                    const { id, data, onClick, children } = items;
-                    return (
-                      <button
-                        key={id}
-                        {...items}
-                        onClick={(e) => {
-                          e.persist();
-                          handle((prev) => ({ ...prev, [key]: data }));
-                          if (cacheParent != undefined) {
-                            // cacheParent.value = data!;
-                            // cacheParent.id = id!;
-                          } else {
-                            cache.push({
-                              id: id!,
-                              value: data!,
-                            });
-                          }
+              <FilterSelect
+                key={Math.random() * 10000000}
+                label={(state?.[key] as string) ?? f.name}
+                title={f.name}
+                data={
+                  cacheParent.id != "country"
+                    ? CommitteeData
+                    : f.value?.filter((v) => v.parentId == cachePosition?.id)
+                }
+                requirement={
+                  cacheParent.id != undefined && cacheParent.id != ""
+                    ? false
+                    : true
+                }
+                Item={(items: ItemType) => {
+                  const { id, data, onClick, children } = items;
 
-                          setCache((prev) => [...prev]);
+                  return (
+                    <button
+                      key={data}
+                      {...items}
+                      onClick={(e) => {
+                        e.persist();
+                        handle((prev) => ({ ...prev, [key]: data }));
+                        if (cacheParent != undefined) {
+                          // cacheParent.value = data!;
+                          // cacheParent.id = id!;
+                        } else {
+                          cache.push({
+                            id: id!,
+                            value: data!,
+                          });
+                        }
 
-                          if (onClick != null) {
-                            onClick();
-                          }
-                        }}
-                      >
-                        {data}
-                        {children}
-                      </button>
-                    );
-                  }}
-                />
-              </>
+                        setCache((prev) => [...prev]);
+
+                        if (onClick != null) {
+                          onClick();
+                        }
+                      }}
+                    >
+                      {data}
+                      {children}
+                    </button>
+                  );
+                }}
+              />
             )
           );
         }
@@ -184,7 +179,7 @@ const Step4 = ({
           if (f.parentId == null) {
             return (
               <FilterSelect
-                key={i}
+                key={Math.random() * 10000000}
                 requirement={
                   state?.[key] != undefined && state?.[key] != "" ? false : true
                 }
@@ -230,7 +225,7 @@ const Step4 = ({
             return (
               cacheParent?.parent == f.parentId && (
                 <ItemContainer
-                  key={Math.random()}
+                  key={Math.random() * 10000000}
                   className={"flex flex-col items-center justify-center"}
                 >
                   <FormLabel title={f.name} />
@@ -301,7 +296,9 @@ const Step4 = ({
                   {cache.find((c) => c.id == "other" && c.parent == key) ? (
                     <Fragment>
                       <Box h={4} />
+                      {JSON.stringify(state?.[key])}
                       <Input
+                        key={"other"}
                         ph={state?.[key] as string}
                         onChange={(num) =>
                           handle((prev) => ({ ...prev, [key]: num }))

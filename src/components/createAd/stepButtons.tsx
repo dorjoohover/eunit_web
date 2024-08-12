@@ -43,6 +43,7 @@ const StepButtons = ({
   txt = "Дараах",
   filter = [],
   step,
+  filled,
   setCurrentStep,
 }: {
   onPrev?: () => void;
@@ -54,6 +55,7 @@ const StepButtons = ({
   txt?: string;
   filter?: CategoryStepsModel[];
   step?: number;
+  filled: boolean;
 
   setCurrentStep: React.Dispatch<React.SetStateAction<number>>;
 }) => {
@@ -95,10 +97,9 @@ const StepButtons = ({
         ) : (
           <div></div>
         )}
-
-        {step == 2 ? (
+        {filled ? (
           <CustomModal
-            isOpen={isOpen}
+            isOpen={isOpen && filled}
             onClose={onClose}
             onOpen={onOpen}
             btnOpen={
@@ -297,7 +298,11 @@ const StepButtons = ({
         ) : (
           <button
             disabled={loading}
-            onClick={onNext}
+            onClick={() => {
+              onNext();
+
+              if (step == 1) onOpen();
+            }}
             className="flex flex-row items-center gap-1 px-4 py-2 font-bold text-white bg-blue-500 rounded-full a"
           >
             {txt}
