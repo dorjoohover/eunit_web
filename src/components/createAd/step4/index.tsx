@@ -296,7 +296,7 @@ const Step4 = ({
                   {cache.find((c) => c.id == "other" && c.parent == key) ? (
                     <Fragment>
                       <Box h={4} />
-                      {JSON.stringify(state?.[key])}
+                      {/* {JSON.stringify(state?.[key])} */}
                       <Input
                         key={"other"}
                         ph={state?.[key] as string}
