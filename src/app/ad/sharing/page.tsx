@@ -32,7 +32,7 @@ export default function AdSharingPage() {
 
   const router = useRouter();
   // // if (!user) router.push("/login");
-
+  const [filled, setFilled] = useState(false);
   const [currentStep, setCurrentStep] = useState<number>(-2);
   const { user, categories, isLoaded } = useAppContext();
 
@@ -80,50 +80,107 @@ export default function AdSharingPage() {
   }, [types]);
   const [isLoading, setIsLoading] = useState(false);
   // checking validation of steps in here
-  const handleNextStep = () => {
-    if (currentStep === -2)
-      return checkConditionOnNextStep(
-        types.adType != "" &&
-          types.categoryName != "" &&
-          types.sellType != AdSellType.nothing &&
-          types.subCategoryId != ""
-      );
-    if (currentStep == -1) {
-      let check = true;
-
-      (steps[0].values as ItemModel[]).map((s) => {
-        let key: keyof StepTypes;
-        key = s.type as keyof StepTypes;
-
-        if (
-          locationData == undefined ||
-          locationData?.[key] == undefined ||
-          locationData?.[key] == ""
-        )
-          check = false;
-      });
-      return checkConditionOnNextStep(check);
-    }
-    if (currentStep === 0)
-      return checkConditionOnNextStep(
-        generalData.price != 0 &&
-          generalData.area != 0 &&
-          generalData.unitPrice != 0 &&
-          generalData.title != ""
-      );
-    if (currentStep === 1) return checkConditionOnNextStep(true);
-    if (currentStep === 2) return validateStep4();
+  const handleNextStep = (step = currentStep) => {
+    return step != 2
+      ? checkConditionOnNextStep(stepChecker([step]))
+      : validateStep4();
   };
+  const stepChecker = (stps: number[]) => {
+    let check = true;
+    let message: string[] = [];
+    stps.map((step) => {
+      if (step == -2) {
+        if (types.categoryName == "") {
+          check = false;
+          message.push("хөрөнгийн төрөл");
+        }
+        if (types.sellType == AdSellType.nothing) {
+          check = false;
+          message.push("борлуулах төрөл");
+        }
+        if (types.subCategoryId == "") {
+          check = false;
+          message.push("дэд төрөл");
+        }
+      }
+      if (step == -1) {
+        (steps[0].values as ItemModel[]).map((s) => {
+          let key: keyof StepTypes;
+          key = s.type as keyof StepTypes;
 
-  const checkConditionOnNextStep = (value: boolean) => {
-    return value
-      ? setCurrentStep((prev) => prev + 1)
-      : toast({
-          title: "Та бүх талбарыг бөглөнө үү.",
-          status: "warning",
-          duration: 2000,
-          isClosable: true,
+          if (
+            locationData == undefined ||
+            locationData?.[key] == undefined ||
+            locationData?.[key] == ""
+          ) {
+            message.push(s.name.toLowerCase());
+            check = false;
+          }
         });
+        if (!locationData?.map) {
+          check = false;
+          message.push("газрын зураг");
+        }
+      }
+      if (step == 0) {
+        if (generalData.price == 0) {
+          check = false;
+          message.push("үнэ");
+        }
+        if (generalData.area == 0) {
+          check = false;
+          message.push("талбай");
+        }
+        if (generalData.unitPrice == 0) {
+          check = false;
+          message.push("нэгж үнэ");
+        }
+        if (generalData.title == "") {
+          check = false;
+          message.push("гарчиг");
+        }
+        if (generalData.desc == "") {
+          check = false;
+          message.push("дэлгэрэнгүй мэдээлэл");
+        }
+        if (
+          generalData.phone == 0 ||
+          generalData.phone == undefined ||
+          generalData.phone?.toString().length != 8
+        ) {
+          check = false;
+          message.push("утасны дугаар");
+        }
+        if (images.length == 0) {
+          check = false;
+          message.push("зурагнууд");
+        }
+      }
+      if (step == 1) {
+        (steps[2].values as ItemModel[]).map((f) => {
+          let key: keyof StepTypes;
+          key = f.type as keyof StepTypes;
+          if (moreData?.[key] == undefined) {
+            check = false;
+            message.push(f.name);
+          }
+        });
+      }
+    });
+    if (!stps.includes(2)) setFilled(false);
+    else {
+      setFilled(check);
+    }
+    message.map((m) => {
+      toast({
+        title: `Та ${m} талбарыг бөглөнө үү`,
+        status: "warning",
+      });
+    });
+    return check;
+  };
+  const checkConditionOnNextStep = (value: boolean) => {
+    return value ? setCurrentStep((prev) => prev + 1) : null;
   };
   const sendPhoto = async () => {
     let imagesRes = await Promise.all(
@@ -231,13 +288,8 @@ export default function AdSharingPage() {
     setIsLoading(true);
 
     let emptyAd = true;
-    (steps[2].values as ItemModel[]).map((f) => {
-      let key: keyof StepTypes;
-      key = f.type as keyof StepTypes;
-      if (moreData?.[key] == undefined) {
-        emptyAd = false;
-      }
-    });
+    emptyAd = stepChecker([-2, -1, 0, 1, 2]);
+    setFilled(emptyAd);
     if (emptyAd) {
       if (user?.status != "banned") {
         await sendAd();
@@ -251,12 +303,6 @@ export default function AdSharingPage() {
         });
       }
     } else {
-      toast({
-        title: "Та бүх талбарыг бөглөнө үү.",
-        status: "warning",
-        duration: 2000,
-        isClosable: true,
-      });
       setIsLoading(false);
     }
     setIsLoading(false);
@@ -297,7 +343,13 @@ export default function AdSharingPage() {
         <StepProgress
           sharing={true}
           activeStep={currentStep}
-          handleClick={(stepId) => setCurrentStep(stepId)}
+          handleClick={(stepId) => {
+            if (
+              stepChecker(Array.from({ length: stepId + 2 }, (_, i) => i - 2))
+            ) {
+              setCurrentStep(stepId);
+            }
+          }}
           hasFourStep={types?.categoryName === "realState"}
         />
         {
@@ -413,6 +465,7 @@ export default function AdSharingPage() {
           onNext={() => {
             handleNextStep(), top();
           }}
+          filled={filled}
           onPrev={() => {
             handlePrevStep(), top();
           }}

@@ -289,12 +289,7 @@ export default function AdCreatePage() {
         });
       }
     } else {
-      toast({
-        title: "Та бүх талбарыг бөглөнө үү.",
-        status: "warning",
-        duration: 2000,
-        isClosable: true,
-      });
+      
       setIsLoading(false);
     }
     setIsLoading(false);
