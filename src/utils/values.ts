@@ -16,22 +16,56 @@ import { GridOptions, SwiperOptions } from "swiper/types";
 // export const url = "http://103.50.206.58";
 // export const api = "http://172.24.48.1:5050/api/";
 
-
-
-
 export const api = "https://srv549330.hstgr.cloud/api/";
 // export const api = "http://93.127.186.77:5050/api/";
 export const imageApi = `${api}file/`;
 // export const url = "http://localhost:3000/";
 // export const url = "https://chat-app-web-xi.vercel.app";
 
+export const districts = [
+  {
+    id: "Баянзүрх|баянзүрх|Баянзүрх дүүрэг|баянзүрх дүүрэг",
+    value: "Баянзүрх",
+  },
+  {
+    id: "Сүхбаатар|сүхбаатар|сүхбаатар дүүрэг|Сүхбаатар дүүрэг",
+    value: "Сүхбаатар",
+  },
+  {
+    id: "Багануур|багануур|багануур дүүрэг|Багануур дүүрэг",
+    value: "Багануур",
+  },
+  {
+    id: "Чингэлтэй|чингэлтэй|чингэлтэй дүүрэг|Чингэлтэй дүүрэг",
+    value: "Чингэлтэй",
+  },
+  {
+    id: "Сонгинохайрхан|сонгинохайрхан|Сонгинохайрхан дүүрэг|сонгинохайрхан дүүрэг",
+    value: "Сонгинохайрхан",
+  },
+  {
+    id: "Багахангай|багахангай|багахангай дүүрэг|Багахангай дүүрэг",
+    value: "Багахангай",
+  },
+  {
+    id: "Баянгол|баянгол|баянгол дүүрэг|Баянгол дүүрэг",
+    value: "Баянгол",
+  },
+  {
+    id: "Налайх|налайх|налайх дүүрэг|Налайх дүүрэг",
+    value: "Налайх",
+  },
+  {
+    id: "Хан-Уул|хануул|Хан-уул|хан-уул|Хануул|Хан-Уул дүүрэг|Хануул дүүрэг|Хан-уул дүүрэг",
+    value: "Хан-Уул",
+  },
+];
 
-
-export const gmailImageUrl = "https://lh3.googleusercontent.com"
+export const gmailImageUrl = "https://lh3.googleusercontent.com";
 export const locationCenter = {
   lat: 47.91887307876936,
-  lng: 106.91757202148438
-}
+  lng: 106.91757202148438,
+};
 
 export const navbar = [
   {
@@ -66,7 +100,6 @@ export class EstimateApi {
   static price = `${estimate}price/`;
   // static upload = ``;
 }
-
 
 export class AuthApi {
   static register = `${auth}register`;
@@ -216,10 +249,7 @@ export const SellTypes = [
   // },
 ];
 
-export const SellTypesString = [
-  "Зарах",
-  "Түрээслүүлэх",
-];
+export const SellTypesString = ["Зарах", "Түрээслүүлэх"];
 
 export const CommitteeData = [
   {

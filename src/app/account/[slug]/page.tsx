@@ -73,7 +73,7 @@ export default function AccountDynamicPage({
   const getEstimate = async () => {
     setLoading(true);
     await getMyEstimate().then((d) => {
-      setEstimate(d);
+      if (d.statusCode != 404) setEstimate(d);
     });
     setLoading(false);
   };

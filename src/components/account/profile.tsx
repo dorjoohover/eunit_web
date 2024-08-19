@@ -272,7 +272,7 @@ const Profile = ({ user }: { user: UserModel }) => {
               <Image
                 className="object-cover object-center  h-[25vh] overflow-hidden bg-gray-300 aspect-square "
                 alt="Current Profile"
-                src={profileImgUrl(user.profileImg)}
+                src={profileImgUrl(user?.profileImg)}
                 referrerPolicy="no-referrer"
               />
             </div>

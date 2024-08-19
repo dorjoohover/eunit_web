@@ -1,27 +1,49 @@
 "use client";
 
-import { getAdminAds, updateAdStatus } from "@/app/(api)/ad.api";
+import {
+  getAdminAds,
+  getDataFilter,
+  getLocationForEstimator,
+  updateAdStatus,
+} from "@/app/(api)/ad.api";
 import FilterAd from "@/components/account/details/filterAd";
 import CustomToast from "@/components/customToast";
 import { LoadingButton } from "@/components/global/button";
 import CustomModal from "@/components/global/customModal";
-import { AdStatus, AdTypes, AdView, Api, ItemPosition } from "@/config/enum";
+import {
+  AdStatus,
+  AdTypes,
+  AdView,
+  Api,
+  ItemPosition,
+  ItemTypes,
+} from "@/config/enum";
 import { AdItemsModel, AdModel } from "@/models/ad.model";
-import { CategoryModel } from "@/models/category.model";
+import { CategoryModel, CategoryStepsModel } from "@/models/category.model";
 import { STYLES, brk } from "@/styles";
 import mergeNames from "@/utils/functions";
-import { FetchAdUnitType, GoogleMapsType } from "@/utils/type";
+import {
+  FetchAdUnitType,
+  GoogleMapsType,
+  ItemType,
+  StepTypes,
+} from "@/utils/type";
 import {
   Box,
   Button,
   Center,
+  Checkbox,
   Heading,
   Radio,
   RadioGroup,
+  Select as ChakraSelect,
   Spinner,
   Text,
   useDisclosure,
   useToast,
+  VStack,
+  Flex,
+  Input,
 } from "@chakra-ui/react";
 import Link from "next/link";
 import ImageGallery from "react-image-gallery";
@@ -31,11 +53,16 @@ import { MdDelete, MdOutlineArrowDropDownCircle } from "react-icons/md";
 import { SiVerizon } from "react-icons/si";
 import WhiteBox from "@/components/createAd/product/whiteBox";
 import { GoogleMap, MarkerF } from "@react-google-maps/api";
-import { ConstantApi, imageApi } from "@/utils/values";
+import { ConstantApi, districts, imageApi } from "@/utils/values";
 import ProductInfo from "@/components/createAd/product/info";
 import { ErrorMessages } from "@/utils/string";
 import { useAppContext } from "@/app/_context";
 import { getConstants } from "@/app/(api)/constants.api";
+import { CloseIcon } from "@/components/global/icons";
+import { ItemDetailModel, ItemModel } from "@/models/items.model";
+import FilterDate from "@/components/createAd/filters";
+import FilterStack from "@/components/global/filterStack";
+import Select from "@/components/global/select";
 
 export default function RequestDynamicPage({
   params,
@@ -63,7 +90,7 @@ export default function RequestDynamicPage({
       } as GoogleMapsType),
     [data]
   );
-  const [check, setCheck] = useState<AdStatus>(AdStatus.all);
+  const [check, setCheck] = useState<AdStatus>(AdStatus.created);
   const [category, setCategory] = useState<{
     category: CategoryModel[];
     subCategory: CategoryModel[];
@@ -94,7 +121,7 @@ export default function RequestDynamicPage({
     );
   };
   useEffect(() => {
-    getAds(AdStatus.all);
+    getAds(AdStatus.created);
     getCategories();
   }, []);
   const verify = async (id: string) => {
@@ -161,10 +188,294 @@ export default function RequestDynamicPage({
     onOpen();
     setData(item);
   };
+
+  const [district, setDistrict] = useState("");
+  const [locations, setLocations] = useState([]);
+  const [items, setItems] = useState<ItemModel[]>([]);
+  const [filteredData, setFilteredData] = useState<AdModel[]>([]);
+  const [filters, setFilters] = useState<
+    {
+      value?: string;
+      min?: number;
+      max?: number;
+      id: string;
+    }[]
+  >([]);
+  const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
+  const [selectedLocation, setSelectedLocation] = useState<string | undefined>(
+    ""
+  );
+  const [selectedCategory, setSelectedCatery] = useState("");
+
+  const getLocation = async (name: string, d: string) => {
+    setLoading(true);
+    setSelectedLocations([]);
+    setSelectedLocation(undefined);
+
+    await getLocationForEstimator(name, d).then((d) => {
+      if (name == "location") {
+        setSelectedLocation(d[0]);
+        setLocations(d);
+      } else {
+        setItems(d);
+      }
+    });
+
+    setLoading(false);
+  };
+  useEffect(() => {
+    district
+      ? getLocation("location", district)
+      : getLocation("location", districts[0].id);
+  }, [district]);
+  useEffect(() => {
+    if (selectedCategory) {
+      selectedCategory
+        ? getLocation("items", selectedCategory)
+        : getLocation("items", selectedCategory);
+    }
+  }, [selectedCategory]);
+
+  const search = async () => {
+    try {
+      setFilteredData([]);
+      console.log(filters)
+      setLoading(true);
+      await getDataFilter(filters, selectedLocations, selectedCategory).then(
+        (d) => {
+          setFilteredData(d.data);
+          console.log(d.data);
+        }
+      );
+      setLoading(false);
+    } catch (error) {}
+  };
   return (
     <Fragment>
       <div className="flex flex-row justify-center p-5 min-h-[60vh] w-[90vw] mx-auto">
         <div className="p-5 w-full">
+          <div className="my-10  gap-4">
+            <div className="flex gap-4">
+              <div>
+                <p className="py-2">Дэд төрөл</p>
+                <ChakraSelect
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCatery(e.target.value)}
+                >
+                  <option value="">Дэд төрөл</option>
+                  {(categories?.[0]?.subCategory as CategoryModel[])?.map(
+                    (d) => {
+                      return (
+                        <option key={d._id} value={d._id}>
+                          {d.name}
+                        </option>
+                      );
+                    }
+                  )}
+                </ChakraSelect>
+              </div>
+              <div>
+                <p className="py-2">Дүүрэг</p>
+                <ChakraSelect
+                  value={district}
+                  onChange={(e) => setDistrict(e.target.value)}
+                >
+                  <option value="">Дүүрэг</option>
+                  {districts.map((d) => {
+                    return (
+                      <option key={d.id} value={d.id}>
+                        {d.value}
+                      </option>
+                    );
+                  })}
+                </ChakraSelect>
+              </div>
+            </div>
+            {loading && (
+              <Center>
+                <Spinner />
+              </Center>
+            )}
+            {locations.length > 0 && selectedLocation && (
+              <div>
+                <p className="py-2">Байршил</p>
+                <div className="flex flex-wrap gap-4 my-4">
+                  {selectedLocations.map((s) => {
+                    return (
+                      <div
+                        className="flex gap-4 bg-green-500 rounded-md px-4 py-2 cursor-pointer"
+                        onClick={() => {
+                          const data = selectedLocations.filter((l) => l != s);
+                          setSelectedLocations(data);
+                        }}
+                        key={s}
+                      >
+                        <p>{s}</p>
+                        <p className="px-3 py-2 bg-red-500 rounded-md">
+                          <CloseIcon />
+                        </p>
+                      </div>
+                    );
+                  })}
+                </div>
+                <div className="flex w-[300px]">
+                  <ChakraSelect
+                    value={selectedLocation}
+                    onChange={(e) => {
+                      if (e.target.value)
+                        setSelectedLocation(e.target.value as string);
+                    }}
+                  >
+                    {locations.map((d) => {
+                      return (
+                        <option value={d} key={d}>
+                          {d}
+                        </option>
+                      );
+                    })}
+                  </ChakraSelect>
+                  <button
+                    onClick={() => {
+                      if (
+                        selectedLocation &&
+                        !selectedLocations.includes(selectedLocation)
+                      ) {
+                        setSelectedLocations((prev) => [
+                          ...prev,
+                          selectedLocation,
+                        ]);
+                      }
+                    }}
+                    className="px-4 py-2"
+                  >
+                    Нэмэх
+                  </button>
+                </div>
+              </div>
+            )}
+
+            <div className="flex flex-wrap gap-4 my-4">
+              {items?.length > 0 &&
+                items?.map((v, i) => {
+                  // let key: keyof StepTypes;
+                  // key = v.type as keyof StepTypes;
+
+                  // let parentKey: keyof StepTypes;
+                  // parentKey = v.parentId as keyof StepTypes;
+                  // let value = v.value?.filter(
+                  //   (a) => a.id == (values?.[key] as string)
+                  // )?.[0];
+                  if (v.type != "location" && v.type != "district")
+                    return (v.value as ItemDetailModel[])?.length > 0 ? (
+                      <VStack h={50} w={150} key={i}>
+                        <Select
+                          requirement={false}
+                          width="large"
+                          label={
+                            filters.filter((f) => f.id == v.type)?.[0]?.value ??
+                            v.name
+                          }
+                          data={[...(v.value ?? []), { id: "", value: v.name }]}
+                          key={i}
+                          Item={(props: ItemType) => {
+                            return (
+                              <button
+                                {...props}
+                                onClick={() => {
+                                  const include = filters.find(
+                                    (f) => f.id == v.type
+                                  );
+
+                                  include
+                                    ? props.data == v.name
+                                      ? filters.filter((f) => f.id != v.type)
+                                      : filters.map((f) =>
+                                          f.id == v.type
+                                            ? (f.value = props.data)
+                                            : f
+                                        )
+                                    : filters.push({
+                                        id: v.type,
+                                        value: props.data,
+                                      });
+                                  setFilters((prev) => [...prev]);
+                                  if (props.onClick != null) props.onClick();
+                                }}
+                              >
+                                {props.data}
+
+                                {props.children}
+                              </button>
+                            );
+                          }}
+                        ></Select>
+                      </VStack>
+                    ) : (
+                      <VStack flex={1} key={i}>
+                        <Heading size={"xs"}>{v.name}</Heading>
+                        <Flex alignItems={"center"} gap={2}>
+                          <Input
+                            w={200}
+                            type="number"
+                            placeholder="Доод"
+                            className="border-blue-400 rounded-full lue-400 border-1"
+                            onChange={(e) => {
+                              const include = filters.find(
+                                (f) => f.id == v.type
+                              );
+                              console.log(e.target.value)
+                              include
+                                ? e.target.value == "" &&
+                                  filters.filter((f) => f.id == v.type)[0]
+                                    .max == 0
+                                  ? filters.filter((f) => f.id != v.type)
+                                  : filters.map((f) =>
+                                      f.id == v.type
+                                        ? (f.min = Number(e.target.value))
+                                        : f
+                                    )
+                                : filters.push({
+                                    id: v.type,
+                                    min: Number(e.target.value),
+                                  });
+                              setFilters((prev) => [...prev]);
+                            }}
+                          />
+                          <Text>-</Text>
+                          <Input
+                            w={200}
+                            type="number"
+                            placeholder="Дээд"
+                            className="border-blue-400 rounded-full lue-400 border-1 focus:outline-none"
+                            onChange={(e) => {
+                              const include = filters.find(
+                                (f) => f.id == v.type
+                              );
+                              console.log(e.target.value);
+                              include
+                                ? e.target.value == "" &&
+                                  filters.filter((f) => f.id == v.type)[0]
+                                    .min == 0
+                                  ? filters.filter((f) => f.id != v.type)
+                                  : filters.map((f) =>
+                                      f.id == v.type
+                                        ? (f.max = Number(e.target.value))
+                                        : f
+                                    )
+                                : filters.push({
+                                    id: v.type,
+                                    max: Number(e.target.value),
+                                  });
+                              setFilters((prev) => [...prev]);
+                            }}
+                          />
+                        </Flex>
+                      </VStack>
+                    );
+                })}
+            </div>
+            <button onClick={() => search()}>Хайх</button>
+          </div>
           {/* <Text>Zariin dugaar: {a.num}</Text>
             <Button onClick={() => verify(a._id)}>verify</Button>
               <Button onClick={() => deleteAd(a._id)}>delete</Button> */}
@@ -209,20 +520,20 @@ export default function RequestDynamicPage({
                 })}
               </FilterAd>
             </div>
-            <RadioGroup className="flex flex-col justify-end" defaultValue="0">
+            <RadioGroup className="flex flex-col justify-end" defaultValue="1">
               <Radio
                 colorScheme="blue"
                 className="font-bold text-green-400 whitespace-nowrap"
                 onChange={(e) => {
                   if (e.target.checked) {
-                    getAds(AdStatus.all, 0);
-                    setCheck(AdStatus.all);
+                    getAds(AdStatus.checking, 0);
+                    setCheck(AdStatus.checking);
                     setNum(0);
                   }
                 }}
                 value="0"
               >
-                Бүх зарууд
+                Дата
               </Radio>
               <Radio
                 colorScheme="green"
@@ -297,7 +608,8 @@ export default function RequestDynamicPage({
                   </tr>
                 </thead>
                 <tbody>
-                  {ads?.ads?.map((a, i) => {
+                  {filteredData?.map((a, i) => {
+                    // {ads?.ads?.map((a, i) => {
                     let adData = { ...a };
                     return (
                       <tr key={i}>

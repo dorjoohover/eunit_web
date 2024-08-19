@@ -15,7 +15,7 @@ const Estimated = ({
       <div className="flex justify-end w-full">
         {/* Таны үнэлгээ */}
 
-        <EstimateButton label={true} />
+        <EstimateButton label={true} onClick={() => setEstimate([])}/>
       </div>
       <div className="grid grid-cols-1 gap-3 my-3 xl:grid-cols-2 4xl:grid-cols-3 w-100">
         {estimate?.map((est, i) => {

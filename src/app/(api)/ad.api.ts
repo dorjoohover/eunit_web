@@ -321,3 +321,45 @@ export async function getSuggestionAdsByCategory(id: string) {
     throw new Error(ErrorMessages.occured);
   }
 }
+
+export async function getLocationForEstimator(name: string, value: string) {
+  try {
+    let res = await fetch(`${api}ad/data/items/${name}/${value}`).then((d) =>
+      d.json()
+    );
+    return res;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function getDataFilter(
+  items: {
+    value?: string;
+    min?: number;
+    max?: number;
+    id: string;
+  }[],
+  locations: string[],
+  subCategory: string
+) {
+  const body = {
+    items: [...items, { id: "location" }],
+    locations: locations,
+    adStatus: ["checking"],
+    sellTypes: ["sell"],
+    category: "63f212d2742b202a77c109d5",
+    subCategory: subCategory,
+  };
+  let res = await fetch(`${api}ad/data/filter`, {
+    method: "POST",
+
+    headers: {
+      "Content-Type": "application/json",
+      charset: "UTF-8",
+    },
+    body: JSON.stringify(body),
+  }).then((d) => d.json());
+
+  return res;
+}
