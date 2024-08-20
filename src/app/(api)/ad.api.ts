@@ -322,11 +322,15 @@ export async function getSuggestionAdsByCategory(id: string) {
   }
 }
 
-export async function getLocationForEstimator(name: string, value: string) {
+export async function getLocationForEstimator(
+  name: string,
+  value: string,
+  category: number
+) {
   try {
-    let res = await fetch(`${api}ad/data/items/${name}/${value}`).then((d) =>
-      d.json()
-    );
+    let res = await fetch(
+      `${api}ad/data/items/${name}/${value}/${category}`
+    ).then((d) => d.json());
     return res;
   } catch (error) {
     console.log(error);
@@ -341,10 +345,11 @@ export async function getDataFilter(
     id: string;
   }[],
   locations: string[],
-  subCategory: string
+  subCategory: number
 ) {
   const body = {
-    items: [...items, { id: "location" }],
+    // items: [...items, { id: "location" }],
+    items: items,
     locations: locations,
     adStatus: ["checking"],
     sellTypes: ["sell"],

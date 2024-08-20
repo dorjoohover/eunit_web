@@ -53,7 +53,12 @@ import { MdDelete, MdOutlineArrowDropDownCircle } from "react-icons/md";
 import { SiVerizon } from "react-icons/si";
 import WhiteBox from "@/components/createAd/product/whiteBox";
 import { GoogleMap, MarkerF } from "@react-google-maps/api";
-import { ConstantApi, districts, imageApi } from "@/utils/values";
+import {
+  categoryNames,
+  ConstantApi,
+  districts,
+  imageApi,
+} from "@/utils/values";
 import ProductInfo from "@/components/createAd/product/info";
 import { ErrorMessages } from "@/utils/string";
 import { useAppContext } from "@/app/_context";
@@ -64,13 +69,39 @@ import FilterDate from "@/components/createAd/filters";
 import FilterStack from "@/components/global/filterStack";
 import Select from "@/components/global/select";
 
+interface AdDataModel {
+  id: number;
+  title: string;
+  price: number;
+  lat: number;
+  lng: number;
+  location: string;
+  area: number;
+  floor?: string;
+  door?: string;
+  balconyUnit?: number;
+  operation?: number;
+  howFloor?: number;
+  garage?: string;
+  window?: string;
+  windowUnit?: number;
+  buildingFLoor?: number;
+  paymentMethod?: string;
+  description?: string;
+  district?: string;
+  landUsage?: string;
+  buildingProcess?: string;
+  date?: string;
+}
+
 export default function RequestDynamicPage({
   params,
 }: {
   params: { slug: string };
 }) {
   const [ads, setAds] = useState<FetchAdUnitType>({ ads: [], limit: 0 });
-  const [data, setData] = useState<AdModel>();
+  const [data, setData] = useState<AdDataModel>();
+  // const [data, setData] = useState<AdModel>();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { categories, isLoaded } = useAppContext();
 
@@ -85,9 +116,14 @@ export default function RequestDynamicPage({
   const mapCenter = useMemo<GoogleMapsType>(
     () =>
       ({
-        lat: data?.location?.lat ?? 47.91887307876936,
-        lng: data?.location?.lng ?? 106.91757202148438,
+        lat: data?.lat ?? 47.91887307876936,
+        lng: data?.lng ?? 106.91757202148438,
       } as GoogleMapsType),
+    // () =>
+    //   ({
+    //     lat: data?.location?.lat ?? 47.91887307876936,
+    //     lng: data?.location?.lng ?? 106.91757202148438,
+    //   } as GoogleMapsType),
     [data]
   );
   const [check, setCheck] = useState<AdStatus>(AdStatus.created);
@@ -122,7 +158,7 @@ export default function RequestDynamicPage({
   };
   useEffect(() => {
     getAds(AdStatus.created);
-    getCategories();
+    // getCategories();
   }, []);
   const verify = async (id: string) => {
     const res = await updateAdStatus(id, AdStatus.created, AdView.show, "%20");
@@ -184,15 +220,15 @@ export default function RequestDynamicPage({
     // getAds;
   };
   const [expand, setExpand] = useState(0);
-  const view = (item: AdModel) => {
+  const view = (item: AdDataModel) => {
     onOpen();
     setData(item);
   };
 
-  const [district, setDistrict] = useState("");
+  const [district, setDistrict] = useState(0);
   const [locations, setLocations] = useState([]);
-  const [items, setItems] = useState<ItemModel[]>([]);
-  const [filteredData, setFilteredData] = useState<AdModel[]>([]);
+  const [items, setItems] = useState<(ItemModel | undefined)[]>([]);
+  const [filteredData, setFilteredData] = useState<AdDataModel[]>([]);
   const [filters, setFilters] = useState<
     {
       value?: string;
@@ -205,46 +241,53 @@ export default function RequestDynamicPage({
   const [selectedLocation, setSelectedLocation] = useState<string | undefined>(
     ""
   );
-  const [selectedCategory, setSelectedCatery] = useState("");
+  const [selectedCategory, setSelectedCatery] = useState(0);
 
-  const getLocation = async (name: string, d: string) => {
+  const getLocation = async (name: string, d: string, category: number) => {
     setLoading(true);
-    setSelectedLocations([]);
-    setSelectedLocation(undefined);
+    if (name == "location") {
+      setSelectedLocations([]);
+      setSelectedLocation(undefined);
+    }
 
-    await getLocationForEstimator(name, d).then((d) => {
+    await getLocationForEstimator(name, d, category).then((d) => {
       if (name == "location") {
         setSelectedLocation(d[0]);
         setLocations(d);
       } else {
+        console.log(d);
         setItems(d);
       }
     });
 
     setLoading(false);
   };
-  useEffect(() => {
-    district
-      ? getLocation("location", district)
-      : getLocation("location", districts[0].id);
-  }, [district]);
-  useEffect(() => {
-    if (selectedCategory) {
-      selectedCategory
-        ? getLocation("items", selectedCategory)
-        : getLocation("items", selectedCategory);
-    }
-  }, [selectedCategory]);
+  // useEffect(() => {
+  //   district
+  //     ? getLocation("location", district)
+  //     : getLocation("location", districts[0].id);
+  // }, [district]);
+  // useEffect(() => {
+  //   if (selectedCategory) {
+  //     selectedCategory
+  //       ? getLocation("items", selectedCategory)
+  //       : getLocation("items", selectedCategory);
+  //   }
+  // }, [selectedCategory]);
 
+  useEffect(() => {
+    getLocation("location", districts[0], selectedCategory);
+    getLocation("items", districts[0], selectedCategory);
+  }, []);
   const search = async () => {
     try {
       setFilteredData([]);
-      console.log(filters)
+      console.log(filters);
       setLoading(true);
       await getDataFilter(filters, selectedLocations, selectedCategory).then(
         (d) => {
-          setFilteredData(d.data);
-          console.log(d.data);
+          setFilteredData(d);
+          // console.log(d);
         }
       );
       setLoading(false);
@@ -260,31 +303,43 @@ export default function RequestDynamicPage({
                 <p className="py-2">Дэд төрөл</p>
                 <ChakraSelect
                   value={selectedCategory}
-                  onChange={(e) => setSelectedCatery(e.target.value)}
-                >
-                  <option value="">Дэд төрөл</option>
-                  {(categories?.[0]?.subCategory as CategoryModel[])?.map(
-                    (d) => {
-                      return (
-                        <option key={d._id} value={d._id}>
-                          {d.name}
-                        </option>
-                      );
+                  onChange={(e) => {
+                    if (e.target.value) {
+                      let value = parseInt(e.target.value);
+                      setSelectedCatery(value);
+                      getLocation("items", "test", value);
                     }
-                  )}
+                  }}
+                >
+                  {categoryNames?.map((d, i) => {
+                    return (
+                      <option key={i} value={i}>
+                        {d}
+                      </option>
+                    );
+                  })}
                 </ChakraSelect>
               </div>
               <div>
                 <p className="py-2">Дүүрэг</p>
                 <ChakraSelect
                   value={district}
-                  onChange={(e) => setDistrict(e.target.value)}
+                  onChange={(e) => {
+                    if (e.target.value) {
+                      let value = parseInt(e.target.value);
+                      setDistrict(value);
+                      getLocation(
+                        "location",
+                        districts[value],
+                        selectedCategory
+                      );
+                    }
+                  }}
                 >
-                  <option value="">Дүүрэг</option>
-                  {districts.map((d) => {
+                  {districts.map((d, i) => {
                     return (
-                      <option key={d.id} value={d.id}>
-                        {d.value}
+                      <option key={i} value={i}>
+                        {d}
                       </option>
                     );
                   })}
@@ -356,7 +411,7 @@ export default function RequestDynamicPage({
 
             <div className="flex flex-wrap gap-4 my-4">
               {items?.length > 0 &&
-                items?.map((v, i) => {
+                (items as ItemModel[])?.map((v, i) => {
                   // let key: keyof StepTypes;
                   // key = v.type as keyof StepTypes;
 
@@ -385,15 +440,16 @@ export default function RequestDynamicPage({
                                   const include = filters.find(
                                     (f) => f.id == v.type
                                   );
-
-                                  include
-                                    ? props.data == v.name
-                                      ? filters.filter((f) => f.id != v.type)
-                                      : filters.map((f) =>
-                                          f.id == v.type
-                                            ? (f.value = props.data)
-                                            : f
-                                        )
+                                  props.data == v.name
+                                    ? setFilters(
+                                        filters.filter((f) => f.id != v.type)
+                                      )
+                                    : include
+                                    ? filters.map((f) =>
+                                        f.id == v.type
+                                          ? (f.value = props.data)
+                                          : f
+                                      )
                                     : filters.push({
                                         id: v.type,
                                         value: props.data,
@@ -423,12 +479,13 @@ export default function RequestDynamicPage({
                               const include = filters.find(
                                 (f) => f.id == v.type
                               );
-                              console.log(e.target.value)
                               include
                                 ? e.target.value == "" &&
                                   filters.filter((f) => f.id == v.type)[0]
                                     .max == 0
-                                  ? filters.filter((f) => f.id != v.type)
+                                  ? setFilters(
+                                      filters.filter((f) => f.id != v.type)
+                                    )
                                   : filters.map((f) =>
                                       f.id == v.type
                                         ? (f.min = Number(e.target.value))
@@ -451,12 +508,13 @@ export default function RequestDynamicPage({
                               const include = filters.find(
                                 (f) => f.id == v.type
                               );
-                              console.log(e.target.value);
                               include
                                 ? e.target.value == "" &&
                                   filters.filter((f) => f.id == v.type)[0]
                                     .min == 0
-                                  ? filters.filter((f) => f.id != v.type)
+                                  ? setFilters(
+                                      filters.filter((f) => f.id != v.type)
+                                    )
                                   : filters.map((f) =>
                                       f.id == v.type
                                         ? (f.max = Number(e.target.value))
@@ -609,7 +667,104 @@ export default function RequestDynamicPage({
                 </thead>
                 <tbody>
                   {filteredData?.map((a, i) => {
-                    // {ads?.ads?.map((a, i) => {
+                    let adData = { ...a };
+                    return (
+                      <tr key={i}>
+                        <td width="10%" className="flex justify-between">
+                          {a.id}{" "}
+                          <Button
+                            className={mergeNames(
+                              STYLES.blueButton,
+                              "text-sm h-[30px] px-2 py-1"
+                            )}
+                            onClick={() => view(a)}
+                          >
+                            Үзэх
+                          </Button>
+                        </td>
+                        <td className="truncate ...">{a.title}</td>
+                        <td className="w-1/2 truncate ... ">
+                          {a.description?.slice(0, 75)}
+                        </td>
+                        <td
+                          className={mergeNames(
+                            "truncate ... font-bold"
+                            // a.adType == AdTypes.special
+                            //   ? "text-purple-900"
+                            //   : "",
+                            // a.adType == AdTypes.default ? "text-primary" : ""
+                          )}
+                        >
+                          {"default"}
+                          {/* {a.adType} */}
+                        </td>
+                        <td
+                          className={mergeNames(
+                            "truncate ... font-bold",
+                            "text-primary"
+                          )}
+                        >
+                          {"checking"}
+                        </td>
+                        <td>
+                          <div
+                            className={mergeNames(
+                              "flex flex-row justify-between"
+                              // 'p-2 rounded-md bg-white',
+                            )}
+                          >
+                            <button
+                              onClick={() => {
+                                if (expand == 0) {
+                                  setExpand(i + 1);
+                                } else {
+                                  setExpand(0);
+                                }
+                              }}
+                              className="float-left mx-0 text-lg text-black -rotate-90"
+                            >
+                              <MdOutlineArrowDropDownCircle
+                                className={mergeNames(
+                                  expand == i + 1 ? "text-blue-600 " : ""
+                                )}
+                              />
+                            </button>
+                            <div
+                              className={mergeNames(
+                                expand == i + 1 ? "flex" : "hidden",
+                                "justify-center  flex-end  gap-2"
+                              )}
+                              onClick={() => {
+                                setExpand(0);
+                              }}
+                            >
+                              {/* <EditAd
+                                setData={setAds}
+                                ads={ads}
+                                data={a}
+                                admin={true}
+                                onNext={async () => {
+                                  await axios
+                                    .put(`${urls['test']}/ad/${a._id}`, a, {
+                                      headers: {
+                                        Authorization: `Bearer ${token}`,
+                                        'Access-Control-Allow-Headers': '*',
+                                        'Content-Type': 'application/json',
+                                        charset: 'UTF-8',
+                                      },
+                                    })
+                                    .then((d) => console.log(d.data));
+                                }}
+                              >
+                                <BiEdit />
+                              </EditAd>  */}
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                  {/* {filteredData?.map((a, i) => {
                     let adData = { ...a };
                     return (
                       <tr key={i}>
@@ -734,13 +889,13 @@ export default function RequestDynamicPage({
                                 }}
                               >
                                 <BiEdit />
-                              </EditAd>  */}
+                              </EditAd>  
                             </div>
                           </div>
                         </td>
                       </tr>
                     );
-                  })}
+                  })} */}
                 </tbody>
               </table>
             )}
@@ -801,7 +956,7 @@ export default function RequestDynamicPage({
                   )}
                   onClick={() => {}}
                 >
-                  {data?.images ? (
+                  {/* {data?.images ? (
                     <ImageGallery
                       thumbnailPosition="left"
                       showNav={false}
@@ -819,19 +974,42 @@ export default function RequestDynamicPage({
                     <div className="grid w-full font-bold h-[30vh] bg-gray-700 text-white aspect-square place-items-center text-md">
                       Энэ заранд зураг байхгүй байна
                     </div>
-                  )}
+                  )} */}
                 </Box>
                 <WhiteBox
                   heading="Хаяг"
                   className="grid xs:grid-cols-2 xl:grid-cols-4 gap-5"
                 >
-                  {(data?.items as AdItemsModel[])?.map((p, i) => {
+                  {data &&
+                    Object.entries(data).map((k, i) => {
+                      let locations = items
+                        .filter(
+                          (item) =>
+                            item?.position == "location" && item.type == k[0]
+                        )
+                        .filter((f) => f != undefined);
+                      return locations.map((p) => {
+                        return (
+                          <ProductInfo
+                            key={i}
+                            title={p?.name ?? ''}
+                            id={p?.type ?? ""}
+                            value={k[1] as string}
+                            func={() => {
+                              onClose();
+                            }}
+                            href={false}
+                          />
+                        );
+                      });
+                    })}
+                  {/* {(data?.items as AdItemsModel[])?.map((p, i) => {
                     if (p.position == ItemPosition.location) {
                       // return <></>
                       return (
                         <ProductInfo
                           key={i}
-                          title={p.name}
+                          title={p?.name ?? ''}
                           id={p.id ?? ""}
                           value={p.value}
                           func={() => {
@@ -841,7 +1019,7 @@ export default function RequestDynamicPage({
                         />
                       );
                     }
-                  })}
+                  })} */}
                 </WhiteBox>
 
                 <div className="grid grid-cols-1 gap-7 md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
@@ -873,6 +1051,21 @@ export default function RequestDynamicPage({
                         mapContainerStyle={{ width: "100%", height: "30vh" }}
                       >
                         {{
+                          lat: data?.lat ?? mapCenter?.lat,
+                          lng: data?.lng ?? mapCenter?.lng,
+                        } && (
+                          <div>
+                            <MarkerF
+                              position={{
+                                lat: data?.lat ?? mapCenter?.lat,
+                                lng: data?.lng ?? mapCenter?.lng,
+                              }}
+                              animation={google.maps.Animation.DROP}
+                              // className={mergeNames("group")}
+                            />
+                          </div>
+                        )}
+                        {/* {{
                           lat: data?.location?.lat ?? mapCenter?.lat,
                           lng: data?.location?.lng ?? mapCenter?.lng,
                         } && (
@@ -892,7 +1085,7 @@ export default function RequestDynamicPage({
                               // className={mergeNames("group")}
                             />
                           </div>
-                        )}
+                        )} */}
                       </GoogleMap>
                     )}
                   </WhiteBox>
@@ -902,13 +1095,37 @@ export default function RequestDynamicPage({
                     heading="Мэдээлэл"
                     className="grid grid-cols-2 gap-3 md:grid-cols-3 2xl:grid-cols-4"
                   >
-                    {(data?.items as AdItemsModel[])?.map((p, i) => {
+                    {data &&
+                      Object.entries(data).map((k, i) => {
+                        let locations = items
+                          .filter(
+                            (item) =>
+                              (item?.position == ItemPosition.side ||
+                                item?.type == "area") &&
+                              item.type == k[0]
+                          )
+                          .filter((f) => f != undefined);
+
+                        return locations.map((p) => (
+                          <ProductInfo
+                            key={i}
+                            title={p?.name ?? ''}
+                            id={p?.type ?? ""}
+                            value={k[1] as string}
+                            func={() => {
+                              onClose();
+                            }}
+                            href={false}
+                          />
+                        ));
+                      })}
+                    {/* {(data?.items as AdItemsModel[])?.map((p, i) => {
                       if (p.position == ItemPosition.side || p.id == "area") {
                         // return <></>
                         return (
                           <ProductInfo
                             key={i}
-                            title={p.name}
+                            title={p?.name ?? ''}
                             id={p.id ?? ""}
                             value={p.value}
                             func={() => {
@@ -918,14 +1135,38 @@ export default function RequestDynamicPage({
                           />
                         );
                       }
-                    })}
-                    {(data?.items as AdItemsModel[])?.map((p, i) => {
+                    })} */}
+                    {data &&
+                      Object.entries(data).map((k, i) => {
+                        let locations = items
+                          .filter(
+                            (item) =>
+                              item?.position == ItemPosition.default &&
+                              item.type == k[0]
+                          )
+                          .filter((f) => f != undefined);
+
+                        return locations.map((p) => (
+                          <ProductInfo
+                            key={i}
+                            title={p?.name ?? ''}
+                            id={p?.type ?? ""}
+                            value={k[1] as string}
+                            func={() => {
+                              onClose();
+                            }}
+                            href={false}
+                          />
+                        ));
+                      })}
+
+                    {/* {(data?.items as AdItemsModel[])?.map((p, i) => {
                       if (p.position == ItemPosition.default) {
                         // return <></>
                         return (
                           <ProductInfo
                             key={i}
-                            title={p.name}
+                            title={p?.name ?? ''}
                             id={p.id ?? ""}
                             value={p.value}
                             func={() => {
@@ -935,7 +1176,7 @@ export default function RequestDynamicPage({
                           />
                         );
                       }
-                    })}
+                    })} */}
                   </WhiteBox>
                 )}
               </div>
