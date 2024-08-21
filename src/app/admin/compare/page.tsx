@@ -32,30 +32,16 @@ const Page = () => {
     getData();
   }, [params]);
   const downloadExcel = async () => {
-    const wsData: (string | number | undefined)[][] = [
-      [
-        "Дугаар",
-        "Огноо",
-        ...items.map((item) => item?.name),
-        "Гарчиг",
-        "Дэлгэрэнгүй",
-      ],
-    ];
+    const wsData: (string | number | undefined)[][] = [];
 
-    data.map((d) => {
-      let ws = [
-        d.id,
-        d.date,
-        ...items.map((item) => {
-          let key: keyof AdDataModel;
-          key = item?.type as keyof AdDataModel;
-          return d[key] ? d[key] : "";
-        }),
-        d.title,
-        d.description,
-      ];
-      wsData.push(ws);
+    wsData.push(["Дугаар", ...data.map((d) => d.id)]);
+    wsData.push(["Үнэ", ...data.map((d) => d.price)]);
+    items.map((item) => {
+      let key: keyof AdDataModel;
+      key = item.type as keyof AdDataModel;
+      wsData.push([item.name, ...data.map((d) => d[key])]);
     });
+    wsData.push(["Гарчиг", ...data.map((d) => d.title)]);
 
     const ws = XLSX.utils.aoa_to_sheet(wsData);
     const wb = XLSX.utils.book_new();
@@ -95,6 +81,7 @@ const Page = () => {
             <div className="border-r border-r-blue">
               {[
                 { name: "Дугаар" },
+                { name: "Огноо" },
                 ...items.filter((item) => item.type != "price"),
               ]?.map((f, index) => (
                 <p
@@ -130,6 +117,9 @@ const Page = () => {
                       </h2>
                     </div>
                     <p className={` whitespace-nowrap py-2 px-5`}>{d.id}</p>
+                    <p className={` whitespace-nowrap py-2 px-5 bg-gray-100`}>
+                      {d.date}
+                    </p>
                     {items
                       .filter((item) => item.type != "price")
                       .map((item, index) => {
@@ -141,7 +131,7 @@ const Page = () => {
                           <p
                             key={index}
                             className={`${
-                              index % 2 == 1 ? "" : "bg-gray-100  line-camp-1"
+                              index % 2 == 0 ? "" : "bg-gray-100  line-camp-1"
                             } whitespace-nowrap py-2 px-5`}
                           >
                             {`${value}`.length == 0 ? <span>-</span> : value}

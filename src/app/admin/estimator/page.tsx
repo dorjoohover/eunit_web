@@ -96,7 +96,20 @@ const Page = () => {
         setLocations(d);
       } else {
         console.log(d);
-        setItems(d);
+        let price = d.indexOf(
+          d.filter((f: { type: string }) => f.type == "price")[0]
+        );
+        let area = d.indexOf(
+          d.filter((f: { type: string }) => f.type == "area")[0]
+        );
+        let item = [
+          d[price],
+          d[area],
+          ...d.filter(
+            (f: { type: string }) => f.type != "price" && f.type != "area"
+          ),
+        ];
+        setItems(item);
       }
     });
 
@@ -435,8 +448,7 @@ const Page = () => {
                 <th className="w-[10%]">Дугаар</th>
                 <th>Огноо</th>
                 <th>Харьцуулах</th>
-                <th>Гарчиг</th>
-                <th className="w-1/2">Зарын дэлгэрэнгүй</th>
+                <th>Байршил</th>
                 {items?.map((item, i) => {
                   return <th key={i}>{item?.name}</th>;
                 })}
@@ -469,10 +481,7 @@ const Page = () => {
                       <IoMdGitCompare />
                     </Button>
                   </td>
-                  <td className="truncate ...">{a.title}</td>
-                  <td className="w-1/2 truncate ... ">
-                    {a.description?.slice(0, 75)}
-                  </td>
+                  <td className="truncate ...">{a.location}</td>
                   {items.map((item, i) => {
                     let key: keyof AdDataModel;
                     key = item?.type as keyof AdDataModel;
