@@ -69,39 +69,14 @@ import FilterDate from "@/components/createAd/filters";
 import FilterStack from "@/components/global/filterStack";
 import Select from "@/components/global/select";
 
-interface AdDataModel {
-  id: number;
-  title: string;
-  price: number;
-  lat: number;
-  lng: number;
-  location: string;
-  area: number;
-  floor?: string;
-  door?: string;
-  balconyUnit?: number;
-  operation?: number;
-  howFloor?: number;
-  garage?: string;
-  window?: string;
-  windowUnit?: number;
-  buildingFLoor?: number;
-  paymentMethod?: string;
-  description?: string;
-  district?: string;
-  landUsage?: string;
-  buildingProcess?: string;
-  date?: string;
-}
-
 export default function RequestDynamicPage({
   params,
 }: {
   params: { slug: string };
 }) {
   const [ads, setAds] = useState<FetchAdUnitType>({ ads: [], limit: 0 });
-  const [data, setData] = useState<AdDataModel>();
-  // const [data, setData] = useState<AdModel>();
+
+  const [data, setData] = useState<AdModel>();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { categories, isLoaded } = useAppContext();
 
@@ -116,14 +91,9 @@ export default function RequestDynamicPage({
   const mapCenter = useMemo<GoogleMapsType>(
     () =>
       ({
-        lat: data?.lat ?? 47.91887307876936,
-        lng: data?.lng ?? 106.91757202148438,
+        lat: data?.location?.lat ?? 47.91887307876936,
+        lng: data?.location?.lng ?? 106.91757202148438,
       } as GoogleMapsType),
-    // () =>
-    //   ({
-    //     lat: data?.location?.lat ?? 47.91887307876936,
-    //     lng: data?.location?.lng ?? 106.91757202148438,
-    //   } as GoogleMapsType),
     [data]
   );
   const [check, setCheck] = useState<AdStatus>(AdStatus.created);
@@ -158,7 +128,7 @@ export default function RequestDynamicPage({
   };
   useEffect(() => {
     getAds(AdStatus.created);
-    // getCategories();
+    getCategories();
   }, []);
   const verify = async (id: string) => {
     const res = await updateAdStatus(id, AdStatus.created, AdView.show, "%20");
@@ -220,320 +190,15 @@ export default function RequestDynamicPage({
     // getAds;
   };
   const [expand, setExpand] = useState(0);
-  const view = (item: AdDataModel) => {
+  const view = (item: AdModel) => {
     onOpen();
     setData(item);
   };
 
-  const [district, setDistrict] = useState(0);
-  const [locations, setLocations] = useState([]);
-  const [items, setItems] = useState<(ItemModel | undefined)[]>([]);
-  const [filteredData, setFilteredData] = useState<AdDataModel[]>([]);
-  const [filters, setFilters] = useState<
-    {
-      value?: string;
-      min?: number;
-      max?: number;
-      id: string;
-    }[]
-  >([]);
-  const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
-  const [selectedLocation, setSelectedLocation] = useState<string | undefined>(
-    ""
-  );
-  const [selectedCategory, setSelectedCatery] = useState(0);
-
-  const getLocation = async (name: string, d: string, category: number) => {
-    setLoading(true);
-    if (name == "location") {
-      setSelectedLocations([]);
-      setSelectedLocation(undefined);
-    }
-
-    await getLocationForEstimator(name, d, category).then((d) => {
-      if (name == "location") {
-        setSelectedLocation(d[0]);
-        setLocations(d);
-      } else {
-        console.log(d);
-        setItems(d);
-      }
-    });
-
-    setLoading(false);
-  };
-  // useEffect(() => {
-  //   district
-  //     ? getLocation("location", district)
-  //     : getLocation("location", districts[0].id);
-  // }, [district]);
-  // useEffect(() => {
-  //   if (selectedCategory) {
-  //     selectedCategory
-  //       ? getLocation("items", selectedCategory)
-  //       : getLocation("items", selectedCategory);
-  //   }
-  // }, [selectedCategory]);
-
-  useEffect(() => {
-    getLocation("location", districts[0], selectedCategory);
-    getLocation("items", districts[0], selectedCategory);
-  }, []);
-  const search = async () => {
-    try {
-      setFilteredData([]);
-      console.log(filters);
-      setLoading(true);
-      await getDataFilter(filters, selectedLocations, selectedCategory).then(
-        (d) => {
-          setFilteredData(d);
-          // console.log(d);
-        }
-      );
-      setLoading(false);
-    } catch (error) {}
-  };
   return (
     <Fragment>
       <div className="flex flex-row justify-center p-5 min-h-[60vh] w-[90vw] mx-auto">
         <div className="p-5 w-full">
-          <div className="my-10  gap-4">
-            <div className="flex gap-4">
-              <div>
-                <p className="py-2">Дэд төрөл</p>
-                <ChakraSelect
-                  value={selectedCategory}
-                  onChange={(e) => {
-                    if (e.target.value) {
-                      let value = parseInt(e.target.value);
-                      setSelectedCatery(value);
-                      getLocation("items", "test", value);
-                    }
-                  }}
-                >
-                  {categoryNames?.map((d, i) => {
-                    return (
-                      <option key={i} value={i}>
-                        {d}
-                      </option>
-                    );
-                  })}
-                </ChakraSelect>
-              </div>
-              <div>
-                <p className="py-2">Дүүрэг</p>
-                <ChakraSelect
-                  value={district}
-                  onChange={(e) => {
-                    if (e.target.value) {
-                      let value = parseInt(e.target.value);
-                      setDistrict(value);
-                      getLocation(
-                        "location",
-                        districts[value],
-                        selectedCategory
-                      );
-                    }
-                  }}
-                >
-                  {districts.map((d, i) => {
-                    return (
-                      <option key={i} value={i}>
-                        {d}
-                      </option>
-                    );
-                  })}
-                </ChakraSelect>
-              </div>
-            </div>
-            {loading && (
-              <Center>
-                <Spinner />
-              </Center>
-            )}
-            {locations.length > 0 && selectedLocation && (
-              <div>
-                <p className="py-2">Байршил</p>
-                <div className="flex flex-wrap gap-4 my-4">
-                  {selectedLocations.map((s) => {
-                    return (
-                      <div
-                        className="flex gap-4 bg-green-500 rounded-md px-4 py-2 cursor-pointer"
-                        onClick={() => {
-                          const data = selectedLocations.filter((l) => l != s);
-                          setSelectedLocations(data);
-                        }}
-                        key={s}
-                      >
-                        <p>{s}</p>
-                        <p className="px-3 py-2 bg-red-500 rounded-md">
-                          <CloseIcon />
-                        </p>
-                      </div>
-                    );
-                  })}
-                </div>
-                <div className="flex w-[300px]">
-                  <ChakraSelect
-                    value={selectedLocation}
-                    onChange={(e) => {
-                      if (e.target.value)
-                        setSelectedLocation(e.target.value as string);
-                    }}
-                  >
-                    {locations.map((d) => {
-                      return (
-                        <option value={d} key={d}>
-                          {d}
-                        </option>
-                      );
-                    })}
-                  </ChakraSelect>
-                  <button
-                    onClick={() => {
-                      if (
-                        selectedLocation &&
-                        !selectedLocations.includes(selectedLocation)
-                      ) {
-                        setSelectedLocations((prev) => [
-                          ...prev,
-                          selectedLocation,
-                        ]);
-                      }
-                    }}
-                    className="px-4 py-2"
-                  >
-                    Нэмэх
-                  </button>
-                </div>
-              </div>
-            )}
-
-            <div className="flex flex-wrap gap-4 my-4">
-              {items?.length > 0 &&
-                (items as ItemModel[])?.map((v, i) => {
-                  // let key: keyof StepTypes;
-                  // key = v.type as keyof StepTypes;
-
-                  // let parentKey: keyof StepTypes;
-                  // parentKey = v.parentId as keyof StepTypes;
-                  // let value = v.value?.filter(
-                  //   (a) => a.id == (values?.[key] as string)
-                  // )?.[0];
-                  if (v.type != "location" && v.type != "district")
-                    return (v.value as ItemDetailModel[])?.length > 0 ? (
-                      <VStack h={50} w={150} key={i}>
-                        <Select
-                          requirement={false}
-                          width="large"
-                          label={
-                            filters.filter((f) => f.id == v.type)?.[0]?.value ??
-                            v.name
-                          }
-                          data={[...(v.value ?? []), { id: "", value: v.name }]}
-                          key={i}
-                          Item={(props: ItemType) => {
-                            return (
-                              <button
-                                {...props}
-                                onClick={() => {
-                                  const include = filters.find(
-                                    (f) => f.id == v.type
-                                  );
-                                  props.data == v.name
-                                    ? setFilters(
-                                        filters.filter((f) => f.id != v.type)
-                                      )
-                                    : include
-                                    ? filters.map((f) =>
-                                        f.id == v.type
-                                          ? (f.value = props.data)
-                                          : f
-                                      )
-                                    : filters.push({
-                                        id: v.type,
-                                        value: props.data,
-                                      });
-                                  setFilters((prev) => [...prev]);
-                                  if (props.onClick != null) props.onClick();
-                                }}
-                              >
-                                {props.data}
-
-                                {props.children}
-                              </button>
-                            );
-                          }}
-                        ></Select>
-                      </VStack>
-                    ) : (
-                      <VStack flex={1} key={i}>
-                        <Heading size={"xs"}>{v.name}</Heading>
-                        <Flex alignItems={"center"} gap={2}>
-                          <Input
-                            w={200}
-                            type="number"
-                            placeholder="Доод"
-                            className="border-blue-400 rounded-full lue-400 border-1"
-                            onChange={(e) => {
-                              const include = filters.find(
-                                (f) => f.id == v.type
-                              );
-                              include
-                                ? e.target.value == "" &&
-                                  filters.filter((f) => f.id == v.type)[0]
-                                    .max == 0
-                                  ? setFilters(
-                                      filters.filter((f) => f.id != v.type)
-                                    )
-                                  : filters.map((f) =>
-                                      f.id == v.type
-                                        ? (f.min = Number(e.target.value))
-                                        : f
-                                    )
-                                : filters.push({
-                                    id: v.type,
-                                    min: Number(e.target.value),
-                                  });
-                              setFilters((prev) => [...prev]);
-                            }}
-                          />
-                          <Text>-</Text>
-                          <Input
-                            w={200}
-                            type="number"
-                            placeholder="Дээд"
-                            className="border-blue-400 rounded-full lue-400 border-1 focus:outline-none"
-                            onChange={(e) => {
-                              const include = filters.find(
-                                (f) => f.id == v.type
-                              );
-                              include
-                                ? e.target.value == "" &&
-                                  filters.filter((f) => f.id == v.type)[0]
-                                    .min == 0
-                                  ? setFilters(
-                                      filters.filter((f) => f.id != v.type)
-                                    )
-                                  : filters.map((f) =>
-                                      f.id == v.type
-                                        ? (f.max = Number(e.target.value))
-                                        : f
-                                    )
-                                : filters.push({
-                                    id: v.type,
-                                    max: Number(e.target.value),
-                                  });
-                              setFilters((prev) => [...prev]);
-                            }}
-                          />
-                        </Flex>
-                      </VStack>
-                    );
-                })}
-            </div>
-            <button onClick={() => search()}>Хайх</button>
-          </div>
           {/* <Text>Zariin dugaar: {a.num}</Text>
             <Button onClick={() => verify(a._id)}>verify</Button>
               <Button onClick={() => deleteAd(a._id)}>delete</Button> */}
@@ -666,105 +331,7 @@ export default function RequestDynamicPage({
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredData?.map((a, i) => {
-                    let adData = { ...a };
-                    return (
-                      <tr key={i}>
-                        <td width="10%" className="flex justify-between">
-                          {a.id}{" "}
-                          <Button
-                            className={mergeNames(
-                              STYLES.blueButton,
-                              "text-sm h-[30px] px-2 py-1"
-                            )}
-                            onClick={() => view(a)}
-                          >
-                            Үзэх
-                          </Button>
-                        </td>
-                        <td className="truncate ...">{a.title}</td>
-                        <td className="w-1/2 truncate ... ">
-                          {a.description?.slice(0, 75)}
-                        </td>
-                        <td
-                          className={mergeNames(
-                            "truncate ... font-bold"
-                            // a.adType == AdTypes.special
-                            //   ? "text-purple-900"
-                            //   : "",
-                            // a.adType == AdTypes.default ? "text-primary" : ""
-                          )}
-                        >
-                          {"default"}
-                          {/* {a.adType} */}
-                        </td>
-                        <td
-                          className={mergeNames(
-                            "truncate ... font-bold",
-                            "text-primary"
-                          )}
-                        >
-                          {"checking"}
-                        </td>
-                        <td>
-                          <div
-                            className={mergeNames(
-                              "flex flex-row justify-between"
-                              // 'p-2 rounded-md bg-white',
-                            )}
-                          >
-                            <button
-                              onClick={() => {
-                                if (expand == 0) {
-                                  setExpand(i + 1);
-                                } else {
-                                  setExpand(0);
-                                }
-                              }}
-                              className="float-left mx-0 text-lg text-black -rotate-90"
-                            >
-                              <MdOutlineArrowDropDownCircle
-                                className={mergeNames(
-                                  expand == i + 1 ? "text-blue-600 " : ""
-                                )}
-                              />
-                            </button>
-                            <div
-                              className={mergeNames(
-                                expand == i + 1 ? "flex" : "hidden",
-                                "justify-center  flex-end  gap-2"
-                              )}
-                              onClick={() => {
-                                setExpand(0);
-                              }}
-                            >
-                              {/* <EditAd
-                                setData={setAds}
-                                ads={ads}
-                                data={a}
-                                admin={true}
-                                onNext={async () => {
-                                  await axios
-                                    .put(`${urls['test']}/ad/${a._id}`, a, {
-                                      headers: {
-                                        Authorization: `Bearer ${token}`,
-                                        'Access-Control-Allow-Headers': '*',
-                                        'Content-Type': 'application/json',
-                                        charset: 'UTF-8',
-                                      },
-                                    })
-                                    .then((d) => console.log(d.data));
-                                }}
-                              >
-                                <BiEdit />
-                              </EditAd>  */}
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                  {/* {filteredData?.map((a, i) => {
+                  {ads.ads?.map((a, i) => {
                     let adData = { ...a };
                     return (
                       <tr key={i}>
@@ -889,13 +456,13 @@ export default function RequestDynamicPage({
                                 }}
                               >
                                 <BiEdit />
-                              </EditAd>  
+                              </EditAd>   */}
                             </div>
                           </div>
                         </td>
                       </tr>
                     );
-                  })} */}
+                  })}
                 </tbody>
               </table>
             )}
@@ -956,7 +523,7 @@ export default function RequestDynamicPage({
                   )}
                   onClick={() => {}}
                 >
-                  {/* {data?.images ? (
+                  {data?.images ? (
                     <ImageGallery
                       thumbnailPosition="left"
                       showNav={false}
@@ -974,42 +541,19 @@ export default function RequestDynamicPage({
                     <div className="grid w-full font-bold h-[30vh] bg-gray-700 text-white aspect-square place-items-center text-md">
                       Энэ заранд зураг байхгүй байна
                     </div>
-                  )} */}
+                  )}
                 </Box>
                 <WhiteBox
                   heading="Хаяг"
                   className="grid xs:grid-cols-2 xl:grid-cols-4 gap-5"
                 >
-                  {data &&
-                    Object.entries(data).map((k, i) => {
-                      let locations = items
-                        .filter(
-                          (item) =>
-                            item?.position == "location" && item.type == k[0]
-                        )
-                        .filter((f) => f != undefined);
-                      return locations.map((p) => {
-                        return (
-                          <ProductInfo
-                            key={i}
-                            title={p?.name ?? ''}
-                            id={p?.type ?? ""}
-                            value={k[1] as string}
-                            func={() => {
-                              onClose();
-                            }}
-                            href={false}
-                          />
-                        );
-                      });
-                    })}
-                  {/* {(data?.items as AdItemsModel[])?.map((p, i) => {
+                  {(data?.items as AdItemsModel[])?.map((p, i) => {
                     if (p.position == ItemPosition.location) {
                       // return <></>
                       return (
                         <ProductInfo
                           key={i}
-                          title={p?.name ?? ''}
+                          title={p?.name ?? ""}
                           id={p.id ?? ""}
                           value={p.value}
                           func={() => {
@@ -1019,7 +563,7 @@ export default function RequestDynamicPage({
                         />
                       );
                     }
-                  })} */}
+                  })}
                 </WhiteBox>
 
                 <div className="grid grid-cols-1 gap-7 md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
@@ -1051,21 +595,6 @@ export default function RequestDynamicPage({
                         mapContainerStyle={{ width: "100%", height: "30vh" }}
                       >
                         {{
-                          lat: data?.lat ?? mapCenter?.lat,
-                          lng: data?.lng ?? mapCenter?.lng,
-                        } && (
-                          <div>
-                            <MarkerF
-                              position={{
-                                lat: data?.lat ?? mapCenter?.lat,
-                                lng: data?.lng ?? mapCenter?.lng,
-                              }}
-                              animation={google.maps.Animation.DROP}
-                              // className={mergeNames("group")}
-                            />
-                          </div>
-                        )}
-                        {/* {{
                           lat: data?.location?.lat ?? mapCenter?.lat,
                           lng: data?.location?.lng ?? mapCenter?.lng,
                         } && (
@@ -1085,7 +614,7 @@ export default function RequestDynamicPage({
                               // className={mergeNames("group")}
                             />
                           </div>
-                        )} */}
+                        )}
                       </GoogleMap>
                     )}
                   </WhiteBox>
@@ -1095,37 +624,13 @@ export default function RequestDynamicPage({
                     heading="Мэдээлэл"
                     className="grid grid-cols-2 gap-3 md:grid-cols-3 2xl:grid-cols-4"
                   >
-                    {data &&
-                      Object.entries(data).map((k, i) => {
-                        let locations = items
-                          .filter(
-                            (item) =>
-                              (item?.position == ItemPosition.side ||
-                                item?.type == "area") &&
-                              item.type == k[0]
-                          )
-                          .filter((f) => f != undefined);
-
-                        return locations.map((p) => (
-                          <ProductInfo
-                            key={i}
-                            title={p?.name ?? ''}
-                            id={p?.type ?? ""}
-                            value={k[1] as string}
-                            func={() => {
-                              onClose();
-                            }}
-                            href={false}
-                          />
-                        ));
-                      })}
-                    {/* {(data?.items as AdItemsModel[])?.map((p, i) => {
+                    {(data?.items as AdItemsModel[])?.map((p, i) => {
                       if (p.position == ItemPosition.side || p.id == "area") {
                         // return <></>
                         return (
                           <ProductInfo
                             key={i}
-                            title={p?.name ?? ''}
+                            title={p?.name ?? ""}
                             id={p.id ?? ""}
                             value={p.value}
                             func={() => {
@@ -1135,38 +640,15 @@ export default function RequestDynamicPage({
                           />
                         );
                       }
-                    })} */}
-                    {data &&
-                      Object.entries(data).map((k, i) => {
-                        let locations = items
-                          .filter(
-                            (item) =>
-                              item?.position == ItemPosition.default &&
-                              item.type == k[0]
-                          )
-                          .filter((f) => f != undefined);
+                    })}
 
-                        return locations.map((p) => (
-                          <ProductInfo
-                            key={i}
-                            title={p?.name ?? ''}
-                            id={p?.type ?? ""}
-                            value={k[1] as string}
-                            func={() => {
-                              onClose();
-                            }}
-                            href={false}
-                          />
-                        ));
-                      })}
-
-                    {/* {(data?.items as AdItemsModel[])?.map((p, i) => {
+                    {(data?.items as AdItemsModel[])?.map((p, i) => {
                       if (p.position == ItemPosition.default) {
                         // return <></>
                         return (
                           <ProductInfo
                             key={i}
-                            title={p?.name ?? ''}
+                            title={p?.name ?? ""}
                             id={p.id ?? ""}
                             value={p.value}
                             func={() => {
@@ -1176,7 +658,7 @@ export default function RequestDynamicPage({
                           />
                         );
                       }
-                    })} */}
+                    })}
                   </WhiteBox>
                 )}
               </div>

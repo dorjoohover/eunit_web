@@ -201,8 +201,23 @@ export const adminNav = [
     id: "estimating",
   },
   {
+    tabName: "Үнэлгээ гаргах",
+    id: "estimator",
+  },
+  {
     tabName: "Гарах",
     id: "logout",
+  },
+];
+
+export const locationPositions = [
+  {
+    id: "district",
+    name: "Дүүрэг",
+  },
+  {
+    id: "location",
+    name: "Байршил",
   },
 ];
 
