@@ -2,7 +2,7 @@ import { STYLES } from "@/styles";
 import mergeNames from "@/utils/functions";
 import { Spinner, useToast } from "@chakra-ui/react";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import WalletCard from "./wallet/walletCard";
 import DialogBox from "../global/dialog";
 import WHistory from "./wallet/history";
@@ -10,6 +10,7 @@ import { getUser, sendPointByUser } from "@/app/(api)/user.api";
 import { PointTitle } from "@/config/enum";
 import { ErrorMessages } from "@/utils/string";
 import { useAppContext } from "@/app/_context";
+import { UserModel } from "@/models/user.model";
 
 export default function WalletPage() {
   const [point, setPoint] = useState({
@@ -19,17 +20,27 @@ export default function WalletPage() {
   });
   const toast = useToast();
   const [loading, setLoading] = useState(false);
-  const { setUser, user } = useAppContext();
-
+  const [user, setUser] = useState<UserModel | null>(null);
+  useEffect(() => {
+    const fetchUser = async () => {
+      const data = await getUser();
+      localStorage.setItem("user", JSON.stringify(data));
+      setUser(data);
+    };
+    if (window != undefined) {
+      fetchUser();
+    }
+  }, []);
   const update = async () => {
     await getUser()
       .then((d) => {
         if (d != null) {
+          localStorage.setItem("user", JSON.stringify(d));
           setUser(d);
         }
       })
       .catch(() => {
-        setUser(undefined);
+        setUser(null);
       });
     setPoint({
       email: "",
@@ -74,7 +85,7 @@ export default function WalletPage() {
       >
         {/* Card */}
 
-        <WalletCard user={user} />
+        <WalletCard />
 
         <form className="flex flex-col justify-center w-full gap-2 mx-auto">
           <input
@@ -166,9 +177,7 @@ export default function WalletPage() {
       </div>
       <div className="h-[2px] bg-bgGrey" />
 
-      {user?.pointHistory?.length > 0 && (
-        <WHistory pointHistory={user?.pointHistory ?? []} />
-      )}
+      {(user?.pointHistory?.length ?? 0) > 0 && <WHistory />}
     </div>
   );
 }

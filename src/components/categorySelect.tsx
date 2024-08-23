@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import Link from "next/link";
 import useBreakpoints from "@/hooks/useBreakpoints";
@@ -7,6 +7,9 @@ import { CategoryModel } from "@/models/category.model";
 import mergeNames from "@/utils/functions";
 import { BsBuilding } from "react-icons/bs";
 import { Image } from "@chakra-ui/react";
+import { getConstants } from "@/app/(api)/constants.api";
+import { ConstantApi } from "@/utils/values";
+import { Api } from "@/config/enum";
 
 const calcSize = (pt: string) => {
   switch (pt) {
@@ -28,11 +31,31 @@ const calcSize = (pt: string) => {
 const transition =
   "group-hover:scale-125 transition-all duration-300 ease-in-out";
 
-const CategorySelect = ({ categories }: { categories?: CategoryModel[] }) => {
+const CategorySelect = () => {
   // const { categories } = useAuth();
   const pt = useBreakpoints();
   const iconSz = React.useMemo(() => calcSize(pt ?? ""), [pt]);
+  const [categories, setCategories] = useState<CategoryModel[] | null>(null);
 
+  useEffect(() => {
+    const fetchCategories = async () => {
+      let value = localStorage.getItem("category");
+      if (value) {
+        setCategories(JSON.parse(value));
+      } else {
+        const data = await getConstants(
+          `${ConstantApi.category}false`,
+          Api.GET
+        );
+        localStorage.setItem("category", JSON.stringify(data));
+        setCategories(data);
+      }
+    };
+
+    if (typeof window !== "undefined") {
+      fetchCategories();
+    }
+  }, []);
   return (
     <div className="sm:py-[50px] py-[20px]">
       <ContainerX>
@@ -60,7 +83,7 @@ const CategorySelect = ({ categories }: { categories?: CategoryModel[] }) => {
                           <Image
                             src={`/assets/images/HeaderSlider/${category.href.toLowerCase()}.jpg`}
                             objectFit="cover"
-                            h={'full'}
+                            h={"full"}
                             alt="category image"
                             className={transition}
                           />

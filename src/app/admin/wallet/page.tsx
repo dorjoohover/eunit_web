@@ -20,7 +20,6 @@ const AdminWalletPage = () => {
   });
   const toast = useToast();
   const router = useRouter();
-  const { user } = useAppContext();
   const sendPoint = async () => {
     // try {
     //   if (token && point.email && point.point) {
@@ -82,7 +81,7 @@ const AdminWalletPage = () => {
           )}
         >
           {/* Card */}
-          <WalletCard user={user} />
+          <WalletCard />
 
           <form className="flex flex-col justify-center w-full gap-2 mx-auto">
             <input
@@ -167,7 +166,7 @@ const AdminWalletPage = () => {
           </form>
           {/* <WalletForm onClick={() => sendPoint()} /> */}
         </div>
-        <WHistory pointHistory={(user as UserModel)?.pointHistory ?? []} />
+        <WHistory />
       </div>
     </ContainerX>
   );

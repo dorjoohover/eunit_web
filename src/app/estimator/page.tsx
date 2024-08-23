@@ -47,6 +47,8 @@ import Select from "@/components/global/select";
 import { InfoIcon } from "@/components/global/icons";
 import Link from "next/link";
 import { createEstimate } from "../(api)/estimate.api";
+import { UserModel } from "@/models/user.model";
+import { getUser } from "../(api)/user.api";
 export default function EstimatorPage() {
   const [estimate, setEstimate] = useState<CreateAdType>({
     category_ID: "",
@@ -62,7 +64,23 @@ export default function EstimatorPage() {
   const toast = useToast();
   // const router = useRouter();
   const [loading, setIsLoading] = useState(false);
-  const { user } = useAppContext();
+
+  const [user, setUser] = useState<UserModel | null>(null);
+  useEffect(() => {
+    const fetchUser = async () => {
+      let value = localStorage.getItem("user");
+      if (value) {
+        setUser(JSON.parse(value));
+      } else {
+        const data = await getUser();
+        localStorage.setItem("user", JSON.stringify(data));
+        setUser(data);
+      }
+    };
+    if (typeof window !== "undefined") {
+      fetchUser();
+    }
+  }, []);
 
   const checker = (filters: number) => {
     return (
@@ -162,7 +180,7 @@ export default function EstimatorPage() {
       items.push({
         name: "email",
         id: "email",
-        value: user.email,
+        value: user?.email ?? "",
       });
 
       fileUrl.set(`files`, estimate.file!);
@@ -188,7 +206,7 @@ export default function EstimatorPage() {
         es.items.push({
           name: "email",
           id: "email",
-          value: user.email,
+          value: user?.email ?? "",
         });
         est.map((v) => {
           let key: keyof StepTypes;

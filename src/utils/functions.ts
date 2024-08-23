@@ -11,14 +11,19 @@ export const stopPropagation = (
   e.nativeEvent.stopImmediatePropagation();
 };
 export const profileImgUrl = (url?: string, assets?: string) => {
-  console.log()
-  console.log(url != undefined && url != "")
   return url != undefined && url != ""
     ? url.startsWith(gmailImageUrl)
       ? url
       : `${imageApi}${url}`
     : assets ??
         "https://www.pikpng.com/pngl/m/80-805068_my-profile-icon-blank-profile-picture-circle-clipart.png";
+};
+
+export const formatText = (value: string) => {
+  return value
+    .replaceAll(",", "")
+    .toString()
+    .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };
 
 export const getSellType = (type: AdSellType | string) => {

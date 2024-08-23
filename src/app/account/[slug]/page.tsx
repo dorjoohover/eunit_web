@@ -2,7 +2,6 @@
 
 import { getManyAds, getMyAds } from "@/app/(api)/ad.api";
 import { getMyEstimate } from "@/app/(api)/estimate.api";
-import { useAppContext } from "@/app/_context";
 import Estimated from "@/components/account/estimated";
 import Mark from "@/components/account/mark";
 import MyAds from "@/components/account/myAds";
@@ -11,6 +10,7 @@ import SharingAds from "@/components/account/sharedAds";
 import WalletPage from "@/components/account/wallet";
 import { AdStatus, AdTypes } from "@/config/enum";
 import { EstimateModel } from "@/models/estimate.model";
+import { UserModel } from "@/models/user.model";
 import { FetchAdUnitType } from "@/utils/type";
 
 import { notFound } from "next/navigation";
@@ -21,11 +21,21 @@ export default function AccountDynamicPage({
 }: {
   params: { slug: string };
 }) {
-  const { user, mark, categories } = useAppContext();
-
   const [ads, setAds] = useState<FetchAdUnitType>({ ads: [], limit: 0 });
+  const [user, setUser] = useState<UserModel | null>(null);
   const [loading, setLoading] = useState(false);
   const [estimate, setEstimate] = useState<EstimateModel[]>([]);
+  useEffect(() => {
+    const fetchUser = async () => {
+      let value = localStorage.getItem("user");
+      if (value) {
+        setUser(JSON.parse(value));
+      }
+    };
+    if (typeof window !== "undefined") {
+      fetchUser();
+    }
+  }, []);
   const getAds = async (
     status: AdStatus,
     id?: string,
@@ -61,7 +71,7 @@ export default function AccountDynamicPage({
       10,
       AdStatus.created,
       AdTypes.all,
-      mark,
+      user?.bookmarks?.map((b) => b.toString()) ?? [],
       0
     ).then((d) => {
       console.log(d);
@@ -110,11 +120,10 @@ export default function AccountDynamicPage({
           getAds={(status, id, n) => getAds(status, id, n)}
           loading={loading}
           setAds={setAds}
-          category={categories}
         />
       );
     case "profile":
-      return <Profile user={user} />;
+      return <Profile />;
     case "sharedads":
       return (
         <SharingAds
@@ -123,7 +132,6 @@ export default function AccountDynamicPage({
           getAds={(status, id, n) => getAds(status, id, n, AdTypes.sharing)}
           loading={loading}
           setAds={setAds}
-          category={categories}
         />
       );
     case "estimated":
@@ -131,7 +139,7 @@ export default function AccountDynamicPage({
     case "wallet":
       return <WalletPage />;
     case "mark":
-      return <Mark ads={ads} category={categories} loading={loading} />;
+      return <Mark ads={ads} loading={loading} />;
     default:
       return notFound();
   }

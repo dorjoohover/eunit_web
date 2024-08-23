@@ -5,12 +5,13 @@ import { ContainerX } from "@/components/container";
 import StepProgress from "@/components/global/stepProgress";
 import {
   AdSellType,
+  Api,
   CreateAdSteps,
   ItemPosition,
   ItemTypes,
 } from "@/config/enum";
-import { CategoryStepsModel } from "@/models/category.model";
-import { locationCenter } from "@/utils/values";
+import { CategoryModel, CategoryStepsModel } from "@/models/category.model";
+import { ConstantApi, locationCenter } from "@/utils/values";
 import { Heading, Spinner, useToast } from "@chakra-ui/react";
 import { useEffect, useMemo, useState } from "react";
 import { GoogleMap, MarkerF } from "@react-google-maps/api";
@@ -25,14 +26,16 @@ import FormTitle from "@/components/createAd/title";
 import { createAd } from "@/app/(api)/ad.api";
 import { useRouter } from "next/navigation";
 import Loading from "@/app/loading";
-import { imageUploader } from "@/app/(api)/constants.api";
+import { getConstants, imageUploader } from "@/app/(api)/constants.api";
+import { UserModel } from "@/models/user.model";
+import { getUser } from "@/app/(api)/user.api";
 
 export default function AdCreatePage() {
   const toast = useToast();
 
   const [currentStep, setCurrentStep] = useState<number>(-1);
   const [steps, setSteps] = useState<CategoryStepsModel[]>([]);
-  const { user, categories, isLoaded } = useAppContext();
+  const { isLoaded } = useAppContext();
   const [filled, setFilled] = useState(false);
   const [types, setTypes] = useState<CreateAdType>({
     categoryId: -1,
@@ -48,6 +51,38 @@ export default function AdCreatePage() {
   const [cache, setCache] = useState<CacheVarType[]>([]);
   // FILTER INFORMATION - FOR WHICH DATA TO DISPLAY
 
+  const [user, setUser] = useState<UserModel | null>(null);
+  const [categories, setCategories] = useState<CategoryModel[]>([]);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      let value = localStorage.getItem("user");
+      if (value) {
+        setUser(JSON.parse(value));
+      } else {
+        const data = await getUser();
+        localStorage.setItem("user", JSON.stringify(data));
+        setUser(data);
+      }
+    };
+    const fetchCategories = async () => {
+      let value = localStorage.getItem("category");
+      if (value) {
+        setCategories(JSON.parse(value));
+      } else {
+        const data = await getConstants(
+          `${ConstantApi.category}false`,
+          Api.GET
+        );
+        localStorage.setItem("category", JSON.stringify(data));
+        setCategories(data);
+      }
+    };
+    if (typeof window !== "undefined") {
+      fetchUser();
+      fetchCategories();
+    }
+  }, []);
   // STEP3 IIN DATA - PRICE, AREA, UNITPRICE, TITLE, DESC, IMAGE
   const [generalData, setGeneralData] = useState<StepTypes>({
     price: 0,
@@ -57,7 +92,7 @@ export default function AdCreatePage() {
     desc: "",
     imgSelected: false,
     images: [],
-    phone: parseInt(user?.phone ? user.phone : 0),
+    phone: parseInt(user?.phone ? user.phone : "0"),
   });
   // STEP 3IIN RAW IMAGE FILES
   const [images, setImages] = useState<File[]>([]);
@@ -212,7 +247,7 @@ export default function AdCreatePage() {
       desc: "",
       imgSelected: false,
       images: [],
-      phone: parseInt(user?.phone ? user.phone : 0),
+      phone: parseInt(user?.phone ? user.phone : "0"),
     });
     setImages([]);
   };
@@ -289,7 +324,6 @@ export default function AdCreatePage() {
         });
       }
     } else {
-      
       setIsLoading(false);
     }
     setIsLoading(false);

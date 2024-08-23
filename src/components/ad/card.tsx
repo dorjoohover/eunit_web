@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { BiArea, BiDoorOpen } from "react-icons/bi";
 
 import { IoBedOutline } from "react-icons/io5";
@@ -54,6 +54,19 @@ function AdCard({
 }) {
   const [drop, setDrop] = useState(false);
 
+  const [user, setUser] = useState<UserModel | null>(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      let value = localStorage.getItem("user");
+      if (value) {
+        setUser(JSON.parse(value));
+      }
+    };
+    if (typeof window !== "undefined") {
+      fetchUser();
+    }
+  }, []);
   const pushRouter = async () => {
     //     try {
     //       item?._id && router.push(`/ad/${item.num}`);
@@ -66,8 +79,6 @@ function AdCard({
     //       console.error(error);
     //     }
   };
-
-  const { user } = useAppContext();
 
   const amountTime = Math.round(
     (new Date(item.updatedAt ?? "").getTime() +
@@ -284,7 +295,6 @@ function AdCard({
             />
             {item.adStatus == "created" && (
               <AdCardButton
-                user={user}
                 id={item?.num}
                 adId={item?._id}
                 cateId={(item?.subCategory as CategoryModel)?._id}

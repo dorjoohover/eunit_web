@@ -1,11 +1,25 @@
 import { PointHistory, UserModel } from "@/models/user.model";
 import mergeNames from "@/utils/functions";
 import { Heading } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
 
 const txthover = "font-semibold text-gray-500 duration-100 hover:text-gray-800";
 const colSpan = "flex justify-between w-full  gap-3 font-bold text-center";
 
-const WHistory = ({ pointHistory }: { pointHistory: PointHistory[] }) => {
+const WHistory = () => {
+  const [pointHistory, setPointHistory] = useState<PointHistory[]>([]);
+  useEffect(() => {
+    const fetchUser = async () => {
+      let value = localStorage.getItem("user");
+      if (value) {
+        let user: UserModel = JSON.parse(value);
+        setPointHistory(user.pointHistory);
+      }
+    };
+    if (typeof window !== "undefined") {
+      fetchUser();
+    }
+  }, []);
   return (
     <div className="w-full max-w-[800px] text-sm xl:text-base px-2 py-2 md:px-6 md:py-4 shadow-md border-2 border-slate-200/30 rounded-xl mx-auto">
       <Heading variant="mediumHeading">Гүйлгээний түүх</Heading>

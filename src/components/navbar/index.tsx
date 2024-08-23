@@ -6,21 +6,19 @@ import UpperNav from "./upper";
 import { Api, UserStatus } from "@/config/enum";
 import { ConstantApi } from "@/utils/values";
 import { useAppContext } from "@/app/_context";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { getUser } from "@/app/(api)/user.api";
+import { CategoryModel } from "@/models/category.model";
 
 const Navbar = () => {
-  const { categories, setCategories, setUser, user, setMark, setCurrent } =
-    useAppContext();
+
   const getConst = async () => {
-    await getConstants(`${ConstantApi.category}false`, Api.GET).then((d) =>
-      setCategories(d)
-    );
+    await getConstants(`${ConstantApi.category}false`, Api.GET).then((d) => {
+      localStorage.setItem("category", JSON.stringify(d));
+      console.log(d);
+    });
   };
-  useEffect(() => {
-    getConst();
-    getUserData();
-  }, []);
+  const { setUser, user, setMark, setCurrent } = useAppContext();
 
   const getUserData = async () => {
     await getUser()
@@ -48,7 +46,7 @@ const Navbar = () => {
 
         // pos={sticky ? 'sticky' : 'relative'}
       >
-        <CategoryBottom categories={categories} />
+        <CategoryBottom />
         <UpperNav />
       </div>
     </>

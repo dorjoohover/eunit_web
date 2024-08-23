@@ -5,7 +5,7 @@ import { STYLES } from "@/styles/index";
 import { useSearchParams } from "next/navigation";
 
 import { useEffect, useState } from "react";
-import { useAppContext } from "../_context";
+
 import Profile from "@/components/account/profile";
 import MainContainer from "@/components/containers/mainContainer";
 import mergeNames from "@/utils/functions";
@@ -13,14 +13,13 @@ import mergeNames from "@/utils/functions";
 const Account = () => {
   const params = useSearchParams();
   const [content, setContent] = useState(params.get("tab"));
-  const { user } = useAppContext();
 
   const tabs = [
     {
       tabHeader: "Хувийн мэдээлэл",
       title: "Profile",
 
-      comp: <Profile user={user} />,
+      comp: <Profile />,
     },
     {
       tabHeader: "Миний зарууд",

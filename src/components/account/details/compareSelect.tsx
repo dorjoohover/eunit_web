@@ -153,14 +153,26 @@ const CompareSelect = ({ btnView = true }) => {
   const [expand, setExpand] = useState(false);
 
   const {
-    user,
     compare,
     setCompare,
   }: {
-    user?: UserModel;
     compare: AdCateIdType[];
     setCompare: React.Dispatch<React.SetStateAction<AdCateIdType[]>>;
   } = useAppContext();
+
+  const [user, setUser] = useState<UserModel | null>(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      let value = localStorage.getItem("user");
+      if (value) {
+        setUser(JSON.parse(value));
+      }
+    };
+    if (typeof window !== "undefined") {
+      fetchUser();
+    }
+  }, []);
   const [ads, setAds] = useState<AdModel[]>([]);
   const pathname = usePathname();
   const getCompareAds = async () => {

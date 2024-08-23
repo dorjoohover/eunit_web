@@ -12,16 +12,17 @@ import AdContent from "@/components/ad/adContent";
 import SwiperHeader from "@/components/swiperHeader";
 import CategorySelect from "@/components/categorySelect";
 import { AdTypes, UserStatus } from "@/config/enum";
+import { UserModel } from "@/models/user.model";
 
 export default function Home() {
-  const { ads, setAds, categories, setCurrent, user, setUser, setMark } =
-    useAppContext();
+  const { ads, setAds } = useAppContext();
   const { data: session } = useSession();
   const [page, setPage] = useState({
     default: 0,
     special: 0,
   });
   const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState<UserModel | null>(null);
   const getData = async () => {
     const defaultAds = await getAds(
       page.default,
@@ -48,26 +49,15 @@ export default function Home() {
 
   const getUserData = async () => {
     setLoading(true);
-    await getUser()
-      .then((d) => {
-        if (d != null) {
-          setUser(d);
-          setMark(d?.bookmarks);
-          setCurrent({
-            user: true,
-            status: d.status != UserStatus.banned,
-            type: d.userType,
-          });
-        }
-      })
-      .catch(() => {
-        setUser(undefined);
-      });
+
+    const data = await getUser();
+    localStorage.setItem("user", JSON.stringify(data));
+    setUser(data);
     setLoading(false);
   };
 
   useEffect(() => {
-    if (session?.user && !user) {
+    if (session?.user && !user && typeof window !== "undefined") {
       getUserData();
     }
   }, [session]);
@@ -76,7 +66,7 @@ export default function Home() {
   ) : (
     <>
       <SwiperHeader />
-      <CategorySelect categories={categories} />
+      <CategorySelect />
 
       <ContainerX className="py-6">
         {/* <Heading className="">Шинэ зарууд</Heading> */}

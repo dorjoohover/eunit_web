@@ -61,13 +61,24 @@ const drawerItem = [
   },
 ];
 
-const BodyDrawer = ({
-  user,
-  onClose,
-}: {
-  user: UserModel;
-  onClose: () => void;
-}) => {
+const BodyDrawer = ({ onClose }: { onClose: () => void }) => {
+  const [user, setUser] = useState<UserModel | null>(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      let value = localStorage.getItem("user");
+      if (value) {
+        setUser(JSON.parse(value));
+      } else {
+        const data = await getUser();
+        localStorage.setItem("user", JSON.stringify(data));
+        setUser(data);
+      }
+    };
+    if (typeof window !== "undefined") {
+      fetchUser();
+    }
+  }, []);
   return (
     <DrawerBody className="flex flex-col justify-between p-0 bg-bgdark/95">
       <div
@@ -166,7 +177,7 @@ const DownLink = ({
 
 const UserDrawer = () => {
   const [active, setActive] = useState(false);
-  const { user } = useAppContext();
+
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
@@ -178,7 +189,7 @@ const UserDrawer = () => {
         <DrawerContent className="bg-transparent">
           <DrawerCloseButton className="text-white" />
 
-          <BodyDrawer user={user} onClose={onClose} />
+          <BodyDrawer onClose={onClose} />
         </DrawerContent>
       </Drawer>
     </div>

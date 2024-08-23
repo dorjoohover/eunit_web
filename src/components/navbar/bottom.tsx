@@ -21,13 +21,25 @@ import { Image } from "@chakra-ui/react";
 import { getUser } from "@/app/(api)/user.api";
 import { UserStatus } from "@/config/enum";
 import { usePathname, useRouter } from "next/navigation";
-const Bottom = ({
-  categories,
-}: {
-  categories: CategoryModel[] | undefined;
-}) => {
-  const { user, setAds } = useAppContext();
+const Bottom = () => {
+  const { setAds } = useAppContext();
+  const [user, setUser] = useState<UserModel | null>(null);
+  useEffect(() => {
+    const fetchCategories = async () => {
+      let value = localStorage.getItem("user");
+      if (value) {
+        setUser(JSON.parse(value));
+      } else {
+        const data = await getUser();
+        localStorage.setItem("user", JSON.stringify(data));
+        setUser(data);
+      }
+    };
 
+    if (typeof window !== "undefined") {
+      fetchCategories();
+    }
+  }, []);
   // const [isHoveringId, setIsHoveringId] = useState(true);
   const [activeSearch, setActiveSearch] = useState<boolean>(false);
   // const handleMouseOver = (id) => {
@@ -67,7 +79,7 @@ const Bottom = ({
               />
             </Link>
 
-            <NavCategory categories={categories} />
+            <NavCategory />
           </div>
 
           {/* baruun taliin bookmark search etc */}

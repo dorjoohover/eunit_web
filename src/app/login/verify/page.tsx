@@ -10,16 +10,12 @@ import mergeNames from "@/utils/functions";
 import { STYLES } from "@/styles";
 import Image from "next/image";
 import { Assets } from "@/utils/assets";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { UserModel } from "@/models/user.model";
 const Page = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const {
-    setCurrent,
-
-    setUser,
-    setMark,
-  } = useAppContext();
+  const [user, setUser] = useState<UserModel | null>(null);
   const login = async () => {
     const res = await loginUser(
       session!.user!.email!,
@@ -31,21 +27,12 @@ const Page = () => {
       await getUser()
         .then((d) => {
           if (d != null) {
-            setUser(d);
-            setMark(d?.bookmarks);
-            setCurrent({
-              user: true,
-              status: d.status != UserStatus.banned,
-              type: d.userType,
-            });
+            localStorage.setItem("user", JSON.stringify(d));
           }
         })
-        .catch(() => {
-          setUser(undefined);
-        });
+        .catch(() => {});
   };
   useEffect(() => {
-    
     if (status == "unauthenticated") router.push("/");
     if (status === "authenticated") {
       login().then(() => router.push("/"));

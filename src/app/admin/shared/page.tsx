@@ -1,10 +1,12 @@
 "use client";
 
 import { getAdminAds } from "@/app/(api)/ad.api";
+import { getUser } from "@/app/(api)/user.api";
 import { useAppContext } from "@/app/_context";
 import CustomToast from "@/components/customToast";
 import { AdStatus, AdTypes, AdView } from "@/config/enum";
 import { AdModel } from "@/models/ad.model";
+import { UserModel } from "@/models/user.model";
 import { brk, STYLES } from "@/styles";
 import mergeNames from "@/utils/functions";
 import { imageApi } from "@/utils/values";
@@ -27,7 +29,7 @@ const SharedPage = () => {
   const toast = useToast();
   const router = useRouter();
   const page = 20;
-  const { user } = useAppContext();
+  const [user, setUser] = useState<UserModel | null>(null);
   const getAds = async (status: AdStatus, n?: number, cate?: string) => {
     await getAdminAds(
       AdTypes.sharing,
@@ -77,13 +79,26 @@ const SharedPage = () => {
   }, [user]);
 
   useEffect(() => {
+    const fetchUser = async () => {
+      let value = localStorage.getItem("user");
+      if (value) {
+        setUser(JSON.parse(value));
+      } else {
+        const data = await getUser();
+        localStorage.setItem("user", JSON.stringify(data));
+        setUser(data);
+      }
+    };
+    if (typeof window !== "undefined") {
+      fetchUser();
+    }
+  }, []);
+  useEffect(() => {
     if (user) {
       getAds(check);
     }
   }, [num]);
-  const exportExcel = async () => {
-    router.push("https://excel-export-nextjs.vercel.app/");
-  };
+
   const [content, setContent] = useState("");
   const [collapsedId, setCollapsed] = useState(false);
 

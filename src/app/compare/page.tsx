@@ -16,9 +16,22 @@ import { BiRightArrowAlt } from "react-icons/bi";
 import currency from "currency.js";
 
 export default function ComparePage() {
-  const { compare, user }: { compare: AdCateIdType[]; user?: UserModel } =
-    useAppContext();
+  const { compare }: { compare: AdCateIdType[] } = useAppContext();
   const router = useRouter();
+
+  const [user, setUser] = useState<UserModel | null>(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      let value = localStorage.getItem("user");
+      if (value) {
+        setUser(JSON.parse(value));
+      }
+    };
+    if (typeof window !== "undefined") {
+      fetchUser();
+    }
+  }, []);
   const [ads, setAds] = useState<AdModel[]>([]);
   const getAds = async () => {
     let ids = compare.map((c) => c.id);
@@ -92,7 +105,6 @@ export default function ComparePage() {
                         href={`/ad/${c.num}`}
                         target="_blank"
                         className="flex flex-row items-center gap-6 px-4 py-1 font-bold text-white bg-blue-500 rounded-2xl"
-                        
                       >
                         Орох
                         <BiRightArrowAlt className="text-blue-800 bg-white rounded-full" />

@@ -12,6 +12,7 @@ import { AdApi, api } from "@/utils/values";
 
 import { cookies } from "next/headers";
 import { imageUploader } from "./constants.api";
+import { max } from "moment";
 
 export async function getAds(
   num: number,
@@ -340,23 +341,33 @@ export async function getLocationForEstimator(
 export async function getDataFilter(
   items: {
     value?: string;
-    min?: number;
-    max?: number;
+    min?: string;
+    max?: string;
     id: string;
   }[],
   locations: string[],
-  subCategory: number
+  subCategory: number,
+  page: number
 ) {
   const body = {
     // items: [...items, { id: "location" }],
-    items: items,
+    items: items.map((item) => {
+      if (item.max || item.min) {
+        return {
+          id: item.id,
+          max: Number(item.max?.replaceAll(",", "")),
+          min: Number(item.min?.replaceAll(",", "")),
+        };
+      }
+      return item;
+    }),
     locations: locations,
     adStatus: ["checking"],
     sellTypes: ["sell"],
     category: "63f212d2742b202a77c109d5",
     subCategory: subCategory,
   };
-  let res = await fetch(`${api}ad/data/filter`, {
+  let res = await fetch(`${api}ad/data/filter/${page}`, {
     method: "POST",
 
     headers: {

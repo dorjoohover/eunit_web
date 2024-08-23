@@ -4,7 +4,7 @@ import { NumberInput, NumberInputField } from "@chakra-ui/react";
 import FormLine from "../formLine";
 import { AtomLabel } from "./atom";
 
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { GeneralDataType, StepTypes } from "@/utils/type";
 import { ItemModel } from "@/models/items.model";
 import FieldPriceArea from "./fieldPriceArea";
@@ -12,6 +12,7 @@ import mergeNames from "@/utils/functions";
 import FieldTitle from "./fieldTitle";
 import FieldPhotoUpload from "./fieldPhotoUpload";
 import { useAppContext } from "@/app/_context";
+import { UserModel } from "@/models/user.model";
 
 // FILTER DATA: PRICE, AREA, UNITPRICE
 // TITLE, DESCRIPTION, IMAGE UPLOAD
@@ -30,7 +31,19 @@ const Step3 = ({
   generalData: StepTypes;
   setGeneralData: Dispatch<SetStateAction<StepTypes>>;
 }) => {
-  const { user } = useAppContext();
+  const [user, setUser] = useState<UserModel | null>(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      let value = localStorage.getItem("user");
+      if (value) {
+        setUser(JSON.parse(value));
+      }
+    };
+    if (typeof window !== "undefined") {
+      fetchUser();
+    }
+  }, []);
   return (
     <>
       <FormTitle>Ерөнхий мэдээлэл</FormTitle>
@@ -62,7 +75,9 @@ const Step3 = ({
                 onChange={(e) => {
                   setGeneralData((prev) => ({ ...prev, phone: parseInt(e) }));
                 }}
-                value={generalData.phone == 0 ? user.phone : generalData.phone}
+                value={
+                  generalData.phone == 0 ? user?.phone ?? 0 : generalData.phone
+                }
               >
                 <NumberInputField
                   className={mergeNames(

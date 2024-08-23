@@ -78,7 +78,7 @@ export default function RequestDynamicPage({
 
   const [data, setData] = useState<AdModel>();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { categories, isLoaded } = useAppContext();
+  const { isLoaded } = useAppContext();
 
   const mapOptions = useMemo(
     () => ({

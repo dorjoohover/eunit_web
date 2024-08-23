@@ -1,6 +1,6 @@
 import Link from "next/link";
 import mergeNames from "@/utils/functions";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   CgChevronRight,
   CgClose,
@@ -14,6 +14,9 @@ import { MdComputer } from "react-icons/md";
 import { IoPhonePortraitOutline } from "react-icons/io5";
 import { RiHomeSmile2Line } from "react-icons/ri";
 import { IconBaseProps } from "react-icons/lib";
+import { getConstants } from "@/app/(api)/constants.api";
+import { ConstantApi } from "@/utils/values";
+import { Api } from "@/config/enum";
 
 const Icon = ({
   id,
@@ -47,10 +50,30 @@ const SideMenu = ({
   closeNav = () => {},
   openNav = () => {},
 }) => {
-  const { categories } = useAppContext();
+  const [categories, setCategories] = useState<CategoryModel[]>([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      let value = localStorage.getItem("category");
+      if (value) {
+        setCategories(JSON.parse(value));
+      } else {
+        const data = await getConstants(
+          `${ConstantApi.category}false`,
+          Api.GET
+        );
+        localStorage.setItem("category", JSON.stringify(data));
+        setCategories(data);
+      }
+    };
+    if (typeof window !== "undefined") {
+      fetchCategories();
+    }
+  }, []);
   const [collapsedId, setCollapsed] = React.useState("");
   useEffect(() => {
-    if (categories && categories?.length > 0) setCollapsed(categories?.[0]?._id as string);
+    if (categories && categories?.length > 0)
+      setCollapsed(categories?.[0]?._id as string);
   }, [categories]);
 
   return (

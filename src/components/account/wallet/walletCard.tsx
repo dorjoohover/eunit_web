@@ -2,8 +2,22 @@ import { Image } from "@chakra-ui/react";
 import currency from "currency.js";
 import TransactionGuide from "./transactionGuide";
 import { UserModel } from "@/models/user.model";
+import { useEffect, useState } from "react";
 
-const WalletCard = ({ user }: {user: UserModel}) => {
+const WalletCard = () => {
+  const [user, setUser] = useState<UserModel | null>(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      let value = localStorage.getItem("user");
+      if (value) {
+        setUser(JSON.parse(value));
+      }
+    };
+    if (typeof window !== "undefined") {
+      fetchUser();
+    }
+  }, []);
   return (
     <>
       <div className="flex flex-col">

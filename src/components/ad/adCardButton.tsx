@@ -7,35 +7,44 @@ import { BiGitCompare } from "react-icons/bi";
 
 import { UserModel } from "@/models/user.model";
 import mergeNames, { stopPropagation } from "@/utils/functions";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAppContext } from "@/app/_context";
-import { bookmark } from "@/app/(api)/user.api";
+import { bookmark, getUser } from "@/app/(api)/user.api";
 import { AdCateIdType } from "@/utils/type";
 
 const AdCardButton = ({
   id,
   adId,
   cateId,
-  user,
 }: {
   cateId: string;
   adId: string;
   id: number;
-  user?: UserModel;
 }) => {
   const [loading, setLoading] = useState(false);
   const {
-    mark,
-    setMark,
     compare,
     setCompare,
   }: {
-    mark: number[];
     compare: AdCateIdType[];
-    setMark: React.Dispatch<React.SetStateAction<number[]>>;
     setCompare: React.Dispatch<React.SetStateAction<AdCateIdType[]>>;
   } = useAppContext();
   const toast = useToast();
+  const [mark, setMark] = useState<number[]>([]);
+  const [user, setUser] = useState<UserModel | null>(null);
+  useEffect(() => {
+    const fetchUser = async () => {
+      let value = localStorage.getItem("user");
+      if (value) {
+        let user = JSON.parse(value);
+        setUser(user);
+        setMark(user.bookmarks);
+      }
+    };
+    if (typeof window !== "undefined") {
+      fetchUser();
+    }
+  }, []);
   const updateMark = async () => {
     if (!user) {
       toast({
@@ -52,6 +61,7 @@ const AdCardButton = ({
         const body = mark.filter((m) => m != id);
         const was = body.length != mark.length;
         setMark((prev) => (!was ? [...prev, id] : body));
+
         was
           ? toast({
               title: "Зар хүслээс хасагдлаа.",
@@ -66,7 +76,11 @@ const AdCardButton = ({
               isClosable: true,
             });
         await bookmark(id);
+
         setLoading(false);
+        const data = await getUser();
+        localStorage.setItem("user", JSON.stringify(data));
+        setUser(data);
       } catch (error) {
         setLoading(false);
       }

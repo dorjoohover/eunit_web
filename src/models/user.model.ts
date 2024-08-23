@@ -24,7 +24,7 @@ export interface UserModel {
   agentAddition: AgentAdditionModel;
   organizationAddition: OrganizationAdditionModel;
   pointHistory: PointHistory[];
-  code: string;
+  code?: string;
   status: UserStatus;
   message: string;
 }
@@ -54,19 +54,19 @@ export interface AgentAdditionModel {
 
   registerNumber?: string;
 
-  address?: string
+  address?: string;
 }
 export interface OrganizationAdditionModel {
   organizationName: string;
 
-  organizationCertificationCopy: string;
+  organizationCertificationCopy?: string;
 
-  location: UserLocationModel;
-  address: string;
+  location?: UserLocationModel;
+  address?: string;
   orgCertification?: string;
   orgCertificationFile?: File[];
 
-  organizationRegisterNumber: string;
+  organizationRegisterNumber?: string;
 }
 
 export interface Social {

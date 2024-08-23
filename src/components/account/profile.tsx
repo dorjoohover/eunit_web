@@ -10,12 +10,17 @@ import moment from "moment";
 
 import { Fragment, ReactNode, useEffect, useState } from "react";
 import ProfileInput from "./details/profileInput";
-import { ProfileEnumType, SocialsEnum } from "@/config/enum";
+import {
+  ProfileEnumType,
+  SocialsEnum,
+  UserStatus,
+  UserType,
+} from "@/config/enum";
 import ChangeAgent from "./details/changeAgent";
 import { SocialType } from "@/utils/type";
 import Socials from "./details/socials";
 import ProfileImage from "./details/profileImage";
-import { updateProfile } from "@/app/(api)/user.api";
+import { getUser, updateProfile } from "@/app/(api)/user.api";
 import { ErrorMessages } from "@/utils/string";
 
 const GroupLayout = ({
@@ -35,18 +40,71 @@ const GroupLayout = ({
   </div>
 );
 
-const Profile = ({ user }: { user: UserModel }) => {
+const initialUser = {
+  username: "",
+  ads: [],
+  phone: "",
+  userType: UserType.default,
+  socials: [],
+  email: "",
+  point: 0,
+  bookmarks: [],
+  agentAddition: {
+    organizationName: "",
+  },
+  organizationAddition: {
+    organizationName: "",
+  },
+  message: "",
+  pointHistory: [],
+  status: UserStatus.pending,
+};
+
+const Profile = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [edit, setEdit] = useState(false);
-  const [userData, setUserData] = useState<UserModel>(user);
-  const [orgData, setOrgData] = useState<OrganizationAdditionModel>(
-    user?.organizationAddition ?? {
+
+  const [user, setUser] = useState<UserModel | null>(null);
+  const [userData, setUserData] = useState<UserModel>(user ?? initialUser);
+  useEffect(() => {
+    const fetchUser = async () => {
+      let value = localStorage.getItem("user");
+      if (value) {
+        setUser(JSON.parse(value));
+        setUserData(JSON.parse(value));
+      } else {
+        const data = await getUser();
+        localStorage.setItem("user", JSON.stringify(data));
+        setUser(data);
+        setUserData(data ?? initialUser);
+      }
+    };
+    setSocials([
+      {
+        name: SocialsEnum.facebook,
+        url: user?.socials?.[0]?.url ?? "",
+      },
+      {
+        name: SocialsEnum.instagram,
+        url: user?.socials?.[1]?.url ?? "",
+      },
+      {
+        name: SocialsEnum.telegram,
+        url: user?.socials?.[2]?.url ?? "",
+      },
+    ]);
+    imageExists(user?.profileImg ?? "");
+    if (typeof window !== "undefined") {
+      fetchUser();
+    }
+  }, []);
+  const [agentData, setAgentData] = useState<AgentAdditionModel>(
+    user?.agentAddition ?? {
       organizationName: "",
     }
   );
-  const [profile, setProfile] = useState<string>();
-  const [agentData, setAgentData] = useState<AgentAdditionModel>(
-    user?.agentAddition ?? {
+  const [orgData, setOrgData] = useState<OrganizationAdditionModel>(
+    user?.organizationAddition ?? {
       organizationName: "",
     }
   );
@@ -70,25 +128,7 @@ const Profile = ({ user }: { user: UserModel }) => {
     },
   ];
   const [socials, setSocials] = useState<SocialType[]>(initialSocials);
-  useEffect(() => {
-    setUserData(user);
 
-    setSocials([
-      {
-        name: SocialsEnum.facebook,
-        url: user?.socials?.[0]?.url ?? "",
-      },
-      {
-        name: SocialsEnum.instagram,
-        url: user?.socials?.[1]?.url ?? "",
-      },
-      {
-        name: SocialsEnum.telegram,
-        url: user?.socials?.[2]?.url ?? "",
-      },
-    ]);
-    imageExists(user?.profileImg ?? "");
-  }, [user]);
   const handleEdit = async () => {
     setEdit(!edit);
     if (edit) {
@@ -99,7 +139,7 @@ const Profile = ({ user }: { user: UserModel }) => {
       let isFile =
         agentData.orgCertificationFile != undefined ||
         orgData.orgCertificationFile != undefined;
-      let userType = user.userType;
+      let userType = user?.userType;
       if (isImage) image.append("files", images!);
       let isOrg = orgData.organizationName != "" && orgData != undefined;
       let isAgent = agentData.organizationName != "" && agentData != undefined;
@@ -150,9 +190,9 @@ const Profile = ({ user }: { user: UserModel }) => {
             name: socials[2].name,
           },
         ],
-        phone: userData.phone,
-        birthday: userData.birthday,
-        username: userData.username,
+        phone: userData?.phone,
+        birthday: userData?.birthday,
+        username: userData?.username,
         userType: userType,
       };
       const res = await updateProfile(
@@ -163,7 +203,7 @@ const Profile = ({ user }: { user: UserModel }) => {
         body,
         agent,
         org,
-        user.profileImg ?? "",
+        user?.profileImg ?? "",
         isAgent,
         isOrg
       );

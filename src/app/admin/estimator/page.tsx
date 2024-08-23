@@ -11,7 +11,7 @@ import Select from "@/components/global/select";
 import { ItemPosition } from "@/config/enum";
 import { ItemDetailModel, ItemModel } from "@/models/items.model";
 import { STYLES } from "@/styles";
-import mergeNames from "@/utils/functions";
+import mergeNames, { formatText } from "@/utils/functions";
 import { GoogleMapsType, ItemType } from "@/utils/type";
 import { categoryNames, districts, locationPositions } from "@/utils/values";
 import * as XLSX from "xlsx";
@@ -34,6 +34,7 @@ import { useEffect, useMemo, useState } from "react";
 import { MdOutlineArrowDropDownCircle } from "react-icons/md";
 import { IoMdGitCompare } from "react-icons/io";
 import { AdminCompareSelect } from "@/components/account/details/compareSelect";
+import { formatNumber } from "@/components/global/numberEdit";
 
 export interface AdDataModel {
   id: number;
@@ -68,12 +69,15 @@ const Page = () => {
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [items, setItems] = useState<(ItemModel | undefined)[]>([]);
-  const [filteredData, setFilteredData] = useState<AdDataModel[]>([]);
+  const [filteredData, setFilteredData] = useState<{
+    data: AdDataModel[];
+    limit: number;
+  }>({ data: [], limit: 0 });
   const [filters, setFilters] = useState<
     {
       value?: string;
-      min?: number;
-      max?: number;
+      min?: string;
+      max?: string;
       id: string;
     }[]
   >([]);
@@ -131,7 +135,7 @@ const Page = () => {
       ],
     ];
 
-    filteredData.map((d) => {
+    filteredData.data.map((d) => {
       let ws = [
         d.id,
         d.date,
@@ -152,17 +156,21 @@ const Page = () => {
 
     XLSX.writeFile(wb, `test.xlsx`);
   };
+  const [page, setPage] = useState(0);
   const search = async () => {
     try {
-      setFilteredData([]);
-      console.log(filters);
+      setFilteredData({ data: [], limit: 0 });
       setLoading(true);
-      await getDataFilter(filters, selectedLocations, selectedCategory).then(
-        (d) => {
-          setFilteredData(d);
-          // console.log(d);
-        }
-      );
+      await getDataFilter(
+        filters,
+        selectedLocations,
+        selectedCategory,
+        page
+      ).then((d) => {
+        console.log(d);
+        setFilteredData(d);
+        // console.log(d);
+      });
       setLoading(false);
     } catch (error) {}
   };
@@ -173,6 +181,7 @@ const Page = () => {
     setData(item);
   };
   const toast = useToast();
+  const parse = (val: string) => val.replace(/^\$/, "");
   const compare = (item: AdDataModel) => {
     const includes = compareData.find((d) => item.id == d.id);
     if (compareData.length >= 5) {
@@ -192,6 +201,9 @@ const Page = () => {
       duration: 1000,
     });
   };
+  useEffect(() => {
+    search();
+  }, [page]);
   const mapOptions = useMemo(
     () => ({
       disableDefaultUI: true,
@@ -367,53 +379,86 @@ const Page = () => {
                     <Heading size={"xs"}>{v.name}</Heading>
                     <Flex alignItems={"center"} gap={2}>
                       <Input
-                        w={200}
-                        type="number"
                         placeholder="Доод"
-                        className="border-blue-400 rounded-full lue-400 border-1"
+                        w={200}
+                        value={
+                          filters.filter((f) => f.id == v.type)?.[0]?.min ?? ""
+                        }
+                        className="w-[200px] border-blue-400 rounded-full lue-400 border-1"
                         onChange={(e) => {
-                          const include = filters.find((f) => f.id == v.type);
-                          include
-                            ? e.target.value == "" &&
-                              filters.filter((f) => f.id == v.type)[0].max == 0
-                              ? setFilters(
-                                  filters.filter((f) => f.id != v.type)
-                                )
-                              : filters.map((f) =>
-                                  f.id == v.type
-                                    ? (f.min = Number(e.target.value))
-                                    : f
-                                )
-                            : filters.push({
-                                id: v.type,
-                                min: Number(e.target.value),
-                              });
+                          let value = e.target.value;
+                          if (value && value.match(/^[\d,.]+$/)) {
+                            const include = filters.find((f) => f.id == v.type);
+                            include
+                              ? value == "" &&
+                                filters.filter((f) => f.id == v.type)[0].max ==
+                                  ""
+                                ? setFilters(
+                                    filters.filter((f) => f.id != v.type)
+                                  )
+                                : filters.map((f) =>
+                                    f.id == v.type
+                                      ? (f.min =
+                                          v.type == "price"
+                                            ? formatText(value)
+                                            : value)
+                                      : f
+                                  )
+                              : filters.push({
+                                  id: v.type,
+                                  min:
+                                    v.type == "price"
+                                      ? formatText(value)
+                                      : value,
+                                });
+                          } else {
+                            filters.map((f) =>
+                              f.id == v.type ? (f.min = "") : f
+                            );
+                          }
                           setFilters((prev) => [...prev]);
                         }}
                       />
                       <Text>-</Text>
                       <Input
-                        w={200}
-                        type="number"
+                        value={
+                          filters.filter((f) => f.id == v.type)?.[0]?.max ?? ""
+                        }
                         placeholder="Дээд"
-                        className="border-blue-400 rounded-full lue-400 border-1 focus:outline-none"
+                        w={200}
+                        className=" border-blue-400 rounded-full blue-400 border-1 focus:outline-none"
                         onChange={(e) => {
-                          const include = filters.find((f) => f.id == v.type);
-                          include
-                            ? e.target.value == "" &&
-                              filters.filter((f) => f.id == v.type)[0].min == 0
-                              ? setFilters(
-                                  filters.filter((f) => f.id != v.type)
-                                )
-                              : filters.map((f) =>
-                                  f.id == v.type
-                                    ? (f.max = Number(e.target.value))
-                                    : f
-                                )
-                            : filters.push({
-                                id: v.type,
-                                max: Number(e.target.value),
-                              });
+                          let value = e.target.value;
+                          if (value && value.match(/^[\d,.]+$/)) {
+                            const include = filters.find((f) => f.id == v.type);
+                            include
+                              ? value == "" &&
+                                filters.filter((f) => f.id == v.type)[0].min ==
+                                  ""
+                                ? setFilters(
+                                    filters.filter((f) => f.id != v.type)
+                                  )
+                                : filters.map((f) =>
+                                    f.id == v.type
+                                      ? (f.max =
+                                          v.type == "price"
+                                            ? formatText(value)
+                                            : value)
+                                      : f
+                                  )
+                              : filters.push({
+                                  id: v.type,
+                                  max:
+                                    v.type == "price"
+                                      ? formatText(value)
+                                      : value,
+                                });
+                          } else {
+                            filters.map((f) =>
+                              f.id == v.type ? (f.max = "") : f
+                            );
+                          }
+
                           setFilters((prev) => [...prev]);
                         }}
                       />
@@ -454,7 +499,7 @@ const Page = () => {
                 })}
               </tr>
             </thead>
-            {filteredData?.map((a, i) => {
+            {filteredData?.data?.map((a, i) => {
               return (
                 <tr key={i}>
                   <td width="10%" className="flex justify-between">
@@ -468,8 +513,8 @@ const Page = () => {
                       {a.id}
                     </Button>
                   </td>
-                  <td className="truncate ...">{a.date}</td>
-                  <td className="truncate ...">
+                  <td className="truncate ... ">{a.date}</td>
+                  <td className="truncate ... ">
                     {" "}
                     <Button
                       className={mergeNames(
@@ -481,12 +526,22 @@ const Page = () => {
                       <IoMdGitCompare />
                     </Button>
                   </td>
-                  <td className="truncate ...">{a.location}</td>
+                  <td className="truncate ... ">{a.location}</td>
                   {items.map((item, i) => {
                     let key: keyof AdDataModel;
                     key = item?.type as keyof AdDataModel;
-
-                    return <td key={i}>{a[key]}</td>;
+                    let value = a[key];
+                    if (key == "area") {
+                      value = Number(value).toFixed(2);
+                    }
+                    if (key == "price") {
+                      value = formatText(value?.toString() ?? "");
+                    }
+                    return (
+                      <td key={i} className="text-end">
+                        {value}
+                      </td>
+                    );
                   })}
                 </tr>
               );
@@ -494,7 +549,25 @@ const Page = () => {
           </table>
         )}
       </div>
-
+      <div className="flex w-[500px] mx-auto justify-between align-center">
+        {page > 0 && (
+          <button
+            className="px-3 py-2 rounded-md bg-green-500"
+            onClick={() => setPage((prev) => prev - 1)}
+          >
+            Өмнөх
+          </button>
+        )}
+        <p>{filteredData?.limit} өгөгдөл</p>
+        {filteredData?.limit > (page + 1) * 30 && (
+          <button
+            className="px-3 py-2 rounded-md bg-green-500"
+            onClick={() => setPage((prev) => prev + 1)}
+          >
+            Дараах
+          </button>
+        )}
+      </div>
       <CustomModal
         isOpen={isOpen}
         onClose={onClose}
@@ -650,6 +723,7 @@ const Page = () => {
           </div>
         </Box>
       </CustomModal>
+
       {compareData.length > 0 && (
         <>
           {" "}

@@ -2,14 +2,36 @@
 import { CategoryModel } from "@/models/category.model";
 import mergeNames from "@/utils/functions";
 import Link from "next/link";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { motion } from "framer-motion";
-const NavCategory = ({
-  categories,
-}: {
-  categories: CategoryModel[] | undefined;
-}) => {
+import { getConstants } from "@/app/(api)/constants.api";
+import { ConstantApi } from "@/utils/values";
+import { Api } from "@/config/enum";
+
+const NavCategory = () => {
   const [isHoveringId, setIsHoveringId] = useState<string>();
+  const [categories, setCategories] = useState<CategoryModel[] | null>(null);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      let value = localStorage.getItem("category");
+      if (value) {
+        setCategories(JSON.parse(value));
+      } else {
+        const data = await getConstants(
+          `${ConstantApi.category}false`,
+          Api.GET
+        );
+        localStorage.setItem("category", JSON.stringify(data));
+        setCategories(data);
+      }
+    };
+
+    if (typeof window !== "undefined") {
+      fetchCategories();
+    }
+  }, []);
+
   const handleMouseOver = (id: string) => {
     setIsHoveringId(id);
   };
@@ -19,13 +41,10 @@ const NavCategory = ({
   };
 
   return (
-    <>
-      {" "}
-      {categories?.map((category, key) => {
-        return category.parent == null ? (
+    <Fragment>
+      {categories?.map((category, key) => (
+        <Fragment key={key}>
           <div
-            key={key}
-            // onClick={() => handleMouseOver(id)}
             onMouseOver={() => handleMouseOver(category._id)}
             onMouseOut={handleMouseOut}
             className={mergeNames(
@@ -40,59 +59,32 @@ const NavCategory = ({
                 >
                   {category.name}
                 </Link>
-                {/* <p className="text-[11px] font-medium text-center h-full text-white lg:text-[13px]">
-                  {categoryName}
-                </p> */}
               </div>
             </div>
-            <div className="absolute left-[50%] bg-blue-900 -translate-x-[50%] w-full  flex flex-row overflow-hidden justify-center ">
-              {isHoveringId &&
-                categories
-                  ?.filter((c) => c._id == isHoveringId)?.[0]
-                  .subCategory?.map((body, subkey) => {
-                    const sub = body as CategoryModel;
-                    return (
-                      <Fragment key={subkey}>
-                        {/* <div className="absolute left-0 w-1/2 h-full from-blue-900/0 via-blue-900/40 to-blue-900/100 bg-[url('/images/flurry.svg')] bg-no-repeat" /> */}
-                        {/* <Image
-                      src="/images/flurry.svg"
-                      alt="asd"
-                      className="absolute left-0 object-cover w-1/2"
-                      bgRepeat="repeat"
-                    /> */}
-
-                        <motion.a
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          href={`/category/${sub.href}`}
-                          className={mergeNames(
-                            "px-2 lg:px-4 py-3 text-[10px] xl:text-sm font-medium text-white transition-colors ease-in cursor-pointer bg-blue-900/[96] hover:bg-blue-700 first-letter:uppercase whitespace-nowrap z-30",
-                            subkey === category.subCategory.length - 1
-                              ? ""
-                              : "border-r border-blue-900/[96]"
-                          )}
-                        >
-                          {/* <motion.a */}
-
-                          <p>{sub.name}</p>
-
-                          {/* </motion.a> */}
-                        </motion.a>
-                        {/* <Image
-                      src="/images/flurry.svg"
-                      alt="asd"
-                      className="absolute top-0 right-0 w-1/2 rotate-90"
-                      bgRepeat="repeat"
-                    /> */}
-                        {/* <div className="absolute right-0 w-1/2 h-full bg-gradient-to-r from-blue-900/100 via-blue-900/40 to-white/0" /> */}
-                      </Fragment>
-                    );
-                  })}
-            </div>
+            {isHoveringId === category._id && (
+              <div className="absolute left-[50%] bg-blue-900 -translate-x-[50%] w-full  flex flex-row overflow-hidden justify-center ">
+                {(category.subCategory as CategoryModel[])?.map((sub, subkey) => (
+                  <motion.a
+                    key={subkey}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    href={`/category/${sub.href}`}
+                    className={mergeNames(
+                      "px-2 lg:px-4 py-3 text-[10px] xl:text-sm font-medium text-white transition-colors ease-in cursor-pointer bg-blue-900/[96] hover:bg-blue-700 first-letter:uppercase whitespace-nowrap z-30",
+                      subkey === category.subCategory.length - 1
+                        ? ""
+                        : "border-r border-blue-900/[96]"
+                    )}
+                  >
+                    <p>{sub.name}</p>
+                  </motion.a>
+                ))}
+              </div>
+            )}
           </div>
-        ) : null;
-      })}
-    </>
+        </Fragment>
+      ))}
+    </Fragment>
   );
 };
 

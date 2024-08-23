@@ -5,7 +5,7 @@ import { logoMiniWhite } from "@/utils/assets";
 import { APIProvider } from "@vis.gl/react-google-maps";
 import Head from "next/head";
 import Navbar from "@/components/navbar";
-import { AppWrapper, useAppContext } from "./_context";
+import { AppWrapper,  } from "./_context";
 import { Providers } from "./_providers/chakra.provider";
 import { fonts } from "./_fonts/rubik";
 import NextAuthProvider from "./_context/auth";
@@ -31,11 +31,11 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const type = cookies().get('type')
-  
+  const type = cookies().get("type");
+
   return (
     <html lang="en" className={fonts.rubik.variable}>
-    {/* <html lang="en"> */}
+      {/* <html lang="en"> */}
       <Head>
         <link
           rel=" shortcut icon"
@@ -49,7 +49,11 @@ export default async function RootLayout({
           <Providers>
             <AppWrapper>
               <Suspense fallback={<Loading />}>
-                {type?.value == 'admin' || type?.value == 'system' ? <AdminBar /> : <Navbar />}
+                {type?.value == "admin" || type?.value == "system" ? (
+                  <AdminBar />
+                ) : (
+                  <Navbar />
+                )}
                 {children}
 
                 <ScrollTop />

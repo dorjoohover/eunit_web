@@ -26,36 +26,14 @@ export function AppWrapper({ children }: { children: ReactNode }) {
   });
   let [compare, setCompare] = useState<AdCateIdType[]>([]);
 
-  let [categories, setCategories] = useState<CategoryModel[]>();
-
-  let [mark, setMark] = useState<number[]>([]);
-
-  let [user, setUser] = useState<UserModel | undefined>(undefined);
-  let [current, setCurrent] = useState<{
-    status: boolean;
-    type?: UserType;
-    user: boolean;
-  }>({
-    status: false,
-    user: false,
-    type: undefined,
-  });
   return (
     <AppContext.Provider
       value={{
         ads,
         setAds,
-        user,
-        setUser,
-        current,
-        setCurrent,
-        mark,
-        setMark,
         isLoaded,
         compare,
         setCompare,
-        categories,
-        setCategories,
       }}
     >
       {children}

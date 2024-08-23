@@ -15,9 +15,9 @@ import FormTitle from "@/components/createAd/title";
 import { GoogleMap, MarkerF } from "@react-google-maps/api";
 
 import { useAppContext } from "@/app/_context";
-import { AdSellType, AdTypes, ItemPosition, ItemTypes } from "@/config/enum";
+import { AdSellType, AdTypes, Api, ItemPosition, ItemTypes } from "@/config/enum";
 import { CacheVarType, CreateAdType, StepTypes } from "@/utils/type";
-import { CategoryStepsModel } from "@/models/category.model";
+import { CategoryModel, CategoryStepsModel } from "@/models/category.model";
 import { filterCategoryById } from "@/app/(api)/category.api";
 import { ItemModel } from "@/models/items.model";
 import Loading from "@/app/loading";
@@ -25,7 +25,10 @@ import { ContainerX } from "@/components/container";
 import StepProgress from "@/components/global/stepProgress";
 import { createAd } from "@/app/(api)/ad.api";
 import SharingUpload from "@/components/createAd/sharingUpload";
-import { imageUploader } from "@/app/(api)/constants.api";
+import { getConstants, imageUploader } from "@/app/(api)/constants.api";
+import { ConstantApi } from "@/utils/values";
+import { getUser } from "@/app/(api)/user.api";
+import { UserModel } from "@/models/user.model";
 
 export default function AdSharingPage() {
   const toast = useToast();
@@ -34,7 +37,7 @@ export default function AdSharingPage() {
   // // if (!user) router.push("/login");
   const [filled, setFilled] = useState(false);
   const [currentStep, setCurrentStep] = useState<number>(-2);
-  const { user, categories, isLoaded } = useAppContext();
+  const { isLoaded } = useAppContext();
 
   //  STEP 1 DATA => HURUHNGIIN TURUL, DED TURUL, ZARIIN TURUL, ZARAH TURUL
 
@@ -49,6 +52,38 @@ export default function AdSharingPage() {
 
   const [steps, setSteps] = useState<CategoryStepsModel[]>([]);
 
+  const [user, setUser] = useState<UserModel | null>(null);
+  const [categories, setCategories] = useState<CategoryModel[]>([]);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      let value = localStorage.getItem("user");
+      if (value) {
+        setUser(JSON.parse(value));
+      } else {
+        const data = await getUser();
+        localStorage.setItem("user", JSON.stringify(data));
+        setUser(data);
+      }
+    };
+    const fetchCategories = async () => {
+      let value = localStorage.getItem("category");
+      if (value) {
+        setCategories(JSON.parse(value));
+      } else {
+        const data = await getConstants(
+          `${ConstantApi.category}false`,
+          Api.GET
+        );
+        localStorage.setItem("category", JSON.stringify(data));
+        setCategories(data);
+      }
+    };
+    if (typeof window !== "undefined") {
+      fetchUser();
+      fetchCategories();
+    }
+  }, []);
   // FILTER INFORMATION - FOR WHICH DATA TO DISPLAY
   const [locationData, setLocationData] = useState<StepTypes>();
   const [moreData, setMoreData] = useState<StepTypes>();
@@ -62,7 +97,7 @@ export default function AdSharingPage() {
     desc: "",
     imgSelected: false,
     images: [],
-    phone: parseInt(user?.phone ? user.phone : 0),
+    phone: parseInt(user?.phone ? user.phone : '0'),
   });
   const [file, setFile] = useState<File | null>(null);
   // STEP 3IIN RAW IMAGE FILES
@@ -215,7 +250,7 @@ export default function AdSharingPage() {
       desc: "",
       imgSelected: false,
       images: [],
-      phone: parseInt(user?.phone ? user.phone : 0),
+      phone: parseInt(user?.phone ? user.phone : '0'),
     });
     setImages([]);
   };
