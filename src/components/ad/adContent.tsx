@@ -2,7 +2,6 @@ import { AiOutlineArrowRight } from "react-icons/ai";
 
 import { STYLES } from "@/styles/index";
 
-import { Skeleton } from "@chakra-ui/react";
 import { useState } from "react";
 import { SwiperSlide } from "swiper/react";
 import { FetchAdUnitType } from "@/utils/type";
@@ -12,6 +11,7 @@ import mergeNames from "@/utils/functions";
 import AdCard from "./card";
 import SwiperNav from "../global/swiperNav";
 import { useRouter } from "next/navigation";
+import { Skeleton } from "@mantine/core";
 
 const AdContent = ({
   inCat = true,
@@ -74,7 +74,7 @@ const AdContent = ({
           })}
         </SwiperNav>
       )}
-      {!data && <Skeleton height={"300px"} />}
+      {!data && <Skeleton h={"300px"} />}
       {pg && data?.limit > n && (
         <ul className="flex float-right list-style-none mt-4">
           {num != 0 && (

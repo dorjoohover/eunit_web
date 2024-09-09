@@ -7,7 +7,8 @@ import MainContainer from "@/components/containers/mainContainer";
 import EstimatedCard from "@/components/estimateCard";
 import { EstimateStatus } from "@/config/enum";
 import { EstimateModel } from "@/models/estimate.model";
-import { Radio, RadioGroup, useToast } from "@chakra-ui/react";
+import { Group, Radio } from "@mantine/core";
+import { notifications } from "@mantine/notifications";
 import { useRouter } from "next/navigation";
 
 import { useEffect, useState } from "react";
@@ -15,15 +16,14 @@ import { useEffect, useState } from "react";
 const EstimatingPage = () => {
   const [estimates, setEstimates] = useState<EstimateModel[]>([]);
   const router = useRouter();
-  const toast = useToast();
   const updateEstimate = async (
     id: string,
     status = EstimateStatus.finished
   ) => {
     try {
       await updateEstimateById(status, id).then((d) => {
-        toast({
-          title: "Амжилттай.",
+        notifications.show({
+          message: "Амжилттай.",
           status: "success",
           duration: 2000,
           isClosable: true,
@@ -47,9 +47,10 @@ const EstimatingPage = () => {
   return (
     <div className="mt-10">
       <MainContainer>
-        <RadioGroup className="flex flex-col justify-end" defaultValue="2">
+        <Group className="flex flex-col justify-end" defaultValue="2">
           <Radio
-            colorScheme="blue"
+            label="Үнэлсэн үнэлгээ"
+            color="blue"
             className="font-bold text-blue-400 whitespace-nowrap"
             onChange={(e) => {
               if (e.target.checked) {
@@ -59,12 +60,12 @@ const EstimatingPage = () => {
               }
             }}
             value="1"
-          >
-            Үнэлсэн үнэлгээ
-          </Radio>
+          />
+
           <Radio
-            colorScheme="yellow"
+            color="yellow"
             className="font-bold text-yellow-400 whitespace-nowrap"
+            label="Хүлээгдэж буй үнэлгээ"
             onChange={(e) => {
               if (e.target.checked) {
                 getEstimate(EstimateStatus.pending);
@@ -73,11 +74,10 @@ const EstimatingPage = () => {
               }
             }}
             value="2"
-          >
-            Хүлээгдэж буй үнэлгээ
-          </Radio>
+          />
+
           <Radio
-            colorScheme="green"
+            color="green"
             className="font-bold text-green-400 whitespace-nowrap"
             onChange={(e) => {
               if (e.target.checked) {
@@ -87,10 +87,9 @@ const EstimatingPage = () => {
               }
             }}
             value="3"
-          >
-            Үнэлж дууссан
-          </Radio>
-        </RadioGroup>
+            label="Үнэлж дууссан"
+          />
+        </Group>
         <div className="flex bg-white p-5 my-10 rounded-[20px] sm:text-[14px] md:text-[16px] text-[12px]">
           <div className="flex flex-col w-full gap-2">
             {estimates &&

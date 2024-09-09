@@ -1,6 +1,5 @@
 import { STYLES } from "@/styles";
 import mergeNames from "@/utils/functions";
-import { Spinner } from "@chakra-ui/react";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { BsFillTrashFill } from "react-icons/bs";
 import { HiOutlinePhotograph } from "react-icons/hi";
@@ -9,6 +8,7 @@ import { RiVipDiamondFill } from "react-icons/ri";
 import Tip from "./tip";
 import { FC, ReactNode } from "react";
 import { LoadingButtonType } from "@/utils/type";
+import { Loader } from "@mantine/core";
 
 export const LoadingButton: FC<LoadingButtonType> = ({
   text,
@@ -17,7 +17,7 @@ export const LoadingButton: FC<LoadingButtonType> = ({
   isLoading,
 }) => {
   return isLoading ? (
-    <Spinner />
+    <Loader />
   ) : (
     <div
       className={mergeNames(

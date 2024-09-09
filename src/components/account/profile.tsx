@@ -4,7 +4,6 @@ import {
   UserModel,
 } from "@/models/user.model";
 import mergeNames, { imageExists, profileImgUrl } from "@/utils/functions";
-import { Image, Spinner, useToast } from "@chakra-ui/react";
 
 import moment from "moment";
 
@@ -22,6 +21,8 @@ import Socials from "./details/socials";
 import ProfileImage from "./details/profileImage";
 import { getUser, updateProfile } from "@/app/(api)/user.api";
 import { ErrorMessages } from "@/utils/string";
+import { notifications } from "@mantine/notifications";
+import { Image, Loader } from "@mantine/core";
 
 const GroupLayout = ({
   title,
@@ -108,7 +109,6 @@ const Profile = () => {
       organizationName: "",
     }
   );
-  const toast = useToast();
   const [images, setImages] = useState<File>();
   const [files, setFiles] = useState<File[]>([]);
   const [selectedImage, setSelectedImage] = useState(user?.profileImg);
@@ -209,12 +209,12 @@ const Profile = () => {
       );
 
       res
-        ? toast({
-            title: "Амжилттай.",
+        ? notifications.show({
+            message: "Амжилттай.",
             status: "success",
           })
-        : toast({
-            title: ErrorMessages.tryAgain,
+        : notifications.show({
+            message: ErrorMessages.tryAgain,
             status: "warning",
           });
 
@@ -326,7 +326,7 @@ const Profile = () => {
       </div>
 
       {isLoading ? (
-        <Spinner />
+        <Loader />
       ) : (
         <button
           className={mergeNames(

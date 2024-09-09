@@ -1,6 +1,5 @@
 "use client";
 import mergeNames from "@/utils/functions";
-import { Image } from "@chakra-ui/react";
 import Link from "next/link";
 import React, { Fragment, useEffect, useState } from "react";
 import { NavContainer } from "../container";
@@ -10,6 +9,7 @@ import { getConstants } from "@/app/(api)/constants.api";
 import { Api, UserStatus } from "@/config/enum";
 import { getUser } from "@/app/(api)/user.api";
 import { CategoryModel } from "@/models/category.model";
+import { Image } from "@mantine/core";
 
 const AdminBar = () => {
   const [isHoveringId, setIsHoveringId] = useState<boolean | string>(true);

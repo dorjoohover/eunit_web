@@ -3,24 +3,16 @@ import { sendFeedback } from "@/app/(api)/user.api";
 import { STYLES } from "@/styles";
 import mergeNames from "@/utils/functions";
 import { FeedbackType } from "@/utils/type";
-import {
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  useDisclosure,
-  useToast,
-} from "@chakra-ui/react";
+import { Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+import { notifications } from "@mantine/notifications";
+
 import { useState } from "react";
 
 const Feedback = ({
   openFeedback = "py-2 font-semibold border-2 border-gray-200 rounded-md",
 }) => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const toast = useToast();
+  const  [opened, { open, close }] = useDisclosure();
 
   const [feedback, setFeedback] = useState<FeedbackType>({
     title: "",
@@ -30,24 +22,24 @@ const Feedback = ({
   const send = async () => {
     await sendFeedback(feedback.title, feedback.message).then((d) => {
       if (d) {
-        toast({
-          title: "Баярлалаа",
+        notifications.show({
+          message: "Баярлалаа",
           duration: 3000,
           isClosable: true,
           status: "success",
         });
-        onClose();
+        close();
       }
     });
   };
 
   return (
     <>
-      <button className={openFeedback} onClick={onOpen}>
+      <button className={openFeedback} onClick={open}>
         Санал хүсэлт
       </button>
 
-      <Modal size={"lg"} onClose={onClose} isOpen={isOpen} isCentered>
+      <Modal size={"lg"} onClose={close} opened={opened} centered>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Санал хүсэлт</ModalHeader>
@@ -79,7 +71,7 @@ const Feedback = ({
               </div>
             </div>
           </ModalBody>
-          <ModalFooter className="flex justify-between w-full gap-2">
+          {/* <ModalFooter className="flex justify-between w-full gap-2">
             <button
               onClick={onClose}
               className={mergeNames(
@@ -94,7 +86,7 @@ const Feedback = ({
             >
               Илгээх
             </button>
-          </ModalFooter>
+          </ModalFooter> */}
         </ModalContent>
       </Modal>
     </>

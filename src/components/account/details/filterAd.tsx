@@ -1,7 +1,7 @@
 import { STYLES } from "@/styles/index";
 import mergeNames from "@/utils/functions";
+import { Select } from "@mantine/core";
 
-import { Select } from "@chakra-ui/react";
 import { ReactNode } from "react";
 
 const FilterAd = ({
@@ -17,7 +17,9 @@ const FilterAd = ({
     <Select
       className={mergeNames(STYLES.select)}
       placeholder={plc}
-      onChange={(e) => onChange(e.target.value)}
+      onChange={(e) => {
+        if (e != null) onChange(e);
+      }}
     >
       {children}
     </Select>

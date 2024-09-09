@@ -1,7 +1,5 @@
 import { FaHeart } from "react-icons/fa";
 
-import { Tooltip, useToast } from "@chakra-ui/react";
-
 import { useRouter } from "next/navigation";
 import { BiGitCompare } from "react-icons/bi";
 
@@ -11,6 +9,8 @@ import { useEffect, useState } from "react";
 import { useAppContext } from "@/app/_context";
 import { bookmark, getUser } from "@/app/(api)/user.api";
 import { AdCateIdType } from "@/utils/type";
+import { notifications } from "@mantine/notifications";
+import { Tooltip } from "@mantine/core";
 
 const AdCardButton = ({
   id,
@@ -29,7 +29,6 @@ const AdCardButton = ({
     compare: AdCateIdType[];
     setCompare: React.Dispatch<React.SetStateAction<AdCateIdType[]>>;
   } = useAppContext();
-  const toast = useToast();
   const [mark, setMark] = useState<number[]>([]);
   const [user, setUser] = useState<UserModel | null>(null);
   useEffect(() => {
@@ -47,8 +46,8 @@ const AdCardButton = ({
   }, []);
   const updateMark = async () => {
     if (!user) {
-      toast({
-        title: "Та нэвтэрнэ үү",
+      notifications.show({
+        message: "Та нэвтэрнэ үү",
         status: "warning",
         duration: 5000,
         isClosable: true,
@@ -63,14 +62,14 @@ const AdCardButton = ({
         setMark((prev) => (!was ? [...prev, id] : body));
 
         was
-          ? toast({
-              title: "Зар хүслээс хасагдлаа.",
+          ? notifications.show({
+              message: "Зар хүслээс хасагдлаа.",
               status: "warning",
               duration: 5000,
               isClosable: true,
             })
-          : toast({
-              title: "Зар хүсэлд нэмэгдлээ.",
+          : notifications.show({
+              message: "Зар хүсэлд нэмэгдлээ.",
               status: "success",
               duration: 5000,
               isClosable: true,
@@ -109,8 +108,8 @@ const AdCardButton = ({
             },
           ]);
         } else {
-          toast({
-            title: "Өөр төрлийн зар эсвэл сонгогдсон зар байна.",
+          notifications.show({
+            message: "Өөр төрлийн зар эсвэл сонгогдсон зар байна.",
             status: "warning",
             duration: 5000,
             isClosable: true,
@@ -118,8 +117,8 @@ const AdCardButton = ({
         }
       });
     } else {
-      toast({
-        title: "Дүүрсэн байна.",
+      notifications.show({
+        message: "Дүүрсэн байна.",
         status: "warning",
         duration: 5000,
         isClosable: true,

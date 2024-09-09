@@ -1,4 +1,4 @@
-import { Container } from "@chakra-ui/react";
+import { Container } from "@mantine/core";
 import { ReactNode } from "react";
 
 const MainContainer = ({
@@ -10,10 +10,10 @@ const MainContainer = ({
 }) => {
   return (
     <Container
-      maxW={{ base: "100%", lg: "90%", xl: "85%" }}
+      maw={{ base: "100%", lg: "90%", xl: "85%" }}
       py={py}
-      paddingInlineStart={{ base: 0, md: 4 }}
-      paddingInlineEnd={{ base: 0, md: 4 }}
+      ps={{ base: 0, md: 4 }}
+      pe={{ base: 0, md: 4 }}
     >
       {children}
     </Container>

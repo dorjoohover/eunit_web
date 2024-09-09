@@ -17,38 +17,19 @@ import { UserModel } from "@/models/user.model";
 import { getSearchAds } from "@/app/(api)/ad.api";
 import { motion } from "framer-motion";
 import { useAppContext } from "@/app/_context";
-import { Image } from "@chakra-ui/react";
+
 import { getUser } from "@/app/(api)/user.api";
 import { UserStatus } from "@/config/enum";
 import { usePathname, useRouter } from "next/navigation";
+import useUserData from "@/hooks/user.hook";
+import { Image } from "@mantine/core";
 const Bottom = () => {
   const { setAds } = useAppContext();
-  const [user, setUser] = useState<UserModel | null>(null);
-  useEffect(() => {
-    const fetchCategories = async () => {
-      let value = localStorage.getItem("user");
-      if (value) {
-        setUser(JSON.parse(value));
-      } else {
-        const data = await getUser();
-        localStorage.setItem("user", JSON.stringify(data));
-        setUser(data);
-      }
-    };
+  const { user } = useUserData();
 
-    if (typeof window !== "undefined") {
-      fetchCategories();
-    }
-  }, []);
   // const [isHoveringId, setIsHoveringId] = useState(true);
   const [activeSearch, setActiveSearch] = useState<boolean>(false);
-  // const handleMouseOver = (id) => {
-  //   setIsHoveringId(id);
-  // };
 
-  // const handleMouseOut = () => {
-  //   setIsHoveringId(false);
-  // };
   // Visible end
 
   // Search start
@@ -75,7 +56,7 @@ const Bottom = () => {
               <Image
                 src={Assets.logoMiniWhite}
                 alt="Logo"
-                objectFit="contain"
+                fit="contain"
               />
             </Link>
 
@@ -95,7 +76,7 @@ const Bottom = () => {
             </Link>
 
             {user != undefined ? (
-              <UserDrawer />
+            <UserDrawer />
             ) : (
               <Link href={"/login"}>
                 <UserIcon text="Нэвтрэх" />

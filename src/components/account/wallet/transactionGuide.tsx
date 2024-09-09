@@ -1,12 +1,7 @@
 import DialogBox from "@/components/global/dialog";
 import { AddIcon } from "@/components/global/icons";
-import {
-  Link,
-  List,
-  ListIcon,
-  ListItem,
-  useDisclosure,
-} from "@chakra-ui/react";
+import { List, ListItem } from "@mantine/core";
+
 import { BiMessageSquareError } from "react-icons/bi";
 import { MdCheckCircle } from "react-icons/md";
 
@@ -35,7 +30,7 @@ const TransactionGuide = () => {
                 </p>
                 <p>Дансны дугаар: 460078541 TDB</p>
               </div>
-              <List spacing={3}>
+              {/* <List spacing={3}>
                 <ListItem>
                   <ListIcon as={MdCheckCircle} color="green.500" />
                   Дээрх данс руу цэнэглэх дүнг оруулах
@@ -43,7 +38,7 @@ const TransactionGuide = () => {
                 <ListItem>
                   <ListIcon as={MdCheckCircle} color="green.500" />
                   Гүйлгээний утга дээр бүртгэлтэй Мэйл хаягаа бичих
-                </ListItem>
+                </ListItem>``
                 <ListItem>
                   <ListIcon as={MdCheckCircle} color="green.500" />
                   Гүйлгээ хийсний дараа&nbsp;
@@ -61,8 +56,7 @@ const TransactionGuide = () => {
                   <ListIcon as={BiMessageSquareError} color="green.500" />
                   Гүйлгээг шалгаж үзэн таны Eunit хэтэвчийг цэнэглэх болноо
                 </ListItem>
-                {/* You can also use custom icons from react-icons */}
-              </List>
+              </List> */}
             </div>
           }
         />

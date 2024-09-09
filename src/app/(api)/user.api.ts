@@ -23,6 +23,7 @@ export async function getUser(): Promise<UserModel | null> {
         headers: {
           Authorization: `Bearer ${token?.value ?? ""}`,
         },
+        cache: 'no-store'
       })
       .then((d) => d.json())
       .catch((e) => {

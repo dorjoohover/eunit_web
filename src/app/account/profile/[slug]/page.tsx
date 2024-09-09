@@ -10,7 +10,7 @@ import { UserModel } from "@/models/user.model";
 import { STYLES } from "@/styles";
 import mergeNames, { imageExists } from "@/utils/functions";
 import { FetchAdUnitType, SocialType } from "@/utils/type";
-import { Image } from "@chakra-ui/react";
+import { Image } from "@mantine/core";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { FaPhoneAlt } from "react-icons/fa";

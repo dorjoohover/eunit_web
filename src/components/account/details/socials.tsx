@@ -2,8 +2,8 @@ import { SocialsEnum } from "@/config/enum";
 import { STYLES } from "@/styles/index";
 import mergeNames from "@/utils/functions";
 import { SocialType } from "@/utils/type";
+import { Flex, Image } from "@mantine/core";
 
-import { Flex, Image } from "@chakra-ui/react";
 import Link from "next/link";
 import React, { useState } from "react";
 
@@ -47,7 +47,7 @@ const Socials = ({
                   passHref
                   target="_blank"
                 >
-                  <Flex alignItems="center" justifyContent={'center'} gap={2}>
+                  <Flex align="center" justify={'center'} gap={2}>
                     {/* <BsFacebook className="text-blue-600" /> */}
                     <p className="md:text-[16px] text-[12px] font-bold">
                       {capitalizeFirst(s.name ?? "")}

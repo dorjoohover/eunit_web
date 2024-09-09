@@ -10,7 +10,8 @@ import { UserModel } from "@/models/user.model";
 import { brk, STYLES } from "@/styles";
 import mergeNames from "@/utils/functions";
 import { imageApi } from "@/utils/values";
-import { Button, Radio, RadioGroup, useToast } from "@chakra-ui/react";
+import { Button, Group, Radio } from "@mantine/core";
+
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Fragment, useEffect, useState } from "react";
@@ -26,7 +27,7 @@ const SharedPage = () => {
   const [check, setCheck] = useState(AdStatus.checking);
 
   const [num, setNum] = useState(0);
-  const toast = useToast();
+
   const router = useRouter();
   const page = 20;
   const [user, setUser] = useState<UserModel | null>(null);
@@ -165,9 +166,10 @@ const SharedPage = () => {
                 </button>
               </Link>
             )}
-            <RadioGroup className="flex flex-col justify-end" defaultValue="2">
+            <Group className="flex flex-col justify-end" defaultValue="2">
               <Radio
-                colorScheme="green"
+                label="Нэмсэн зарууд"
+                color="green"
                 className="font-bold text-green-400 whitespace-nowrap"
                 onChange={(e) => {
                   if (e.target.checked) {
@@ -177,11 +179,11 @@ const SharedPage = () => {
                   }
                 }}
                 value="1"
-              >
-                Нэмсэн зарууд
-              </Radio>
+              />
+
               <Radio
-                colorScheme="yellow"
+                color="yellow"
+                label="Шалгагдаж байгаа зарууд"
                 className="font-bold text-yellow-400 whitespace-nowrap"
                 onChange={(e) => {
                   if (e.target.checked) {
@@ -191,13 +193,11 @@ const SharedPage = () => {
                   }
                 }}
                 value="2"
-              >
-                Шалгагдаж байгаа зарууд
-              </Radio>
-            </RadioGroup>
+              />
+            </Group>
           </div>
           <div className="w-full overflow-scroll">
-            <table className="w-full p-2 text-sm text-left border border-collapse border-gray-400 table-fixed">
+            <table color="w-full p-2 text-sm text-left border border-collapse border-gray-400 table-fixed">
               <thead>
                 <tr>
                   <th className="w-[30px]">Дугаар</th>
@@ -226,7 +226,7 @@ const SharedPage = () => {
                         >
                           Орох
                         </button> */}
-                        <Button
+                        <Link
                           as="a"
                           className={mergeNames(
                             STYLES.blueButton,
@@ -237,7 +237,7 @@ const SharedPage = () => {
                           // onClick={() => router.push(`/product/${a.num}`)}
                         >
                           <a target="_blank">Орох</a>
-                        </Button>
+                        </Link>
                       </td>
                       <td className="truncate ...">{a.description}</td>
                       <td>{a.adType}</td>

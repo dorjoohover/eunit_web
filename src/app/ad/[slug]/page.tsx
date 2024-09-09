@@ -1,14 +1,4 @@
 "use client";
-import {
-  Box,
-  Heading,
-  HStack,
-  IconButton,
-  Select,
-  Stack,
-  Text,
-  useToast,
-} from "@chakra-ui/react";
 import React, {
   Fragment,
   ReactElement,
@@ -61,6 +51,16 @@ import { STYLES } from "@/styles";
 import MapCard from "@/components/ad/mapCard";
 import AdContent from "@/components/ad/adContent";
 import { NoAds } from "@/components/account/myAds";
+import { notifications } from "@mantine/notifications";
+import {
+  ActionIcon,
+  Box,
+  Flex,
+  Select,
+  Stack,
+  Text,
+  Title,
+} from "@mantine/core";
 
 export default function AdDynamicPage({
   params,
@@ -69,7 +69,7 @@ export default function AdDynamicPage({
 }) {
   const [data, setData] = useState<AdModel>();
   const { isLoaded } = useAppContext();
-  const toast = useToast();
+
   const router = useRouter();
   const {
     mark,
@@ -99,8 +99,8 @@ export default function AdDynamicPage({
 
   const updateMark = async (id: number) => {
     if (!user) {
-      toast({
-        title: "Та нэвтэрнэ үү",
+      notifications.show({
+        message: "Та нэвтэрнэ үү",
         status: "warning",
         duration: 5000,
         isClosable: true,
@@ -114,14 +114,14 @@ export default function AdDynamicPage({
         const was = body.length != mark.length;
         setMark((prev) => (!was ? [...prev, id] : body));
         was
-          ? toast({
-              title: "Зар хүслээс хасагдлаа.",
+          ? notifications.show({
+              message: "Зар хүслээс хасагдлаа.",
               status: "warning",
               duration: 5000,
               isClosable: true,
             })
-          : toast({
-              title: "Зар хүсэлд нэмэгдлээ.",
+          : notifications.show({
+              message: "Зар хүсэлд нэмэгдлээ.",
               status: "success",
               duration: 5000,
               isClosable: true,
@@ -179,8 +179,8 @@ export default function AdDynamicPage({
   // const [open, setOpen] = useState(false);
   const copyToClipboard = () => {
     navigator.clipboard.writeText(window.location.toString());
-    toast({
-      title: `Холбоосыг хуулж авлаа`,
+    notifications.show({
+      message: `Холбоосыг хуулж авлаа`,
       status: "info",
       isClosable: true,
       duration: 1500,
@@ -188,12 +188,12 @@ export default function AdDynamicPage({
   };
 
   return (
-    <Box m={2} as="section" id="main__product">
+    <Box m={2} id="main__product">
       <ScrollTop />
 
       <MainContainer>
-        <Stack direction={"row"} py={2} gap={3} pos="relative">
-          <Box maxWidth={"100%"} flex="0 0 100%" borderRadius="5px">
+        <Stack dir={"row"} py={2} gap={3} pos="relative">
+          <Box maw={"100%"} flex="0 0 100%" className="rounded-[5px]">
             <div className="flex flex-col-reverse xl:flex-row gap-7">
               <div className="flex flex-col w-full gap-5 max-w-[1030px]">
                 {/* <p className="text-darkBlue">/Үл хөдлөх/Орон сууц</p> */}
@@ -578,19 +578,21 @@ export default function AdDynamicPage({
 
       <MainContainer py={"50px"}>
         <div className={mergeNames(STYLES.flexBetween, "flex-row")}>
-          <Heading
+          <Title
             variant={"mediumHeading"}
             className="text-sm font-bold uppercase md:text-lg"
           >
             Санал болгох зарууд
-          </Heading>
+          </Title>
 
           <Box>
             <Select
               className="h-[30px] text-sm border-2 pr-3 border-blue-700 rounded-full"
               onChange={(e) => {
-                setSuggestion(e.target.value);
-                getSuggestion(e.target.value);
+                if (e != null) {
+                  setSuggestion(e);
+                  getSuggestion(e);
+                }
               }}
             >
               <Fragment>
@@ -626,7 +628,7 @@ export default function AdDynamicPage({
               {isLoaded &&
                 suggestedAds?.ads?.map((m, i) => {
                   return (
-                    <HStack key={i}>
+                    <Flex dir="row" key={i}>
                       <MarkerF
                         position={{
                           lat: parseFloat(m.location?.lat ?? 47.74604),
@@ -655,7 +657,7 @@ export default function AdDynamicPage({
                           </InfoWindow>
                         )}
                       </MarkerF>
-                    </HStack>
+                    </Flex>
                   );
                 })}
             </GoogleMap>
@@ -682,13 +684,14 @@ function AdButton({
   color?: string;
 }) {
   return (
-    <IconButton
+    <ActionIcon
       className="float-right bg-white border-2 border-gray-200 hover:text-blue-600"
       aria-label="Get link"
-      icon={icon}
       onClick={onClick}
-      size={{ base: "xs", sm: "md" }}
+      // size={{ base: "xs", sm: "md" }}
       color={color}
-    />
+    >
+      {icon}
+    </ActionIcon>
   );
 }

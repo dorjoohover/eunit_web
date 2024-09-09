@@ -1,5 +1,5 @@
+import { Divider } from "@mantine/core";
 import React from "react";
-import { Divider } from "@chakra-ui/react";
 
 const FormLine = () => {
   return (

@@ -11,13 +11,13 @@ import React from "react";
 import { BiArea } from "react-icons/bi";
 import Tip from "../global/tip";
 import { UserModel } from "@/models/user.model";
-import { Image } from "@chakra-ui/react";
 import { CategoryModel } from "@/models/category.model";
 import { ApartmentIconInfo, calcValue } from "./card";
 import ItemContainer from "../createAd/product/itemContainer";
 import { ItemType } from "@/utils/type";
 import { imageApi } from "@/utils/values";
 import { Assets } from "@/utils/assets";
+import { Image } from "@mantine/core";
 
 const MapCard = ({ data }: { data: AdModel }) => {
   const router = useRouter();
@@ -38,7 +38,7 @@ const MapCard = ({ data }: { data: AdModel }) => {
                 : imageApi + data?.images[0] ?? "/images/noImage.png"
             }
             alt=" зар"
-            objectFit="cover"
+            fit="cover"
             className={mergeNames(
               "group-hover:scale-125  transition-all w-full object-cover h-full ease-in-out duration-400 aspect-[4/5] relative z-0 ",
               "text-center grid place-items-center font-bold"
@@ -72,7 +72,7 @@ const MapCard = ({ data }: { data: AdModel }) => {
                 Assets.logoMiniWhite
               )}
               alt="BOM logo"
-              objectFit="cover"
+              fit="cover"
               className={mergeNames(
                 "object-cover w-full",
                 (data?.user as UserModel)?.profileImg ? "" : " p-2"

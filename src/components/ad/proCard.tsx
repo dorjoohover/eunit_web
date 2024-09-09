@@ -4,8 +4,6 @@ import { BiArea, BiDoorOpen } from "react-icons/bi";
 import { IoBedOutline } from "react-icons/io5";
 import { TbBath } from "react-icons/tb";
 
-import { Image, Skeleton } from "@chakra-ui/react";
-
 import currency from "currency.js";
 
 import { useRouter } from "next/navigation";
@@ -33,6 +31,7 @@ import { CategoryModel } from "@/models/category.model";
 import { UserModel } from "@/models/user.model";
 import { ItemType } from "@/utils/type";
 import { Assets } from "@/utils/assets";
+import { Image, Skeleton } from "@mantine/core";
 
 function ProCard({
   item,
@@ -66,7 +65,7 @@ function ProCard({
   };
   return (
     // <Skeleton>
-    <Skeleton isLoaded>
+    <Skeleton visible>
       <div className="max-w-[800px] mx-auto relative overflow-hidden rounded-2xl md:min-h-[350px] min-h-[400px]  shadow-md  group flex flex-col w-full h-full mb-2">
         <div className="absolute top-0 left-0 z-10 flex items-center justify-between flex-1 w-full px-3 py-2">
           {item?.images?.length != 0 ? (
@@ -130,7 +129,7 @@ function ProCard({
               <Image
                 src={"/assets/images/noImage.png"}
                 alt=" зар"
-                objectFit="cover"
+                fit="cover"
                 className={mergeNames(
                   "transition-all w-full object-cover h-full ease-in-out duration-400 relative"
                 )}
@@ -156,7 +155,7 @@ function ProCard({
                     <Image
                       src={c ?? a}
                       alt="Зарын зураг"
-                      objectFit="cover"
+                      fit="cover"
                       className={mergeNames(
                         "transition-all w-full object-cover h-full ease-in-out duration-400 relative"
                       )}
@@ -289,7 +288,7 @@ function ProCard({
                   }
                   referrerPolicy="no-referrer"
                   alt="BOM logo"
-                  objectFit="cover"
+                  fit="cover"
                   className={mergeNames(
                     (item?.user as UserModel)?.profileImg
                       ? ""

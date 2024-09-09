@@ -1,5 +1,4 @@
 "use client";
-import { Heading, useToast } from "@chakra-ui/react";
 
 import { useRouter } from "next/navigation";
 import React, { useEffect, useMemo, useState } from "react";
@@ -29,9 +28,10 @@ import { getConstants, imageUploader } from "@/app/(api)/constants.api";
 import { ConstantApi } from "@/utils/values";
 import { getUser } from "@/app/(api)/user.api";
 import { UserModel } from "@/models/user.model";
+import { notifications } from "@mantine/notifications";
+import { Title } from "@mantine/core";
 
 export default function AdSharingPage() {
-  const toast = useToast();
 
   const router = useRouter();
   // // if (!user) router.push("/login");
@@ -207,8 +207,8 @@ export default function AdSharingPage() {
       setFilled(check);
     }
     message.map((m) => {
-      toast({
-        title: `Та ${m} талбарыг бөглөнө үү`,
+      notifications.show({
+        message: `Та ${m} талбарыг бөглөнө үү`,
         status: "warning",
       });
     });
@@ -304,8 +304,8 @@ export default function AdSharingPage() {
       fileUrl
     ).then((d) => {
       if (d) {
-        toast({
-          title: "Амжилттай нэмэгдлээ.",
+        notifications.show({
+          message: "Амжилттай нэмэгдлээ.",
           status: "success",
           duration: 1000,
           isClosable: true,
@@ -329,8 +329,8 @@ export default function AdSharingPage() {
       if (user?.status != "banned") {
         await sendAd();
       } else {
-        toast({
-          title:
+        notifications.show({
+          message:
             "Та одоогоор зар илгээх боломжгүй байна. Email-ээ шалган Verify хийнэ үү",
           status: "warning",
           duration: 2000,
@@ -430,9 +430,9 @@ export default function AdSharingPage() {
                     cache={cache}
                     setCache={setCache}
                   />
-                  <Heading variant="mediumHeading" className="mb-5 text-center">
+                  <Title variant="mediumHeading" className="mb-5 text-center">
                     Газрын зураг дээр байршлаа сонгоно уу
-                  </Heading>
+                  </Title>
                   {isLoaded && (
                     <GoogleMap
                       // className="shadow aspect-video"

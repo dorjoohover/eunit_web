@@ -1,14 +1,18 @@
-'use client'
-import { getFeedback } from '@/app/(api)/user.api';
-import { ContainerX } from '@/components/container';
-import { FeedbackModel } from '@/models/feedback.model';
-import { UserModel } from '@/models/user.model';
-import { useEffect, useState } from 'react';
+"use client";
+import { getFeedback } from "@/app/(api)/user.api";
+import { ContainerX } from "@/components/container";
+import { FeedbackModel } from "@/models/feedback.model";
+import { UserModel } from "@/models/user.model";
+import { useEffect, useState } from "react";
 
 const FeedbackPage = () => {
   const [feedback, setF] = useState<FeedbackModel[]>([]);
   const getFeedbacks = async () => {
-    await getFeedback().then((d) => setF(d))
+    await getFeedback().then((d) => {
+      if (d != false) {
+        setF(d);
+      }
+    });
   };
   useEffect(() => {
     getFeedbacks();
@@ -41,4 +45,3 @@ const FeedbackPage = () => {
   );
 };
 export default FeedbackPage;
-

@@ -1,7 +1,5 @@
 import { STYLES } from "@/styles";
 import mergeNames from "@/utils/functions";
-import { Spinner, useToast } from "@chakra-ui/react";
-
 import { useEffect, useState } from "react";
 import WalletCard from "./wallet/walletCard";
 import DialogBox from "../global/dialog";
@@ -11,6 +9,8 @@ import { PointTitle } from "@/config/enum";
 import { ErrorMessages } from "@/utils/string";
 import { useAppContext } from "@/app/_context";
 import { UserModel } from "@/models/user.model";
+import { notifications } from "@mantine/notifications";
+import { Loader } from "@mantine/core";
 
 export default function WalletPage() {
   const [point, setPoint] = useState({
@@ -18,7 +18,6 @@ export default function WalletPage() {
     point: "",
     message: "",
   });
-  const toast = useToast();
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<UserModel | null>(null);
   useEffect(() => {
@@ -59,16 +58,16 @@ export default function WalletPage() {
       );
 
       if (res) {
-        toast({
-          title: "Амжилттай шилжүүллээ.",
+        notifications.show({
+          message: "Амжилттай шилжүүллээ.",
           status: "success",
           duration: 1000,
         });
         setLoading(false);
         update();
       } else {
-        toast({
-          title: ErrorMessages.tryAgain,
+        notifications.show({
+          message: ErrorMessages.tryAgain,
           status: "warning",
           duration: 1000,
         });
@@ -133,7 +132,7 @@ export default function WalletPage() {
                     "text-center w-full p-2"
                   )}
                 >
-                  <Spinner />
+                  <Loader />
                 </div>
               ) : (
                 <div

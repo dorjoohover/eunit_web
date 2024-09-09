@@ -5,18 +5,23 @@ import { logoMiniWhite } from "@/utils/assets";
 import { APIProvider } from "@vis.gl/react-google-maps";
 import Head from "next/head";
 import Navbar from "@/components/navbar";
-import { AppWrapper,  } from "./_context";
-import { Providers } from "./_providers/chakra.provider";
+import { AppWrapper } from "./_context";
 import { fonts } from "./_fonts/rubik";
 import NextAuthProvider from "./_context/auth";
-
+import "@mantine/core/styles.css";
 import ScrollTop from "@/components/global/scrollTop";
+import {
+  ColorSchemeScript,
+  MantineProvider,
+  MantineThemeProvider,
+} from "@mantine/core";
+import { theme } from "../theme";
 
 import { Suspense } from "react";
 import Loading from "./loading";
 import { cookies, headers } from "next/headers";
 import AdminBar from "@/components/navbar/adminBar";
-
+import { Notifications } from "@mantine/notifications";
 export const metadata: Metadata = {
   title: {
     absolute: "",
@@ -43,24 +48,32 @@ export default async function RootLayout({
           type="image/png"
           sizes="32x32"
         />
+        {/* <ColorSchemeScript />{" "} */}
+        <meta
+          name="viewport"
+          content="minimum-scale=1, initial-scale=1, width=device-width, user-scalable=no"
+        />
       </Head>
       <body>
-        <NextAuthProvider>
-          <Providers>
-            <AppWrapper>
-              <Suspense fallback={<Loading />}>
-                {type?.value == "admin" || type?.value == "system" ? (
-                  <AdminBar />
-                ) : (
-                  <Navbar />
-                )}
-                {children}
+        <MantineProvider >
+          <MantineThemeProvider theme={theme} >
+            <NextAuthProvider>
+              <Notifications />
+              <AppWrapper>
+                <Suspense fallback={<Loading />}>
+                  {type?.value == "admin" || type?.value == "system" ? (
+                    <AdminBar />
+                  ) : (
+                    <Navbar />
+                  )}
+                  {children}
 
-                <ScrollTop />
-              </Suspense>
-            </AppWrapper>
-          </Providers>
-        </NextAuthProvider>
+                  <ScrollTop />
+                </Suspense>
+              </AppWrapper>
+            </NextAuthProvider>
+          </MantineThemeProvider>
+        </MantineProvider>
       </body>
     </html>
   );

@@ -5,24 +5,6 @@ import { ItemDetailModel, ItemModel } from "@/models/items.model";
 import { STYLES } from "@/styles";
 import mergeNames from "@/utils/functions";
 import { AdFilterType, ItemType, StepTypes } from "@/utils/type";
-import {
-  Button,
-  Checkbox,
-  Drawer,
-  DrawerBody,
-  DrawerCloseButton,
-  DrawerContent,
-  DrawerOverlay,
-  Flex,
-  Heading,
-  Input,
-  Radio,
-  RadioGroup,
-  
-  Text,
-  useDisclosure,
-  VStack,
-} from "@chakra-ui/react";
 
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -32,6 +14,23 @@ import Select from "./global/select";
 import { getFilteredAd } from "@/app/(api)/ad.api";
 import { SellTypes, SellTypesString } from "@/utils/values";
 import { useAppContext } from "@/app/_context";
+import { useDisclosure } from "@mantine/hooks";
+import {
+  Button,
+  Checkbox,
+  Drawer,
+  DrawerBody,
+  DrawerCloseButton,
+  DrawerContent,
+  DrawerOverlay,
+  Flex,
+  Group,
+  NumberInput,
+  Radio,
+  Stack,
+  Text,
+  Title,
+} from "@mantine/core";
 
 const FilterLayout = ({
   data,
@@ -45,7 +44,7 @@ const FilterLayout = ({
   const router = useRouter();
   const [value, setValue] = useState(data);
   const [adType, setAdType] = useState([0]);
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [opened, { open, close }] = useDisclosure();
   const btnRef = useRef<HTMLInputElement>(null);
   const [values, setValues] = useState<StepTypes>();
   const [filters, setFilters] = useState<StepTypes>();
@@ -100,12 +99,13 @@ const FilterLayout = ({
           }
         }
       }
-      let cateId: string | undefined = (
-        category?.subCategory as CategoryModel[]
-      )?.filter((f) => f.href == value)?.[0]?._id ?? category?._id;
+      let cateId: string | undefined =
+        (category?.subCategory as CategoryModel[])?.filter(
+          (f) => f.href == value
+        )?.[0]?._id ?? category?._id;
 
       if (cateId == undefined) cateId = category?._id;
-     
+
       const defaultAds = await getFilteredAd(
         cateId!,
         0,
@@ -124,7 +124,7 @@ const FilterLayout = ({
         4,
         0
       );
- 
+
       setAds({
         defaultAds,
         specialAds,
@@ -146,7 +146,7 @@ const FilterLayout = ({
       <button
         // ref={btnRef}
         color="teal"
-        onClick={onOpen}
+        onClick={open}
         className={mergeNames(
           " bg-blue-600 rounded-md text-white font-bold h-[50px]",
           STYLES.flexCenter,
@@ -160,24 +160,26 @@ const FilterLayout = ({
       </button>
 
       <Drawer
-        isOpen={isOpen}
+        opened={opened}
         // placement={{ base: 'bottom', md: 'left' }}
-        placement="left"
-        onClose={onClose}
-        finalFocusRef={btnRef}
+        pl="left"
+        onClose={close}
+        // finalFocusRef={btnRef}
       >
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
           <DrawerBody>
             <FilterStack>
-              <Heading variant={"smallHeading"} mb={2}>
+              <Title variant={"smallHeading"} mb={2}>
                 Үл хөдлөх хөрөнгө
-              </Heading>
+              </Title>
               {category && (
-                <RadioGroup
-                  onChange={setValue}
-                  value={value}
+                <Group
+                  onChange={(e) => {
+                    // if (e != null) setValue(e.target);
+                  }}
+                  // v={value}
                   className="flex flex-col gap-2"
                 >
                   {(category.subCategory.length > 0
@@ -192,26 +194,26 @@ const FilterLayout = ({
                           onChange={(e) => {
                             getItems(e.target.value, true);
                           }}
-                          _selected={{ font: "bold" }}
-                        >
-                          <Text>{name}</Text>
-                        </Radio>
+                          // _selected={{ font: "bold" }}
+                          label={name}
+                        />
                       )
                     );
                   })}
-                </RadioGroup>
+                </Group>
               )}
             </FilterStack>
 
             <FilterStack>
-              <Heading variant={"smallHeading"} mb={2}>
+              <Title variant={"smallHeading"} mb={2}>
                 Борлуулах төрөл
-              </Heading>
+              </Title>
               {SellTypesString.map((s, i) => {
                 return (
                   <Checkbox
                     key={i}
-                    borderColor={"mainBlue"}
+                    label={`${s}.`}
+                    className="border-color-[#4b65f6]"
                     defaultChecked={adType.find((a) => a == i) != undefined}
                     onChange={(e) => {
                       if (e.target.checked) {
@@ -220,16 +222,14 @@ const FilterLayout = ({
                         setAdType(adType.filter((a) => a != i));
                       }
                     }}
-                  >
-                    {s}.
-                  </Checkbox>
+                  />
                 );
               })}
             </FilterStack>
             <FilterStack>
-              <Heading variant={"smallHeading"} mb={2}>
+              <Title variant={"smallHeading"} mb={2}>
                 Байршлаар
-              </Heading>
+              </Title>
 
               <button className="relative z-10 w-full h-32 overflow-hidden border-g ray-200 border-1 rounded-2xl">
                 {/* end map gargana */}
@@ -243,7 +243,7 @@ const FilterLayout = ({
 
             {step.length > 0 && (
               <FilterStack>
-                <Heading variant={"smallHeading"}>Нэмэлт хайлт</Heading>
+                <Title variant={"smallHeading"}>Нэмэлт хайлт</Title>
 
                 {step?.map((f) => {
                   return (f.values as ItemModel[])?.map((v, i) => {
@@ -304,51 +304,46 @@ const FilterLayout = ({
                       </Select>
                     ) : (
                       v.isSearch && (
-                        <VStack flex={1} key={i}>
-                          <Heading variant={"smallHeading"}>{v.name}</Heading>
-                          <Flex alignItems={"center"} gap={2}>
-                            <Input
-                              type="number"
+                        <Stack flex={1} key={i}>
+                          <Title variant={"smallHeading"}>{v.name}</Title>
+                          <Flex align={"center"} gap={2}>
+                            <NumberInput
                               placeholder="Доод"
                               className="border-blue-400 rounded-full lue-400 border-1"
                               onChange={(e) => {
                                 setValues((prev) => ({
                                   ...prev,
-                                  [`${key}-min` as keyof StepTypes]:
-                                    e.target.value,
+                                  [`${key}-min` as keyof StepTypes]: e,
                                 }));
                               }}
                             />
                             <Text>-</Text>
-                            <Input
-                              type="number"
+                            <NumberInput
                               placeholder="Дээд"
                               className="border-blue-400 rounded-full lue-400 border-1 focus:outline-none"
                               onChange={(e) => {
                                 setValues((prev) => ({
                                   ...prev,
-                                  [`${key}-max` as keyof StepTypes]:
-                                    e.target.value,
+                                  [`${key}-max` as keyof StepTypes]: e,
                                 }));
                               }}
                             />
                           </Flex>
-                        </VStack>
+                        </Stack>
                       )
                     );
                   });
                 })}
               </FilterStack>
             )}
-            <VStack>
-              
-            <Button variant={"blueButton"} mx={4} onClick={() => filterAd()}>
-              Хайх
-            </Button>
-            <Button variant={"blueButton"} mx={4} onClick={() => clear()}>
-              Цэвэрлэх
-            </Button>
-            </VStack>
+            <Stack>
+              <Button variant={"blueButton"} mx={4} onClick={() => filterAd()}>
+                Хайх
+              </Button>
+              <Button variant={"blueButton"} mx={4} onClick={() => clear()}>
+                Цэвэрлэх
+              </Button>
+            </Stack>
           </DrawerBody>
         </DrawerContent>
       </Drawer>

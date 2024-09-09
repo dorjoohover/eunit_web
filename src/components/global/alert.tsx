@@ -1,14 +1,6 @@
 import { STYLES } from "@/styles";
 import mergeNames from "@/utils/functions";
-import {
-  AlertDialog,
-  AlertDialogBody,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogOverlay,
-  useDisclosure,
-} from "@chakra-ui/react";
+import { useDisclosure } from "@mantine/hooks";
 import { ReactNode, useRef } from "react";
 
 const Alerting = ({
@@ -28,16 +20,16 @@ const Alerting = ({
   btn?: ReactNode;
   className?: string
 }) => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const  [opened, { open, close }]= useDisclosure();
   const cancelRef = useRef<HTMLInputElement>(null);
 
   return (
     <>
-      <button className={mergeNames(STYLES.button, bg)} onClick={onOpen}>
+      <button className={mergeNames(STYLES.button, bg)} onClick={open}>
         {btn}
       </button>
 
-      <AlertDialog
+      {/* <AlertDialog
         isOpen={isOpen}
         leastDestructiveRef={cancelRef}
         onClose={onClose}
@@ -79,7 +71,7 @@ const Alerting = ({
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialogOverlay>
-      </AlertDialog>
+      </AlertDialog> */}
     </>
   );
 };

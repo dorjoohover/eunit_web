@@ -8,7 +8,7 @@ import { STYLES } from "@/styles";
 import mergeNames from "@/utils/functions";
 import { AdCateIdType } from "@/utils/type";
 import { imageApi } from "@/utils/values";
-import { Image } from "@chakra-ui/react";
+import { Image } from "@mantine/core";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";

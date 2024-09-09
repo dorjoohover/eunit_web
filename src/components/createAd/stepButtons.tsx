@@ -1,4 +1,3 @@
-import { Box, Heading, Text, useDisclosure } from "@chakra-ui/react";
 import {
   GoogleMap,
   Libraries,
@@ -21,6 +20,8 @@ import { CategoryStepsModel } from "@/models/category.model";
 import { CreateAdSteps } from "@/config/enum";
 import { ItemModel } from "@/models/items.model";
 import ProductInfo from "./product/info";
+import { useDisclosure } from "@mantine/hooks";
+import { Box, Text, Title } from "@mantine/core";
 
 const ButtonProcess = () => {
   return (
@@ -59,7 +60,7 @@ const StepButtons = ({
 
   setCurrentStep: React.Dispatch<React.SetStateAction<number>>;
 }) => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const  [opened, { open, close }] = useDisclosure();
 
   const mapOptions = useMemo(
     () => ({
@@ -99,9 +100,9 @@ const StepButtons = ({
         )}
         {filled ? (
           <CustomModal
-            isOpen={isOpen && filled}
-            onClose={onClose}
-            onOpen={onOpen}
+            isOpen={opened && filled}
+            onClose={close}
+            onOpen={open}
             btnOpen={
               <>
                 Дараах <FiArrowRight size={20} />
@@ -112,19 +113,19 @@ const StepButtons = ({
             btnClose2="Буцах"
             header="Нэгтгэсэн мэдээлэл"
           >
-            <Box maxWidth={"100%"} flex="0 0 100%" borderRadius="5px">
+            <Box maw={"100%"} flex="0 0 100%" className="rounded-[5px]">
               <div className="flex flex-col w-full p-3 shadow-md gap-7 bg-bgGrey md:p-10 rounded-xl">
                 {/*Product */}
                 {data?.title && (
-                  <Heading
+                  <Title
                     variant={"mediumHeading"}
                     mb={5}
                     onClick={() => {
-                      onClose(), setCurrentStep(1);
+                      close(), setCurrentStep(1);
                     }}
                   >
                     {data.title}
-                  </Heading>
+                  </Title>
                 )}
                 <Box
                   className={mergeNames(
@@ -132,7 +133,7 @@ const StepButtons = ({
                     "border-2 border-blue-900/20 shadow-md gallery"
                   )}
                   onClick={() => {
-                    onClose(), setCurrentStep(1);
+                    close(), setCurrentStep(1);
                   }}
                 >
                   {data?.images ? (
@@ -172,7 +173,7 @@ const StepButtons = ({
                             id={v.parentId ?? ""}
                             value={data[key]?.toString() ?? ""}
                             func={() => {
-                              onClose(), setCurrentStep(0);
+                              close(), setCurrentStep(0);
                             }}
                             href={false}
                           />
@@ -190,7 +191,7 @@ const StepButtons = ({
                     <Text
                       className="text-[#5c727d] whitespace-pre-line"
                       onClick={() => {
-                        onClose(), setCurrentStep(1);
+                        close(), setCurrentStep(1);
                       }}
                     >
                       {data.desc ?? ""}
@@ -201,7 +202,7 @@ const StepButtons = ({
                     {isLoaded && (
                       <GoogleMap
                         onClick={() => {
-                          onClose(), setCurrentStep(0);
+                          close(), setCurrentStep(0);
                         }}
                         options={mapOptions}
                         zoom={14}
@@ -238,7 +239,7 @@ const StepButtons = ({
                       id={"price"}
                       value={data?.price?.toString() ?? ""}
                       func={() => {
-                        onClose(), setCurrentStep(1);
+                        close(), setCurrentStep(1);
                       }}
                       href={false}
                     />
@@ -247,7 +248,7 @@ const StepButtons = ({
                       id={"unitPrice"}
                       value={data?.unitPrice?.toString() ?? ""}
                       func={() => {
-                        onClose(), setCurrentStep(1);
+                        close(), setCurrentStep(1);
                       }}
                       href={false}
                     />
@@ -256,7 +257,7 @@ const StepButtons = ({
                       id={"area"}
                       value={data?.area?.toString() ?? ""}
                       func={() => {
-                        onClose(), setCurrentStep(1);
+                        close(), setCurrentStep(1);
                       }}
                       href={false}
                     />
@@ -265,7 +266,7 @@ const StepButtons = ({
                       id={"phone"}
                       value={data?.phone?.toString() ?? ""}
                       func={() => {
-                        onClose(), setCurrentStep(1);
+                        close(), setCurrentStep(1);
                       }}
                       href={false}
                     />
@@ -282,7 +283,7 @@ const StepButtons = ({
                               id={v.parentId ?? ""}
                               value={data[key]?.toString() ?? ""}
                               func={() => {
-                                onClose(), setCurrentStep(2);
+                                close(), setCurrentStep(2);
                               }}
                               href={false}
                             />
@@ -301,7 +302,7 @@ const StepButtons = ({
             onClick={() => {
               onNext();
 
-              if (step == 1) onOpen();
+              if (step == 1) open();
             }}
             className="flex flex-row items-center gap-1 px-4 py-2 font-bold text-white bg-blue-500 rounded-full a"
           >

@@ -7,9 +7,9 @@ import SideMenu from "./sideMenu";
 import { NavContainer } from "../container";
 
 import { Assets } from "@/utils/assets";
-import { Image } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import useBreakpoints from "@/hooks/useBreakpoints";
+import Image from "next/image";
 
 const calcSize = (pt?: string) => {
   switch (pt) {

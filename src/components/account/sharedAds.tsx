@@ -1,7 +1,5 @@
 import { brk, radioGroup } from "@/styles/index";
 
-import { Radio, RadioGroup } from "@chakra-ui/react";
-
 import { useState } from "react";
 import { NoAds } from "./myAds";
 import { FetchAdUnitType } from "@/utils/type";
@@ -12,6 +10,7 @@ import FilterAd from "./details/filterAd";
 import Alerting from "../global/alert";
 import AdCard from "../ad/card";
 import CustomPagination from "../global/customPagination";
+import { Group, Radio } from "@mantine/core";
 
 const SharingAds = ({
   userAds,
@@ -172,13 +171,13 @@ const SharingAds = ({
               })}
             </FilterAd>
           </div>
-          <RadioGroup
-            size="sm"
+          <Group
+            __size="sm"
             className={mergeNames(radioGroup)}
             defaultValue="1"
           >
             <Radio
-              colorScheme="green"
+              color="green"
               onChange={(e) => {
                 if (e.target.checked) {
                   getAds(AdStatus.created, undefined, 0);
@@ -186,13 +185,13 @@ const SharingAds = ({
                   setNum(0);
                 }
               }}
+              label="Нэмсэн зарууд"
               value="1"
-            >
-              Нэмсэн зарууд
-            </Radio>
+            />
 
             <Radio
-              colorScheme="yellow"
+              color="yellow"
+              label="Шалгаж байгаа"
               onChange={(e) => {
                 if (e.target.checked) {
                   getAds(AdStatus.checking, undefined, 0);
@@ -201,9 +200,8 @@ const SharingAds = ({
                 }
               }}
               value="3"
-            >
-              Шалгаж байгаа
-            </Radio>
+            />
+
             <Radio
               onChange={(e) => {
                 if (e.target.checked) {
@@ -212,11 +210,11 @@ const SharingAds = ({
                 }
               }}
               value="2"
-            >
-              Буцаагдсан зар
-            </Radio>
+              label="Буцаагдсан зар"
+            />
+
             <Radio
-              colorScheme="red"
+              color="red"
               onChange={(e) => {
                 if (e.target.checked) {
                   getAds(AdStatus.deleted, undefined, 0);
@@ -224,11 +222,10 @@ const SharingAds = ({
                   setCheck(AdStatus.deleted);
                 }
               }}
+              label="Устгасан зар"
               value="4"
-            >
-              Устгасан зар
-            </Radio>
-          </RadioGroup>
+            />
+          </Group>
         </div>
       </div>
       <Alerting />

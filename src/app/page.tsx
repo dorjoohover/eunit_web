@@ -13,6 +13,7 @@ import SwiperHeader from "@/components/swiperHeader";
 import CategorySelect from "@/components/categorySelect";
 import { AdTypes, UserStatus } from "@/config/enum";
 import { UserModel } from "@/models/user.model";
+import useUserData from "@/hooks/user.hook";
 
 export default function Home() {
   const { ads, setAds } = useAppContext();
@@ -22,7 +23,7 @@ export default function Home() {
     special: 0,
   });
   const [loading, setLoading] = useState(false);
-  const [user, setUser] = useState<UserModel | null>(null);
+  const { user, refresh } = useUserData();
   const getData = async () => {
     const defaultAds = await getAds(
       page.default,
@@ -49,10 +50,7 @@ export default function Home() {
 
   const getUserData = async () => {
     setLoading(true);
-
-    const data = await getUser();
-    localStorage.setItem("user", JSON.stringify(data));
-    setUser(data);
+    refresh();
     setLoading(false);
   };
 

@@ -28,9 +28,12 @@ const config: Config = {
         bgGrey: "#eef0f2",
         grey: "#676767",
         dark: "#181818",
+        greyNew: '#E7E5E4',
         mainBlossom: "#1d1e44",
         mainBlue: "#4b65f6",
         lightGreen: "#41d888",
+        mixedBlue50: '#2850FA80',
+        mixedBlue20: '#2850FA33',
       },
       gridTemplateRows: {
         layout: "repeat(auto-fill, minmax(0, 1fr))",

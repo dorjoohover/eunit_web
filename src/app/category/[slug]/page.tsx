@@ -10,23 +10,14 @@ import MainContainer from "@/components/containers/mainContainer";
 import FilterLayout from "@/components/filter";
 import { AdTypes, Api } from "@/config/enum";
 import { AdModel } from "@/models/ad.model";
-import {
-  Box,
-  Button,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  useDisclosure,
-} from "@chakra-ui/react";
 
 import { GoogleMap, InfoWindow, MarkerF } from "@react-google-maps/api";
 
 import { useEffect, useMemo, useState } from "react";
 import CategoryDynamicLoading from "./loading";
 import CompareSelect from "@/components/account/details/compareSelect";
+import { useDisclosure } from "@mantine/hooks";
+import { Box, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader } from "@mantine/core";
 
 const Category = ({ params }: { params: { slug: string } }) => {
   const { ads, setAds, compare, isLoaded } = useAppContext();
@@ -65,7 +56,7 @@ const Category = ({ params }: { params: { slug: string } }) => {
     getAds();
   }, [page]);
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const  [opened, { open, close }] = useDisclosure();
 
   const [markerActive, setMarkerActive] = useState<number | null>(null);
 
@@ -86,12 +77,12 @@ const Category = ({ params }: { params: { slug: string } }) => {
   );
 
   return (
-    <Box my={5} as="section" id="category">
+    <Box my={5} id="category">
       <MainContainer>
         <div className="relative flex flex-col gap-3 p-2">
           {/* //TODO Filter Box */}
           {params.slug && (
-            <FilterLayout data={params.slug} isOpenMap={onOpen} />
+            <FilterLayout data={params.slug} isOpenMap={open} />
           )}
 
           {isLoading && <CategoryDynamicLoading />}
@@ -134,7 +125,7 @@ const Category = ({ params }: { params: { slug: string } }) => {
         <CompareSelect btnView={false} />
         {compare.length > 0 && <div className="h-[250px]" />}
         {/* <CustomModal></CustomModal> */}
-        <Modal onClose={onClose} isOpen={isOpen} isCentered size={"4xl"}>
+        <Modal onClose={close} opened={opened} centered size={"4xl"}>
           <ModalContent>
             <ModalHeader>Maps</ModalHeader>
             <ModalCloseButton />
@@ -190,9 +181,9 @@ const Category = ({ params }: { params: { slug: string } }) => {
                 </GoogleMap>
               )}
             </ModalBody>
-            <ModalFooter>
+            {/* <ModalFooter>
               <Button onClick={onClose}>Close</Button>
-            </ModalFooter>
+            </ModalFooter> */}
           </ModalContent>
         </Modal>
       </MainContainer>

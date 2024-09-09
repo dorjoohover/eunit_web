@@ -4,8 +4,6 @@ import { BiArea, BiDoorOpen } from "react-icons/bi";
 import { IoBedOutline } from "react-icons/io5";
 import { TbBath } from "react-icons/tb";
 
-import { Image, Select, Skeleton } from "@chakra-ui/react";
-
 import currency from "currency.js";
 
 import { useState } from "react";
@@ -29,6 +27,7 @@ import { Assets } from "@/utils/assets";
 import { imageApi } from "@/utils/values";
 import Link from "next/link";
 import { ItemType } from "@/utils/type";
+import { Image, Select, Skeleton } from "@mantine/core";
 
 // import { detectContentType } from "next/dist/server/image-optimizer";
 
@@ -95,7 +94,7 @@ function AdCard({
 
   return (
     // <Skeleton>
-    <Skeleton isLoaded>
+    <Skeleton visible>
       <div
         className={mergeNames(
           "relative overflow-hidden rounded-md md:min-h-[350px] min-h-[300px]  shadow-md bg-zinc-200 group",
@@ -121,7 +120,7 @@ function AdCard({
                     : "/assets/images/noImage.png"
                 }
                 alt=" зар"
-                objectFit="cover"
+                fit="cover"
                 className={mergeNames(
                   "group-hover:scale-125 transition-all w-full object-cover h-full ease-in-out duration-400 aspect-[4/5] relative z-0 ",
                   "text-center grid place-items-center font-bold"
@@ -159,7 +158,7 @@ function AdCard({
                 )}
                 referrerPolicy="no-referrer"
                 alt="BOM logo"
-                objectFit="cover"
+                fit="cover"
                 className={mergeNames(
                   (item?.user as UserModel)?.profileImg ? "" : "",
                   "h-full"
@@ -239,7 +238,9 @@ function AdCard({
                             <Select
                               placeholder="Онцгой зарын төрөл сонгох"
                               onChange={(e) => {
-                                if (setType != null) setType(e.target.value);
+                                if (e != null && setType != undefined) {
+                                  setType(e);
+                                }
                               }}
                             >
                               <option value="special">

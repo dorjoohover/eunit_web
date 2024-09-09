@@ -28,23 +28,7 @@ import {
   ItemType,
   StepTypes,
 } from "@/utils/type";
-import {
-  Box,
-  Button,
-  Center,
-  Checkbox,
-  Heading,
-  Radio,
-  RadioGroup,
-  Select as ChakraSelect,
-  Spinner,
-  Text,
-  useDisclosure,
-  useToast,
-  VStack,
-  Flex,
-  Input,
-} from "@chakra-ui/react";
+
 import Link from "next/link";
 import ImageGallery from "react-image-gallery";
 import { useRouter } from "next/navigation";
@@ -68,6 +52,18 @@ import { ItemDetailModel, ItemModel } from "@/models/items.model";
 import FilterDate from "@/components/createAd/filters";
 import FilterStack from "@/components/global/filterStack";
 import Select from "@/components/global/select";
+import { useDisclosure } from "@mantine/hooks";
+import { notifications } from "@mantine/notifications";
+import {
+  Box,
+  Button,
+  Center,
+  Group,
+  Loader,
+  Radio,
+  Text,
+  Title,
+} from "@mantine/core";
 
 export default function RequestDynamicPage({
   params,
@@ -77,7 +73,7 @@ export default function RequestDynamicPage({
   const [ads, setAds] = useState<FetchAdUnitType>({ ads: [], limit: 0 });
 
   const [data, setData] = useState<AdModel>();
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [opened, { open, close }] = useDisclosure();
   const { isLoaded } = useAppContext();
 
   const mapOptions = useMemo(
@@ -104,7 +100,6 @@ export default function RequestDynamicPage({
 
   const [num, setNum] = useState(0);
   const [loading, setLoading] = useState(false);
-  const toast = useToast();
   const router = useRouter();
 
   const getAds = async (status: AdStatus, n?: number, cate?: string) => {
@@ -133,14 +128,14 @@ export default function RequestDynamicPage({
   const verify = async (id: string) => {
     const res = await updateAdStatus(id, AdStatus.created, AdView.show, "%20");
     res > -1
-      ? toast({
-          title: `${res ?? ""}-р зарыг нэмлээ.`,
+      ? notifications.show({
+          message: `${res ?? ""}-р зарыг нэмлээ.`,
           status: "success",
           duration: 3000,
           isClosable: true,
         })
-      : toast({
-          title: ErrorMessages.tryAgain,
+      : notifications.show({
+          message: ErrorMessages.tryAgain,
           status: "warning",
           duration: 3000,
           isClosable: true,
@@ -149,14 +144,14 @@ export default function RequestDynamicPage({
   const deleteAd = async (id: string) => {
     const res = await updateAdStatus(id, AdStatus.deleted, AdView.hide, "%20");
     res > -1
-      ? toast({
-          title: `${res ?? ""} Зарыг устгалаа.`,
+      ? notifications.show({
+          message: `${res ?? ""} Зарыг устгалаа.`,
           status: "warning",
           duration: 3000,
           isClosable: true,
         })
-      : toast({
-          title: ErrorMessages.tryAgain,
+      : notifications.show({
+          message: ErrorMessages.tryAgain,
           status: "warning",
           duration: 3000,
           isClosable: true,
@@ -191,7 +186,7 @@ export default function RequestDynamicPage({
   };
   const [expand, setExpand] = useState(0);
   const view = (item: AdModel) => {
-    onOpen();
+    open();
     setData(item);
   };
 
@@ -243,9 +238,9 @@ export default function RequestDynamicPage({
                 })}
               </FilterAd>
             </div>
-            <RadioGroup className="flex flex-col justify-end" defaultValue="1">
+            <Group className="flex flex-col justify-end" defaultValue="1">
               <Radio
-                colorScheme="blue"
+                color="blue"
                 className="font-bold text-green-400 whitespace-nowrap"
                 onChange={(e) => {
                   if (e.target.checked) {
@@ -254,12 +249,12 @@ export default function RequestDynamicPage({
                     setNum(0);
                   }
                 }}
+                label="Дата"
                 value="0"
-              >
-                Дата
-              </Radio>
+              />
+
               <Radio
-                colorScheme="green"
+                color="green"
                 className="font-bold text-green-400 whitespace-nowrap"
                 onChange={(e) => {
                   if (e.target.checked) {
@@ -269,11 +264,11 @@ export default function RequestDynamicPage({
                   }
                 }}
                 value="1"
-              >
-                Нэмсэн зарууд
-              </Radio>
+                label="Нэмсэн зарууд"
+              />
+
               <Radio
-                colorScheme="yellow"
+                color="yellow"
                 className="font-bold text-yellow-400 whitespace-nowrap"
                 onChange={(e) => {
                   if (e.target.checked) {
@@ -282,12 +277,12 @@ export default function RequestDynamicPage({
                     setCheck(AdStatus.pending);
                   }
                 }}
+                label="Хүлээгдэж байгаа"
                 value="2"
-              >
-                Хүлээгдэж байгаа
-              </Radio>
+              />
+
               <Radio
-                colorScheme="cyan"
+                color="cyan"
                 className="font-bold text-primary whitespace-nowrap"
                 onChange={(e) => {
                   if (e.target.checked) {
@@ -295,11 +290,10 @@ export default function RequestDynamicPage({
                     setCheck(AdStatus.returned);
                   }
                 }}
+                label="Буцаагдсан зар"
                 value="3"
-              >
-                Буцаагдсан зар
-              </Radio>
-            </RadioGroup>
+              />
+            </Group>
           </div>
           <div className="w-full overflow-scroll">
             {ads?.ads && (
@@ -313,8 +307,8 @@ export default function RequestDynamicPage({
               </Link>
             )}
             {loading ? (
-              <Center minH={"60vh"}>
-                <Spinner />
+              <Center mih={"60vh"}>
+                <Loader />
               </Center>
             ) : (
               <table className="w-full p-2 text-sm text-left border border-gray-400 table-auto">
@@ -498,9 +492,9 @@ export default function RequestDynamicPage({
             </ul>
           </div>
           <CustomModal
-            isOpen={isOpen}
-            onClose={onClose}
-            onOpen={onOpen}
+            isOpen={opened}
+            onClose={close}
+            onOpen={open}
             btnOpen={<></>}
             className=""
             onclick={() => {}}
@@ -508,13 +502,13 @@ export default function RequestDynamicPage({
             btnClose2="Буцах"
             header="Нэгтгэсэн мэдээлэл"
           >
-            <Box maxWidth={"100%"} flex="0 0 100%" borderRadius="5px">
+            <Box maw={"100%"} flex="0 0 100%" className="rounded-[5px]">
               <div className="flex flex-col w-full p-3 shadow-md gap-7 bg-bgGrey md:p-10 rounded-xl">
                 {/*Product */}
                 {data?.title && (
-                  <Heading variant={"mediumHeading"} mb={5} onClick={() => {}}>
+                  <Title variant={"mediumHeading"} mb={5} onClick={() => {}}>
                     {data.title}
-                  </Heading>
+                  </Title>
                 )}
                 <Box
                   className={mergeNames(
@@ -557,7 +551,7 @@ export default function RequestDynamicPage({
                           id={p.id ?? ""}
                           value={p.value}
                           func={() => {
-                            onClose();
+                            close();
                           }}
                           href={false}
                         />
@@ -575,7 +569,7 @@ export default function RequestDynamicPage({
                     <Text
                       className="text-[#5c727d] whitespace-pre-line"
                       onClick={() => {
-                        onClose();
+                        close();
                       }}
                     >
                       {data?.description ?? ""}
@@ -586,7 +580,7 @@ export default function RequestDynamicPage({
                     {isLoaded && (
                       <GoogleMap
                         onClick={() => {
-                          onClose();
+                          close();
                         }}
                         options={mapOptions}
                         zoom={14}
@@ -634,7 +628,7 @@ export default function RequestDynamicPage({
                             id={p.id ?? ""}
                             value={p.value}
                             func={() => {
-                              onClose();
+                              close();
                             }}
                             href={false}
                           />
@@ -652,7 +646,7 @@ export default function RequestDynamicPage({
                             id={p.id ?? ""}
                             value={p.value}
                             func={() => {
-                              onClose();
+                              close();
                             }}
                             href={false}
                           />

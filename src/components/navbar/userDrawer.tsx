@@ -11,6 +11,12 @@ import { AiOutlineCalculator } from "react-icons/ai";
 import { MdShare } from "react-icons/md";
 import mergeNames, { profileImgUrl } from "@/utils/functions";
 import { UserModel } from "@/models/user.model";
+import Feedback from "../global/feedback";
+import { signOut } from "next-auth/react";
+import { logOut } from "@/app/(api)/auth.api";
+import { useAppContext } from "@/app/_context";
+import { getUser } from "@/app/(api)/user.api";
+import { gmailImageUrl, imageApi } from "@/utils/values";
 import {
   Drawer,
   DrawerBody,
@@ -19,14 +25,8 @@ import {
   DrawerOverlay,
   Image,
   Text,
-  useDisclosure,
-} from "@chakra-ui/react";
-import Feedback from "../global/feedback";
-import { signOut } from "next-auth/react";
-import { logOut } from "@/app/(api)/auth.api";
-import { useAppContext } from "@/app/_context";
-import { getUser } from "@/app/(api)/user.api";
-import { gmailImageUrl, imageApi } from "@/utils/values";
+} from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 
 const drawerItem = [
   {
@@ -80,7 +80,7 @@ const BodyDrawer = ({ onClose }: { onClose: () => void }) => {
     }
   }, []);
   return (
-    <DrawerBody className="flex flex-col justify-between p-0 bg-bgdark/95">
+    <Drawer.Body className="mx-5 flex flex-col justify-between p-0 bg-bgdark/95">
       <div
         className={mergeNames(
           STYLES.flexBetween,
@@ -98,7 +98,7 @@ const BodyDrawer = ({ onClose }: { onClose: () => void }) => {
             src={profileImgUrl(user?.profileImg)}
             alt="user image"
             referrerPolicy="no-referrer"
-            className="w-[100px] aspect-square rounded-full bg-gray-400 object-cover mt-10"
+            className="w-[90px] aspect-square rounded-full bg-gray-400 object-cover "
           />
           <h2 className="text-[22px] mt-2 font-bold">{user?.username ?? ""}</h2>
 
@@ -127,6 +127,7 @@ const BodyDrawer = ({ onClose }: { onClose: () => void }) => {
             onClick={() => {
               signOut();
               logOut();
+              localStorage.removeItem("user");
             }}
             className="py-2 font-semibold text-white rounded-md bg-mainBlossom hover:bg-red-500 "
           >
@@ -134,7 +135,7 @@ const BodyDrawer = ({ onClose }: { onClose: () => void }) => {
           </Link>
         </div>
       </div>
-    </DrawerBody>
+    </Drawer.Body>
   );
 };
 
@@ -178,20 +179,31 @@ const DownLink = ({
 const UserDrawer = () => {
   const [active, setActive] = useState(false);
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [opened, { open, close }] = useDisclosure();
 
   return (
     <div className="relative">
-      <UserIcon text="Профайл" onClick={onOpen} word={active} />
+      <UserIcon text="Профайл" onClick={open} word={active} />
 
-      <Drawer isOpen={isOpen} placement="right" onClose={onClose} size="sm">
-        <DrawerOverlay />
-        <DrawerContent className="bg-transparent">
-          <DrawerCloseButton className="text-white" />
-
-          <BodyDrawer onClose={onClose} />
-        </DrawerContent>
-      </Drawer>
+      <Drawer.Root
+        color="primary"
+        opened={opened}
+        position="right"
+        onClose={close}
+        size="md"
+      >
+        <Drawer.Overlay />
+        <Drawer.Content bg={"#001529"}>
+          <Drawer.Header className="bg-bgdark/95">
+            <Drawer.CloseButton
+              c={"white"}
+              className="hover:bg-transparent hover:opacity-50 transition-all"
+            />
+          </Drawer.Header>
+          <BodyDrawer onClose={close} />
+        </Drawer.Content>
+        {/* <DrawerOverlay /> */}
+      </Drawer.Root>
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import { ProductInfoValueType } from "@/utils/type";
-import { Text } from "@chakra-ui/react";
+import { Text } from "@mantine/core";
 import currency from "currency.js";
 import Link from "next/link";
 import { FC } from "react";
@@ -19,10 +19,9 @@ const ProductInfoValue: FC<ProductInfoValueType> = ({
     >
    
       <Text
-        fontSize={{ base: "13px", xl: "15px" }}
-        cursor={"pointer"}
-        fontWeight={"bold"}
-        className="duration-200 ease-in-out hover:text-blue-600"
+        fs={{ base: "13px", xl: "15px" }}
+        fw={"bold"}
+        className="duration-200 cursor-pointer ease-in-out hover:text-blue-600"
       >
         {id === "price" || id === "unitPrice"
           ? currency(value, { separator: ",", symbol: "₮ " })
@@ -32,7 +31,7 @@ const ProductInfoValue: FC<ProductInfoValueType> = ({
       </Text>
     </Link>
   ) : (
-    <Text fontSize={{ base: "13px", xl: "15px" }} fontWeight={"bold"}>
+    <Text fs={{ base: "13px", xl: "15px" }} fw={"bold"}>
       {id === "price" || id === "unitPrice"
         ? currency(value, { separator: ",", symbol: "₮ " }).format().toString()
         : value}

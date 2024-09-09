@@ -2,12 +2,12 @@
 import { AdModel } from "@/models/ad.model";
 import { ItemModel } from "@/models/items.model";
 import mergeNames from "@/utils/functions";
-import { Button, GridItem, Stack, Text } from "@chakra-ui/react";
 import { Fragment, useState } from "react";
 import ProductInfoValue from "./productInfoValue";
 import { FiltersContainer } from "../step4/filter";
 import { ItemType } from "@/utils/type";
 import { ItemTypes } from "@/config/enum";
+import { Button, Grid, Stack, Text } from "@mantine/core";
 
 export default function ProductInfo({
   title,
@@ -58,7 +58,7 @@ export default function ProductInfo({
           Бусад мэдээлэл
         </p>
       )}
-      <GridItem
+      <Grid.Col
         className={mergeNames(
           title?.length > 30
             ? "product__info col-span-full md:col-span-2 lg:col-span-1 row-start-1"
@@ -68,12 +68,12 @@ export default function ProductInfo({
         )}
       >
         <Stack
-          direction={"row"}
+          dir={"row"}
           className={mergeNames("p-2 rounded-md")}
           onClick={href ? () => {} : func}
         >
           <div className="flex flex-col w-full pl-2 text-left sm:pl-5">
-            <Text fontSize={{ base: "13px", xl: "15px" }}>{title}: </Text>
+            <Text fs={{ base: "13px", xl: "15px" }}>{title}: </Text>
             {!localData && (
               <ProductInfoValue
                 href={href ?? false}
@@ -177,7 +177,7 @@ export default function ProductInfo({
             </Button>
           )}
         </Stack>
-      </GridItem>
+      </Grid.Col>
     </Fragment>
   );
 }

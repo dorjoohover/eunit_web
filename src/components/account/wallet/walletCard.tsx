@@ -1,8 +1,8 @@
-import { Image } from "@chakra-ui/react";
 import currency from "currency.js";
 import TransactionGuide from "./transactionGuide";
 import { UserModel } from "@/models/user.model";
 import { useEffect, useState } from "react";
+import { Image } from "@mantine/core";
 
 const WalletCard = () => {
   const [user, setUser] = useState<UserModel | null>(null);

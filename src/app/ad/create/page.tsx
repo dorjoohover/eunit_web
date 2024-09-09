@@ -12,7 +12,6 @@ import {
 } from "@/config/enum";
 import { CategoryModel, CategoryStepsModel } from "@/models/category.model";
 import { ConstantApi, locationCenter } from "@/utils/values";
-import { Heading, Spinner, useToast } from "@chakra-ui/react";
 import { useEffect, useMemo, useState } from "react";
 import { GoogleMap, MarkerF } from "@react-google-maps/api";
 import { CacheVarType, CreateAdType, StepTypes } from "@/utils/type";
@@ -29,10 +28,10 @@ import Loading from "@/app/loading";
 import { getConstants, imageUploader } from "@/app/(api)/constants.api";
 import { UserModel } from "@/models/user.model";
 import { getUser } from "@/app/(api)/user.api";
+import { notifications } from "@mantine/notifications";
+import { Loader, Title } from "@mantine/core";
 
 export default function AdCreatePage() {
-  const toast = useToast();
-
   const [currentStep, setCurrentStep] = useState<number>(-1);
   const [steps, setSteps] = useState<CategoryStepsModel[]>([]);
   const { isLoaded } = useAppContext();
@@ -197,8 +196,8 @@ export default function AdCreatePage() {
       setFilled(check);
     }
     message.map((m) => {
-      toast({
-        title: `Та ${m} талбарыг бөглөнө үү`,
+      notifications.show({
+        message: `Та ${m} талбарыг бөглөнө үү`,
         status: "warning",
       });
     });
@@ -292,8 +291,8 @@ export default function AdCreatePage() {
 
     await createAd(imagesRes, data, types, filters, cateId).then((d) => {
       if (d) {
-        toast({
-          title: "Амжилттай нэмэгдлээ.",
+        notifications.show({
+          message: "Амжилттай нэмэгдлээ.",
           status: "success",
           duration: 1000,
           isClosable: true,
@@ -315,8 +314,8 @@ export default function AdCreatePage() {
       if (user?.status != "banned") {
         await sendAd();
       } else {
-        toast({
-          title:
+        notifications.show({
+          message:
             "Та одоогоор зар илгээх боломжгүй байна. Email-ээ шалган Verify хийнэ үү",
           status: "warning",
           duration: 2000,
@@ -395,9 +394,9 @@ export default function AdCreatePage() {
                     cache={cache}
                     setCache={setCache}
                   />
-                  <Heading variant="mediumHeading" className="mb-5 text-center">
+                  <Title variant="mediumHeading" className="mb-5 text-center">
                     Газрын зураг дээр байршлаа сонгоно уу
-                  </Heading>
+                  </Title>
                   {isLoaded ? (
                     <GoogleMap
                       // className="shadow aspect-video"
@@ -426,7 +425,7 @@ export default function AdCreatePage() {
                     </GoogleMap>
                   ) : (
                     <div className="w-full h-[40vh]">
-                      <Spinner />
+                      <Loader />
                     </div>
                   )}
                 </div>

@@ -1,5 +1,5 @@
 import mergeNames from "@/utils/functions";
-import { useToast } from "@chakra-ui/react";
+import { notifications } from "@mantine/notifications";
 import { ReactNode } from "react";
 
 const CustomToast = ({
@@ -18,7 +18,6 @@ const CustomToast = ({
   onClick: () => void;
   toastBtn: ReactNode;
 }) => {
-  const toast = useToast();
 
   return (
     <button
@@ -48,8 +47,8 @@ const CustomToast = ({
       //   });
       // }}
       onClick={() => {
-        toast({
-          title: `${toastH}`,
+        notifications.show({
+          message: `${toastH}`,
           description: `${toastP ?? ''}`,
           status:
             status == "info"

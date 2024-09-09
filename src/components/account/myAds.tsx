@@ -1,8 +1,6 @@
 import { brk, radioGroup } from "@/styles/index";
 import mergeNames from "@/utils/functions";
 
-import { Radio, RadioGroup, Spinner, useToast } from "@chakra-ui/react";
-
 import { useState } from "react";
 
 import FilterAd from "./details/filterAd";
@@ -12,6 +10,7 @@ import Alerting from "../global/alert";
 import AdCard from "../ad/card";
 import { AdStatus } from "@/config/enum";
 import CustomPagination from "../global/customPagination";
+import { Group, Loader, Radio } from "@mantine/core";
 
 const MyAds = ({
   userAds,
@@ -32,8 +31,6 @@ const MyAds = ({
   const [num, setNum] = useState(0);
   const [check, setCheck] = useState(AdStatus.created);
   const [type, setType] = useState("");
-
-  const toast = useToast();
 
   const restoreAd = async (id: string) => {
     //   try {
@@ -163,13 +160,14 @@ const MyAds = ({
             </FilterAd>
           </div>
 
-          <RadioGroup
+          <Group
             className={mergeNames(radioGroup)}
-            size={"sm"}
-            value={check}
+            __size={"sm"}
+            // value={check}
           >
             <Radio
-              colorScheme="green"
+              color="green"
+              label="Нэмсэн зарууд"
               onChange={(e) => {
                 if (e.target.checked) {
                   getAds(AdStatus.created, undefined, 0);
@@ -177,11 +175,10 @@ const MyAds = ({
                 }
               }}
               value={AdStatus.created}
-            >
-              Нэмсэн зарууд
-            </Radio>
+            />
+
             <Radio
-              colorScheme="yellow"
+              color="yellow"
               onChange={(e) => {
                 if (e.target.checked) {
                   getAds(AdStatus.pending, undefined, 0);
@@ -189,10 +186,11 @@ const MyAds = ({
                 }
               }}
               value={AdStatus.pending}
-            >
-              Хүлээгдэж байгаа
-            </Radio>
+              label=" Хүлээгдэж байгаа"
+            />
+
             <Radio
+              label="Буцаагдсан зар"
               onChange={(e) => {
                 if (e.target.checked) {
                   getAds(AdStatus.returned);
@@ -200,22 +198,20 @@ const MyAds = ({
                 }
               }}
               value={AdStatus.returned}
-            >
-              Буцаагдсан зар
-            </Radio>
+            />
+
             <Radio
-              colorScheme="red"
+              color="red"
               onChange={(e) => {
                 if (e.target.checked) {
                   getAds(AdStatus.deleted, undefined, 0);
                   setCheck(AdStatus.deleted);
                 }
               }}
+              label="Устгасан зар"
               value={AdStatus.deleted}
-            >
-              Устгасан зар
-            </Radio>
-          </RadioGroup>
+            />
+          </Group>
         </div>
       </div>
       <Alerting />
@@ -249,7 +245,7 @@ const MyAds = ({
       {!loading && <NoAds data={ads?.ads?.length ?? 0} />}
       {loading && (
         <div className="min-h-[20vh] md:min-h-[40vh] h-full flex justify-center items-center w-full text-xl">
-          {<Spinner />}
+          {<Loader />}
         </div>
       )}
       {!loading && ads?.limit > 12 && (

@@ -11,8 +11,8 @@ import {
 import { STYLES } from "@/styles/index";
 import mergeNames from "@/utils/functions";
 import { StepTypes } from "@/utils/type";
+import { useDisclosure } from "@mantine/hooks";
 
-import { useDisclosure } from "@chakra-ui/react";
 import React, { ReactNode, useState } from "react";
 import { BiEdit } from "react-icons/bi";
 
@@ -46,7 +46,7 @@ const ChangeAgent = ({
   setOrg: React.Dispatch<React.SetStateAction<OrganizationAdditionModel>>;
   setImage: React.Dispatch<React.SetStateAction<File[]>>;
 }) => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const  [opened, { open, close }]= useDisclosure();
   const [data, setData] = useState<StepTypes>({});
   const hiddenFileInput = React.useRef<HTMLInputElement>(null);
   const handleClick = () => {
@@ -70,10 +70,10 @@ const ChangeAgent = ({
 
   return agent || org ? (
     <CustomModal
-      onClose={onClose}
-      onOpen={onOpen}
-      isOpen={isOpen}
-      onclick={onClose}
+      onClose={close}
+      onOpen={open}
+      isOpen={opened}
+      onclick={close}
       btnOpen={
         <>
           {agent && <p>Агент</p>}

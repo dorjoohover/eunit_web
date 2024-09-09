@@ -1,9 +1,9 @@
-'use client'
-import { STYLES } from '@/styles';
-import { Assets } from '@/utils/assets';
-import mergeNames from '@/utils/functions';
-import { Image } from '@chakra-ui/react';
-import {motion} from 'framer-motion'
+"use client";
+import { STYLES } from "@/styles";
+import { Assets } from "@/utils/assets";
+import mergeNames from "@/utils/functions";
+import { motion } from "framer-motion";
+import Image from "next/image";
 export default function Loading() {
   // You can add any UI inside Loading, including a Skeleton.
   return (

@@ -1,5 +1,6 @@
 import MainContainer from "@/components/containers/mainContainer";
-import { Image, Stack, Text } from "@chakra-ui/react";
+import { Image, Stack, Text } from "@mantine/core";
+
 import React from "react";
 
 export default function NotFound() {
@@ -8,15 +9,15 @@ export default function NotFound() {
       <MainContainer>
         <Stack
           display={"flex"}
-          justifyContent={"center"}
-          width={"100%"}
-          textAlign={"center"}
+          justify={"center"}
+          w={"100%"}
+          ta={"center"}
           my="10vh"
         >
           <Image
             src="/assets/images/404.png"
             alt="error image"
-            width={{
+            w={{
               base: "80%",
               md: "70%",
               lg: "60%",
@@ -24,7 +25,7 @@ export default function NotFound() {
             }}
             mx={"auto !important"}
           />
-          <Text color={"grey"} fontSize="2em">
+          <Text c={"grey"} fs="2em">
             Уучлаарай. Таны хайсан хуудас байхгүй байна.
           </Text>
         </Stack>

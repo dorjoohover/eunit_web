@@ -23,7 +23,9 @@ export async function getAds(
   try {
     let res = await fetch(
       `${api}${AdApi.view}${num}/${limit}/${type}/${length}`,
-      {}
+      {
+        cache: "no-store",
+      }
     ).then((d) => d.json());
 
     return res;

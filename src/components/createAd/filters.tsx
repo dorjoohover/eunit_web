@@ -1,10 +1,4 @@
-import {
-  NumberDecrementStepper,
-  NumberIncrementStepper,
-  NumberInput,
-  NumberInputField,
-  NumberInputStepper,
-} from "@chakra-ui/react";
+
 import FormLabel from "./formLabel";
 import { ItemContainer } from "./step4";
 import { DateYearSelector } from "../global/dateSelector";
@@ -15,6 +9,7 @@ import Counter from "../global/counter";
 import Input from "../global/input";
 import Select from "../global/select";
 import { ItemDetailModel } from "@/models/items.model";
+import { NumberInput } from "@mantine/core";
 
 const FilterDate: FC<DateType> = ({
   defValue,
@@ -43,9 +38,9 @@ export const FilterYear: FC<DateType> = ({ title, onSelect, value }) => {
       <FormLabel title={title + " / жил"} />
       <NumberInput
         size="md"
-        allowMouseWheel
-        keepWithinRange={false}
-        clampValueOnBlur={false}
+        // allowMouseWheel
+        // keepWithinRange={false}
+        // clampValueOnBlur={false}
         defaultValue={0}
         value={value}
         className={mergeNames(
@@ -54,15 +49,15 @@ export const FilterYear: FC<DateType> = ({ title, onSelect, value }) => {
         )}
         onChange={(e) => {
           if (e && onSelect) {
-            onSelect(parseInt(e).toString());
+            onSelect(parseInt(`${e}`).toString());
           }
         }}
       >
-        <NumberInputField />
+        {/* <NumberInputField />
         <NumberInputStepper>
           <NumberIncrementStepper />
           <NumberDecrementStepper />
-        </NumberInputStepper>
+        </NumberInputStepper> */}
       </NumberInput>
     </ItemContainer>
   );

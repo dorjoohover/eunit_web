@@ -1,4 +1,5 @@
-import { Text } from "@chakra-ui/react";
+
+import { Text } from "@mantine/core";
 import currency from "currency.js";
 
 const ProductHeader = ({

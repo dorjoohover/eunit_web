@@ -1,14 +1,6 @@
 "use client";
-import {
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  useDisclosure,
-} from "@chakra-ui/react";
+
+import { Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay } from "@mantine/core";
 import { ReactNode, useState } from "react";
 
 function CustomModal({
@@ -45,21 +37,21 @@ function CustomModal({
       </button>
       <Modal
         onClose={onClose}
-        isOpen={isOpen}
-        isCentered
-        size={{ base: "sm", sm: "xl", md: "2xl", lg: "6xl", xl: "6xl" }}
+        opened={isOpen}
+        centered
+        // size={{ base: "sm", sm: "xl", md: "2xl", lg: "6xl", xl: "6xl" }}
       >
         <ModalOverlay />
         <ModalContent>
           <ModalHeader
             className="mb-5 w-[90%] "
-            fontSize={{ base: "15px", lg: "22px" }}
+            fs={{ base: "15px", lg: "22px" }}
           >
             {header}
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody>{children}</ModalBody>
-          <ModalFooter className="gap-2 font-bold bg-gray-200 rounded-b-md">
+          {/* <ModalFooter className="gap-2 font-bold bg-gray-200 rounded-b-md">
             <div
               onClick={() => {
                 onClose();
@@ -84,7 +76,7 @@ function CustomModal({
             >
               {btnClose2}
             </button>
-          </ModalFooter>
+          </ModalFooter> */}
         </ModalContent>
       </Modal>
     </>

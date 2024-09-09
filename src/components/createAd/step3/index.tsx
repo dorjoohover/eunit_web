@@ -1,6 +1,5 @@
 import FormTitle from "@/components/createAd/title";
 
-import { NumberInput, NumberInputField } from "@chakra-ui/react";
 import FormLine from "../formLine";
 import { AtomLabel } from "./atom";
 
@@ -13,6 +12,7 @@ import FieldTitle from "./fieldTitle";
 import FieldPhotoUpload from "./fieldPhotoUpload";
 import { useAppContext } from "@/app/_context";
 import { UserModel } from "@/models/user.model";
+import { NumberInput } from "@mantine/core";
 
 // FILTER DATA: PRICE, AREA, UNITPRICE
 // TITLE, DESCRIPTION, IMAGE UPLOAD
@@ -73,20 +73,20 @@ const Step3 = ({
               <NumberInput
                 className="flex flex-col items-start w-full"
                 onChange={(e) => {
-                  setGeneralData((prev) => ({ ...prev, phone: parseInt(e) }));
+                  setGeneralData((prev) => ({ ...prev, phone: parseInt(`${e}`) }));
                 }}
                 value={
                   generalData.phone == 0 ? user?.phone ?? 0 : generalData.phone
                 }
               >
-                <NumberInputField
+                {/* <NumberInputField
                   className={mergeNames(
                     generalData?.phone?.toString().length ?? 0 < 8
                       ? "border-red-400 ring-red-400"
                       : "border-blue-400/70 ring-blue-400",
                     "w-full px-4 py-2 border-2 rounded-full  "
                   )}
-                />
+                /> */}
               </NumberInput>
             </div>
             {!sharing && (

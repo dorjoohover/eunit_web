@@ -7,7 +7,6 @@ import DialogBox from "@/components/global/dialog";
 import { UserModel } from "@/models/user.model";
 import { STYLES } from "@/styles";
 import mergeNames from "@/utils/functions";
-import { useToast } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -18,7 +17,6 @@ const AdminWalletPage = () => {
     message: "",
     type: "default",
   });
-  const toast = useToast();
   const router = useRouter();
   const sendPoint = async () => {
     // try {

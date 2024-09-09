@@ -8,7 +8,7 @@ import { STYLES } from "@/styles";
 import mergeNames from "@/utils/functions";
 import { ErrorMessages } from "@/utils/string";
 import { imageApi } from "@/utils/values";
-import { useToast } from "@chakra-ui/react";
+import { notifications } from "@mantine/notifications";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Fragment, useEffect, useState } from "react";
@@ -24,7 +24,7 @@ export default function UsersDynamicPage({
   const [users, setUser] = useState<UserModel[]>([]);
 
   const [num, setNum] = useState(0);
-  const toast = useToast();
+  
   const router = useRouter();
   let dummy = [];
   const getData = async () => {
@@ -49,14 +49,14 @@ export default function UsersDynamicPage({
   const verifyUser = async (id: string) => {
     updateUserStatus(id, UserStatus.active).then((d) => {
       d
-        ? toast({
-            title: `Хэрэглэгчийг зөвшөөрлөө`,
+        ? notifications.show({
+            message: `Хэрэглэгчийг зөвшөөрлөө`,
             status: "success",
             duration: 3000,
             isClosable: true,
           })
-        : toast({
-            title: ErrorMessages.tryAgain,
+        : notifications.show({
+            message: ErrorMessages.tryAgain,
             status: "warning",
             duration: 3000,
             isClosable: true,
@@ -66,14 +66,14 @@ export default function UsersDynamicPage({
   const returnRequest = async (id: string) => {
     updateUserStatus(id, UserStatus.returned, "Буцаалаа.").then((d) => {
       d
-        ? toast({
-            title: `Хэрэглэгчийг буцаалаа`,
+        ? notifications.show({
+            message: `Хэрэглэгчийг буцаалаа`,
             status: "success",
             duration: 3000,
             isClosable: true,
           })
-        : toast({
-            title: ErrorMessages.tryAgain,
+        : notifications.show({
+            message: ErrorMessages.tryAgain,
             status: "warning",
             duration: 3000,
             isClosable: true,
@@ -83,14 +83,14 @@ export default function UsersDynamicPage({
   const banUser = async (id: string) => {
     updateUserStatus(id, UserStatus.banned).then((d) => {
       d
-        ? toast({
-            title: `Хэрэглэгчийг хориглолоо.`,
+        ? notifications.show({
+            message: `Хэрэглэгчийг хориглолоо.`,
             status: "success",
             duration: 3000,
             isClosable: true,
           })
-        : toast({
-            title: ErrorMessages.tryAgain,
+        : notifications.show({
+            message: ErrorMessages.tryAgain,
             status: "warning",
             duration: 3000,
             isClosable: true,

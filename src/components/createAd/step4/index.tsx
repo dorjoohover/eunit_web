@@ -1,4 +1,3 @@
-import { Box } from "@chakra-ui/react";
 import { Dispatch, FC, Fragment, ReactNode, SetStateAction } from "react";
 
 import ButtonSelectItem from "../formButtonSelectItem";
@@ -18,6 +17,7 @@ import Select from "@/components/global/select";
 import Input from "@/components/global/input";
 import { CacheVarType, ItemType, StepTypes } from "@/utils/type";
 import { CommitteeData } from "@/utils/values";
+import { Box } from "@mantine/core";
 
 const Step4 = ({
   filter,

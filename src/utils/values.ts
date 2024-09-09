@@ -43,6 +43,45 @@ export const districts = [
   "Хан-Уул",
 ];
 
+export const itemNames = [
+  {
+    name: "Ашиглалтад орсон он",
+    id: "operation",
+    range: true,
+    location: false,
+  },
+  {
+    name: "Талбай",
+    id: "area",
+    range: true,
+    location: false,
+  },
+  {
+    name: "Үнэ",
+    id: "price",
+    range: true,
+    location: false,
+  },
+  {
+    name: "Хэдэн давхарт",
+    id: "howFloor",
+    range: true,
+    location: false,
+  },
+  {
+    name: "Дүүрэг",
+    id: "district",
+    range: false,
+    location: true,
+  },
+  {
+    name: "Байршил",
+    id: "location",
+    range: false,
+    location: true,
+  },
+];
+
 export const gmailImageUrl = "https://lh3.googleusercontent.com";
 export const locationCenter = {
   lat: 47.91887307876936,

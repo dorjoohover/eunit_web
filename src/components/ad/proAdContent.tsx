@@ -2,8 +2,6 @@ import { useRouter } from "next/navigation";
 import { AiOutlineArrowRight } from "react-icons/ai";
 
 import { STYLES } from "@/styles/index";
-
-import { Skeleton } from "@chakra-ui/react";
 import { useState } from "react";
 import mergeNames from "@/utils/functions";
 import { ContainerXP } from "../container";
@@ -12,6 +10,7 @@ import ProCard from "./proCard";
 import SwiperNav from "../global/swiperNav";
 import { SwiperSlide } from "swiper/react";
 import { FetchAdUnitType } from "@/utils/type";
+import { Skeleton } from "@mantine/core";
 
 const ProAdContent = ({
   inCat = true,
@@ -69,7 +68,7 @@ const ProAdContent = ({
           })}
         </SwiperNav>
       )}
-      {!data && <Skeleton height={"300px"} />}
+      {!data && <Skeleton h={"300px"} />}
 
       {pg && data?.limit > n && (
         <ul className="flex float-right list-style-none">

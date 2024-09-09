@@ -215,3 +215,40 @@ Note: Beware of modifying this element as it can break the animations - you shou
 .bm-overlay {
   background: rgba(0, 0, 0, 0.3);
 }
+input {
+  border: none !important;
+}
+.select {
+  // appearance: none; /* Remove default styling */
+  // -webkit-appearance: none; /* Remove default styling in Safari */
+  // -moz-appearance: none; /* Remove default styling in Firefox */
+  // background: url("/assets/images/icons/arrow.png") no-repeat right 16px center;
+  filter: drop-shadow(0 2px 4px rgb(0 0 0 / 0.1));
+  border-radius: 15px !important;
+  // position: relative;
+}
+.mantine-Select-option:hover  {
+  border-radius: 15px !important;
+}
+.mantine-NumberInput-wrapper {
+  border-radius: 15px !important;
+  border: 2px solid $greyNew !important;
+  background: transparent !important;
+}
+.mantine-NumberInput-input {
+  background-color: transparent !important;
+}
+// .mantine-NumberInput-section {
+//   pointer-events: none !important;
+// }
+// .select::after {
+//   content: "\f0dd"; /* Font Awesome down arrow */
+//   font-family: "Font Awesome 6 Free";
+//   font-weight: 900;
+//   position: absolute;
+//   top: 50%;
+//   right: 10px;
+//   transform: translateY(-50%);
+//   pointer-events: none;
+// }
+

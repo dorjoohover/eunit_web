@@ -1,5 +1,5 @@
 import { imageApi } from "@/utils/values";
-import { Image } from "@chakra-ui/react";
+import { Image } from "@mantine/core";
 import React, { useRef, useState } from "react";
 
 const ProfileImage = ({

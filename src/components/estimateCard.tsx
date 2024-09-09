@@ -1,16 +1,6 @@
 import { STYLES } from "@/styles/index";
 import mergeNames, { getEstimateEnums } from "@/utils/functions";
 
-import {
-  Button,
-  Image,
-  Input,
-  Link,
-  NumberInput,
-  NumberInputField,
-  useDisclosure,
-  useToast,
-} from "@chakra-ui/react";
 
 import currency from "currency.js";
 
@@ -30,6 +20,10 @@ import { EstimateStatus } from "@/config/enum";
 import { BomArea } from "./bomInput";
 import { imageApi } from "@/utils/values";
 import { updatePriceEstimateById } from "@/app/(api)/estimate.api";
+import { useDisclosure } from "@mantine/hooks";
+import { notifications } from "@mantine/notifications";
+import Link from "next/link";
+import { Button, Image, NumberInput } from "@mantine/core";
 
 const EstimatedCard = ({
   est,
@@ -38,7 +32,7 @@ const EstimatedCard = ({
   est: EstimateModel;
   AdminBtn?: ReactNode;
 }) => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const  [opened, { open, close }]= useDisclosure();
   const router = useRouter();
   const deleteEstimate = async (id: string) => {
     try {
@@ -57,14 +51,13 @@ const EstimatedCard = ({
       console.error(error);
     }
   };
-  const toast = useToast();
   const updatePrice = async (id: string) => {
     try {
       if (price)
         await updatePriceEstimateById(price, id).then((d) => {
-          onClose(),
-            toast({
-              title: "Амжилттай үнийн дүн нэмлээ.",
+          close(),
+            notifications.show({
+              message: "Амжилттай үнийн дүн нэмлээ.",
               status: "success",
               duration: 2000,
               isClosable: true,
@@ -217,9 +210,9 @@ const EstimatedCard = ({
               <CustomModal
                 onclick={() => {}}
                 className=""
-                isOpen={isOpen}
-                onOpen={onOpen}
-                onClose={onClose}
+                isOpen={opened}
+                onOpen={open}
+                onClose={close}
                 btnClose2={"Буцах"}
                 header={"Үнэлгээ"}
                 btnOpen={<EstimateButton icon="show" />}
@@ -264,14 +257,14 @@ const EstimatedCard = ({
                     <div className="flex flex-col gap-3 text-lg">
                       <NumberInput
                         onChange={(e) => {
-                          setPrice(parseInt(e));
+                          setPrice(parseInt(`${e}`));
                         }}
                       >
-                        <NumberInputField
+                        {/* <NumberInputField
                           type="number"
                           placeholder="Үнэлсэн дүн"
                           value={price ?? ""}
-                        />
+                        /> */}
                       </NumberInput>
                       {/* <BomArea placeholder="Нэмэлт тайлбар" /> */}
                       {price && (

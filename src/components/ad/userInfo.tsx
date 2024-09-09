@@ -1,8 +1,7 @@
 import { STYLES } from "@/styles/index";
 import mergeNames from "@/utils/functions";
 import { gmailImageUrl, imageApi } from "@/utils/values";
-
-import { Avatar } from "@chakra-ui/react";
+import { Avatar } from "@mantine/core";
 import currency from "currency.js";
 import Link from "next/link";
 
@@ -34,7 +33,7 @@ const UserInfo = ({
         <Link href={`/account/${id}`}>
           <Avatar
             src={avatar}
-            size={{ base: "md", lg: "lg" }}
+            // size={{ base: "md", lg: "lg" }}
             className="cursor-pointer"
           />
         </Link>
@@ -101,7 +100,7 @@ export const SmallUserInfo = ({
                   : `${imageApi}${avatar}`
                 : "https://www.pikpng.com/pngl/m/80-805068_my-profile-icon-blank-profile-picture-circle-clipart.png"
             }
-            size={{ base: "xs", lg: "sm" }}
+            // __size={{ base: "xs", lg: "sm" }}
             className="cursor-pointer"
           />
         </Link>

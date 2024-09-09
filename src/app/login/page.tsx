@@ -4,11 +4,11 @@ import React from "react";
 import { signIn } from "next-auth/react";
 import mergeNames from "@/utils/functions";
 import { STYLES } from "@/styles";
-import { Button, Image } from "@chakra-ui/react";
 
 import { ContainerXP } from "@/components/container";
 import { GoogleIcon } from "@/components/global/icons";
 import { Assets } from "@/utils/assets";
+import { Button, Image } from "@mantine/core";
 export default function LoginPage() {
   const handleGoogleSignIn = () => {
     signIn("google", { callbackUrl: "/login/verify" });
@@ -56,11 +56,10 @@ const GoogleSignButton = ({ onClick }: { onClick: () => void }) => {
   return (
     <div className="flex flex-col gap-3 my-auto">
       <Button
+        leftSection={<GoogleIcon size="1.2em" />}
         onClick={onClick}
-        // onClick={() => handleGoogleSignIn()}
-        className="gap-3 p-0 px-2 border-gray-200 rounded-lg"
+        className="gap-3 p-0 text-[#000] px-2 border-gray-200 rounded-lg"
       >
-        <GoogleIcon size="1.2em" />
         Google хаягаар нэвтрэх
       </Button>
     </div>

@@ -1,6 +1,6 @@
 import { PointHistory, UserModel } from "@/models/user.model";
 import mergeNames from "@/utils/functions";
-import { Heading } from "@chakra-ui/react";
+import { Title } from "@mantine/core";
 import { useEffect, useState } from "react";
 
 const txthover = "font-semibold text-gray-500 duration-100 hover:text-gray-800";
@@ -22,7 +22,7 @@ const WHistory = () => {
   }, []);
   return (
     <div className="w-full max-w-[800px] text-sm xl:text-base px-2 py-2 md:px-6 md:py-4 shadow-md border-2 border-slate-200/30 rounded-xl mx-auto">
-      <Heading variant="mediumHeading">Гүйлгээний түүх</Heading>
+      <Title variant="mediumHeading">Гүйлгээний түүх</Title>
       {/* <div className="flex flex-col w-full gap-3 mt-4">
         <div className="flex items-center gap-4">
           <p className="font-semibold">№</p>

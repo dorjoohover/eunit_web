@@ -3,7 +3,8 @@ import { BiX } from "react-icons/bi";
 import { FiUploadCloud } from "react-icons/fi";
 import { AtomLabel } from "./atom";
 import { StepTypes } from "@/utils/type";
-import { Image, useToast } from "@chakra-ui/react";
+import { notifications } from "@mantine/notifications";
+import { Image } from "@mantine/core";
 
 const FieldPhotoUpload = <T,>({
   data,
@@ -31,14 +32,14 @@ const FieldPhotoUpload = <T,>({
       hiddenFileInput!.current!.click();
     }
   };
-  const toast = useToast();
 
   const handleChange = (files: FileList | null) => {
     console.log(JSON.stringify(files).length);
     if (files != null && selectedImages != null) {
       if (files.length > 8) {
-        toast({
-          title: "8-с олон зураг оруулж болохгүй тул эхний 8 зургийг орууллаа.",
+        notifications.show({
+          message:
+            "8-с олон зураг оруулж болохгүй тул эхний 8 зургийг орууллаа.",
           status: "warning",
         });
       }
@@ -56,8 +57,8 @@ const FieldPhotoUpload = <T,>({
         setSelectedImages((prev) => [...prev!, ...imagesArray]);
         Object.values(files)?.map((f, i) => {
           if (f.size > 4500000) {
-            toast({
-              title: `${f.name} энэ зурагны хэмжээ хэтэрсэн байна. Та зургаа солино уу. Зурагны хэмжээ 4.5mb хэтэгч болохгүйг анхаарна уу.`,
+            notifications.show({
+              message: `${f.name} энэ зурагны хэмжээ хэтэрсэн байна. Та зургаа солино уу. Зурагны хэмжээ 4.5mb хэтэгч болохгүйг анхаарна уу.`,
               status: "warning",
             });
           }

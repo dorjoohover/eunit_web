@@ -20,14 +20,6 @@ import {
   StepTypes,
 } from "@/utils/type";
 
-import {
-  Button,
-  Image,
-  NumberInput,
-  NumberInputField,
-  useDisclosure,
-  useToast,
-} from "@chakra-ui/react";
 
 import React, { Fragment, useEffect, useState } from "react";
 import { BiX } from "react-icons/bi";
@@ -49,6 +41,9 @@ import Link from "next/link";
 import { createEstimate } from "../(api)/estimate.api";
 import { UserModel } from "@/models/user.model";
 import { getUser } from "../(api)/user.api";
+import { notifications } from "@mantine/notifications";
+import { Button, Image, NumberInput } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 export default function EstimatorPage() {
   const [estimate, setEstimate] = useState<CreateAdType>({
     category_ID: "",
@@ -61,7 +56,7 @@ export default function EstimatorPage() {
   const [estimates, setEstimates] = useState<EstimateType[]>([]);
   const [est, setEst] = useState<ItemModel[]>([]);
   const [data, setData] = useState<StepTypes>();
-  const toast = useToast();
+  
   // const router = useRouter();
   const [loading, setIsLoading] = useState(false);
 
@@ -156,8 +151,8 @@ export default function EstimatorPage() {
       setEst([]);
       // clear();
     } else {
-      toast({
-        title: "Та бүх талбарыг бөглөнө үү.",
+      notifications.show({
+        message: "Та бүх талбарыг бөглөнө үү.",
         status: "warning",
         duration: 2000,
         isClosable: true,
@@ -186,8 +181,8 @@ export default function EstimatorPage() {
       fileUrl.set(`files`, estimate.file!);
       await createEstimate(items, estimate.category_ID ?? "", fileUrl).then(
         (d) => {
-          toast({
-            title: "Амжилттай нэмэгдлээ.",
+          notifications.show({
+            message: "Амжилттай нэмэгдлээ.",
             status: "success",
             duration: 1000,
             isClosable: true,
@@ -223,8 +218,8 @@ export default function EstimatorPage() {
         fileUrl.set(`files`, es.file!);
         const { category, items } = es;
         await createEstimate(items, category, fileUrl).then((d) => {
-          toast({
-            title: "Амжилттай нэмэгдлээ.",
+          notifications.show({
+            message: "Амжилттай нэмэгдлээ.",
             status: "success",
             duration: 1000,
             isClosable: true,
@@ -391,7 +386,7 @@ export default function EstimatorPage() {
                       }}
                       value={(data?.[key] as string) ?? ""}
                     >
-                      <NumberInputField
+                      {/* <NumberInputField
                         placeholder={f.name}
                         className={mergeNames(
                           data?.[key] == "" ||
@@ -400,7 +395,7 @@ export default function EstimatorPage() {
                             : "border-blue-400/70 ring-blue-400",
                           "w-full px-4 py-2 border-2 rounded-full  "
                         )}
-                      />
+                      /> */}
                     </NumberInput>
                   </ItemContainer>
                 );
@@ -613,11 +608,11 @@ export default function EstimatorPage() {
                       "md:w-2/3 w-5/6"
                     )}
                     onChange={(e) => {
-                      setData((prev) => ({ ...prev, phone: parseInt(e) }));
+                      setData((prev) => ({ ...prev, phone: parseInt(`${e}`) }));
                     }}
                     value={data?.phone ?? ""}
                   >
-                    <NumberInputField
+                    {/* <NumberInputField
                       placeholder="Холбоо барих утасны дугаар"
                       className={mergeNames(
                         data?.phone == undefined
@@ -625,7 +620,7 @@ export default function EstimatorPage() {
                           : "border-blue-400/70 ring-blue-400",
                         "w-full px-4 py-2 border-2 rounded-full  "
                       )}
-                    />
+                    /> */}
                   </NumberInput>
                 </ItemContainer>
                 <ItemContainer className="mx-auto">
@@ -662,7 +657,7 @@ export default function EstimatorPage() {
 
             {estimates.length == 0 && (
               <Button
-                isLoading={loading}
+                loading={loading}
                 className={mergeNames(STYLES.blueButton, "  px-10")}
                 onClick={() => sendEstimate(true)}
               >
@@ -693,7 +688,7 @@ export default function EstimatorPage() {
                 STYLES.blueButton,
                 "mx-auto col-span-full px-10"
               )}
-              isLoading={loading}
+              loading={loading}
               onClick={() => sendEstimate(false)}
             >
               Илгээх
@@ -718,13 +713,13 @@ const EstimatorModal = ({
   estimates: EstimateType[];
   setEstimates: React.Dispatch<React.SetStateAction<EstimateType[]>>;
 }) => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const  [opened, { open, close }] = useDisclosure();
 
   return (
     <CustomModal
-      isOpen={isOpen}
-      onClose={onClose}
-      onOpen={onOpen}
+      isOpen={opened}
+      onClose={close}
+      onOpen={open}
       btnClose2={"Буцах"}
       className=""
       btnOpen={

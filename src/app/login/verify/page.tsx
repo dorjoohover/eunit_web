@@ -1,8 +1,6 @@
 "use client";
 import { loginUser } from "@/app/(api)/auth.api";
 import { getUser } from "@/app/(api)/user.api";
-import { useAppContext } from "@/app/_context";
-import { UserStatus } from "@/config/enum";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";

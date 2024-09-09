@@ -2,14 +2,7 @@ import { DateYearSelector } from "@/components/global/dateSelector";
 import Input from "@/components/global/input";
 import Select from "@/components/global/select";
 import { ItemType } from "@/utils/type";
-import {
-  Box,
-  NumberDecrementStepper,
-  NumberIncrementStepper,
-  NumberInput,
-  NumberInputField,
-  NumberInputStepper,
-} from "@chakra-ui/react";
+import { Box, NumberInput } from "@mantine/core";
 
 export const FiltersContainer = ({
   other,
@@ -50,16 +43,16 @@ export const FiltersContainer = ({
     return (
       <NumberInput
         size="md"
-        allowMouseWheel
+        // allowMouseWheel
         min={0}
         className="flex flex-row justify-between mx-auto overflow-hidden border-2 border-blue-500 rounded-full md:w-2/3"
-        onChange={onChange}
+        onChange={(e) => onChange(`${e}`)}
       >
-        <NumberInputField />
+        {/* <NumberInputField />
         <NumberInputStepper>
           <NumberIncrementStepper />
           <NumberDecrementStepper />
-        </NumberInputStepper>
+        </NumberInputStepper> */}
       </NumberInput>
     );
   if (types == "text") return <Input ph={ph} onChange={onChange} />;

@@ -4,7 +4,6 @@ import { getDataFilter, getLocationForEstimator } from "@/app/(api)/ad.api";
 import { useAppContext } from "@/app/_context";
 import ProductInfo from "@/components/createAd/product/info";
 import WhiteBox from "@/components/createAd/product/whiteBox";
-import { LoadingButton } from "@/components/global/button";
 import CustomModal from "@/components/global/customModal";
 import { CloseIcon } from "@/components/global/icons";
 import Select from "@/components/global/select";
@@ -13,28 +12,35 @@ import { ItemDetailModel, ItemModel } from "@/models/items.model";
 import { STYLES } from "@/styles";
 import mergeNames, { formatText } from "@/utils/functions";
 import { GoogleMapsType, ItemType } from "@/utils/type";
-import { categoryNames, districts, locationPositions } from "@/utils/values";
+import {
+  categoryNames,
+  districts,
+  itemNames,
+  locationPositions,
+} from "@/utils/values";
 import * as XLSX from "xlsx";
 import {
   Box,
   Button,
   Center,
-  Select as ChackraSelect,
   Flex,
-  Heading,
-  Input,
-  Spinner,
+  Loader,
+  Select as MantineSelect,
+  NumberInput,
+  Stack,
   Text,
-  useDisclosure,
-  useToast,
-  VStack,
-} from "@chakra-ui/react";
+  Title,
+} from "@mantine/core";
 import { GoogleMap, MarkerF } from "@react-google-maps/api";
 import { useEffect, useMemo, useState } from "react";
 import { MdOutlineArrowDropDownCircle } from "react-icons/md";
 import { IoMdGitCompare } from "react-icons/io";
 import { AdminCompareSelect } from "@/components/account/details/compareSelect";
 import { formatNumber } from "@/components/global/numberEdit";
+import { useDisclosure } from "@mantine/hooks";
+import { notifications } from "@mantine/notifications";
+import { RangeInput } from "@/components/shared/select";
+import { districtIcon } from "@/utils/assets";
 
 export interface AdDataModel {
   id: number;
@@ -63,30 +69,32 @@ export interface AdDataModel {
 const Page = () => {
   const { isLoaded } = useAppContext();
   const [data, setData] = useState<AdDataModel>();
-  const [district, setDistrict] = useState(0);
+  const [district, setDistrict] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
   const [locations, setLocations] = useState([]);
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [opened, { open, close }] = useDisclosure(false);
   const [items, setItems] = useState<(ItemModel | undefined)[]>([]);
   const [filteredData, setFilteredData] = useState<{
     data: AdDataModel[];
     limit: number;
   }>({ data: [], limit: 0 });
-  const [filters, setFilters] = useState<
-    {
-      value?: string;
-      min?: string;
-      max?: string;
-      id: string;
-    }[]
-  >([]);
+  type FilterType = {
+    value?: string;
+    min?: string | null;
+    max?: string | null;
+    id: string;
+    parent?: string;
+  };
+  const [filters, setFilters] = useState<FilterType[]>([]);
   const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
   const [selectedLocation, setSelectedLocation] = useState<string | undefined>(
     ""
   );
   const [compareData, setCompareData] = useState<AdDataModel[]>([]);
   const [selectedCategory, setSelectedCatery] = useState(0);
+  const rangeItems = itemNames.filter((i) => i.range);
+  const locationItems = itemNames.filter((i) => i.location);
   const getLocation = async (name: string, d: string, category: number) => {
     setLoading(true);
     if (name == "location") {
@@ -113,6 +121,22 @@ const Page = () => {
             (f: { type: string }) => f.type != "price" && f.type != "area"
           ),
         ];
+        setFilters(
+          item.map((i) => {
+            let r;
+            if (rangeItems.find((range) => range.id == i.type)) {
+              r = {
+                id: i.type,
+                parent: i.parent,
+                min: null,
+                max: null,
+              };
+            } else {
+              r = { id: i.type, parent: i.parent, value: "" };
+            }
+            return r;
+          })
+        );
         setItems(item);
       }
     });
@@ -160,33 +184,34 @@ const Page = () => {
   const search = async () => {
     try {
       setFilteredData({ data: [], limit: 0 });
-      setLoading(true);
-      await getDataFilter(
-        filters,
-        selectedLocations,
-        selectedCategory,
-        page
-      ).then((d) => {
-        console.log(d);
-        setFilteredData(d);
-        // console.log(d);
-      });
+      // setLoading(true);
+      // await getDataFilter(
+      //   filters,
+      //   selectedLocations,
+      //   selectedCategory,
+      //   page
+      // ).then((d) => {
+      //   console.log(d);
+      //   setFilteredData(d);
+      //   // console.log(d);
+      // });
       setLoading(false);
     } catch (error) {}
   };
 
   const [expand, setExpand] = useState(0);
   const view = (item: AdDataModel) => {
-    onOpen();
+    open();
     setData(item);
   };
-  const toast = useToast();
+  // const toast = useToast();
   const parse = (val: string) => val.replace(/^\$/, "");
   const compare = (item: AdDataModel) => {
     const includes = compareData.find((d) => item.id == d.id);
     if (compareData.length >= 5) {
-      toast({
-        title: "5-с олон зар харьцуулах боломжгүй",
+      notifications.show({
+        title: "",
+        message: "5-с олон зар харьцуулах боломжгүй",
         duration: 3000,
         status: "warning",
       });
@@ -195,8 +220,9 @@ const Page = () => {
     includes
       ? setCompareData(compareData.filter((d) => d.id != item.id))
       : setCompareData((prev) => [...prev, item]);
-    toast({
-      title: `${includes ? "Хаслаа" : "Нэмлээ"} `,
+    notifications.show({
+      title: "",
+      message: `${includes ? "Хаслаа" : "Нэмлээ"} `,
       status: "info",
       duration: 1000,
     });
@@ -222,54 +248,54 @@ const Page = () => {
   );
   return (
     <div className="w-full justify-center p-10 min-h-[60vh] w-[90vw] mx-auto">
-      <div className="my-10  gap-4">
+      <div
+        className="rounded-[15px] border-2 border-greyNew my-10 p-8  gap-4"
+        style={{
+          filter: "box-shadow(0 4px 15px rgb(0 0 0 / 0.15))",
+        }}
+      >
         <div className="flex gap-4">
           <div>
             <p className="py-2">Дэд төрөл</p>
-            <ChackraSelect
-              value={selectedCategory}
+            <MantineSelect
+              value={categoryNames[selectedCategory].toString()}
+              checkIconPosition="right"
               onChange={(e) => {
-                if (e.target.value) {
-                  let value = parseInt(e.target.value);
+                if (e) {
+                  let value = parseInt(e);
                   setSelectedCatery(value);
                   getLocation("items", "test", value);
                 }
               }}
-            >
-              {categoryNames?.map((d, i) => {
-                return (
-                  <option key={i} value={i}>
-                    {d}
-                  </option>
-                );
-              })}
-            </ChackraSelect>
+              searchable
+              data={categoryNames}
+            />
           </div>
           <div>
-            <p className="py-2">Дүүрэг</p>
-            <ChackraSelect
-              value={district}
+            {JSON.stringify(district)}
+            <MantineSelect
+              value={"Дүүрэг"}
+              leftSection={
+                <div className="px-2">
+                  <img src={districtIcon} alt="" />
+                </div>
+              }
+              leftSectionPointerEvents={"none"}
+              checkIconPosition="right"
               onChange={(e) => {
-                if (e.target.value) {
-                  let value = parseInt(e.target.value);
+                if (e) {
+                  let value = districts.indexOf(e);
                   setDistrict(value);
                   getLocation("location", districts[value], selectedCategory);
                 }
               }}
-            >
-              {districts.map((d, i) => {
-                return (
-                  <option key={i} value={i}>
-                    {d}
-                  </option>
-                );
-              })}
-            </ChackraSelect>
+              data={districts}
+            />
           </div>
         </div>
         {loading && (
           <Center>
-            <Spinner />
+            <Loader />
           </Center>
         )}
         {locations.length > 0 && selectedLocation && (
@@ -295,21 +321,15 @@ const Page = () => {
               })}
             </div>
             <div className="flex w-[300px]">
-              <ChackraSelect
+              <MantineSelect
                 value={selectedLocation}
                 onChange={(e) => {
-                  if (e.target.value)
-                    setSelectedLocation(e.target.value as string);
+                  if (e) setSelectedLocation(e as string);
                 }}
-              >
-                {locations.map((d) => {
-                  return (
-                    <option value={d} key={d}>
-                      {d}
-                    </option>
-                  );
-                })}
-              </ChackraSelect>
+                data={locations}
+                searchable
+                checkIconPosition="right"
+              />
               <button
                 onClick={() => {
                   if (
@@ -326,144 +346,166 @@ const Page = () => {
             </div>
           </div>
         )}
-
         <div className="flex flex-wrap gap-4 my-4">
           {items?.length > 0 &&
             (items as ItemModel[])?.map((v, i) => {
               if (v.type != "location" && v.type != "district")
                 return (v.value as ItemDetailModel[])?.length > 0 ? (
-                  <VStack h={50} w={150} key={i}>
-                    <Select
-                      requirement={false}
-                      width="large"
-                      label={
-                        filters.filter((f) => f.id == v.type)?.[0]?.value ??
-                        v.name
-                      }
-                      data={[...(v.value ?? []), { id: "", value: v.name }]}
-                      key={i}
-                      Item={(props: ItemType) => {
-                        return (
-                          <button
-                            {...props}
-                            onClick={() => {
-                              const include = filters.find(
-                                (f) => f.id == v.type
-                              );
-                              props.data == v.name
-                                ? setFilters(
-                                    filters.filter((f) => f.id != v.type)
-                                  )
-                                : include
-                                ? filters.map((f) =>
-                                    f.id == v.type ? (f.value = props.data) : f
-                                  )
-                                : filters.push({
-                                    id: v.type,
-                                    value: props.data,
-                                  });
-                              setFilters((prev) => [...prev]);
-                              if (props.onClick != null) props.onClick();
-                            }}
-                          >
-                            {props.data}
-
-                            {props.children}
-                          </button>
-                        );
+                  <Stack h={50} w={150} key={i}>
+                    <MantineSelect
+                      onChange={(e) => {
+                        if (e != null) {
+                          filters.map((f) => {
+                            if (f.id == v.type) {
+                              return e == v.name
+                                ? (f.value = "")
+                                : (f.value = e);
+                            } else {
+                              return f;
+                            }
+                          });
+                          setFilters((prev) => [...prev]);
+                        }
                       }}
-                    ></Select>
-                  </VStack>
+                      value={
+                        filters.filter((f) => f.id == v.type)?.[0]?.value == ""
+                          ? v.name
+                          : filters.filter((f) => f.id == v.type)?.[0]?.value
+                      }
+                      data={[
+                        {
+                          label: v.name,
+                          value: v.name,
+                        },
+                        ...(v.value?.map((vl) => {
+                          return vl.value;
+                        }) ?? []),
+                      ]}
+                      // searchable
+                      checkIconPosition="right"
+                    />
+                  </Stack>
                 ) : (
-                  <VStack flex={1} key={i}>
-                    <Heading size={"xs"}>{v.name}</Heading>
-                    <Flex alignItems={"center"} gap={2}>
-                      <Input
-                        placeholder="Доод"
-                        w={200}
-                        value={
-                          filters.filter((f) => f.id == v.type)?.[0]?.min ?? ""
+                  <RangeInput
+                    key={i}
+                    maxChange={(e) => {
+                      filters.map((f) => {
+                        if (f.id == v.type) {
+                          return typeof e != "number"
+                            ? (f.max = null)
+                            : (f.max = e.toString());
+                        } else {
+                          return f;
                         }
-                        className="w-[200px] border-blue-400 rounded-full lue-400 border-1"
-                        onChange={(e) => {
-                          let value = e.target.value;
-                          if (value && value.match(/^[\d,.]+$/)) {
-                            const include = filters.find((f) => f.id == v.type);
-                            include
-                              ? value == "" &&
-                                filters.filter((f) => f.id == v.type)[0].max ==
-                                  ""
-                                ? setFilters(
-                                    filters.filter((f) => f.id != v.type)
-                                  )
-                                : filters.map((f) =>
-                                    f.id == v.type
-                                      ? (f.min =
-                                          v.type == "price"
-                                            ? formatText(value)
-                                            : value)
-                                      : f
-                                  )
-                              : filters.push({
-                                  id: v.type,
-                                  min:
-                                    v.type == "price"
-                                      ? formatText(value)
-                                      : value,
-                                });
-                          } else {
-                            filters.map((f) =>
-                              f.id == v.type ? (f.min = "") : f
-                            );
-                          }
-                          setFilters((prev) => [...prev]);
-                        }}
-                      />
-                      <Text>-</Text>
-                      <Input
-                        value={
-                          filters.filter((f) => f.id == v.type)?.[0]?.max ?? ""
+                      });
+                      // console.log(first)
+                      setFilters((prev) => [...prev]);
+                    }}
+                    minChange={(e) => {
+                      filters.map((f) => {
+                        if (f.id == v.type) {
+                          return typeof e != "number"
+                            ? (f.min = null)
+                            : (f.min = e.toString());
+                        } else {
+                          return f;
                         }
-                        placeholder="Дээд"
-                        w={200}
-                        className=" border-blue-400 rounded-full blue-400 border-1 focus:outline-none"
-                        onChange={(e) => {
-                          let value = e.target.value;
-                          if (value && value.match(/^[\d,.]+$/)) {
-                            const include = filters.find((f) => f.id == v.type);
-                            include
-                              ? value == "" &&
-                                filters.filter((f) => f.id == v.type)[0].min ==
-                                  ""
-                                ? setFilters(
-                                    filters.filter((f) => f.id != v.type)
-                                  )
-                                : filters.map((f) =>
-                                    f.id == v.type
-                                      ? (f.max =
-                                          v.type == "price"
-                                            ? formatText(value)
-                                            : value)
-                                      : f
-                                  )
-                              : filters.push({
-                                  id: v.type,
-                                  max:
-                                    v.type == "price"
-                                      ? formatText(value)
-                                      : value,
-                                });
-                          } else {
-                            filters.map((f) =>
-                              f.id == v.type ? (f.max = "") : f
-                            );
-                          }
+                      });
+                      setFilters((prev) => [...prev]);
+                    }}
+                    maxValue={filters.filter((f) => f.id == v.type)?.[0]?.max}
+                    minValue={filters.filter((f) => f.id == v.type)?.[0]?.min}
+                    name={v.name}
+                  />
+                  // <Stack flex={1} key={i}>
+                  //   <Title size={"xs"}>{v.name}</Title>
+                  //   <Flex align={"center"} gap={2}>
+                  //     <NumberInput
+                  //       placeholder="Доод"
+                  //       w={200}
+                  //       value={
+                  //         filters.filter((f) => f.id == v.type)?.[0]?.min ?? ""
+                  //       }
+                  //       className="w-[200px] border-blue-400 rounded-full lue-400 border-1"
+                  //       // onChange={(e) => {
+                  //       //   let value = e;
+                  //       //   if (value && value.match(/^[\d,.]+$/)) {
+                  //       //     const include = filters.find((f) => f.id == v.type);
+                  //       //     include
+                  //       //       ? value == "" &&
+                  //       //         filters.filter((f) => f.id == v.type)[0].max ==
+                  //       //           ""
+                  //       //         ? setFilters(
+                  //       //             filters.filter((f) => f.id != v.type)
+                  //       //           )
+                  //       //         : filters.map((f) =>
+                  //       //             f.id == v.type
+                  //       //               ? (f.min =
+                  //       //                   v.type == "price"
+                  //       //                     ? formatText(value)
+                  //       //                     : value)
+                  //       //               : f
+                  //       //           )
+                  //       //       : filters.push({
+                  //       //           id: v.type,
+                  //       //           min:
+                  //       //             v.type == "price"
+                  //       //               ? formatText(value)
+                  //       //               : value,
+                  //       //         });
+                  //       //   } else {
+                  //       //     filters.map((f) =>
+                  //       //       f.id == v.type ? (f.min = "") : f
+                  //       //     );
+                  //       //   }
+                  //       //   setFilters((prev) => [...prev]);
+                  //       // }}
+                  //     />
+                  //     <Text>-</Text>
+                  //     <NumberInput
+                  //       value={
+                  //         filters.filter((f) => f.id == v.type)?.[0]?.max ?? ""
+                  //       }
+                  //       placeholder="Дээд"
+                  //       w={200}
+                  //       className=" border-blue-400 rounded-full blue-400 border-1 focus:outline-none"
+                  //       // onChange={(e) => {
+                  //       //   let value = e.target.value;
+                  //       //   if (value && value.match(/^[\d,.]+$/)) {
+                  //       //     const include = filters.find((f) => f.id == v.type);
+                  //       //     include
+                  //       //       ? value == "" &&
+                  //       //         filters.filter((f) => f.id == v.type)[0].min ==
+                  //       //           ""
+                  //       //         ? setFilters(
+                  //       //             filters.filter((f) => f.id != v.type)
+                  //       //           )
+                  //       //         : filters.map((f) =>
+                  //       //             f.id == v.type
+                  //       //               ? (f.max =
+                  //       //                   v.type == "price"
+                  //       //                     ? formatText(value)
+                  //       //                     : value)
+                  //       //               : f
+                  //       //           )
+                  //       //       : filters.push({
+                  //       //           id: v.type,
+                  //       //           max:
+                  //       //             v.type == "price"
+                  //       //               ? formatText(value)
+                  //       //               : value,
+                  //       //         });
+                  //       //   } else {
+                  //       //     filters.map((f) =>
+                  //       //       f.id == v.type ? (f.max = "") : f
+                  //       //     );
+                  //       //   }
 
-                          setFilters((prev) => [...prev]);
-                        }}
-                      />
-                    </Flex>
-                  </VStack>
+                  //       //   setFilters((prev) => [...prev]);
+                  //       // }}
+                  //     />
+                  //   </Flex>
+                  // </Stack>
                 );
             })}
         </div>
@@ -483,8 +525,8 @@ const Page = () => {
       </button>
       <div className="w-full overflow-scroll">
         {loading ? (
-          <Center minH={"60vh"}>
-            <Spinner />
+          <Center mih={"60vh"}>
+            <Loader />
           </Center>
         ) : (
           <table className="w-full p-2 text-sm text-left border border-gray-400 table-auto">
@@ -569,9 +611,9 @@ const Page = () => {
         )}
       </div>
       <CustomModal
-        isOpen={isOpen}
-        onClose={onClose}
-        onOpen={onOpen}
+        isOpen={opened}
+        onClose={close}
+        onOpen={open}
         btnOpen={<></>}
         className=""
         onclick={() => {}}
@@ -579,13 +621,13 @@ const Page = () => {
         btnClose2="Буцах"
         header="Нэгтгэсэн мэдээлэл"
       >
-        <Box maxWidth={"100%"} flex="0 0 100%" borderRadius="5px">
+        <Box maw={"100%"} flex="0 0 100%" className="rounded-[5px]">
           <div className="flex flex-col w-full p-3 shadow-md gap-7 bg-bgGrey md:p-10 rounded-xl">
             {/*Product */}
             {data?.title && (
-              <Heading variant={"mediumHeading"} mb={5} onClick={() => {}}>
+              <Title variant={"mediumTitle"} mb={5} onClick={() => {}}>
                 {data.title}
-              </Heading>
+              </Title>
             )}
             <Box
               className={mergeNames(
@@ -609,7 +651,7 @@ const Page = () => {
                           id={p?.id ?? ""}
                           value={k[1] as string}
                           func={() => {
-                            onClose();
+                            close();
                           }}
                           href={false}
                         />
@@ -621,14 +663,14 @@ const Page = () => {
 
             <div className="grid grid-cols-1 gap-7 md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
               <WhiteBox
-                // heading={sharing ? "Pdf file нэр" : "Зарын дэлгэрэнгүй"}
+                // Title={sharing ? "Pdf file нэр" : "Зарын дэлгэрэнгүй"}
                 heading={"Зарын дэлгэрэнгүй"}
                 className="flex flex-col gap-3 "
               >
                 <Text
                   className="text-[#5c727d] whitespace-pre-line"
                   onClick={() => {
-                    onClose();
+                    close();
                   }}
                 >
                   {data?.description ?? ""}
@@ -639,7 +681,7 @@ const Page = () => {
                 {isLoaded && (
                   <GoogleMap
                     onClick={() => {
-                      onClose();
+                      close();
                     }}
                     options={mapOptions}
                     zoom={14}
@@ -689,7 +731,7 @@ const Page = () => {
                         id={p?.type ?? ""}
                         value={k[1] as string}
                         func={() => {
-                          onClose();
+                          close();
                         }}
                         href={false}
                       />
@@ -712,7 +754,7 @@ const Page = () => {
                         id={p?.type ?? ""}
                         value={k[1] as string}
                         func={() => {
-                          onClose();
+                          close();
                         }}
                         href={false}
                       />

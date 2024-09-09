@@ -1,4 +1,4 @@
-import { Tooltip } from "@chakra-ui/react";
+import { Tooltip } from "@mantine/core";
 import { ReactNode } from "react";
 
 const Tip = ({

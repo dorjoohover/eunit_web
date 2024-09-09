@@ -7,7 +7,7 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
-import { Image } from "@chakra-ui/react";
+import { Image } from "@mantine/core";
 
 const headerImageData = [
   {
@@ -56,7 +56,7 @@ const SwiperHeader = () => {
               {/* </Link> */}
               <Image
                 src={props.image}
-                objectFit="cover"
+                fit="cover"
                 // height={'full'}
                 alt="swiper image"
                 className="absolute"

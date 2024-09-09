@@ -1,15 +1,7 @@
 import { STYLES } from "@/styles";
 import mergeNames from "@/utils/functions";
-import {
-  AlertDialog,
-  AlertDialogBody,
-  AlertDialogCloseButton,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogOverlay,
-  useDisclosure,
-} from "@chakra-ui/react";
+import { useDisclosure } from "@mantine/hooks";
+
 import { ReactNode, useRef } from "react";
 
 function DialogBox({
@@ -23,15 +15,15 @@ function DialogBox({
   dlBody: ReactNode;
   onClick: () => void;
 }) {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const  [opened, { open, close }] = useDisclosure();
   const cancelRef = useRef<HTMLInputElement>(null);
 
   return (
     <>
-      <div className="flex cursor-pointer" onClick={onOpen}>
+      <div className="flex cursor-pointer" onClick={open}>
         {btnDialog}
       </div>
-      <AlertDialog
+      {/* <AlertDialog
         motionPreset="slideInBottom"
         leastDestructiveRef={cancelRef}
         onClose={onClose}
@@ -63,7 +55,7 @@ function DialogBox({
                 </button>
           </AlertDialogFooter>
         </AlertDialogContent>
-      </AlertDialog>
+      </AlertDialog> */}
     </>
   );
 }

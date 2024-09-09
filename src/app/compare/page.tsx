@@ -10,10 +10,10 @@ import { getManyAds } from "../(api)/ad.api";
 import { AdStatus, AdTypes } from "@/config/enum";
 import { UserModel } from "@/models/user.model";
 import Link from "next/link";
-import { Image } from "@chakra-ui/react";
 import { imageApi } from "@/utils/values";
 import { BiRightArrowAlt } from "react-icons/bi";
 import currency from "currency.js";
+import { Image } from "@mantine/core";
 
 export default function ComparePage() {
   const { compare }: { compare: AdCateIdType[] } = useAppContext();

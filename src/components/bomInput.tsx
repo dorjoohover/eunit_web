@@ -1,4 +1,5 @@
-import { FormControl, FormLabel, Select, Textarea } from '@chakra-ui/react';
+
+import { Textarea } from '@mantine/core';
 import { Input } from 'postcss';
 
 // const BomSelect = ({ children, placeholder, onChange, value }) => (
@@ -33,8 +34,8 @@ const BomArea = ({ placeholder, onChange, value }: {placeholder: string, onChang
   <Textarea
     placeholder={placeholder}
    
-    height="100px"
-    whiteSpace={'nowrap'}
+    h="100px"
+    className='whitespace-nowrap'
     onChange={(e) => onChange(e.target.value)}
     value={value}
     required

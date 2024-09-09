@@ -6,10 +6,10 @@ import { ContainerX } from "./container";
 import { CategoryModel } from "@/models/category.model";
 import mergeNames from "@/utils/functions";
 import { BsBuilding } from "react-icons/bs";
-import { Image } from "@chakra-ui/react";
 import { getConstants } from "@/app/(api)/constants.api";
 import { ConstantApi } from "@/utils/values";
 import { Api } from "@/config/enum";
+import { Image } from "@mantine/core";
 
 const calcSize = (pt: string) => {
   switch (pt) {
@@ -82,7 +82,7 @@ const CategorySelect = () => {
                         >
                           <Image
                             src={`/assets/images/HeaderSlider/${category.href.toLowerCase()}.jpg`}
-                            objectFit="cover"
+                            fit="cover"
                             h={"full"}
                             alt="category image"
                             className={transition}
