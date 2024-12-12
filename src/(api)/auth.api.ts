@@ -1,10 +1,8 @@
 "use server";
-import redis from "@/lib/redis";
 import { UserModel } from "@/models/user.model";
 import { api, AuthApi } from "@/utils/routes";
 import { cookies } from "next/headers";
 import { getUser } from "./user.api";
-import { NextResponse } from "next/server";
 
 export const loginUser = async (
   email: string,

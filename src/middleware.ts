@@ -1,10 +1,5 @@
-import { cookies } from "next/headers";
-import { NextResponse, type NextRequest } from "next/server";
-import { UserType } from "./config/enum";
-import { getToken } from "next-auth/jwt";
-import redis from "./lib/redis";
+import { type NextRequest } from "next/server";
 import { getUser } from "./(api)/user.api";
-import { logOut } from "./(api)/auth.api";
 export async function middleware(req: NextRequest) {
   const token = req.cookies.get("auth-token")?.value;
   if (!token) return;

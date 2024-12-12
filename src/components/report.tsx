@@ -2,16 +2,13 @@
 import {
   Box,
   Button,
-  Center,
   Container,
-  Divider,
   Flex,
   Radio,
   RadioGroup,
   Select,
   Stack,
   Text,
-  TextInput,
   Title,
 } from "@mantine/core";
 
@@ -23,7 +20,7 @@ import { locale } from "@/base/vocabs/mn";
 import { MultipleSelect } from "./shared/button";
 import { ReportConclusion, ReportDefination } from "./conclusion";
 import { ReactNode } from "react";
-import { Signature } from "./signature";
+// import { Signature } from "./signature";
 interface ReviewType {
   minArea?: number;
   maxArea?: number;

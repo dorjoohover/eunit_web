@@ -32,7 +32,7 @@ export async function imageUploader(images: FormData): Promise<{
   file: string[];
 } | null> {
   try {
-    const token = cookies().get("token");
+    const token = (await cookies()).get("token");
 
     const res = await fetch(`${api}upload`, {
       method: "POST",
