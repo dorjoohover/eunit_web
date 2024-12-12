@@ -128,6 +128,39 @@ export const ProfileValues = {
   },
 };
 
+export const ServiceFormValues = {
+  area: {
+    label: "Орон сууцны м.кв",
+    description: "Зөвхөн тоо оруулна уу.",
+    example: "80.12",
+    message: "Талбай оруулна уу",
+  },
+  no: {
+    label: "Байрны дугаар",
+    description: "Зөвхөн тоо үсэг оруулна уу. (Байр гэж бичих шаардлагагүй!)",
+    example: "20 , 20а , 20/а , 20/1 гэх мэт бичнэ үү.",
+    message: "",
+  },
+  floor: {
+    label: "Өөрийн давхар",
+    description: "Зөвхөн тоо оруулна уу.",
+    message: "",
+    example: "10",
+  },
+  room: {
+    label: "Өрөөний тоо",
+    description: "Зөвхөн тоо оруулна уу.",
+    message: "",
+    example: "2",
+  },
+};
+
+export const ServiceValues = {
+  10: "Лавлагаа",
+  20: "Үнэлгээ",
+  30: "Дата татах",
+};
+
 export const ContactFormValues = {
   name: {
     label: "Овог нэр",
@@ -197,6 +230,25 @@ export const itemNames = [
   },
 ];
 
+export const DataDownloadValue = {
+  district: {
+    label: "Дүүрэг",
+    pl: "Сонгоно уу",
+  },
+  town: {
+    label: "Хотхон",
+    pl: "Сонгоно уу",
+  },
+  area: {
+    label: "Талбай",
+    pl: "Оруулна уу",
+  },
+  date: {
+    label: "Огноо",
+    pl: "",
+  },
+};
+
 export const locationCenter = {
   lat: 47.91887307876936,
   lng: 106.91757202148438,
@@ -223,6 +275,7 @@ export const createAdNav = [
 export const NavbarValue = [
   { name: locale.data.NAVBAR.HOME, href: "/" },
   { name: locale.data.NAVBAR.ESTIMATE, href: "/report" },
+  { name: locale.data.NAVBAR.DATA, href: "/data" },
   { name: locale.data.NAVBAR.WALLET, href: "/wallet" },
   { name: locale.data.NAVBAR.CONTACT, href: "/contact" },
 ];

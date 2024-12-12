@@ -36,11 +36,11 @@ export async function getUser(): Promise<UserModel | null> {
   }
 }
 
-export const userHistory = async () => {
+export const userHistory = async (limit: number, page: number) => {
   const token = (await cookies()).get("auth-token")?.value;
   if (token) {
     try {
-      const res = await fetch(`${PaymentApi.user}`, {
+      const res = await fetch(`${PaymentApi.user}/${limit}/${page}`, {
         method: "GET",
 
         headers: {
@@ -128,7 +128,6 @@ export const sendPointByUser = async (
 };
 
 export const saveUser = async (
-  email: string,
   lastname: string,
   firstname: string,
   phone: string
@@ -137,7 +136,6 @@ export const saveUser = async (
     const cookie = await cookies();
     const token = cookie.get("auth-token")?.value;
     const body = {
-      email: email,
       lastname: lastname,
       firstname: firstname,
       phone: phone,

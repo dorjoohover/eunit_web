@@ -19,6 +19,8 @@ export class Assets {
   static wallet = `${icons}wallet.gif`;
 
   static login = `${img}bg.png`;
+  static service = `${assets}utils/service.png`;
+  static service1 = `${assets}utils/service1.png`;
 }
 
 export const imgLogo = `${assets}logo.png`;
@@ -35,11 +37,21 @@ export class IconAssets {
 }
 
 export class DistrictAssets {
-  static bayangol = `${img}districts/bayangol.png`
-  static bayanzurkh = `${img}districts/bayanzurkh.png`
-  static chingeltei = `${img}districts/chingeltei.png`
-  static khanuul = `${img}districts/khanuul.png`
-  static nalaikh = `${img}districts/nalaikh.png`
-  static sukhbaatar = `${img}districts/sukhbaatar.png`
-  static songinoKhairkhan = `${img}districts/songinoKhairkhan.png`
+  static bayangol = `${img}districts/bayangol.png`;
+  static bayanzurkh = `${img}districts/bayanzurkh.png`;
+  static chingeltei = `${img}districts/chingeltei.png`;
+  static khanuul = `${img}districts/khanuul.png`;
+  static nalaikh = `${img}districts/nalaikh.png`;
+  static sukhbaatar = `${img}districts/sukhbaatar.png`;
+  static songinoKhairkhan = `${img}districts/songinoKhairkhan.png`;
+}
+
+export class MarkerAssests {
+  static green = `/assets/utils/icons/markers/green.svg`;
+  static aqua = `/assets/utils/icons/markers/aqua.svg`;
+  static blue = `/assets/utils/icons/markers/blue.svg`;
+  static pink = `/assets/utils/icons/markers/pink.svg`;
+  static purple = `/assets/utils/icons/markers/purple.svg`;
+  static yellow = `/assets/utils/icons/markers/yellow.svg`;
+  static orange = `/assets/utils/icons/markers/orange.svg`;
 }

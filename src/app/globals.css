@@ -24,3 +24,7 @@ body {
     text-wrap: balance;
   }
 }
+
+.text {
+  font-family: var(--mantine-font-family);
+}

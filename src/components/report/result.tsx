@@ -21,8 +21,6 @@ export const ReportResult = ({
   };
   data: { min?: number; max?: number; avg?: number };
 }) => {
-  const date = new Date();
-  console.log(data);
   return (
     <Box>
       <ReportTitle text={payload.town}>
@@ -150,7 +148,7 @@ export const ResultWidget = ({
   return (
     <Box>
       <Flex align={"center"} gap={32} pos={"relative"}>
-        <Text fz={56} lh={1} c={"headBlue"} className="text-nowrap">
+        <Text fw={"bold"} fz={56} lh={1} c={"headBlue"} className="text-nowrap">
           {title}
         </Text>
         <Box h={1} w={"100%"} top={"10px"} pos={"relative"} bg={"deepMose20"} />
@@ -162,20 +160,13 @@ export const ResultWidget = ({
   );
 };
 
-export const UserWidget = ({
-  user,
-  location,
-}: {
-  user?: UserModel;
-  location: string;
-}) => {
+export const UserWidget = ({ user }: { user?: UserModel }) => {
   return (
     <Flex gap={"50px"}>
       <Box>
         <Text fz={20}>Овог нэр</Text>
         <Text fz={20}>Цахим хаяг</Text>
-        <Text fz={20}>Хаяг</Text>
-        <Text fz={20}>Утасны дугаар</Text>
+        {user?.phone && <Text fz={20}>Утасны дугаар</Text>}
       </Box>
       <Box>
         <Text c={"grey"} fz={20}>
@@ -184,12 +175,12 @@ export const UserWidget = ({
         <Text c={"grey"} fz={20}>
           {user?.email ?? "a"}
         </Text>
-        <Text c={"grey"} fz={20}>
-          {location}
-        </Text>
-        <Text c={"grey"} fz={20}>
-          {user?.phone ?? ""}
-        </Text>
+
+        {user?.phone && (
+          <Text c={"grey"} fz={20}>
+            {user?.phone ?? ""}
+          </Text>
+        )}
       </Box>
     </Flex>
   );

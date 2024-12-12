@@ -3,30 +3,70 @@ import { montserratAlternates } from "@/utils/fonts";
 import { Box, Button, Flex, Text, TextProps, Title } from "@mantine/core";
 import Image from "next/image";
 import { ReactNode } from "react";
-
+import { exo2 } from "@/utils/fonts";
 export const ReportTitle = ({
   text,
   children,
+  text1,
+  text2,
+  fz = 120,
 }: {
   text: string;
+  text1?: string;
+  text2?: string;
+  fz?: number;
   children?: ReactNode;
 }) => {
   return (
-    <Box bg={"lightIvory"} px={56} pos={'relative'}>
-      <Title
-        pt={80}
-        pb={108}
-        fz={120}
-        fw={"bolder"}
-        c={"midnightBlue"}
-        style={{
-          lineHeight: 1.1,
-          letterSpacing: 0,
-        }}
-        variant="full"
-      >
-        {text}
-      </Title>
+    <Box bg={"lightIvory"} px={56} pos={"relative"}>
+      <Flex align={"center"} pb={108} pt={80}>
+        <Title
+          fz={fz}
+          fw={"800"}
+          c={"midnightBlue"}
+          style={{
+            lineHeight: 1,
+            letterSpacing: 0,
+            textWrap: "nowrap",
+          }}
+          variant="full"
+        >
+          {text}
+        </Title>
+        <Flex
+          direction={"column"}
+          justify={"center"}
+          gap={0}
+          columnGap={0}
+          h={"100%"}
+          rowGap={0}
+        >
+          <Title
+            fz={45}
+            fw={"800"}
+            c={"midnightBlue"}
+            style={{
+              lineHeight: 1,
+              letterSpacing: 0,
+            }}
+            variant="full"
+          >
+            {text1}
+          </Title>
+          <Title
+            fz={45}
+            fw={"800"}
+            c={"midnightBlue"}
+            style={{
+              lineHeight: 1,
+              letterSpacing: 0,
+            }}
+            variant="full"
+          >
+            {text2}
+          </Title>
+        </Flex>
+      </Flex>
       {children}
     </Box>
   );
@@ -37,23 +77,38 @@ export const ReportList = ({
   text,
   label,
   onClick,
+  high,
 }: {
   title: string;
   label: string;
+  high?: string;
   text: string;
   onClick: () => void;
 }) => {
   return (
     <Flex justify={"space-between"}>
-      <Box>
+      <Box w={"65vw"}>
         <Title fz={42} fw={"bolder"} c={"midnightBlue"}>
           {title}
         </Title>
-        <Text fz={18} className={montserratAlternates.className}>
-          {text}
-        </Text>
+        <Flex align={"center"} gap={0}>
+          {high && (
+            <Text
+              fz={20}
+              tt={"uppercase"}
+              className={montserratAlternates.className}
+              fw="bold"
+              mr={3}
+            >
+              {`${high} `}
+            </Text>
+          )}
+          <Text fz={18} className={montserratAlternates.className}>
+            {`${text}`}
+          </Text>
+        </Flex>
       </Box>
-      <Flex gap={69} w={"auto"}>
+      <Flex w={"20vw"}>
         <Flex align={"center"} justify={"start"} mr={69}>
           <Box w={9} h={9} bg={"main"} />
           <Text fz={18} fw={"bold"}>
@@ -113,10 +168,10 @@ export const InlineText = ({
 }) => {
   return (
     <Flex align={"center"} gap={16}>
-      <Text fz={24} {...textProps}>
+      <Text fz={30} {...textProps}>
         {text}
       </Text>
-      <Text fz={40} {...labelProps}>
+      <Text fz={30} {...labelProps}>
         {label}
       </Text>
     </Flex>

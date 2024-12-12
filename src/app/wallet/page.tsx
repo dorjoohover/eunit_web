@@ -17,6 +17,7 @@ import {
   Flex,
   Group,
   Modal,
+  Pagination,
   Select,
   Table,
   Text,
@@ -111,11 +112,14 @@ const Page = () => {
       </Table.Tr>
     );
   });
-  const getHistory = async () => {
-    await userHistory().then((d) => {
-      console.log(d);
+
+  const [limit, setLimit] = useState(10);
+  const [total, setTotal] = useState(0);
+  const getHistory = async (page = 1, l = limit) => {
+    await userHistory(l, page).then((d) => {
       if (d.succeed) {
-        setHistory(d.payload);
+        setTotal(d.payload[1]);
+        setHistory(d.payload[0]);
       }
     });
   };
@@ -141,7 +145,7 @@ const Page = () => {
               <WalletCard onClick={open} user={user} />
             </Box>
             <Box flex={1} maw={500}>
-              <form onSubmit={form.onSubmit((values) => send(values))}>
+              {/* <form onSubmit={form.onSubmit((values) => send(values))}>
                 <Box w={"100%"}>
                   <Text fz={30}>Шилжүүлэг</Text>
                   {Object.keys(form.values).map((key) => {
@@ -177,12 +181,12 @@ const Page = () => {
                     Шилжүүлэх
                   </Button>
                 </Box>
-              </form>
+              </form> */}
             </Box>
           </Flex>
           <Text fz={30}>Гүйлгээний түүх</Text>
           <Box>
-            <Flex mt={24}>
+            {/* <Flex mt={24}>
               <Select
                 placeholder="Валют сонгох"
                 data={["React", "Angular", "Vue", "Svelte"]}
@@ -195,14 +199,14 @@ const Page = () => {
                 defaultValue="React"
                 clearable
               />
-              {/* <DateInput
+              <DateInput
                 value={value}
                 onChange={setValue}
                 label="Date input"
                 placeholder="Date input"
-              /> */}
+              />
               <Button>Хайх</Button>
-            </Flex>
+            </Flex> */}
             <Table stickyHeader mt={30} stickyHeaderOffset={60}>
               <Table.Thead bg={"lightIvory"}>
                 <Table.Tr>
@@ -224,8 +228,25 @@ const Page = () => {
                 </Table.Tr>
               </Table.Thead>
               <Table.Tbody>{rows}</Table.Tbody>
-              <Table.Caption>Scroll page to see sticky thead</Table.Caption>
             </Table>
+            <Flex justify={"end"} w={"100%"} mt={20} pb={40}>
+              <Pagination.Root
+                total={Math.ceil(total / limit)}
+                color="main"
+                radius={5}
+                onChange={(e) => {
+                  getHistory(e, limit);
+                }}
+              >
+                <Group gap={5} justify="center">
+                  <Pagination.First />
+                  <Pagination.Previous />
+                  <Pagination.Items />
+                  <Pagination.Next />
+                  <Pagination.Last />
+                </Group>
+              </Pagination.Root>{" "}
+            </Flex>
           </Box>
         </Box>
       </ReportTitle>

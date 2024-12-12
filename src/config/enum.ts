@@ -20,11 +20,13 @@ export enum TransactionType {
 
 export enum Constant {
   DISTRICT = 10,
-  LOCATION = 20,
+  TOWN = 20,
+  NOTTOWN = 30,
 }
 export enum ServiceType {
   REVIEW = 20,
   REPORT = 10,
+  DATA = 30,
 }
 export enum UserStatus {
   pending = "pending",

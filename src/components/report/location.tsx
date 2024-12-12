@@ -16,7 +16,7 @@ export const ChooseLocation = ({
   onClick,
   location,
 }: {
-  location: { title: string; text: string; label: string };
+  location: { title: string; text: string; label: string; high?: string };
   onClick: () => void;
 }) => {
   return (
@@ -31,6 +31,7 @@ export const ChooseLocation = ({
       align={"center"}
     >
       <ReportList
+        high={location.high}
         title={location.title}
         text={location.text}
         label={location.label}

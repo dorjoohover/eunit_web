@@ -7,6 +7,7 @@ import { getUserData, loginUser, logOut } from "@/(api)/auth.api";
 import { UserType } from "@/config/enum";
 import { AdminNavbar, Navbar } from "@/components/navbar/navbar";
 import Loading from "./loading";
+import { Footer } from "@/components/footer";
 
 const Template = ({ children }: { children: ReactNode }) => {
   const { data, status } = useSession();
@@ -55,8 +56,9 @@ const Template = ({ children }: { children: ReactNode }) => {
 
   return (
     <>
-      {user?.role == UserType.admin ? <AdminNavbar /> : <Navbar />}
+      <Navbar />
       {children}
+      <Footer />
     </>
   );
 };

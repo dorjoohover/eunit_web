@@ -1,6 +1,8 @@
+import { Colors } from "@/base/constants";
 import { UserModel } from "@/models/user.model";
 import { Assets, cardBg } from "@/utils/assets";
 import { exo2 } from "@/utils/fonts";
+import { money } from "@/utils/functions";
 import { TransactionValues } from "@/utils/values";
 import { Box, Button, Flex, Paper, Text, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
@@ -9,6 +11,7 @@ import Image from "next/image";
 import { ReactNode } from "react";
 import { BsFillPlusCircleFill } from "react-icons/bs";
 import { FaPlusCircle } from "react-icons/fa";
+import { IoIosArrowRoundForward, IoMdArrowForward } from "react-icons/io";
 
 export const WalletCard = ({
   onClick,
@@ -40,7 +43,7 @@ export const WalletCard = ({
       >
         <WalletText
           label="Хэтэвчний үлдэгдэл"
-          text={`${user?.wallet} E-unit оноо`}
+          text={`${money(`${user?.wallet}`)} E-unit`}
           children={
             <Image
               src={Assets.logoMiniWhite}
@@ -189,5 +192,109 @@ export const ChargeCard = ({
         </Box>
       </Flex>
     </Box>
+  );
+};
+
+export const ServiceCard = ({
+  text,
+  onClick,
+  bg,
+}: {
+  bg: string;
+  text: string;
+  onClick: () => void;
+}) => {
+  return (
+    <Box
+      mah={400}
+      h={400}
+      maw={550}
+      w={"100%"}
+      style={{
+        backgroundImage: `url(${bg})`,
+        backgroundPosition: "center",
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat",
+        position: "relative",
+      }}
+    >
+      <Box
+        pos={"absolute"}
+        bottom={16}
+        left={12}
+        bg={"white"}
+        px={20}
+        py={32}
+        right={12}
+      >
+        <Text fz={42} tt={"uppercase"} lh={1.01} c={"main"} fw={"bold"}>
+          {text}
+        </Text>
+        <Button
+          rightSection={
+            <IoIosArrowRoundForward color={Colors.main} size={32} />
+          }
+          onClick={onClick}
+          bg={"transparent"}
+          c={"black"}
+          px={0}
+        >
+          Дэлгэрэнгүй үзэх
+        </Button>
+      </Box>
+    </Box>
+  );
+};
+
+export const DistrictCard = ({
+  bg,
+  text,
+  count,
+  price,
+}: {
+  bg: string;
+  text: string;
+  count: number;
+  price: number;
+}) => {
+  return (
+    <Flex
+      w={"100%"}
+      bg={"#ECEFF2"}
+      style={{
+        borderRadius: 20,
+      }}
+      py={22}
+      justify={"center"}
+    >
+      <Box>
+        <Flex
+          w={150}
+          gap={10}
+          bg={"headBlue"}
+          justify={"center"}
+          align={"center"}
+          py={5.5}
+          style={{
+            borderRadius: 50,
+          }}
+          mb={30}
+        >
+          <Box
+            w={10}
+            h={10}
+            style={{
+              borderRadius: "100%",
+            }}
+            bg={bg}
+          />
+          <Text c={"white"}>{text}</Text>
+        </Flex>
+        <Text fz={24} c={"main"} ta={"center"}>
+          {money(`${price}`, "₮")}
+        </Text>
+        <Text ta={"center"}>{count} мэдээлэл</Text>
+      </Box>
+    </Flex>
   );
 };

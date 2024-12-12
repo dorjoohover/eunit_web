@@ -1,10 +1,12 @@
-'use client';
+"use client";
 
-import { Libraries, useJsApiLoader } from '@react-google-maps/api';
-import { ReactNode, Suspense } from 'react';
+import Loading from "@/app/loading";
+import { Center, Loader } from "@mantine/core";
+import { Libraries, useJsApiLoader } from "@react-google-maps/api";
+import { ReactNode, Suspense } from "react";
 
 // Define a list of libraries to load from the Google Maps API
-const libraries: Libraries = ['places', 'drawing', 'geometry'];
+const libraries: Libraries = ["places", "drawing", "geometry"];
 
 // Define a functional component called MapProvider
 interface MapProviderProps {
@@ -20,17 +22,16 @@ export function MapProvider({ children }: MapProviderProps) {
 
   // Handle errors while loading Google Maps API
   if (loadError) {
-    return <p style={{ color: 'red' }}>Error loading Google Maps API. Please try again later.</p>;
+    return (
+      <p style={{ color: "red" }}>
+        Error loading Google Maps API. Please try again later.
+      </p>
+    );
   }
 
   // Show a loading message or spinner while the API script is loading
   if (!scriptLoaded) {
-    return (
-      <div style={{ textAlign: 'center' }}>
-        <p>Map script is loading...</p>
-        {/* Optional: Add a spinner here for a better UX */}
-      </div>
-    );
+    return <Loading />;
   }
 
   // Return the children prop wrapped by this MapProvider component
@@ -40,7 +41,7 @@ export function MapProvider({ children }: MapProviderProps) {
 // Optional: Wrap your MapProvider with Suspense for better error handling
 export function MapProviderWithSuspense({ children }: MapProviderProps) {
   return (
-    <Suspense fallback={<div>Loading map...</div>}>
+    <Suspense fallback={<Loading />}>
       <MapProvider>{children}</MapProvider>
     </Suspense>
   );

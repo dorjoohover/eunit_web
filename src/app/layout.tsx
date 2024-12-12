@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import "../styles/_loading.scss";
+
 import Head from "next/head";
 import { logoMiniWhite } from "@/utils/assets";
 import { ColorSchemeScript, MantineProvider } from "@mantine/core";
@@ -16,6 +18,7 @@ import "@mantine/core/styles/global.css";
 import "@mantine/core/styles.css";
 import { MapProviderWithSuspense } from "@/_context/maps.provider";
 import { cookies } from "next/headers";
+import "@mantine/dates/styles.css";
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -51,7 +54,7 @@ export default async function RootLayout({
           type="image/png"
           sizes="32x32"
         />
-        <ColorSchemeScript defaultColorScheme="light" />
+        {/* <ColorSchemeScript defaultColorScheme="light" /> */}
         <meta
           name="viewport"
           content="minimum-scale=1, initial-scale=1, width=device-width, user-scalable=no"

@@ -3,6 +3,7 @@
 import { getUserData } from "@/(api)/auth.api";
 import { getRequestResult } from "@/(api)/service.api";
 import { useAppContext } from "@/_context";
+import Loading from "@/app/loading";
 import { Colors } from "@/base/constants";
 import {
   AnalyzeWidget,
@@ -16,7 +17,9 @@ import {
   ReportTitle,
   Spacer,
 } from "@/components/report/shared";
+import { ServiceCard } from "@/components/shared/card";
 import { LocationModel } from "@/models/location.model";
+import { Assets } from "@/utils/assets";
 import { money, parseDate } from "@/utils/functions";
 import { ConstantApi } from "@/utils/routes";
 import {
@@ -25,14 +28,20 @@ import {
   defaultMapOptions,
   defaultMapZoom,
 } from "@/utils/values";
-import { Box, Center, Flex, Loader, Text } from "@mantine/core";
+import { Box, Button, Center, Flex, Text } from "@mantine/core";
 import { useFetch } from "@mantine/hooks";
 import { GoogleMap, Marker } from "@react-google-maps/api";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { BiCalendar, BiDownload } from "react-icons/bi";
 import { CiLocationOn } from "react-icons/ci";
+import {
+  IoIosArrowRoundBack,
+  IoMdArrowBack,
+  IoMdDownload,
+} from "react-icons/io";
 import { MdApartment } from "react-icons/md";
-
+import jsPDF from "jspdf";
 type ResultType = {
   data: {
     min?: number;
@@ -40,6 +49,9 @@ type ResultType = {
     avg?: number;
     area?: number;
     createdAt?: Date;
+    no?: string;
+    floor?: number;
+    room?: number;
   };
 
   location: LocationModel;
@@ -49,17 +61,18 @@ const Page = () => {
   const params = useSearchParams();
   const [loading, setLoading] = useState(false);
   const id = params.get("id");
-  const { user, setUser } = useAppContext();
+  const { user, refetchUser } = useAppContext();
   const area = params.get("area");
   const [data, setData] = useState<ResultType>();
   const router = useRouter();
   const getResult = async () => {
-    // setLoading(true);
+    setLoading(true);
     if (id == null) return;
+
+    refetchUser();
     const res = await getRequestResult(+id);
-    console.log(res);
     if (!res?.token) {
-      // router.push("/login");
+      router.push("/login");
       return;
     }
     if (res.success) {
@@ -75,12 +88,32 @@ const Page = () => {
   if (loading)
     return (
       <Center>
-        <Loader />
+        <Loading />
       </Center>
     );
 
   const address = `${data?.location.city}, ${data?.location.district}, 
-                ${data?.location.town}`;
+               ${
+                 data?.location?.khoroo
+                   ? `${data?.location?.khoroo}-р хороо,`
+                   : ""
+               } ${data?.location.town}`;
+
+  const donwloadPdf = async () => {
+    const doc = new jsPDF();
+    // doc.setTextColor(Colors.main);
+    // doc.setwe
+    // doc.text(data?.location.town ?? data?.location.name ?? "", 10, 10);
+
+    // const numbers = [1, 2, 3];
+    // numbers.forEach((num, index) => {
+    //   doc.text(`Number ${num}`, 10, 20 + index * 10);
+    // });
+
+    // // Save the PDF
+    // doc.save("example.pdf");
+  };
+
   return (
     <Box>
       <ReportTitle text={data?.location.town ?? ""}>
@@ -95,62 +128,66 @@ const Page = () => {
             pb={12}
             justify={"start"}
             w={"100%"}
-            gap={40}
+            columnGap={40}
           >
             <IconText child={<MdApartment size={24} />} text={"Орон сууц"} />
             <IconText child={<CiLocationOn size={24} />} text={address} />
+            <IconText
+              child={<BiCalendar size={24} />}
+              text={parseDate(
+                new Date(data?.data.createdAt?.toString() ?? Date()) ??
+                  new Date(),
+                "."
+              )}
+            />
           </Flex>
-          <Spacer size={20} />
+
+          <Spacer size={40} />
           <InlineText
-            text="Эд хөрөнгийн үнэ цэнэ нь хооронд:"
-            label={`    ${money(`${data?.data.min}`, "MNT ")}-${money(
+            text="Таны сонгосон орон сууцны м.кв-н үнэ цэн:"
+            label={`    ${money(`${data?.data.min}`, "₮ ")}-${money(
               `${data?.data.max}`,
-              "MNT "
+              "₮ "
             )}`}
+          />
+          <Spacer size={40} />
+          <InlineText
+            text="Таны орон сууцны м.кв тохиромжит үнэ:"
+            label={` ${money(`${data?.data.avg}`, "₮ ")}`}
+            labelProps={{ c: "main" }}
           />
 
           <Spacer size={40} />
           <InlineText
-            text="Таны орон сууцны тохиромжит үнэлгээ:"
-            label={` ${money(`${data?.data.avg}`, "MNT ")}`}
+            label={` ${money(
+              `${data?.data.avg! * (data?.data.area ?? 1)}`,
+              "₮ "
+            )}`}
+            text={`Таны ${data?.data?.area}м.кв орон сууцны нийт үнэ:`}
             labelProps={{ bg: "main", c: "white", py: 4, px: 20 }}
           />
           <Spacer size={20} />
 
           <Box w={150} h={1} bg={"deepMose20"} mb={24} mt={50} />
-          <UserWidget user={user} location={address} />
+          <UserWidget user={user} />
           <Spacer size={100} />
           <Text c={"headBlue"} fz={20}>
-            Үнэлгээ хийсэн он сар:
-            {parseDate(
-              new Date(data?.data.createdAt?.toString() ?? Date()) ??
-                new Date(),
-              "."
-            )}
+            Таны {data?.location.city} хот, {data?.location.district} дүүрэг,{" "}
+            {data?.location.khoroo}-р хороо, {data?.location.zipcode},{" "}
+            {data?.location.town} хотхон, {data?.data.no}
+            {data?.data.no && "-р байр, "} {data?.data.floor}
+            {data?.data.floor && " дугаар давхарын "}
+            {data?.data.room} {data?.data.room && "өрөө"} {data?.data.area}м.кв
+            орон сууцны өнөөгийн зах зээлийн үнэ{" "}
+            {money(`${data?.data.avg! * (data?.data.area ?? 1)}`)} төгрөг орчмын
+            үнэтэй байна.
           </Text>
           <Spacer size={24} />
-          <ResultWidget
-            title={"Орон сууцны мэдээлэл"}
-            props={{ maw: "1000px" }}
-          >
-            <ApartmentInfo text={address} title="Хаяг" />
-            <ApartmentInfo
-              text={`Орон сууц`}
-              title="Үл хөдлөх хөрөнгийн төрөл"
-            />
-            <ApartmentInfo
-              text={`${data?.location.operation ?? ""}`}
-              title="Ашиглалтанд орсон он"
-            />
-            <ApartmentInfo
-              text={`${data?.data.area ?? 0}м.кв`}
-              title="Талбайн хэмжээ"
-            />
-          </ResultWidget>
+
           <Spacer size={24} />
           <ResultWidget title={"Макро мэдээлэл"} props={{ w: "100%" }}>
             <Text fz={24} mt={40}>
-              Барилга хөгжлийн яамны датанд үндэслэж (гэж мэгээшаагад)
+              Монгол банкны орон сууцны үнийн индекс
             </Text>
             <Text c={"grey"} fz={20} mb={40}>
               Орон сууцны борлуулалт болон түрээсийн үнийн чиг хандлага, сул
@@ -164,7 +201,7 @@ const Page = () => {
               px={20}
               py={12}
             >
-              <Flex gap={20}>
+              <Flex columnGap={40}>
                 <AnalyzeWidget
                   border
                   label="Сүүлийн 6 сараар"
@@ -173,7 +210,7 @@ const Page = () => {
                 />
                 <Box flex={1} />
               </Flex>
-              <Flex gap={20}>
+              <Flex columnGap={40}>
                 <AnalyzeWidget
                   label="Сүүлийн 5 жилээр"
                   text="Хүн амын өсөлт хөгжил"
@@ -214,7 +251,65 @@ const Page = () => {
             </GoogleMap>
           </ResultWidget>
         </Box>
-        <Spacer size={200} />
+        <Spacer size={32} />
+
+        <Flex w={"100%"} justify={"center"}>
+          <Button
+            radius={32}
+            px={20}
+            bg={"main"}
+            fz={20}
+            py={12}
+            h={"auto"}
+            leftSection={
+              <Box
+                bg={"white"}
+                p={4}
+                style={{
+                  borderRadius: "100%",
+                }}
+              >
+                <IoMdDownload color={Colors.main} size={14} />
+              </Box>
+            }
+            onClick={() => donwloadPdf()}
+          >
+            Татаж авах(PDF)
+          </Button>
+        </Flex>
+        <Spacer size={32} />
+        <Text fz={30} fw={"bold"}>
+          Санал болгож буй үйлчилгээ
+        </Text>
+        <Spacer size={32} />
+        <Flex
+          w={"100%"}
+          pos={"relative"}
+          columnGap={40}
+          justify={"space-between"}
+        >
+          <ServiceCard
+            bg={Assets.service}
+            onClick={() => {}}
+            text="Үнэлгээний тайлан"
+          />
+          <ServiceCard
+            bg={Assets.service1}
+            onClick={() => {}}
+            text="оРОН СУУЦНЫ ДАТА ТАТАХ"
+          />
+        </Flex>
+        <Spacer size={80} />
+        <Button
+          bg={"main"}
+          py={8}
+          h={"auto"}
+          radius={0}
+          leftSection={<IoIosArrowRoundBack color="white" size={24} />}
+        >
+          Дахин лавлагаа авах
+        </Button>
+        <Spacer size={40} />
       </ReportTitle>
       <Box
         style={{
