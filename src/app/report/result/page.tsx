@@ -203,21 +203,21 @@ const Page = () => {
               <Flex columnGap={40}>
                 <AnalyzeWidget
                   border
-                  label="Сүүлийн 6 сараар"
-                  text="Худалдан авах үнийн өсөлт"
-                  value={-1}
+                  label="Сүүлийн 1 жилээр"
+                  text="Орон сууцны үнийн өсөлт"
+                  value={12}
                 />
                 <Box flex={1} />
               </Flex>
               <Flex columnGap={40}>
                 <AnalyzeWidget
-                  label="Сүүлийн 5 жилээр"
+                  label="Сүүлийн 1 жилээр"
                   text="Хүн амын өсөлт хөгжил"
                   value={3}
                 />
                 <AnalyzeWidget
-                  label="Сүүлийн 6 сараар"
-                  text="Түрээсийн үнийн өсөлт"
+                  label="Сүүлийн 1 жилээр"
+                  text="Хэрэглээний үнийн индекс"
                   value={6}
                 />
               </Flex>
