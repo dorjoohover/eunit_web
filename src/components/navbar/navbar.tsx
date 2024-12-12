@@ -2,6 +2,7 @@
 import { useAppContext } from "@/_context";
 import { Colors, Sizes } from "@/base/constants";
 import { locale } from "@/base/vocabs/mn";
+import { EunitIcon } from "@/theme/components/icon";
 import { Assets, IconAssets } from "@/utils/assets";
 import { exo2 } from "@/utils/fonts";
 import { money } from "@/utils/functions";
@@ -97,7 +98,12 @@ export const Navbar = () => {
                   />
                 )}
               </Flex>
-              {user != null && <Text>{money(`${user.wallet}`)}</Text>}
+              {user != null && (
+                <Flex gap={5} ml={10} align={"center"}>
+                  <Text>{money(`${user.wallet}`)}</Text>
+                  <EunitIcon />
+                </Flex>
+              )}
             </Flex>
           </Link>
           <Link

@@ -19,6 +19,7 @@ import {
 import { Assets, IconAssets, MarkerAssests, video } from "@/utils/assets";
 import { useFetch } from "@mantine/hooks";
 import { api } from "@/utils/routes";
+import { useEffect, useRef } from "react";
 export default function Home() {
   const { data, loading } = useFetch<{
     payload: { avg: number; name: string; count: number }[];
@@ -65,7 +66,12 @@ export default function Home() {
       position: { lat: 47.771730825448216, lng: 107.25424468977218 },
     },
   ];
-
+  const vidRef = useRef<HTMLVideoElement | null>(null);
+  useEffect(() => {
+    if (vidRef.current) {
+      vidRef.current.play();
+    }
+  }, []);
   return (
     <div
       className={`bg-[${Colors.lightIvory}] relative  top-[60px] left-[60px]`}
@@ -81,6 +87,7 @@ export default function Home() {
               style={{
                 borderRadius: 20,
               }}
+              ref={vidRef}
               loop={true}
             >
               <source src={video} type="video/mp4" />

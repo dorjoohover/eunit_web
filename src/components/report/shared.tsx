@@ -76,14 +76,12 @@ export const ReportList = ({
   title,
   text,
   label,
-  onClick,
   high,
 }: {
   title: string;
   label: string;
   high?: string;
   text: string;
-  onClick: () => void;
 }) => {
   return (
     <Flex justify={"space-between"}>
@@ -108,14 +106,14 @@ export const ReportList = ({
           </Text>
         </Flex>
       </Box>
-      <Flex w={"20vw"}> 
+      <Flex w={"23vw"}>
         <Flex align={"center"} justify={"start"} mr={69}>
           <Box w={9} h={9} bg={"main"} />
           <Text fz={18} fw={"bold"}>
             {label}
           </Text>
         </Flex>
-        <Button unstyled onClick={onClick}>
+        <Button unstyled>
           <Box
             className="flex items-center relative justify-center"
             w={36}

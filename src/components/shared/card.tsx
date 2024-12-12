@@ -3,7 +3,7 @@ import { UserModel } from "@/models/user.model";
 import { Assets, cardBg } from "@/utils/assets";
 import { exo2 } from "@/utils/fonts";
 import { money } from "@/utils/functions";
-import { TransactionValues } from "@/utils/values";
+import { districts, TransactionValues } from "@/utils/values";
 import {
   Box,
   Button,
@@ -16,6 +16,7 @@ import {
 import { useForm } from "@mantine/form";
 import { IconPlus } from "@tabler/icons-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { ReactNode } from "react";
 import { BsFillPlusCircleFill } from "react-icons/bs";
 import { FaPlusCircle } from "react-icons/fa";
@@ -133,7 +134,9 @@ export const ChargeCard = ({
         }}
       />
       <Center h={"400px"}>
-        <Text c={'white'} fz={40}>Тун удахгүй</Text>
+        <Text c={"white"} fz={40}>
+          Тун удахгүй
+        </Text>
       </Center>
       {/* <Text fz={24} ta={"center"} mt={40} c={"white"}>
         Цэнэглэх-ХААН банк
@@ -268,6 +271,13 @@ export const DistrictCard = ({
   count: number;
   price: number;
 }) => {
+  const router = useRouter();
+  const handle = () => {
+    const value = districts.findIndex((d) => {
+      return d.id.toLowerCase() == text.toLowerCase();
+    });
+    router.push(`/report?${`district=${value}`}`);
+  };
   return (
     <Flex
       w={"100%"}
@@ -277,6 +287,8 @@ export const DistrictCard = ({
       }}
       py={22}
       justify={"center"}
+      className="cursor-pointer"
+      onClick={() => handle()}
     >
       <Box>
         <Flex

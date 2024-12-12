@@ -88,14 +88,14 @@ const Page = () => {
               </Text>
             </Flex>
           </Button>
-          <Flex gap={8} align={"center"}>
+          {/* <Flex gap={8} align={"center"}>
             <Box h={2} w={"100%"} bg={"#E0E0E0"}></Box>
             <Text fw={500} fz={18}>
               эсвэл
             </Text>
             <Box h={2} w={"100%"} bg={"#E0E0E0"}></Box>
-          </Flex>
-          <form
+          </Flex> */}
+          {/* <form
             onSubmit={form.onSubmit((values) => {
               // console.log(values);
             })}
@@ -134,7 +134,7 @@ const Page = () => {
             <Button type="submit" w={"100%"}>
               Нэвтрэх
             </Button>
-          </form>
+          </form> */}
         </Flex>
       </Flex>
     </Flex>

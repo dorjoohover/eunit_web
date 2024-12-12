@@ -43,8 +43,10 @@ export const ChooseDistrict = ({
       py={27}
       // w={'100%'}
       align={"center"}
+      className="cursor-pointer"
+      onClick={onClick}
     >
-      <Flex w={"15vw"}>
+      <Flex w={"12vw"}>
         <Box
           h={92}
           w={96}
@@ -62,7 +64,6 @@ export const ChooseDistrict = ({
         title={district.name}
         text={district.text}
         label={district.label}
-        onClick={onClick}
       />
     </Flex>
   );

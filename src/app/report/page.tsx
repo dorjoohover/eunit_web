@@ -107,6 +107,7 @@ const Page = () => {
   const router = useRouter();
 
   const submit = async () => {
+    setLoading(true);
     if (!checker()) return;
     if (user?.wallet && user?.wallet - 2000 < 0) {
       notifications.show({
@@ -358,17 +359,25 @@ const Page = () => {
               py={16}
               h={"auto"}
               mb={40}
-              onClick={submit}
+              onClick={() => {
+                if (!loading) submit();
+              }}
             >
-              <Flex align={"center"}>
-                <Text c={"white"} fz={24}>
-                  2,000.00
-                </Text>
-                <EunitIcon />
-                <Text c={"white"} fz={24}>
-                  төлөх
-                </Text>
-              </Flex>
+              {loading ? (
+                <Center>
+                  <Loader c={"white"} />
+                </Center>
+              ) : (
+                <Flex align={"center"}>
+                  <Text c={"white"} fz={24}>
+                    2,000.00
+                  </Text>
+                  <EunitIcon />
+                  <Text c={"white"} fz={24}>
+                    төлөх
+                  </Text>
+                </Flex>
+              )}
             </Button>
           </Box>
         </Modal.Content>

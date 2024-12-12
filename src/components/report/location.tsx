@@ -27,6 +27,8 @@ export const ChooseLocation = ({
         borderBottomStyle: "solid",
       }}
       px={56}
+      className="cursor-pointer"
+      onClick={onClick}
       py={27}
       align={"center"}
     >
@@ -35,9 +37,6 @@ export const ChooseLocation = ({
         title={location.title}
         text={location.text}
         label={location.label}
-        onClick={() => {
-          onClick();
-        }}
       />
     </Flex>
   );
