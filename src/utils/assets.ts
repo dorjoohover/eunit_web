@@ -26,6 +26,7 @@ export class Assets {
 export const imgLogo = `${assets}logo.png`;
 export const imgLogoWhite = `${assets}logo white.png`;
 export const districtIcon = `${icons}district.png`;
+export const video = `${assets}video.mp4`;
 export const compareArrowIcon = `${icons}compareArrow.svg`;
 export class IconAssets {
   static download = `${icons}download.svg`;

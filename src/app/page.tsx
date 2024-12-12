@@ -16,7 +16,7 @@ import {
   AdvancedMarkerAnchorPoint,
   CollisionBehavior,
 } from "@vis.gl/react-google-maps";
-import { Assets, IconAssets, MarkerAssests } from "@/utils/assets";
+import { Assets, IconAssets, MarkerAssests, video } from "@/utils/assets";
 import { useFetch } from "@mantine/hooks";
 import { api } from "@/utils/routes";
 export default function Home() {
@@ -76,6 +76,7 @@ export default function Home() {
       <ReportWrapper>
         <Box pb={80} mx={"auto"} maw={1100} mb={100}>
           <Title
+            mt={40}
             c={"headBlue"}
             mx={"auto"}
             ta={"center"}
@@ -86,6 +87,17 @@ export default function Home() {
           >
             Таны хөрөнгийн үнэ цэнийг нэг товчлуурт багтаана!
           </Title>
+          <Box maw={1100} px={20} my={60} mx={"auto"}>
+            <video
+              autoPlay
+              style={{
+                borderRadius: 20,
+              }}
+            >
+              <source src={video} type="video/mp4" />
+            </video>
+          </Box>
+
           <Title
             c={"headBlue"}
             maw={900}
