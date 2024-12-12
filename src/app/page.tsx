@@ -115,7 +115,7 @@ export default function Home() {
           </Flex>
           <Flex columnGap={0} mb={32}>
             <Box flex={1} mr={16}>
-              {data?.payload.map((d, i) => {
+              {data?.payload?.map((d, i) => {
                 if (d.name == "Хан-Уул")
                   return (
                     <DistrictCard
@@ -129,7 +129,7 @@ export default function Home() {
               })}
             </Box>
             <Box flex={1} mx={16}>
-              {data?.payload.map((d, i) => {
+              {data?.payload?.map((d, i) => {
                 if (d.name == "Баянзүрх")
                   return (
                     <DistrictCard
@@ -143,7 +143,7 @@ export default function Home() {
               })}
             </Box>
             <Box flex={1} mx={16}>
-              {data?.payload.map((d, i) => {
+              {data?.payload?.map((d, i) => {
                 if (d.name == "Сүхбаатар")
                   return (
                     <DistrictCard
@@ -157,7 +157,7 @@ export default function Home() {
               })}
             </Box>
             <Box flex={1} ml={16}>
-              {data?.payload.map((d, i) => {
+              {data?.payload?.map((d, i) => {
                 if (d.name == "Налайх")
                   return (
                     <DistrictCard
@@ -174,7 +174,7 @@ export default function Home() {
           <Flex columnGap={0}>
             <Flex direction={"column"} flex={1} gap={32}>
               <Box flex={1} mr={16}>
-                {data?.payload.map((d, i) => {
+                {data?.payload?.map((d, i) => {
                   if (d.name == "Чингэлтэй")
                     return (
                       <DistrictCard
@@ -188,7 +188,7 @@ export default function Home() {
                 })}
               </Box>
               <Box flex={1} mr={16}>
-                {data?.payload.map((d, i) => {
+                {data?.payload?.map((d, i) => {
                   if (d.name == "Баянгол")
                     return (
                       <DistrictCard
@@ -202,7 +202,7 @@ export default function Home() {
                 })}
               </Box>
               <Box flex={1} mr={16}>
-                {data?.payload.map((d, i) => {
+                {data?.payload?.map((d, i) => {
                   if (d.name == "Сонгинохайрхан")
                     return (
                       <DistrictCard
