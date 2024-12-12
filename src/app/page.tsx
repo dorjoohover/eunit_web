@@ -93,6 +93,7 @@ export default function Home() {
               style={{
                 borderRadius: 20,
               }}
+              loop
             >
               <source src={video} type="video/mp4" />
             </video>
