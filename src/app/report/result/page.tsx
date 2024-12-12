@@ -175,11 +175,11 @@ const Page = () => {
             {data?.location.khoroo}-р хороо, {data?.location.zipcode},{" "}
             {data?.location.town} хотхон, {data?.data.no}
             {data?.data.no && "-р байр, "} {data?.data.floor}
-            {data?.data.floor && " дугаар давхарын "}
+            {data?.data.floor && " дугаар давхрын "}
             {data?.data.room} {data?.data.room && "өрөө"} {data?.data.area}м.кв
             орон сууцны өнөөгийн зах зээлийн үнэ{" "}
             {money(`${+data?.data.avg! * +(data?.data.area ?? 1)}`)} төгрөг
-            орчим үнэтэй байна. Энэхүү тооцоолол нь өгөгдөлд суурилж тооцолсон
+            орчим үнэтэй байна. Энэхүү тооцоолол нь өгөгдөлд суурилж тооцоолсон
             бөгөөд 5-10 хувийн хооронд хэлбэлзэх боломжтой.
           </Text>
           <Spacer size={24} />

@@ -132,8 +132,8 @@ export const ChargeCard = ({
           backgroundSize: "cover",
         }}
       />
-      <Center h={"100%"}>
-        <Text>Түн удахгүй</Text>
+      <Center h={"400px"}>
+        <Text c={'white'} fz={40}>Тун удахгүй</Text>
       </Center>
       {/* <Text fz={24} ta={"center"} mt={40} c={"white"}>
         Цэнэглэх-ХААН банк
