@@ -66,7 +66,7 @@ export const ServiceHistory = () => {
           >
             <Text>
               {element.service == ServiceType.DATA
-                ? "Excel татар"
+                ? "Excel татах"
                 : "Үйлчилгээ дахин харах"}
             </Text>
           </Button>
