@@ -37,7 +37,7 @@ export const loginUser = async (
       //   window.location.pathname = '/account/check';
       // }
     } catch (err) {
-      console.error(err);
+      // console.error(err);
     }
   }
 };
@@ -68,7 +68,7 @@ export async function logOut() {
     console.log("Logout request succeeded:");
     // return res;
   } catch (error) {
-    console.error("Logout error:", error);
+    // console.error("Logout error:", error);
     throw error;
   }
 }

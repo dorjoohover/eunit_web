@@ -23,7 +23,7 @@ export async function getConstants(
 
     return res;
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     // throw new Error(ErrorMessages.occured);
   }
 }

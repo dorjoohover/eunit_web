@@ -36,14 +36,13 @@ const Template = ({ children }: { children: ReactNode }) => {
           }
         }
       } catch (error) {
-        console.error("Error during handler execution:", error);
+        // console.error("Error during handler execution:", error);
       }
     };
 
     if (status === "authenticated") {
       handler();
     }
-    console.log(status);
     if (status === "unauthenticated") {
       logOut();
       refetchUser();

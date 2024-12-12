@@ -47,7 +47,7 @@ export const sendRequest = async (
       success: res.succeed,
     };
   } catch (error) {
-    console.error(error);
+    // console.error(error);
   }
 };
 export const getRequestResult = async (id: number) => {
@@ -70,7 +70,7 @@ export const getRequestResult = async (id: number) => {
       success: res.succeed,
     };
   } catch (error) {
-    console.error(error);
+    // console.error(error);
   }
 };
 export const getRequestUser = async (page: number, limit: number) => {
@@ -93,7 +93,7 @@ export const getRequestUser = async (page: number, limit: number) => {
       success: res.succeed,
     };
   } catch (error) {
-    console.error(error);
+    // console.error(error);
   }
 };
 export const getRequestAllUser = async () => {
@@ -116,6 +116,6 @@ export const getRequestAllUser = async () => {
       success: res.succeed,
     };
   } catch (error) {
-    console.error(error);
+    // console.error(error);
   }
 };

@@ -50,7 +50,7 @@ export const userHistory = async (limit: number, page: number) => {
       }).then((d) => d.json());
       return res;
     } catch (error) {
-      console.error(error);
+      // console.error(error);
       return false;
     }
   }
@@ -76,7 +76,7 @@ export const sendFeedback = async (message: string, title: string) => {
 
       return true;
     } catch (error) {
-      console.error(error);
+      // console.error(error);
       return false;
     }
   }
@@ -95,7 +95,7 @@ export const getFeedback = async () => {
 
     return res;
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     throw new Error(locale.data.ERROR_MESSAGES.ERROR_OCCURED);
   }
 };
@@ -122,7 +122,7 @@ export const sendPointByUser = async (
 
     return res;
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     throw new Error(locale.data.ERROR_MESSAGES.ERROR_OCCURED);
   }
 };
@@ -173,7 +173,7 @@ export const getUsers = async (): Promise<UserModel[] | boolean> => {
     }
     return false;
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     return false;
   }
 };
