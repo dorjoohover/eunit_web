@@ -5,7 +5,7 @@ const auth = "auth/";
 const estimate = "estimate/";
 
 // export const api = "https://srv549330.hstgr.cloud/api/";
-export const api = "http://46.202.189.34:5000/api/v1/";
+export const api = "https://srv654666.hstgr.cloud/api/v1/";
 export const uri = "http://localhost:3001";
 
 export const imageApi = `${api}file/`;
