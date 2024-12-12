@@ -1,17 +1,20 @@
 import { ReportWrapper } from "@/_context";
 import { Colors } from "@/base/constants";
-import { ReactNode } from "react";
+import { ReactNode, Suspense } from "react";
+import Loading from "../loading";
 
 const RootLayout = ({ children }: { children: ReactNode }) => {
   return (
-    <div
-      className={`bg-[${Colors.lightIvory}] relative  top-[60px] left-[60px]`}
-      style={{
-        width: "calc(100vw - 70px)",
-      }}
-    >
-      <ReportWrapper>{children}</ReportWrapper>
-    </div>
+    <Suspense fallback={<Loading />}>
+      <div
+        className={`bg-[${Colors.lightIvory}] relative  top-[60px] left-[60px]`}
+        style={{
+          width: "calc(100vw - 70px)",
+        }}
+      >
+        <ReportWrapper>{children}</ReportWrapper>
+      </div>
+    </Suspense>
   );
 };
 
