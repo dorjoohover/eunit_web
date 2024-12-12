@@ -1,4 +1,4 @@
-import mergeNames from "@/utils/functions";
+import { mergeNames } from "@/utils/functions";
 import { FC, ReactNode } from "react";
 
 export type ContainerType = {
