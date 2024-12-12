@@ -89,11 +89,11 @@ export default function Home() {
           </Title>
           <Box maw={1100} px={20} my={60} mx={"auto"}>
             <video
-              autoPlay
+              autoPlay={true}
               style={{
                 borderRadius: 20,
               }}
-              loop
+              loop={true}
             >
               <source src={video} type="video/mp4" />
             </video>

@@ -9,7 +9,7 @@ export const ReportTitle = ({
   children,
   text1,
   text2,
-  fz = 120,
+  fz = 64,
 }: {
   text: string;
   text1?: string;
