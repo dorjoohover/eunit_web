@@ -61,12 +61,14 @@ export const ServiceHistory = () => {
           <Button
             unstyled
             onClick={() => {
-              router.push(`/report/result?id=${element.id}`);
+              if (element.service != ServiceType.DATA) {
+                router.push(`/report/result?id=${element.id}`);
+              }
             }}
           >
             <Text>
               {element.service == ServiceType.DATA
-                ? "Excel татах"
+                ? "Excel татсан"
                 : "Үйлчилгээ дахин харах"}
             </Text>
           </Button>
