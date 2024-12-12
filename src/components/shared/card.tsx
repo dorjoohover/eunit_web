@@ -4,7 +4,15 @@ import { Assets, cardBg } from "@/utils/assets";
 import { exo2 } from "@/utils/fonts";
 import { money } from "@/utils/functions";
 import { TransactionValues } from "@/utils/values";
-import { Box, Button, Flex, Paper, Text, TextInput } from "@mantine/core";
+import {
+  Box,
+  Button,
+  Center,
+  Flex,
+  Paper,
+  Text,
+  TextInput,
+} from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { IconPlus } from "@tabler/icons-react";
 import Image from "next/image";
@@ -124,7 +132,10 @@ export const ChargeCard = ({
           backgroundSize: "cover",
         }}
       />
-      <Text fz={24} ta={"center"} mt={40} c={"white"}>
+      <Center h={"100%"}>
+        <Text>Түн удахгүй</Text>
+      </Center>
+      {/* <Text fz={24} ta={"center"} mt={40} c={"white"}>
         Цэнэглэх-ХААН банк
       </Text>
       <Flex pb={50} px={50}>
@@ -190,7 +201,7 @@ export const ChargeCard = ({
             Шалгах
           </Button>
         </Box>
-      </Flex>
+      </Flex> */}
     </Box>
   );
 };

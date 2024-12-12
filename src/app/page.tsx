@@ -75,18 +75,6 @@ export default function Home() {
     >
       <ReportWrapper>
         <Box pb={80} mx={"auto"} maw={1100} mb={100}>
-          <Title
-            mt={40}
-            c={"headBlue"}
-            mx={"auto"}
-            ta={"center"}
-            maw={900}
-            tt={"capitalize"}
-            fz={57}
-            fw={"900"}
-          >
-            Таны хөрөнгийн үнэ цэнийг нэг товчлуурт багтаана!
-          </Title>
           <Box maw={1100} px={20} my={60} mx={"auto"}>
             <video
               autoPlay={true}

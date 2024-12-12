@@ -251,7 +251,7 @@ const Page = () => {
           </ResultWidget>
         </Box>
         <Spacer size={32} />
-
+        {/* 
         <Flex w={"100%"} justify={"center"}>
           <Button
             radius={32}
@@ -297,7 +297,7 @@ const Page = () => {
             onClick={() => {}}
             text="оРОН СУУЦНЫ ДАТА ТАТАХ"
           />
-        </Flex>
+        </Flex> */}
         <Spacer size={80} />
         <Button
           bg={"main"}
@@ -305,6 +305,7 @@ const Page = () => {
           h={"auto"}
           radius={0}
           leftSection={<IoIosArrowRoundBack color="white" size={24} />}
+          onClick={() => router.push("/report")}
         >
           Дахин лавлагаа авах
         </Button>
