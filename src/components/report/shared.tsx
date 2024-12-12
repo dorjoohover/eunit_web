@@ -87,7 +87,7 @@ export const ReportList = ({
 }) => {
   return (
     <Flex justify={"space-between"}>
-      <Box w={"65vw"}>
+      <Box w={"55vw"}>
         <Title fz={42} fw={"bolder"} c={"midnightBlue"}>
           {title}
         </Title>
@@ -108,7 +108,7 @@ export const ReportList = ({
           </Text>
         </Flex>
       </Box>
-      <Flex w={"15vw"}> 
+      <Flex w={"20vw"}> 
         <Flex align={"center"} justify={"start"} mr={69}>
           <Box w={9} h={9} bg={"main"} />
           <Text fz={18} fw={"bold"}>
