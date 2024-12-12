@@ -159,8 +159,11 @@ const Page = () => {
           <Spacer size={40} />
           <InlineText
             label={` ${money(
-              `${data?.data.avg! * (data?.data.area ?? 1)}`,
-              "₮ "
+              `${Math.round(
+                (Number(data?.data.avg) || 0) *
+                  (parseFloat(`${data?.data.area}` || "0") || 0)
+              )}`,
+              "₮"
             )}`}
             text={`Таны ${data?.data?.area}м.кв орон сууцны нийт үнэ:`}
             labelProps={{ bg: "main", c: "white", py: 4, px: 20 }}
@@ -181,10 +184,13 @@ const Page = () => {
             {data?.data.room} {data?.data.room && "өрөө"} {data?.data.area}м.кв
             орон сууцны өнөөгийн зах зээлийн үнэ{" "}
             {money(
-              `${+data?.data.avg! * parseFloat(`${data?.data.area ?? ""}`)}`
+              `${Math.round(
+                (Number(data?.data.avg) || 0) *
+                  (parseFloat(`${data?.data.area}` || "0") || 0)
+              )}`
             )}{" "}
             төгрөг орчим үнэтэй байна. Энэхүү тооцоолол нь өгөгдөлд суурилж
-            тооцоолсон бөгөөд 5-10 хувийн хооронд хэлбэлзэх боломжтой.
+            тооцоолсон бөгөөд ±5-10 хувийн хооронд хэлбэлзэх боломжтой.
           </Text>
           <Spacer size={24} />
 

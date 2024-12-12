@@ -142,7 +142,7 @@ export const saveUser = async (
     };
     const res = await fetch(`${api}user`, {
       method: "PUT",
-      mode: "no-cors",
+      // mode: "no-cors",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token ?? ""}`,
@@ -151,6 +151,7 @@ export const saveUser = async (
     }).then((d) => d.json());
     return res;
   } catch (error) {
+    console.log(error);
     return {
       succeed: false,
       message: "Алдаа гарлаа",
