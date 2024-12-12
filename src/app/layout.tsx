@@ -11,7 +11,7 @@ import { Suspense } from "react";
 import { theme } from "@/theme/theme";
 import NextAuthProvider from "@/_context/auth";
 import { AppWrapper } from "@/_context";
-import Loading from "./loading";
+import { Loading } from "./loading";
 import { SideBar } from "@/components/navbar/navbar";
 import "@mantine/notifications/styles.css";
 import "@mantine/core/styles/global.css";

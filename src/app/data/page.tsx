@@ -70,7 +70,7 @@ import {
 } from "react-icons/io";
 import { MdApartment } from "react-icons/md";
 import { RiFileDownloadFill } from "react-icons/ri";
-import Loading from "../loading";
+import { Loading } from "../loading";
 
 type ResultType = {
   data: AdModel[];

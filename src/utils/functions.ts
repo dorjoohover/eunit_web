@@ -2,7 +2,7 @@ import { AdSellType, TransactionType } from "@/config/enum";
 import { gmailImageUrl, imageApi } from "./routes";
 import { UserModel } from "@/models/user.model";
 
-export default function mergeNames(...classes: string[]) {
+export function mergeNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 export const stopPropagation = (

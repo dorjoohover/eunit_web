@@ -1,6 +1,6 @@
 "use client";
 
-import Loading from "@/app/loading";
+import { Loading } from "@/app/loading";
 import { Center, Loader } from "@mantine/core";
 import { Libraries, useJsApiLoader } from "@react-google-maps/api";
 import { ReactNode, Suspense } from "react";

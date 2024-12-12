@@ -1,7 +1,7 @@
 import { ReportWrapper } from "@/_context";
 import { Colors } from "@/base/constants";
 import { ReactNode, Suspense } from "react";
-import Loading from "../loading";
+import { Loading } from "../loading";
 
 const RootLayout = ({ children }: { children: ReactNode }) => {
   return (

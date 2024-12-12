@@ -3,7 +3,7 @@
 import { getUserData } from "@/(api)/auth.api";
 import { getRequestResult } from "@/(api)/service.api";
 import { useAppContext } from "@/_context";
-import Loading from "@/app/loading";
+import { Loading } from "@/app/loading";
 import { Colors } from "@/base/constants";
 import {
   AnalyzeWidget,

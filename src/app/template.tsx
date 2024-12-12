@@ -6,7 +6,7 @@ import { useAppContext } from "@/_context";
 import { getUserData, loginUser, logOut } from "@/(api)/auth.api";
 import { UserType } from "@/config/enum";
 import { AdminNavbar, Navbar } from "@/components/navbar/navbar";
-import Loading from "./loading";
+import { Loading } from "./loading";
 import { Footer } from "@/components/footer";
 
 const Template = ({ children }: { children: ReactNode }) => {
