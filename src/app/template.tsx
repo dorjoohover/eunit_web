@@ -17,6 +17,7 @@ const Template = ({ children }: { children: ReactNode }) => {
       const { data: dataUser } = await getUserData();
       if ((dataUser == undefined || dataUser == null) && user == undefined) {
         if (data?.user != undefined) {
+          console.log(data.user)
           const res = await loginUser(
             data?.user.email!,
             data?.user.image!,

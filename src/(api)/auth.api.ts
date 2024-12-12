@@ -13,8 +13,10 @@ export const loginUser = async (
   const token = cookie.get("auth-token")?.value;
   if (!token) {
     try {
+      console.log(token);
       const res = await fetch(`${api}${AuthApi.login}`, {
         method: "POST",
+        mode: "no-cors",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           email: email,
@@ -22,6 +24,7 @@ export const loginUser = async (
           name: name,
         }),
       }).then((d) => d.json());
+      console.log(res);
       if (res) {
         cookie.set("auth-token", res.payload.accessToken, {
           httpOnly: true,
@@ -47,14 +50,14 @@ export const getUsers = async () => {
     try {
       const res = await fetch(`${api}user`, {
         headers: {
+          mode: "no-cors",
           "Content-Type": "application/json",
           Authorization: `Bearer ${token?.value ?? ""}`,
           charset: "UTF-8",
         },
       }).then((d) => d.json());
       return res;
-    } catch (error) {
-    }
+    } catch (error) {}
   }
 };
 

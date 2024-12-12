@@ -25,6 +25,7 @@ export const calcData = async (
     };
     const res = await fetch(`${api}ad/calc`, {
       method: "POST",
+      mode: "no-cors",
       body: JSON.stringify(body),
       headers: {
         "Content-Type": "application/json",

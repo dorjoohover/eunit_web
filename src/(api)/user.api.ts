@@ -142,6 +142,7 @@ export const saveUser = async (
     };
     const res = await fetch(`${api}user`, {
       method: "PUT",
+      mode: "no-cors",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token ?? ""}`,
@@ -163,6 +164,7 @@ export const getUsers = async (): Promise<UserModel[] | boolean> => {
     if (token) {
       const res = await fetch(`${api}${UserApi.user}`, {
         headers: {
+          mode: "no-cors",
           "Content-Type": "application/json",
           Authorization: `Bearer ${token ?? ""}`,
         },

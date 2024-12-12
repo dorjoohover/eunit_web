@@ -108,7 +108,7 @@ export const ReportList = ({
           </Text>
         </Flex>
       </Box>
-      <Flex w={"20vw"}>
+      <Flex w={"15vw"}> 
         <Flex align={"center"} justify={"start"} mr={69}>
           <Box w={9} h={9} bg={"main"} />
           <Text fz={18} fw={"bold"}>

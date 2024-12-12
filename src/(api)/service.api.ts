@@ -32,6 +32,7 @@ export const sendRequest = async (
     };
     const res = await fetch(`${api}request`, {
       method: "POST",
+      mode: "no-cors",
       body: JSON.stringify(body),
       headers: {
         "Content-Type": "application/json",
@@ -55,6 +56,7 @@ export const getRequestResult = async (id: number) => {
   try {
     const res = await fetch(`${api}request/service/${id}`, {
       method: "GET",
+      mode: "no-cors",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token?.value ?? ""}`,
@@ -78,6 +80,7 @@ export const getRequestUser = async (page: number, limit: number) => {
   try {
     const res = await fetch(`${api}request/user/${page}/${limit}`, {
       method: "GET",
+      mode: "no-cors",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token?.value ?? ""}`,
@@ -101,6 +104,7 @@ export const getRequestAllUser = async () => {
   try {
     const res = await fetch(`${api}request/all`, {
       method: "GET",
+      mode: "no-cors",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token?.value ?? ""}`,
