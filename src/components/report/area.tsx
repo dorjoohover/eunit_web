@@ -34,7 +34,6 @@ export const InputArea = ({
               c={"grey"}
               onChange={(e) => {
                 const value = e.target.value;
-                console.log(isNaN(parseFloat(value)));
                 const v =
                   value == undefined || value == ""
                     ? 0

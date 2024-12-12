@@ -52,7 +52,6 @@ export const RangeInput = ({
                 unstyled
                 className="rounded-full z-40 w-[20px] flex items-center justify-center h-[20px] bg-mixedBlue50"
                 onClick={() => {
-                  console.log("asdf");
                   // minChange(-1);
                 }}
               >

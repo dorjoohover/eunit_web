@@ -76,7 +76,6 @@ const Page = () => {
       return;
     }
     if (res.success) {
-      console.log(res);
       setData(res.data);
     }
     setLoading(false);

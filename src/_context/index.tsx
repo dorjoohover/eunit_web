@@ -29,7 +29,6 @@ export function AppWrapper({
   const [user, setUser] = useState<UserModel | undefined>(undefined);
   useEffect(() => {
     refetchUser();
-    console.log(user);
   }, [token]);
   const refetchUser = async () => {
     await getUser().then((d) => {

@@ -94,7 +94,6 @@ export const ServiceForm = ({
     },
   });
   const onSubmit = (values: ServiceType) => {
-    console.log(values);
     if (values.area) {
       submit({
         area: values.area,

@@ -11,7 +11,6 @@ export const loginUser = async (
 ) => {
   const cookie = await cookies();
   const token = cookie.get("auth-token")?.value;
-  console.log(token);
   if (!token) {
     try {
       const res = await fetch(`${api}${AuthApi.login}`, {
@@ -53,10 +52,8 @@ export const getUsers = async () => {
           charset: "UTF-8",
         },
       }).then((d) => d.json());
-      console.log(res);
       return res;
     } catch (error) {
-      console.log(error);
     }
   }
 };
@@ -65,7 +62,7 @@ export async function logOut() {
   try {
     const cookie = await cookies();
     cookie.delete("auth-token");
-    console.log("Logout request succeeded:");
+    // console.log("Logout request succeeded:");
     // return res;
   } catch (error) {
     // console.error("Logout error:", error);

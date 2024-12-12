@@ -150,7 +150,6 @@ export const saveUser = async (
     }).then((d) => d.json());
     return res;
   } catch (error) {
-    console.log(error);
     return {
       succeed: false,
       message: "Алдаа гарлаа",

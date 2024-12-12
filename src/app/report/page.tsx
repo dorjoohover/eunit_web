@@ -74,7 +74,6 @@ const Page = () => {
         });
       setLoading(false);
     } catch (error) {
-      console.log(error);
       setLoading(false);
     }
   };
@@ -419,7 +418,6 @@ const Page = () => {
                     const index = districts.findIndex(
                       (a) => a.id == district.id
                     );
-                    console.log(index);
                     nextStep(index);
                   }}
                 />

@@ -15,13 +15,12 @@ const Template = ({ children }: { children: ReactNode }) => {
   const handler = async () => {
     try {
       const { data: dataUser } = await getUserData();
-      console.log(dataUser);
       if ((dataUser == undefined || dataUser == null) && user == undefined) {
         if (data?.user != undefined) {
           const res = await loginUser(
-            data.user.email!,
-            data.user.image!,
-            data.user.name!
+            data?.user.email!,
+            data?.user.image!,
+            data?.user.name!
           );
           if (res) setUser(res);
         }

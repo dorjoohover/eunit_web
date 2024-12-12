@@ -38,7 +38,6 @@ export const sendRequest = async (
         Authorization: `Bearer ${token?.value ?? ""}`,
       },
     }).then((d) => d.json());
-    console.log(res);
     return {
       data: res.payload,
       token: true,
@@ -107,7 +106,6 @@ export const getRequestAllUser = async () => {
         Authorization: `Bearer ${token?.value ?? ""}`,
       },
     }).then((d) => d.json());
-    console.log(res);
     return {
       data: res.payload,
       token: true,

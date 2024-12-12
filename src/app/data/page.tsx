@@ -126,7 +126,6 @@ const Page = () => {
     // setLoading(true);
     if (id == null) return;
     const res = await getRequestResult(+id);
-    console.log(res);
     if (!res?.token) {
       // router.push("/login");
       return;
@@ -193,11 +192,9 @@ const Page = () => {
         setLoading(false);
       } else {
         setLoading(false);
-        console.log("#==================Export Error");
       }
     } catch (error: any) {
       setLoading(false);
-      console.log("#==================Export Error", error.message);
     }
   };
 

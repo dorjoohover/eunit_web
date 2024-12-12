@@ -46,7 +46,6 @@ export async function imageUploader(images: FormData): Promise<{
 
     return res;
   } catch (error) {
-    console.log(error);
     return null;
   }
 }

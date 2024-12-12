@@ -97,7 +97,7 @@ const Page = () => {
           </Flex>
           <form
             onSubmit={form.onSubmit((values) => {
-              console.log(values);
+              // console.log(values);
             })}
           >
             <TextInput
