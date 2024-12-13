@@ -341,14 +341,14 @@ const Page = () => {
               mt={24}
               mb={32}
               fz={18}
-              highlight={["урамшуулал", "10,000 E-unit"]}
+              highlight={["урамшуулал", "20,000 E-unit"]}
               highlightStyles={{
                 background: Colors.main,
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
               }}
             >
-              Шинэ хэрэглэгчийн урамшуулал бүхий 10,000 E-unit ашиглан энэхүү
+              Шинэ хэрэглэгчийн урамшуулал бүхий 20,000 E-unit ашиглан энэхүү
               үйлчилгээг авах боломжтой.
             </Highlight>
 
