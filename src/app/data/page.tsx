@@ -523,7 +523,7 @@ const Page = () => {
             >
               <Flex align={"center"}>
                 <Text c={"white"} fz={24}>
-                  {money(`${(data?.limit ?? 0) * 200}`)}
+                  {money(`${(data?.limit ?? 0) * 100}`)}
                 </Text>
                 <EunitIcon />
                 <Text c={"white"} fz={24}>
