@@ -13,7 +13,7 @@ import {
   TextInput,
   Title,
 } from "@mantine/core";
-import { useFetch } from "@mantine/hooks";
+import { useFetch, useMediaQuery } from "@mantine/hooks";
 import Image from "next/image";
 import { ReportList, ReportTitle } from "./shared";
 import { useForm } from "@mantine/form";
@@ -39,17 +39,27 @@ export const ChooseDistrict = ({
         borderBottomWidth: 1,
         borderBottomStyle: "solid",
       }}
-      px={56}
+      px={{
+        md: 56,
+        sm: 40,
+        base: 20,
+      }}
       py={27}
-      // w={'100%'}
+      w={"100%"}
       align={"center"}
       className="cursor-pointer"
       onClick={onClick}
     >
       <Flex w={"12vw"}>
         <Box
-          h={92}
-          w={96}
+          h={{
+            sm: 92,
+            base: 56,
+          }}
+          w={{
+            sm: 96,
+            base: 58,
+          }}
           className="flex justify-center relative items-center"
         >
           <Image
@@ -109,14 +119,27 @@ export const ServiceForm = ({
       });
     }
   };
+  const matches = useMediaQuery("(min-width: 36em)");
+
   return (
-    <form onSubmit={form.onSubmit((values) => onSubmit(values))}>
-      <Flex w={"100%"} columnGap={"50px"}>
+    <form
+      onSubmit={form.onSubmit((values) => onSubmit(values))}
+      className="relative"
+    >
+      <Flex
+        w={"100%"}
+        direction={{
+          sm: "row",
+          base: "column",
+        }}
+        columnGap={"50px"}
+      >
         <Box flex={1}>
           {Object.keys(form.values).map((key) => {
             let k = key as keyof typeof ServiceFormValues;
             return k == "no" ? (
               <TextInput
+                __size={matches ? "24px" : "16px"}
                 mb={20}
                 error={ServiceFormValues[k].message}
                 label={ServiceFormValues[k].label}
@@ -124,6 +147,7 @@ export const ServiceForm = ({
                 c={"grey"}
                 {...form.getInputProps(key)}
                 key={key}
+                fz={matches ? 21 : 15}
                 variant="bottom"
                 mr={50}
                 w={"100%"}
@@ -131,7 +155,9 @@ export const ServiceForm = ({
               />
             ) : (
               <NumberInput
+                __size={matches ? "24px" : "16px"}
                 mb={20}
+                fz={matches ? 21 : 15}
                 error={ServiceFormValues[k].message}
                 label={ServiceFormValues[k].label}
                 placeholder={ServiceFormValues[k].description}
@@ -147,7 +173,13 @@ export const ServiceForm = ({
           })}
         </Box>
         <Box flex={1} p={28} bg={"white"} style={{ borderRadius: 30 }}>
-          <Text mb={20} fz={20}>
+          <Text
+            mb={20}
+            fz={{
+              md: 20,
+              base: 16,
+            }}
+          >
             Жишиг
           </Text>
           {Object.keys(form.values).map((key) => {
@@ -162,16 +194,46 @@ export const ServiceForm = ({
           })}
         </Box>
       </Flex>
-      <Flex w={"100%"} justify={"center"} mt={32}>
+      <Flex
+        w={"100%"}
+        justify={"center"}
+        mt={32}
+        pos={{
+          sm: "relative",
+          base: "fixed",
+        }}
+        bottom={{
+          sm: "0",
+          base: "60px",
+        }}
+        left={{
+          sm: "0",
+          base: "20px",
+        }}
+        right={{
+          sm: "0",
+          base: "40px",
+        }}
+      >
         <Button
+          w={{
+            sm: "auto",
+            base: "100%",
+          }}
           mb={32}
           c={"white"}
           px={30}
-          py={8}
+          py={{
+            sm: 8,
+            base: 16,
+          }}
           h={"auto"}
           bg={"main"}
-          radius={20}
-          fz={20}
+          radius={matches ? 20 : 5}
+          fz={{
+            sm: 20,
+            base: 16,
+          }}
           type="submit"
         >
           Боловсруулах
@@ -190,13 +252,33 @@ const ServiceFormExample = ({
 }) => {
   return (
     <Box w={"100%"}>
-      <Text fz={20} mb={8}>
+      <Text
+        fz={{
+          md: 20,
+          base: 16,
+        }}
+        mb={8}
+      >
         {name}
       </Text>
-      <Text fz={16} mb={8}>
+      <Text
+        fz={{
+          md: 16,
+          base: 14,
+        }}
+        mb={8}
+      >
         {value}
       </Text>
-      <Box h={1} mb={16} bg={"black"} w={"100%"} />
+      <Box
+        h={1}
+        mb={{
+          md: 16,
+          base: 14,
+        }}
+        bg={"black"}
+        w={"100%"}
+      />
     </Box>
   );
 };

@@ -25,7 +25,7 @@ import {
   Text,
   TextInput,
 } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
+import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 import { IconSearch } from "@tabler/icons-react";
 import Image from "next/image";
@@ -186,16 +186,46 @@ const Page = () => {
           )[0]?.name,
       };
     }
-    return { text: "ТАНЫ", text1: "үнэ цэн", text2: "хөрөнгө" };
+    return {
+      text: "ТАНЫ",
+      text1: "үнэ цэн",
+      text2: "хөрөнгө",
+      fz: {
+        md: 120,
+        sm: 100,
+        base: 60,
+      },
+    };
   };
+  const matches = useMediaQuery("(min-width: 36em)");
 
   return (
     <Box>
       <ReportTitle {...reportTitleText()}>
         {district == null && (
-          <Flex pb={40} w={"100%"} justify={"space-between"}>
+          <Flex
+            pb={{
+              sm: 40,
+              base: 30,
+            }}
+            w={"100%"}
+            pr={{
+              base: 16,
+              md: 0,
+            }}
+            direction={{
+              base: "row",
+            }}
+            justify={"space-between"}
+          >
             <Flex align={"center"}>
-              <Text fz={30} fw={500}>
+              <Text
+                fz={{
+                  base: 24,
+                  sm: 30,
+                }}
+                fw={500}
+              >
                 Дүүргийн мэдээлэл
               </Text>
             </Flex>
@@ -204,11 +234,17 @@ const Page = () => {
                 radius={32}
                 c={isList ? "white" : "black"}
                 bg={isList ? "main" : "transparent"}
-                fw={"bold"}
+                fw={{
+                  base: 500,
+                  sm: "bold",
+                }}
                 py={10}
                 px={30}
                 h={"auto"}
-                fz={21}
+                fz={{
+                  base: 16,
+                  sm: 21,
+                }}
                 style={{
                   border: `1px solid ${Colors.headBlue}`,
                 }}
@@ -242,7 +278,15 @@ const Page = () => {
           </Flex>
         )}
         {district && location == null && (
-          <Flex pb={40} w={"100%"} justify={"space-between"}>
+          <Flex
+            pb={40}
+            w={"100%"}
+            justify={"space-between"}
+            direction={{
+              md: "row",
+              base: "column",
+            }}
+          >
             <Flex align={"center"}>
               <TextInput
                 c={"deepMose"}
@@ -251,15 +295,35 @@ const Page = () => {
                 style={{
                   color: "deepMose",
                 }}
+                w={{
+                  base: "100%",
+                  sm: "auto",
+                }}
                 placeholder={"Хайлт"}
                 onChange={(e) => filter(e.target.value)}
                 rightSection={<IconSearch color={Colors.deepMose} />}
               />
-              <Text td={"underline"} fz={21}>
+              <Text
+                td={"underline"}
+                style={{
+                  textWrap: "nowrap",
+                }}
+                fz={21}
+                mr={{
+                  md: 0,
+                  base: 16,
+                }}
+              >
                 {filteredData?.length} result
               </Text>
             </Flex>
-            <Flex w={"auto"}>
+            <Flex
+              w={"auto"}
+              justify={{
+                sm: "start",
+                base: "space-between",
+              }}
+            >
               <Button
                 radius={32}
                 c={town ? "white" : "black"}
@@ -271,7 +335,7 @@ const Page = () => {
                 style={{
                   border: `1px solid ${Colors.headBlue}`,
                 }}
-                fz={21}
+                fz={{ md: 21, base: 16 }}
                 onClick={() => {
                   getTown(Constant.TOWN);
                   setTown(true);
@@ -284,7 +348,7 @@ const Page = () => {
                 c={!town ? "white" : "black"}
                 bg={!town ? "main" : "transparent"}
                 fw={"bold"}
-                fz={21}
+                fz={{ md: 21, base: 16 }}
                 h={"auto"}
                 py={10}
                 px={30}
@@ -303,7 +367,17 @@ const Page = () => {
         )}
         {district && location && (
           <Box>
-            <Text fz={30} mb={100}>
+            <Text
+              fz={{
+                md: 30,
+                base: 21,
+              }}
+              mb={{
+                md: 100,
+                sm: 60,
+                base: 30,
+              }}
+            >
               Шаардлагатай мэдээлэл бөглөх хэсэг
             </Text>
 
@@ -320,7 +394,13 @@ const Page = () => {
           </Box>
         )}
       </ReportTitle>
-      <Modal.Root opened={opened} centered size={"lg"} onClose={close}>
+      <Modal.Root
+        opened={opened}
+        centered
+        fullScreen={!matches}
+        size={matches ? "lg" : "xl"}
+        onClose={close}
+      >
         <Modal.Overlay />
 
         <Modal.Content radius={20} bg={"transparent"}>
@@ -330,7 +410,14 @@ const Page = () => {
             </Modal.Title>
             <Modal.CloseButton />
           </Modal.Header>
-          <Box bg={"white"} px={"10%"} pt={20}>
+          <Box
+            bg={"white"}
+            px={{
+              sm: "10%",
+              base: 16,
+            }}
+            pt={20}
+          >
             <WalletCard
               user={user}
               onClick={() => {
@@ -359,13 +446,14 @@ const Page = () => {
               py={16}
               h={"auto"}
               mb={40}
+              disabled={loading}
               onClick={() => {
                 if (!loading) submit();
               }}
             >
               {loading ? (
                 <Center>
-                  <Loader c={"white"} />
+                  <Loader color={"white"} />
                 </Center>
               ) : (
                 <Flex align={"center"}>

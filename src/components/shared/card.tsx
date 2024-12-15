@@ -36,6 +36,7 @@ export const WalletCard = ({
         background: "linear-gradient(#9C2CF3 0%, #3A49F9 100%)",
         overflow: "hidden",
       }}
+      w={"100%"}
       px={32}
       py={28}
       pos={"relative"}

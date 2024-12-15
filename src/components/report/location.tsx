@@ -26,7 +26,11 @@ export const ChooseLocation = ({
         borderBottomWidth: 1,
         borderBottomStyle: "solid",
       }}
-      px={56}
+      px={{
+        md: 56,
+        sm: 40,
+        base: 20,
+      }}
       className="cursor-pointer"
       onClick={onClick}
       py={27}

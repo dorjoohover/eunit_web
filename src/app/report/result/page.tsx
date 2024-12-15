@@ -20,7 +20,7 @@ import {
 import { ServiceCard } from "@/components/shared/card";
 import { LocationModel } from "@/models/location.model";
 import { Assets } from "@/utils/assets";
-import { money, parseDate } from "@/utils/functions";
+import { formatNumber, money, parseDate } from "@/utils/functions";
 import { ConstantApi } from "@/utils/routes";
 import {
   defaultMapCenter,
@@ -29,7 +29,7 @@ import {
   defaultMapZoom,
 } from "@/utils/values";
 import { Box, Button, Center, Flex, Text } from "@mantine/core";
-import { useFetch } from "@mantine/hooks";
+import { useFetch, useMediaQuery } from "@mantine/hooks";
 import { GoogleMap, Marker } from "@react-google-maps/api";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -117,12 +117,43 @@ const Page = () => {
     <Box>
       <ReportTitle text={data?.location.town ?? ""}>
         <Box>
-          <Text fz={30} pb={40}>
-            Зах зээлийн үнэлгээ
-          </Text>
           <Flex
             style={{
               borderBottom: `1px solid ${Colors.deepMose20}`,
+            }}
+            mb={40}
+            pb={10}
+          >
+            <Text
+              fz={{
+                sm: 30,
+                base: 16,
+              }}
+              fw={{
+                sm: "500",
+                base: "700",
+              }}
+            >
+              Зах зээлийн үнэлгээ
+            </Text>
+            {id && (
+              <Text
+                fz={{
+                  sm: 30,
+                  base: 16,
+                }}
+              >
+                #{formatNumber(id)}
+              </Text>
+            )}
+          </Flex>
+          <Flex
+            style={{
+              borderBottom: `1px solid ${Colors.deepMose20}`,
+            }}
+            direction={{
+              md: "row",
+              base: "column",
             }}
             pb={12}
             justify={"start"}
@@ -141,7 +172,13 @@ const Page = () => {
             />
           </Flex>
 
-          <Spacer size={40} />
+          <Spacer
+            size={{
+              md: 40,
+              sm: 30,
+              base: 20,
+            }}
+          />
           <InlineText
             text="Таны сонгосон орон сууцны м.кв-н үнэ цэн:"
             label={`    ${money(`${data?.data.min}`, "₮ ")}-${money(
@@ -149,14 +186,26 @@ const Page = () => {
               "₮ "
             )}`}
           />
-          <Spacer size={40} />
+          <Spacer
+            size={{
+              md: 40,
+              sm: 30,
+              base: 20,
+            }}
+          />
           <InlineText
             text="Таны орон сууцны м.кв тохиромжит үнэ:"
-            label={` ${money(`${data?.data.avg}`, "₮ ")}`}
+            label={` ${money(`${data?.data.avg ?? 0}`, "₮ ")}`}
             labelProps={{ c: "main" }}
           />
 
-          <Spacer size={40} />
+          <Spacer
+            size={{
+              md: 40,
+              sm: 30,
+              base: 20,
+            }}
+          />
           <InlineText
             label={` ${money(
               `${Math.round(
@@ -172,8 +221,20 @@ const Page = () => {
 
           <Box w={150} h={1} bg={"deepMose20"} mb={24} mt={50} />
           <UserWidget user={user} />
-          <Spacer size={100} />
-          <Text c={"headBlue"} fz={20}>
+          <Spacer
+            size={{
+              md: 100,
+              sm: 60,
+              base: 40,
+            }}
+          />
+          <Text
+            c={"headBlue"}
+            fz={{
+              sm: 20,
+              base: 16,
+            }}
+          >
             Таны {data?.location.city} хот, {data?.location.district} дүүрэг,{" "}
             {data?.location.khoroo}
             {data?.location.khoroo && "-р хороо,"}{" "}
@@ -196,22 +257,44 @@ const Page = () => {
 
           <Spacer size={24} />
           <ResultWidget title={"Макро мэдээлэл"} props={{ w: "100%" }}>
-            <Text fz={24} mt={40}>
+            <Text
+              fz={{
+                md: 24,
+                sm: 20,
+                base: 16,
+              }}
+              mt={40}
+            >
               Монгол банкны орон сууцны үнийн индекс
             </Text>
-            <Text c={"grey"} fz={20} mb={40}>
+            <Text
+              c={"grey"}
+              fz={{
+                md: 20,
+                sm: 16,
+                base: 14,
+              }}
+              mb={40}
+            >
               Орон сууцны борлуулалт болон түрээсийн үнийн чиг хандлага, сул
               орон тоо, хүн амын өсөлт хөгжил
             </Text>
             <Box
               w={"100%"}
-              style={{
-                border: `1px solid ${Colors.mainGrey}`,
+              className="makro"
+              px={{
+                md: 20,
+                base: 0,
               }}
-              px={20}
               py={12}
             >
-              <Flex columnGap={40}>
+              <Flex
+                columnGap={40}
+                direction={{
+                  md: "row",
+                  base: "column",
+                }}
+              >
                 <AnalyzeWidget
                   border
                   label="Сүүлийн 1 жилээр"
@@ -220,7 +303,13 @@ const Page = () => {
                 />
                 <Box flex={1} />
               </Flex>
-              <Flex columnGap={40}>
+              <Flex
+                columnGap={40}
+                direction={{
+                  md: "row",
+                  base: "column",
+                }}
+              >
                 <AnalyzeWidget
                   label="Сүүлийн 1 жилээр"
                   text="Хүн амын өсөлт хөгжил"
@@ -261,7 +350,12 @@ const Page = () => {
             </GoogleMap>
           </ResultWidget>
         </Box>
-        <Spacer size={32} />
+        <Spacer
+          size={{
+            md: 32,
+            base: 16,
+          }}
+        />
         {/* 
         <Flex w={"100%"} justify={"center"}>
           <Button
@@ -309,7 +403,13 @@ const Page = () => {
             text="оРОН СУУЦНЫ ДАТА ТАТАХ"
           />
         </Flex> */}
-        <Spacer size={80} />
+        <Spacer
+          size={{
+            md: 80,
+            sm: 60,
+            base: 40,
+          }}
+        />
         <Button
           bg={"main"}
           py={8}

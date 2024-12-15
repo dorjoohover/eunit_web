@@ -10,6 +10,7 @@ import {
   Flex,
   Group,
   Pagination,
+  ScrollArea,
   Table,
   Text,
 } from "@mantine/core";
@@ -78,28 +79,30 @@ export const ServiceHistory = () => {
   });
   return (
     <Box>
-      <Table stickyHeader mt={30} stickyHeaderOffset={60}>
-        <Table.Thead bg={"lightIvory"}>
-          <Table.Tr>
-            <Table.Th ta={"center"} c={"headBlue"} fw={"normal"}>
-              Огноо
-            </Table.Th>
-            <Table.Th ta={"center"} c={"headBlue"} fw={"normal"}>
-              Төрөл
-            </Table.Th>
-            <Table.Th ta={"center"} c={"headBlue"} fw={"normal"}>
-              Хаяг байршил
-            </Table.Th>
-            <Table.Th ta={"center"} c={"headBlue"} fw={"normal"}>
-              Хэмжээ
-            </Table.Th>
-            <Table.Th ta={"center"} c={"headBlue"} fw={"normal"}>
-              Үйлдэл
-            </Table.Th>
-          </Table.Tr>
-        </Table.Thead>
-        <Table.Tbody>{rows}</Table.Tbody>
-      </Table>
+      <ScrollArea scrollbars="x">
+        <Table stickyHeader mt={30} stickyHeaderOffset={60}>
+          <Table.Thead bg={"lightIvory"}>
+            <Table.Tr>
+              <Table.Th ta={"center"} c={"headBlue"} fw={"normal"}>
+                Огноо
+              </Table.Th>
+              <Table.Th ta={"center"} c={"headBlue"} fw={"normal"}>
+                Төрөл
+              </Table.Th>
+              <Table.Th ta={"center"} c={"headBlue"} fw={"normal"}>
+                Хаяг байршил
+              </Table.Th>
+              <Table.Th ta={"center"} c={"headBlue"} fw={"normal"}>
+                Хэмжээ
+              </Table.Th>
+              <Table.Th ta={"center"} c={"headBlue"} fw={"normal"}>
+                Үйлдэл
+              </Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>{rows}</Table.Tbody>
+        </Table>
+      </ScrollArea>
       <Flex justify={"end"} w={"100%"} mt={20} pb={40}>
         <Pagination.Root
           total={Math.ceil(total / limit)}

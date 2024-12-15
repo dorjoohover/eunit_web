@@ -62,18 +62,30 @@ const Page = () => {
     <Box>
       <ReportTitle text={"Хэрэглэгч"}>
         <Tabs defaultValue="profile" color="main">
-          <Tabs.List>
-            <Tabs.Tab value="profile" fz={30}>
+          <Tabs.List grow>
+            <Tabs.Tab
+              value="profile"
+              fz={{
+                md: 30,
+                base: 16,
+              }}
+            >
               Хэрэглэгчийн хувийн мэдээллийн хэсэг
             </Tabs.Tab>
-            <Tabs.Tab value="history" fz={30}>
+            <Tabs.Tab
+              value="history"
+              fz={{
+                md: 30,
+                base: 16,
+              }}
+            >
               Үйлчилгээний түүх
             </Tabs.Tab>
           </Tabs.List>
 
           <Tabs.Panel value="profile">
             <Box>
-              <Text fz={30} pb={40}></Text>
+              <Text pb={40}></Text>
               <form
                 onSubmit={form.onSubmit((values) => {
                   if (edit) {
@@ -102,10 +114,13 @@ const Page = () => {
                 <Button
                   type={"submit"}
                   fz={20}
-                  bg={"main"}
+                  bg={edit ? "#546274" : "main"}
                   py={16}
                   h={"auto"}
-                  w={200}
+                  w={{
+                    sm: 200,
+                    base: "100%",
+                  }}
                   my={32}
                 >
                   {edit ? " Хадгалах" : "Засах"}
@@ -147,24 +162,47 @@ const ProfileSide = ({
       align={"center"}
       w={"auto"}
     >
-      <Text c={"headBlue"} miw={200} fz={24} lh={3}>
+      <Text
+        c={"headBlue"}
+        miw={200}
+        fz={{
+          md: 24,
+          base: 16,
+        }}
+        lh={3}
+      >
         {title}
       </Text>
       {edit ? (
-        <TextInput
-          {...form.getInputProps(k)}
-          key={form.key(k)}
-          w={"100%"}
-          maw={360}
-          radius={10}
-          pt={"5px"}
-          pb={"5px"}
-          fz={"24px"}
-          c={"grey"}
-          color="#546274"
-        />
+        <Box>
+          <TextInput
+            {...form.getInputProps(k)}
+            key={form.key(k)}
+            w={"100%"}
+            maw={360}
+            radius={10}
+            pt={{ md: "5px", base: "0px" }}
+            pb={{ md: "5px", base: "0px" }}
+            fz={{
+              md: "24px",
+              base: "16px",
+            }}
+            lh={1.1}
+            c={"grey"}
+            color="#546274"
+          />
+        </Box>
       ) : (
-        <Text fz={24} c={"grey"} lh={3}>
+        <Text
+          c={"grey"}
+          fz={{
+            md: 24,
+            base: 16,
+          }}
+          lh={{
+            md: 3,
+          }}
+        >
           {text}
         </Text>
       )}

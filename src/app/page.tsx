@@ -19,7 +19,7 @@ import {
 import { Assets, IconAssets, MarkerAssests, video } from "@/utils/assets";
 import { useFetch } from "@mantine/hooks";
 import { api } from "@/utils/routes";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 export default function Home() {
   const { data, loading } = useFetch<{
     payload: { avg: number; name: string; count: number }[];
@@ -66,12 +66,19 @@ export default function Home() {
       position: { lat: 47.771730825448216, lng: 107.25424468977218 },
     },
   ];
-  const vidRef = useRef<HTMLVideoElement | null>(null);
+  const [showVideo, setShowVideo] = useState(false);
   useEffect(() => {
-    if (vidRef.current) {
-      vidRef.current.play();
+    const hasViewedVideo = localStorage.getItem("hasViewedVideo");
+    if (!hasViewedVideo) {
+      setShowVideo(true);
     }
   }, []);
+
+  const handleVideoEnd = () => {
+    localStorage.setItem("hasViewedVideo", "true");
+    setShowVideo(false);
+  };
+
   return (
     <div
       className={`bg-[${Colors.lightIvory}] relative  top-[60px] left-[60px]`}
@@ -79,21 +86,20 @@ export default function Home() {
         width: "calc(100vw - 70px)",
       }}
     >
+      {showVideo && (
+        <div className="video-wrapper">
+          <video
+            src={video}
+            autoPlay
+            muted
+            playsInline
+            className="video"
+            onEnded={handleVideoEnd}
+          />
+        </div>
+      )}
       <ReportWrapper>
         <Box pb={80} mx={"auto"} maw={1100} mb={100}>
-          <Box maw={1100} px={20} my={60} mx={"auto"}>
-            <video
-              autoPlay={true}
-              style={{
-                borderRadius: 20,
-              }}
-              ref={vidRef}
-              loop={true}
-            >
-              <source src={video} type="video/mp4" />
-            </video>
-          </Box>
-
           <Title
             c={"headBlue"}
             maw={900}

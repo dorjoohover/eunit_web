@@ -25,7 +25,7 @@ import {
   TextInput,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { useCounter, useDisclosure } from "@mantine/hooks";
+import { useCounter, useDisclosure, useMediaQuery } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 import { useEffect, useState } from "react";
 
@@ -126,9 +126,10 @@ const Page = () => {
   useEffect(() => {
     getHistory();
   }, []);
+  const matches = useMediaQuery("(min-width: 50em)");
 
   return (
-    <Box pl={60} pt={60} pos={"relative"}>
+    <Box pl={matches ? 60 : 0} pt={60} pos={"relative"}>
       <ReportTitle text={"Хэтэвч"}>
         <Modal.Root opened={opened} centered size={"xl"} onClose={close}>
           <Modal.Overlay />
@@ -137,11 +138,33 @@ const Page = () => {
           </Modal.Content>
         </Modal.Root>
         <Box>
-          <Text fz={30} pb={40}>
+          <Text
+            fz={{
+              md: 30,
+              base: 16,
+            }}
+            pb={{
+              md: 40,
+              sm: 30,
+              base: 20,
+            }}
+          >
             Хэтэвч цэнэглэх болон e-unit оноог шилжүүлэг хийх хэсэг
           </Text>
-          <Flex w={"100%"} gap={50} mb={32} justify={"space-between"}>
-            <Box flex={1} maw={500}>
+          <Flex
+            w={"100%"}
+            gap={{
+              md: 50,
+              base: 0,
+            }}
+            direction={{
+              md: "row",
+              base: "column",
+            }}
+            mb={32}
+            justify={"space-between"}
+          >
+            <Box flex={1} w={"100%"} maw={500}>
               <WalletCard onClick={open} user={user} />
             </Box>
             <Box flex={1} maw={500}>

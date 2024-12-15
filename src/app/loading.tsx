@@ -1,14 +1,23 @@
 import { STYLES } from "@/styles";
 import { Assets } from "@/utils/assets";
 import { mergeNames } from "@/utils/functions";
-import { Center, Loader } from "@mantine/core";
+import { Flex, Center, Loader } from "@mantine/core";
 import { motion } from "framer-motion";
 import Image from "next/image";
 export const Loading = () => {
   return (
-    <Center pos={"absolute"} inset={0}>
-      <Loader />
-    </Center>
+    <Flex
+      align={"center"}
+      justify={"center"}
+      pos={"fixed"}
+      style={{
+        zIndex: 1000,
+      }}
+      bg={"main"}
+      inset={0}
+    >
+      <Loader color="white" />
+    </Flex>
     // <motion.div
     //   className="fixed top-0 left-0 z-50 w-screen h-screen bg-[#001529e6] lds-ellipsis"
     //   initial={{ opacity: 0 }}

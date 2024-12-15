@@ -308,26 +308,43 @@ const Page = () => {
 
   return (
     <Box>
-      <ReportTitle text={"дата мэдээлэл"} fz={80}>
-        <Flex w={"100%"} gap={40} h={"100%"} align={"center"}>
-          <Select
-            w={200}
-            my={5}
-            variant="rounded"
-            p={"2px"}
-            onChange={(e) => updateDistrict(e)}
-            data={districts.map((district) => {
-              return {
-                label: district.name,
-                value: district.id,
-              };
-            })}
-            __size="20px"
-            label={DataDownloadValue["district"].label}
-            placeholder={DataDownloadValue["district"].pl}
-            value={form.district}
-          />
-          {location.length > 0 && (
+      <ReportTitle
+        text={"дата мэдээлэл"}
+        fz={{
+          md: 80,
+          sm: 64,
+          base: 40,
+        }}
+      >
+        <Flex
+          w={"100%"}
+          direction={{
+            md: "row",
+            base: "column",
+          }}
+          gap={40}
+          h={"100%"}
+          align={"center"}
+        >
+          <Flex>
+            <Select
+              w={200}
+              my={5}
+              variant="rounded"
+              p={"2px"}
+              onChange={(e) => updateDistrict(e)}
+              data={districts.map((district) => {
+                return {
+                  label: district.name,
+                  value: district.id,
+                };
+              })}
+              __size="20px"
+              label={DataDownloadValue["district"].label}
+              placeholder={DataDownloadValue["district"].pl}
+              value={form.district}
+            />
+
             <Select
               value={form.town}
               w={200}
@@ -340,7 +357,7 @@ const Page = () => {
               __size="20px"
               withScrollArea={false}
               styles={{ dropdown: { maxHeight: 200, overflowY: "auto" } }}
-              data={location.map((l) => {
+              data={location?.map((l) => {
                 return {
                   label: l.town!,
                   value: `${l.id}`,
@@ -349,64 +366,69 @@ const Page = () => {
               label={DataDownloadValue["town"].label}
               placeholder={DataDownloadValue["town"].pl}
             />
-          )}
+            <Select
+              w={200}
+              my={5}
+              onChange={(e) => {
+                if (e != null) setForm((prev) => ({ ...prev, area: e }));
+              }}
+              value={form.area}
+              variant="rounded"
+              p={"2px"}
+              __size="20px"
+              withScrollArea={false}
+              styles={{ dropdown: { maxHeight: 200, overflowY: "auto" } }}
+              data={[
+                {
+                  label: "80м.кв-с доош",
+                  value: `80`,
+                },
+                {
+                  label: "80м.кв-с дээш",
+                  value: `81`,
+                },
+                {
+                  label: "Бүгд",
+                  value: `0`,
+                },
+              ]}
+              label={DataDownloadValue["area"].label}
+              placeholder={DataDownloadValue["area"].pl}
+            />
+          </Flex>
 
-          <Select
-            w={200}
-            my={5}
-            onChange={(e) => {
-              if (e != null) setForm((prev) => ({ ...prev, area: e }));
-            }}
-            value={form.area}
-            variant="rounded"
-            p={"2px"}
-            __size="20px"
-            withScrollArea={false}
-            styles={{ dropdown: { maxHeight: 200, overflowY: "auto" } }}
-            data={[
-              {
-                label: "80м.кв-с доош",
-                value: `80`,
-              },
-              {
-                label: "80м.кв-с дээш",
-                value: `81`,
-              },
-              {
-                label: "Бүгд",
-                value: `0`,
-              },
-            ]}
-            label={DataDownloadValue["area"].label}
-            placeholder={DataDownloadValue["area"].pl}
-          />
-
-          <DatePickerInput
-            rightSection={icon}
-            type="range"
-            __size="20px"
-            value={form.date}
-            valueFormat="YYYY-MM-DD"
-            p={"2px"}
-            maxDate={new Date()}
-            onChange={(e) => {
-              setForm((prev) => ({ ...prev, date: e }));
-            }}
-            label={DataDownloadValue["date"].label}
-          />
-
-          <Button
-            onClick={() => {
-              submit();
-            }}
-            bg={"main"}
-            tt={"uppercase"}
-            px={40}
-            fz={20}
-            c={"white"}
-          >
-            Харах
-          </Button>
+          <Flex align={"center"}>
+            <DatePickerInput
+              rightSection={icon}
+              type="range"
+              __size="20px"
+              value={form.date}
+              valueFormat="YYYY-MM-DD"
+              p={"2px"}
+              maxDate={new Date()}
+              onChange={(e) => {
+                setForm((prev) => ({ ...prev, date: e }));
+              }}
+              label={DataDownloadValue["date"].label}
+            />
+            <Button
+              onClick={() => {
+                submit();
+              }}
+              w={{
+                md: "auto",
+                base: "100%",
+              }}
+              bg={"main"}
+              tt={"uppercase"}
+              px={40}
+              fz={20}
+              radius={5}
+              c={"white"}
+            >
+              Харах
+            </Button>
+          </Flex>
         </Flex>
         <Spacer size={80} />
         <Text c={"headBlue"} fz={16} fw={600}>

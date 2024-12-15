@@ -47,6 +47,10 @@ export const money = (value: string, currency = "") => {
     .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
 };
 
+export function formatNumber(num: string, length = 4) {
+  return num.toString().padStart(length, "0");
+}
+
 export const getSellType = (type: AdSellType | string) => {
   switch (type) {
     case "Зарах":

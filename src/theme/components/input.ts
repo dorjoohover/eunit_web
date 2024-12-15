@@ -21,6 +21,7 @@ export const inputs = {
             padding: props.p?.toString() ?? "8px 0px",
             margin: props.m?.toString() ?? "4px 0px",
             height: "auto",
+            fontSize: props.fz?.toString() ?? 21,
           },
           label: {
             color: Colors.black,

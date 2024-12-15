@@ -1,25 +1,63 @@
 import { IconAssets } from "@/utils/assets";
 import { montserratAlternates } from "@/utils/fonts";
-import { Box, Button, Flex, Text, TextProps, Title } from "@mantine/core";
+import {
+  Box,
+  Button,
+  Flex,
+  MantineFontSize,
+  MantineSize,
+  MantineStyleProps,
+  StyleProp,
+  Text,
+  TextProps,
+  Title,
+} from "@mantine/core";
 import Image from "next/image";
 import { ReactNode } from "react";
 import { exo2 } from "@/utils/fonts";
+import { useMediaQuery } from "@mantine/hooks";
 export const ReportTitle = ({
   text,
   children,
   text1,
   text2,
-  fz = 64,
+  fz = {
+    md: 64,
+    sm: 50,
+    base: 40,
+  },
 }: {
   text: string;
   text1?: string;
   text2?: string;
-  fz?: number;
+  fz?: StyleProp<
+    MantineFontSize | `h${1 | 2 | 3 | 4 | 5 | 6}` | number | (string & {})
+  >;
   children?: ReactNode;
 }) => {
   return (
-    <Box bg={"lightIvory"} px={56} pos={"relative"}>
-      <Flex align={"center"} pb={108} pt={80}>
+    <Box
+      bg={"lightIvory"}
+      px={{
+        md: 56,
+        sm: 32,
+        base: 16,
+      }}
+      pos={"relative"}
+    >
+      <Flex
+        align={"center"}
+        pb={{
+          md: 108,
+          sm: 64,
+          base: 32,
+        }}
+        pt={{
+          md: 80,
+          sm: 48,
+          base: 24,
+        }}
+      >
         <Title
           fz={fz}
           fw={"800"}
@@ -42,7 +80,11 @@ export const ReportTitle = ({
           rowGap={0}
         >
           <Title
-            fz={45}
+            fz={{
+              md: 45,
+              sm: 28,
+              base: 25,
+            }}
             fw={"800"}
             c={"midnightBlue"}
             style={{
@@ -54,7 +96,11 @@ export const ReportTitle = ({
             {text1}
           </Title>
           <Title
-            fz={45}
+            fz={{
+              md: 45,
+              sm: 28,
+              base: 25,
+            }}
             fw={"800"}
             c={"midnightBlue"}
             style={{
@@ -83,16 +129,36 @@ export const ReportList = ({
   high?: string;
   text: string;
 }) => {
+  const matches = useMediaQuery("(min-width: 50em)");
+
   return (
-    <Flex justify={"space-between"}>
-      <Box w={"55vw"}>
-        <Title fz={42} fw={"bolder"} c={"midnightBlue"}>
+    <Flex justify={"space-between"} w={"100%"}>
+      <Box
+        w={{
+          md: "55vw",
+          base: "auto",
+        }}
+      >
+        <Title
+          fz={{
+            md: 42,
+            base: 16,
+          }}
+          fw={{
+            md: "bolder",
+            base: 900,
+          }}
+          c={"midnightBlue"}
+        >
           {title}
         </Title>
         <Flex align={"center"} gap={0}>
           {high && (
             <Text
-              fz={20}
+              fz={{
+                md: 20,
+                base: 14,
+              }}
               tt={"uppercase"}
               className={montserratAlternates.className}
               fw="bold"
@@ -101,19 +167,50 @@ export const ReportList = ({
               {`${high} `}
             </Text>
           )}
-          <Text fz={18} className={montserratAlternates.className}>
-            {`${text}`}
-          </Text>
+          <Flex>
+            <Text
+              fz={{
+                md: 18,
+                base: 14,
+              }}
+              className={montserratAlternates.className}
+              style={{
+                textWrap: !matches ? "nowrap" : "wrap",
+              }}
+            >
+              {`${text}`}
+            </Text>
+            {!matches && (
+              <Flex align={"center"} columnGap={4} justify={"start"}>
+                <Box w={5} h={5} bg={"main"} />
+                <Text fz={14} fw={"bold"} tt={"uppercase"}>
+                  {label}
+                </Text>
+              </Flex>
+            )}
+          </Flex>
         </Flex>
       </Box>
-      <Flex w={"23vw"}>
-        <Flex align={"center"} justify={"start"} mr={69}>
-          <Box w={9} h={9} bg={"main"} />
-          <Text fz={18} fw={"bold"}>
-            {label}
-          </Text>
-        </Flex>
-        <Button unstyled>
+      <Flex
+        w={{
+          base: "auto",
+          md: "23vw",
+        }}
+      >
+        {matches && (
+          <Flex align={"center"} justify={"start"} mr={69}>
+            <Box w={9} h={9} bg={"main"} />
+            <Text fz={18} fw={"bold"}>
+              {label}
+            </Text>
+          </Flex>
+        )}
+        <Button
+          unstyled
+          style={{
+            paddingRight: matches ? 0 : 16,
+          }}
+        >
           <Box
             className="flex items-center relative justify-center"
             w={36}
@@ -143,13 +240,25 @@ export const IconText = ({
     <Box>
       <Flex align={"center"}>
         {child}
-        <Text fz={20}>{text}</Text>
+        <Text
+          fz={{
+            md: 20,
+            base: 14,
+            sm: 16,
+          }}
+        >
+          {text}
+        </Text>
       </Flex>
     </Box>
   );
 };
 
-export const Spacer = ({ size }: { size: number }) => {
+export const Spacer = ({
+  size,
+}: {
+  size: StyleProp<React.CSSProperties["height"]>;
+}) => {
   return <Box h={size} />;
 };
 
@@ -165,11 +274,37 @@ export const InlineText = ({
   labelProps?: TextProps;
 }) => {
   return (
-    <Flex align={"center"} gap={16}>
-      <Text fz={30} {...textProps}>
+    <Flex
+      align={{
+        md: "center",
+        base: "start",
+      }}
+      direction={{
+        md: "row",
+        base: "column",
+      }}
+      gap={{
+        sm: 16,
+        base: 8,
+      }}
+    >
+      <Text
+        fz={{
+          md: 30,
+          sm: 24,
+          base: 16,
+        }}
+        {...textProps}
+      >
         {text}
       </Text>
-      <Text fz={30} {...labelProps}>
+      <Text
+        fz={{
+          sm: 30,
+          base: 20,
+        }}
+        {...labelProps}
+      >
         {label}
       </Text>
     </Flex>

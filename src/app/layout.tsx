@@ -75,7 +75,6 @@ export default async function RootLayout({
               <AppWrapper token={token?.value}>
                 <Suspense fallback={<Loading />}>
                   {children}
-                  <SideBar />
                 </Suspense>
               </AppWrapper>
             </MapProviderWithSuspense>

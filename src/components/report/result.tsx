@@ -7,6 +7,7 @@ import { ReactNode } from "react";
 import { MdApartment, MdOutlineShowChart } from "react-icons/md";
 import { CiLocationOn } from "react-icons/ci";
 import { UserModel } from "@/models/user.model";
+import { useMediaQuery } from "@mantine/hooks";
 
 export const ReportResult = ({
   data,
@@ -148,7 +149,17 @@ export const ResultWidget = ({
   return (
     <Box>
       <Flex align={"center"} gap={32} pos={"relative"}>
-        <Text fw={"bold"} fz={56} lh={1} c={"headBlue"} className="text-nowrap">
+        <Text
+          fw={"bold"}
+          fz={{
+            md: 56,
+            sm: 36,
+            base: 24,
+          }}
+          lh={1}
+          c={"headBlue"}
+          className="text-nowrap"
+        >
           {title}
         </Text>
         <Box h={1} w={"100%"} top={"10px"} pos={"relative"} bg={"deepMose20"} />
@@ -162,22 +173,63 @@ export const ResultWidget = ({
 
 export const UserWidget = ({ user }: { user?: UserModel }) => {
   return (
-    <Flex gap={"50px"}>
+    <Flex columnGap={"50px"}>
       <Box>
-        <Text fz={20}>Овог нэр</Text>
-        <Text fz={20}>Цахим хаяг</Text>
-        {user?.phone && <Text fz={20}>Утасны дугаар</Text>}
+        <Text
+          fz={{
+            sm: 20,
+            base: 16,
+          }}
+        >
+          Овог нэр
+        </Text>
+        <Text
+          fz={{
+            sm: 20,
+            base: 16,
+          }}
+        >
+          Цахим хаяг
+        </Text>
+        {user?.phone && (
+          <Text
+            fz={{
+              sm: 20,
+              base: 16,
+            }}
+          >
+            Утасны дугаар
+          </Text>
+        )}
       </Box>
       <Box>
-        <Text c={"grey"} fz={20}>
+        <Text
+          c={"grey"}
+          fz={{
+            sm: 20,
+            base: 16,
+          }}
+        >
           {user?.name ?? "a"}
         </Text>
-        <Text c={"grey"} fz={20}>
+        <Text
+          c={"grey"}
+          fz={{
+            sm: 20,
+            base: 16,
+          }}
+        >
           {user?.email ?? "a"}
         </Text>
 
         {user?.phone && (
-          <Text c={"grey"} fz={20}>
+          <Text
+            c={"grey"}
+            fz={{
+              sm: 20,
+              base: 16,
+            }}
+          >
             {user?.phone ?? ""}
           </Text>
         )}
@@ -197,6 +249,7 @@ export const AnalyzeWidget = ({
   value: number;
   border?: boolean;
 }) => {
+  const matches = useMediaQuery("(min-width: 50em)");
   return (
     <Flex
       justify={"space-between"}
@@ -205,11 +258,17 @@ export const AnalyzeWidget = ({
       flex={1}
       py={20}
       style={{
-        borderBottom: border ? `1px solid ${Colors.mainGrey}` : "",
+        borderBottom: border || !matches ? `1px solid ${Colors.mainGrey}` : "",
       }}
     >
       <Box>
-        <Text fz={20} c={"grey"}>
+        <Text
+          fz={{
+            sm: 20,
+            base: 16,
+          }}
+          c={"grey"}
+        >
           {label}
         </Text>
         <Text className="text-nowrap" fz={24}>
