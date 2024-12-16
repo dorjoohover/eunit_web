@@ -42,6 +42,7 @@ import {
 } from "react-icons/io";
 import { MdApartment } from "react-icons/md";
 import jsPDF from "jspdf";
+import Link from "next/link";
 type ResultType = {
   data: {
     min?: number;
@@ -410,16 +411,17 @@ const Page = () => {
             base: 40,
           }}
         />
-        <Button
-          bg={"main"}
-          py={8}
-          h={"auto"}
-          radius={0}
-          leftSection={<IoIosArrowRoundBack color="white" size={24} />}
-          onClick={() => router.push("/report")}
-        >
-          Дахин лавлагаа авах
-        </Button>
+        <Link href={"/report"}>
+          <Button
+            bg={"main"}
+            py={8}
+            h={"auto"}
+            radius={0}
+            leftSection={<IoIosArrowRoundBack color="white" size={24} />}
+          >
+            Дахин лавлагаа авах
+          </Button>
+        </Link>
         <Spacer size={40} />
       </ReportTitle>
       <Box

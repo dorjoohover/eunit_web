@@ -19,6 +19,7 @@ import { useForm } from "@mantine/form";
 import { BiPhone } from "react-icons/bi";
 import { MdOutlinePersonSearch } from "react-icons/md";
 import { IoEye, IoEyeOff } from "react-icons/io5";
+import { useMediaQuery } from "@mantine/hooks";
 interface FormType {
   username?: string;
   password?: string;
@@ -35,9 +36,33 @@ const Page = () => {
       accept: false,
     },
   });
+  const matches = useMediaQuery("(min-width: 50em)");
+
   return (
-    <Flex pt={60} h={"calc(100vh - 60px)"} bg={"lightIvory"}>
-      <Flex flex={1} justify={"center"} align={"center"}>
+    <Flex
+      pt={60}
+      h={matches ? "calc(100vh - 60px)" : "100%"}
+      px={20}
+      bg={"lightIvory"}
+      justify={"center"}
+      direction={{
+        sm: "row",
+        base: "column-reverse",
+      }}
+      pb={{
+        sm: 0,
+        base: 32,
+      }}
+    >
+      <Flex
+        flex={1}
+        justify={"center"}
+        mt={{
+          sm: 0,
+          base: 16,
+        }}
+        align={"center"}
+      >
         <Box
           pos={"relative"}
           maw={512}
@@ -60,7 +85,7 @@ const Page = () => {
       </Flex>
 
       <Flex flex={1} align={"center"}>
-        <Flex direction={"column"} gap={30} maw={500} h={"80%"}>
+        <Flex direction={"column"} gap={30} maw={500} h={"80%"} mx={"auto"}>
           <Text ta={"center"} fz={30}>
             Нэвтрэх
           </Text>
@@ -81,7 +106,7 @@ const Page = () => {
             fz={"1.1em"}
             onClick={() => handleGoogleSignIn()}
           >
-            <Flex w={"100%"} justify={"center"} align={"center"} py={16}>
+            <Flex w={"100%"} justify={"center"} align={"center"} py={8}>
               <GoogleIcon size="1.4em" />
               <Text c={"black"} fz={"1.1em"}>
                 Google хаягаар нэвтрэх

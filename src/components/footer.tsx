@@ -41,8 +41,8 @@ export const Footer = () => {
           mb={20}
           fz={{
             md: 120,
-            sm: 80,
-            base: 60,
+            sm: 75,
+            base: 45,
           }}
         >
           Шууд залга!

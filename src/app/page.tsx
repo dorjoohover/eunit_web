@@ -17,7 +17,7 @@ import {
   CollisionBehavior,
 } from "@vis.gl/react-google-maps";
 import { Assets, IconAssets, MarkerAssests, video } from "@/utils/assets";
-import { useFetch } from "@mantine/hooks";
+import { useFetch, useMediaQuery } from "@mantine/hooks";
 import { api } from "@/utils/routes";
 import { useEffect, useRef, useState } from "react";
 export default function Home() {
@@ -78,12 +78,15 @@ export default function Home() {
     localStorage.setItem("hasViewedVideo", "true");
     setShowVideo(false);
   };
+  const matches = useMediaQuery("(min-width: 50em)");
 
   return (
     <div
-      className={`bg-[${Colors.lightIvory}] relative  top-[60px] left-[60px]`}
+      className={`bg-[${Colors.lightIvory}] relative  top-[60px] ${
+        matches && "left-[60px]"
+      }`}
       style={{
-        width: "calc(100vw - 70px)",
+        width: matches ? "calc(100vw - 70px)" : "100%",
       }}
     >
       {showVideo && (
@@ -99,7 +102,17 @@ export default function Home() {
         </div>
       )}
       <ReportWrapper>
-        <Box pb={80} mx={"auto"} maw={1100} mb={100}>
+        <Box
+          pb={80}
+          mx={"auto"}
+          px={16}
+          maw={1100}
+          mb={{
+            md: 100,
+            sm: 60,
+            base: 20,
+          }}
+        >
           <Title
             c={"headBlue"}
             maw={900}
@@ -127,8 +140,8 @@ export default function Home() {
               </Text>
             </Box>
           </Flex>
-          <Flex columnGap={0} mb={32}>
-            <Box flex={1} mr={16}>
+          <div className="parent">
+            <Box className="div1">
               {data?.payload?.map((d, i) => {
                 if (d.name == "Хан-Уул")
                   return (
@@ -142,7 +155,7 @@ export default function Home() {
                   );
               })}
             </Box>
-            <Box flex={1} mx={16}>
+            <Box className="div2">
               {data?.payload?.map((d, i) => {
                 if (d.name == "Баянзүрх")
                   return (
@@ -156,7 +169,7 @@ export default function Home() {
                   );
               })}
             </Box>
-            <Box flex={1} mx={16}>
+            <Box className="div3">
               {data?.payload?.map((d, i) => {
                 if (d.name == "Сүхбаатар")
                   return (
@@ -170,7 +183,7 @@ export default function Home() {
                   );
               })}
             </Box>
-            <Box flex={1} ml={16}>
+            <Box className="div4">
               {data?.payload?.map((d, i) => {
                 if (d.name == "Налайх")
                   return (
@@ -184,53 +197,58 @@ export default function Home() {
                   );
               })}
             </Box>
-          </Flex>
-          <Flex columnGap={0}>
-            <Flex direction={"column"} flex={1} gap={32}>
-              <Box flex={1} mr={16}>
-                {data?.payload?.map((d, i) => {
-                  if (d.name == "Чингэлтэй")
-                    return (
-                      <DistrictCard
-                        key={i}
-                        bg="#FF6700"
-                        text={d.name}
-                        price={Math.round(d.avg)}
-                        count={d.count}
-                      />
-                    );
-                })}
-              </Box>
-              <Box flex={1} mr={16}>
-                {data?.payload?.map((d, i) => {
-                  if (d.name == "Баянгол")
-                    return (
-                      <DistrictCard
-                        key={i}
-                        bg="#39FF14"
-                        text={d.name}
-                        price={Math.round(d.avg)}
-                        count={d.count}
-                      />
-                    );
-                })}
-              </Box>
-              <Box flex={1} mr={16}>
-                {data?.payload?.map((d, i) => {
-                  if (d.name == "Сонгинохайрхан")
-                    return (
-                      <DistrictCard
-                        key={i}
-                        bg="#00FFFF"
-                        text={d.name}
-                        price={Math.round(d.avg)}
-                        count={d.count}
-                      />
-                    );
-                })}
-              </Box>
-            </Flex>
-            <Box flex={3} ml={16}>
+
+            <Box className="div5">
+              {data?.payload?.map((d, i) => {
+                if (d.name == "Чингэлтэй")
+                  return (
+                    <DistrictCard
+                      key={i}
+                      bg="#FF6700"
+                      text={d.name}
+                      price={Math.round(d.avg)}
+                      count={d.count}
+                    />
+                  );
+              })}
+            </Box>
+            <Box className="div6">
+              {data?.payload?.map((d, i) => {
+                if (d.name == "Баянгол")
+                  return (
+                    <DistrictCard
+                      key={i}
+                      bg="#39FF14"
+                      text={d.name}
+                      price={Math.round(d.avg)}
+                      count={d.count}
+                    />
+                  );
+              })}
+            </Box>
+            <Box className="div7">
+              {data?.payload?.map((d, i) => {
+                if (d.name == "Сонгинохайрхан")
+                  return (
+                    <DistrictCard
+                      key={i}
+                      bg="#00FFFF"
+                      text={d.name}
+                      price={Math.round(d.avg)}
+                      count={d.count}
+                    />
+                  );
+              })}
+            </Box>
+            <Box
+              w={"100%"}
+              style={{
+                borderRadius: 15,
+                overflow: "hidden",
+                filter: "drop-shadow(0px 0px 10px #00000025)",
+              }}
+              className="div8"
+            >
               <GoogleMap
                 mapContainerStyle={{
                   width: "100%",
@@ -264,7 +282,7 @@ export default function Home() {
                 ))}
               </GoogleMap>
             </Box>
-          </Flex>
+          </div>
         </Box>
       </ReportWrapper>
     </div>
