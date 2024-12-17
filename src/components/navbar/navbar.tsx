@@ -8,7 +8,11 @@ import { exo2 } from "@/utils/fonts";
 import { money } from "@/utils/functions";
 import { NavbarValue } from "@/utils/values";
 import { GrHomeRounded } from "react-icons/gr";
-import { AiOutlineUser } from "react-icons/ai";
+import {
+  AiOutlineLogin,
+  AiOutlineProfile,
+  AiOutlineUser,
+} from "react-icons/ai";
 import {
   Avatar,
   Box,
@@ -153,42 +157,13 @@ export const Navbar = () => {
           </Container>
         </Box>
       ) : (
-        <Flex align={"center"} justify={"end"}>
-          <Button bg={"transparent"} onClick={open}>
-            <IoMenuSharp fill="main" size={32} />
-          </Button>
-        </Flex>
-      )}
-      <Drawer
-        position="right"
-        opened={opened}
-        onClose={close}
-        withCloseButton={false}
-      >
-        <Box
-          style={{
-            borderBottomColor: Colors.deepMose20,
-          }}
-          className={`flex justify-between flex-col border-b w-full`}
-        >
+        <Flex align={"center"} justify={"end"} gap={10}>
           <Link href={user != null ? "/wallet" : "/"}>
-            <Flex align={"center"}>
-              <Flex w={95} py={7} justify={"center"} align={"center"}>
-                {user != null ? (
-                  <BiWallet size={40} />
-                ) : (
-                  <Image
-                    src={IconAssets.profile}
-                    alt="Profile"
-                    width={45}
-                    height={45}
-                  />
-                )}
-              </Flex>
+            <Flex align={"center"} gap={0}>
               {user != null && (
-                <Flex gap={5} ml={10} align={"center"}>
+                <Flex ml={10} gap={5} align={"center"}>
                   <Text>{money(`${user.wallet}`)}</Text>
-                  <EunitIcon />
+                  <EunitIcon size={15} />
                 </Flex>
               )}
             </Flex>
@@ -196,24 +171,14 @@ export const Navbar = () => {
           <Link
             href={user != null ? "/profile" : "/login"}
             passHref
-            className="h-full"
+            className="h-full flex items-center"
           >
-            <Button
-              px={Sizes["4xl"]}
-              fw={"bold"}
-              bg={"main"}
-              h={"100%"}
-              radius={0}
-              fz={18}
-              tt={"uppercase"}
-            >
-              {user != null
-                ? locale.data.NAVBAR.PROFILE
-                : locale.data.NAVBAR.LOGIN}
+            <Button  bg={"main"} h={"100%"} radius={0} fz={24} tt={"uppercase"}>
+              {user != null ? <AiOutlineProfile /> : <AiOutlineLogin />}
             </Button>
           </Link>
-        </Box>
-      </Drawer>
+        </Flex>
+      )}
     </Flex>
   );
 };

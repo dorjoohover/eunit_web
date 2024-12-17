@@ -118,7 +118,12 @@ export default function Home() {
             maw={900}
             mx={"auto"}
             ta={"center"}
-            fz={57}
+            mt={32}
+            fz={{
+              md: 57,
+              sm: 45,
+              base: 32,
+            }}
             fw={"900"}
             tt={"capitalize"}
           >
