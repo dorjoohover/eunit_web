@@ -122,9 +122,13 @@ export const ReportList = ({
   title,
   text,
   label,
+  zipcode,
+  name,
   high,
 }: {
   title: string;
+  zipcode?: string;
+  name?: string;
   label: string;
   high?: string;
   text: string;
@@ -163,11 +167,38 @@ export const ReportList = ({
               className={montserratAlternates.className}
               fw="bold"
               mr={3}
+              style={{
+                textWrap: "nowrap",
+              }}
             >
               {`${high} `}
             </Text>
           )}
-          <Flex>
+          {text && (
+            <Flex>
+              {!matches && zipcode && (
+                <Text
+                  fz={{
+                    md: 18,
+                    base: 14,
+                  }}
+                  className={montserratAlternates.className}
+                  style={{
+                    textWrap: "nowrap",
+                  }}
+                >
+                  {`${zipcode ? "|" : ""} ${
+                    matches
+                      ? `${text} ${zipcode ? "|" : ""} ${zipcode ?? ""}`
+                      : zipcode ?? text
+                  }`}
+                </Text>
+              )}
+            </Flex>
+          )}
+        </Flex>
+        {!matches && text && (
+          <Flex align={"center"}>
             <Text
               fz={{
                 md: 18,
@@ -175,30 +206,31 @@ export const ReportList = ({
               }}
               className={montserratAlternates.className}
               style={{
-                textWrap: !matches ? "nowrap" : "wrap",
+                textWrap: "nowrap",
               }}
             >
-              {`${text}`}
+              {`${text} |`}
             </Text>
-            {!matches && (
-              <Flex align={"center"} columnGap={4} justify={"start"}>
-                <Box w={5} h={5} bg={"main"} />
-                <Text fz={14} fw={"bold"} tt={"uppercase"}>
-                  {label}
-                </Text>
-              </Flex>
-            )}
+
+            <Flex align={"center"} columnGap={4} justify={"start"}>
+              <Box w={5} h={5} bg={"main"} />
+              <Text fz={14} fw={"bold"} tt={"uppercase"}>
+                {label}
+              </Text>
+            </Flex>
           </Flex>
-        </Flex>
+        )}
       </Box>
       <Flex
         w={{
           base: "auto",
           md: "23vw",
+          sm: "26vw",
         }}
+        justify={"space-between"}
       >
-        {matches && (
-          <Flex align={"center"} justify={"start"} mr={69}>
+        {matches && label && (
+          <Flex align={"center"} justify={"start"} mr={32}>
             <Box w={9} h={9} bg={"main"} />
             <Text fz={18} fw={"bold"}>
               {label}

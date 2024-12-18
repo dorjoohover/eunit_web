@@ -322,7 +322,11 @@ const Page = () => {
             md: "row",
             base: "column",
           }}
-          gap={40}
+          gap={{
+            md: 40,
+            sm: 32,
+            base: 20,
+          }}
           h={"100%"}
           align={"center"}
         >
@@ -401,6 +405,7 @@ const Page = () => {
             <DatePickerInput
               rightSection={icon}
               type="range"
+              w={"100%"}
               __size="20px"
               value={form.date}
               valueFormat="YYYY-MM-DD"
@@ -423,14 +428,45 @@ const Page = () => {
               tt={"uppercase"}
               px={40}
               fz={20}
+              display={{
+                base: "none",
+                sm: "block",
+              }}
               radius={5}
               c={"white"}
             >
               Харах
             </Button>
           </Flex>
+          <Button
+            onClick={() => {
+              submit();
+            }}
+            w={{
+              md: "auto",
+              base: "100%",
+            }}
+            display={{
+              sm: "none",
+              base: "b;ock",
+            }}
+            bg={"main"}
+            tt={"uppercase"}
+            px={40}
+            fz={20}
+            radius={5}
+            c={"white"}
+          >
+            Харах
+          </Button>
         </Flex>
-        <Spacer size={80} />
+        <Spacer
+          size={{
+            md: 80,
+            sm: 60,
+            base: 40,
+          }}
+        />
         <Text c={"headBlue"} fz={16} fw={600}>
           Илэрц:
           {`${parseDate(new Date(form.date![0]!), ".")}-${parseDate(
@@ -439,7 +475,13 @@ const Page = () => {
           )}`}{" "}
           хооронд {data?.limit ?? 0} ширхэг мэдээлэл байна.
         </Text>
-        <Spacer size={60} />
+        <Spacer
+          size={{
+            md: 60,
+            sm: 42,
+            base: 24,
+          }}
+        />
 
         <ScrollArea scrollbars="xy" mah={260}>
           <table

@@ -229,32 +229,34 @@ const Page = () => {
                 Дүүргийн мэдээлэл
               </Text>
             </Flex>
-            <Flex w={"auto"}>
-              <Button
-                radius={32}
-                c={isList ? "white" : "black"}
-                bg={isList ? "main" : "transparent"}
-                fw={{
-                  base: 500,
-                  sm: "bold",
-                }}
-                py={10}
-                px={30}
-                h={"auto"}
-                fz={{
-                  base: 16,
-                  sm: 21,
-                }}
-                style={{
-                  border: `1px solid ${Colors.headBlue}`,
-                }}
-                onClick={() => {
-                  getTown(Constant.TOWN);
-                  setIsList(true);
-                }}
-              >
-                Жагсаалтаар
-              </Button>
+            <Flex w={"auto"} align={"center"}>
+              <Box>
+                <Button
+                  radius={32}
+                  c={isList ? "white" : "black"}
+                  bg={isList ? "main" : "transparent"}
+                  fw={{
+                    base: 500,
+                    sm: "bold",
+                  }}
+                  py={10}
+                  px={30}
+                  h={"auto"}
+                  fz={{
+                    base: 16,
+                    sm: 21,
+                  }}
+                  style={{
+                    border: `1px solid ${Colors.headBlue}`,
+                  }}
+                  onClick={() => {
+                    getTown(Constant.TOWN);
+                    setIsList(true);
+                  }}
+                >
+                  Жагсаалтаар
+                </Button>
+              </Box>
               {/* <Button
                 py={10}
                 px={30}
@@ -304,9 +306,9 @@ const Page = () => {
                 rightSection={<IconSearch color={Colors.deepMose} />}
               />
               <Text
-                td={"underline"}
                 style={{
                   textWrap: "nowrap",
+                  borderBottom: `1px solid black`,
                 }}
                 fz={21}
                 mr={{
@@ -314,7 +316,7 @@ const Page = () => {
                   base: 16,
                 }}
               >
-                {filteredData?.length} result
+                {filteredData?.length} үр дүн
               </Text>
             </Flex>
             <Flex
@@ -498,7 +500,7 @@ const Page = () => {
                 img: district.img,
                 id: district.id,
                 text: `${district.committee}-${locale.data.GLOBAL.N}
-                      ${locale.data.GLOBAL.COMMITTEE} |`,
+                      ${locale.data.GLOBAL.COMMITTEE} `,
                 label: `${count} ${locale.data.GLOBAL.APARTMENT}`,
                 name: district.name,
                 count: count,
@@ -529,8 +531,10 @@ const Page = () => {
                 key={i}
                 location={{
                   label: `${d.count} ${locale.data.GLOBAL.INFORMATION}`,
-                  text: `| ${d.name} | ${d.zipcode}`,
+                  text: `${d.name}`,
                   high: d.englishNameOfTown,
+                  zipcode: `${d.zipcode}`,
+                  name: d.name,
                   title: d.town ?? "",
                 }}
                 onClick={() => {
