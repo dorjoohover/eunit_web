@@ -132,6 +132,10 @@ export const ServiceForm = ({
           sm: "row",
           base: "column",
         }}
+        pb={{
+          md: 40, 
+          base: 120
+        }}
         columnGap={"50px"}
       >
         <Box flex={1}>

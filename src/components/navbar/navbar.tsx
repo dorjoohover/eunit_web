@@ -173,7 +173,7 @@ export const Navbar = () => {
             passHref
             className="h-full flex items-center"
           >
-            <Button  bg={"main"} h={"100%"} radius={0} fz={24} tt={"uppercase"}>
+            <Button bg={"main"} h={"100%"} radius={0} fz={24} tt={"uppercase"}>
               {user != null ? <AiOutlineProfile /> : <AiOutlineLogin />}
             </Button>
           </Link>
@@ -208,6 +208,7 @@ export const BottomNavigationBar = () => {
         borderTopLeftRadius: 5,
         borderTopRightRadius: 5,
         overflow: "hidden",
+        zIndex: 1000,
         filter: "drop-shadow(0px 3px 4px #000000)",
       }}
       bottom={0}
@@ -286,9 +287,10 @@ export const SideBar = () => {
         py={Sizes["2xl"]}
         gap={"20vh"}
       >
+        <Box />
         <Text
           style={{
-            transform: "rotate(-90deg) translateX(-100px) ",
+            transform: "rotate(-90deg)  ",
             textWrap: "nowrap",
           }}
           tt={"uppercase"}

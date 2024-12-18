@@ -68,7 +68,13 @@ const Page = () => {
         .then((d) => d.json())
         .then((d) => {
           if (url.includes("location")) {
-            setFilteredData(d.payload as LocationModel[]);
+            setFilteredData(
+              (d.payload as LocationModel[]).sort((a, b) => {
+                return a.englishNameOfTown && b.englishNameOfTown
+                  ? a.englishNameOfTown.localeCompare(b.englishNameOfTown)
+                  : a.name.localeCompare(b.name);
+              })
+            );
           }
           setData(d.payload);
         });
@@ -86,12 +92,18 @@ const Page = () => {
   const filter = (e: string) => {
     if (data != null) {
       setFilteredData(
-        (data as LocationModel[]).filter(
-          (d) =>
-            d.town?.toLowerCase().includes(e) ||
-            d.name.toLowerCase().includes(e) ||
-            d.englishNameOfTown?.toLowerCase().includes(e)
-        )
+        (data as LocationModel[])
+          .filter(
+            (d) =>
+              d.town?.toLowerCase().includes(e) ||
+              d.name.toLowerCase().includes(e) ||
+              d.englishNameOfTown?.toLowerCase().includes(e)
+          )
+          .sort((a, b) => {
+            return a.englishNameOfTown && b.englishNameOfTown
+              ? a.englishNameOfTown.localeCompare(b.englishNameOfTown)
+              : a.name.localeCompare(b.name);
+          })
       );
     }
   };

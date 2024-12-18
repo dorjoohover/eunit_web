@@ -103,14 +103,16 @@ const Page = () => {
     town: undefined,
   });
   const [data, setData] = useState<ResultType>();
-
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const [location, setLocation] = useState<LocationModel[]>([]);
   const getLocation = async (e: string | null) => {
+    setIsLoading(true);
     const res = await fetch(
       `${ConstantApi.constant}${Constant.TOWN}/${e}`
     ).then((d) => d.json());
     setLocation(res.payload);
+    setIsLoading(false);
   };
   const updateDistrict = async (e: string | null) => {
     if (e != null) {
@@ -123,28 +125,23 @@ const Page = () => {
     open();
   };
   const getResult = async () => {
-    // setLoading(true);
+    setLoading(true);
+    console.log(id);
     if (id == null) return;
     const res = await getRequestResult(+id);
-    if (!res?.token) {
-      // router.push("/login");
-      return;
-    }
-    if (res.success) {
+    console.log(res);
+
+    if (res?.success) {
       setData(res.data);
     }
+    console.log("asdf");
     setLoading(false);
   };
 
   useEffect(() => {
     getResult();
   }, []);
-  if (loading)
-    return (
-      <Center>
-        <Loading />
-      </Center>
-    );
+
   const onGetExportProduct = async (
     id: number,
     title?: string,
@@ -359,6 +356,7 @@ const Page = () => {
               variant="rounded"
               p={"2px"}
               __size="20px"
+              rightSection={isLoading ? <Loader size={20} /> : <Box />}
               withScrollArea={false}
               styles={{ dropdown: { maxHeight: 200, overflowY: "auto" } }}
               data={location?.map((l) => {
@@ -370,6 +368,7 @@ const Page = () => {
               label={DataDownloadValue["town"].label}
               placeholder={DataDownloadValue["town"].pl}
             />
+
             <Select
               w={200}
               my={5}

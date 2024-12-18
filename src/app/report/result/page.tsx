@@ -101,17 +101,17 @@ const Page = () => {
 
   const donwloadPdf = async () => {
     const doc = new jsPDF();
-    // doc.setTextColor(Colors.main);
+    doc.setTextColor(Colors.main);
     // doc.setwe
-    // doc.text(data?.location.town ?? data?.location.name ?? "", 10, 10);
+    doc.text(data?.location.town ?? data?.location.name ?? "", 10, 10);
 
-    // const numbers = [1, 2, 3];
-    // numbers.forEach((num, index) => {
-    //   doc.text(`Number ${num}`, 10, 20 + index * 10);
-    // });
+    const numbers = [1, 2, 3];
+    numbers.forEach((num, index) => {
+      doc.text(`Number ${num}`, 10, 20 + index * 10);
+    });
 
-    // // Save the PDF
-    // doc.save("example.pdf");
+    // Save the PDF
+    doc.save("example.pdf");
   };
 
   return (
@@ -357,7 +357,7 @@ const Page = () => {
             base: 16,
           }}
         />
-        {/* 
+        
         <Flex w={"100%"} justify={"center"}>
           <Button
             radius={32}
@@ -379,11 +379,11 @@ const Page = () => {
             }
             onClick={() => donwloadPdf()}
           >
-            Татаж авах(PDF)
+            Татаж авах (PDF)
           </Button>
         </Flex>
         <Spacer size={32} />
-        <Text fz={30} fw={"bold"}>
+        {/* <Text fz={30} fw={"bold"}>
           Санал болгож буй үйлчилгээ
         </Text>
         <Spacer size={32} />
