@@ -39,8 +39,11 @@ import {
   Box,
   Button,
   Center,
+  Combobox,
   Flex,
   Highlight,
+  Input,
+  InputBase,
   Loader,
   Modal,
   NumberInput,
@@ -51,6 +54,7 @@ import {
   Table,
   Text,
   TextInput,
+  useCombobox,
 } from "@mantine/core";
 import { DatePicker, DatePickerInput, DatesRangeValue } from "@mantine/dates";
 import { useForm } from "@mantine/form";
@@ -106,12 +110,14 @@ const Page = () => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const [location, setLocation] = useState<LocationModel[]>([]);
+  const [filteredLocation, setFilteredLocation] = useState<LocationModel[]>([]);
   const getLocation = async (e: string | null) => {
     setIsLoading(true);
     const res = await fetch(
       `${ConstantApi.constant}${Constant.TOWN}/${e}`
     ).then((d) => d.json());
     setLocation(res.payload);
+    setFilteredLocation(res.payload);
     setIsLoading(false);
   };
   const updateDistrict = async (e: string | null) => {
@@ -162,7 +168,7 @@ const Page = () => {
             Дүүрэг: location.district,
             Хороо: `${location.khoroo}-р хороо`,
             "Ерөнхий байршил": location.name,
-            "Хотхоны нэр": location.name,
+            "Хотхоны нэр": location.town,
             "Хотхоны нэр /Англи/": location.englishNameOfTown,
             Зипкод: location.zipcode,
             "Нийт үнэ": money(`${ad.price}`),
@@ -302,6 +308,36 @@ const Page = () => {
       <th className="px-4">Тайлбар</th>
     </tr>
   );
+  const [search, setSearch] = useState("");
+  const combobox = useCombobox({
+    onDropdownClose: () => {
+      combobox.resetSelectedOption();
+      combobox.focusTarget();
+      setSearch("");
+    },
+
+    onDropdownOpen: () => {
+      combobox.focusSearchInput();
+    },
+  });
+  const groceries = [
+    "🍎 Apples",
+    "🍌 Bananas",
+    "🥦 Broccoli",
+    "🥕 Carrots",
+    "🍫 Chocolate",
+    "🍇 Grapes",
+  ];
+
+  const [value, setValue] = useState<string | null>(null);
+
+  const options = groceries
+    .filter((item) => item.toLowerCase().includes(search.toLowerCase().trim()))
+    .map((item) => (
+      <Combobox.Option value={item} key={item}>
+        {item}
+      </Combobox.Option>
+    ));
 
   return (
     <Box>
@@ -316,7 +352,7 @@ const Page = () => {
         <Flex
           w={"100%"}
           direction={{
-            md: "row",
+            xl: "row",
             base: "column",
           }}
           gap={{
@@ -353,18 +389,37 @@ const Page = () => {
               onChange={(e) => {
                 if (e != null) setForm((prev) => ({ ...prev, town: e }));
               }}
+              onSearchChange={(e) => {
+                const value = e.toLowerCase();
+                console.log(value);
+                const lc = location.filter(
+                  (l) =>
+                    l.town?.toLowerCase().includes(value) ||
+                    l.englishNameOfTown?.toLowerCase().includes(value)
+                );
+                // return lc
+                console.log(lc);
+                setFilteredLocation(lc);
+                // if (value == null || value == undefined || value == "")
+                //   setFilteredLocation(location);
+              }}
               variant="rounded"
               p={"2px"}
               __size="20px"
               rightSection={isLoading ? <Loader size={20} /> : <Box />}
               withScrollArea={false}
               styles={{ dropdown: { maxHeight: 200, overflowY: "auto" } }}
-              data={location?.map((l) => {
-                return {
-                  label: l.town!,
-                  value: `${l.id}`,
-                };
-              })}
+              data={filteredLocation
+                .sort((a, b) =>
+                  a.englishNameOfTown!.localeCompare(b.englishNameOfTown!)
+                )
+                ?.map((l) => {
+                  return {
+                    label: l.town!,
+                    items: l.englishNameOfTown,
+                    value: `${l.id}`,
+                  };
+                })}
               label={DataDownloadValue["town"].label}
               placeholder={DataDownloadValue["town"].pl}
             />
@@ -400,7 +455,7 @@ const Page = () => {
             />
           </Flex>
 
-          <Flex align={"center"}>
+          <Flex align={"end"}>
             <DatePickerInput
               rightSection={icon}
               type="range"
@@ -420,16 +475,20 @@ const Page = () => {
                 submit();
               }}
               w={{
-                md: "auto",
+                xl: "auto",
+
                 base: "100%",
               }}
               bg={"main"}
               tt={"uppercase"}
               px={40}
+              py={9}
+              mb={2}
+              h={"auto"}
               fz={20}
               display={{
                 base: "none",
-                sm: "block",
+                xs: "block",
               }}
               radius={5}
               c={"white"}
@@ -446,14 +505,17 @@ const Page = () => {
               base: "100%",
             }}
             display={{
-              sm: "none",
-              base: "b;ock",
+              xs: "none",
+              base: "block",
             }}
             bg={"main"}
             tt={"uppercase"}
             px={40}
             fz={20}
             radius={5}
+            py={9}
+            mb={2}
+            h={"auto"}
             c={"white"}
           >
             Харах

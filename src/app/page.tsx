@@ -125,6 +125,7 @@ export default function Home() {
               base: 32,
             }}
             fw={"900"}
+            tt={'none'}
           >
             Орон сууцны үнэлгээ
           </Title>

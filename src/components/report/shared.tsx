@@ -65,7 +65,7 @@ export const ReportTitle = ({
           style={{
             lineHeight: 1,
             letterSpacing: 0,
-            textWrap: "nowrap",
+            // textWrap: "nowrap",
           }}
           variant="full"
         >
@@ -224,7 +224,7 @@ export const ReportList = ({
       <Flex
         w={{
           base: "auto",
-          md: "23vw",
+          md: "22vw",
           sm: "26vw",
         }}
         justify={"space-between"}
@@ -245,8 +245,8 @@ export const ReportList = ({
         >
           <Box
             className="flex items-center relative justify-center"
-            w={36}
-            h={38}
+            w={24}
+            h={26}
           >
             <Image
               src={IconAssets.rightArrow}

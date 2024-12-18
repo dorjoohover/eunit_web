@@ -18,7 +18,7 @@ import { useMediaQuery } from "@mantine/hooks";
 const Template = ({ children }: { children: ReactNode }) => {
   const { data, status } = useSession();
   const { user, setUser, refetchUser } = useAppContext();
-  const matches = useMediaQuery("(min-width: 50em)");
+  const matches = useMediaQuery("(min-width: 56em)");
 
   const handler = async () => {
     try {

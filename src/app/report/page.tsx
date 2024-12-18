@@ -67,12 +67,12 @@ const Page = () => {
       await fetch(url)
         .then((d) => d.json())
         .then((d) => {
-          if (url.includes("location")) {
+          if (url.includes("20")) {
             setFilteredData(
               (d.payload as LocationModel[]).sort((a, b) => {
                 return a.englishNameOfTown && b.englishNameOfTown
-                  ? a.englishNameOfTown.localeCompare(b.englishNameOfTown)
-                  : a.name.localeCompare(b.name);
+                  ? a.englishNameOfTown?.localeCompare(b.englishNameOfTown)
+                  : a.name?.localeCompare(b.name);
               })
             );
           }
@@ -337,6 +337,10 @@ const Page = () => {
                 sm: "start",
                 base: "space-between",
               }}
+              direction={{
+                xs: "row",
+                base: "column",
+              }}
             >
               <Button
                 radius={32}
@@ -507,7 +511,6 @@ const Page = () => {
                 (data as DistrictType[])?.filter(
                   (d) => d.district == district.id
                 )?.[0]?.count ?? 0;
-
               let dist = {
                 img: district.img,
                 id: district.id,

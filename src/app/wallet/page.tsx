@@ -17,7 +17,9 @@ import {
   Flex,
   Group,
   Modal,
+  Overlay,
   Pagination,
+  ScrollArea,
   Select,
   Table,
   Text,
@@ -230,28 +232,30 @@ const Page = () => {
               />
               <Button>Хайх</Button>
             </Flex> */}
-            <Table stickyHeader mt={30} stickyHeaderOffset={60}>
-              <Table.Thead bg={"lightIvory"}>
-                <Table.Tr>
-                  <Table.Th ta={"center"} c={"headBlue"} fw={"normal"}>
-                    Огноо
-                  </Table.Th>
-                  <Table.Th ta={"center"} c={"headBlue"} fw={"normal"}>
-                    Төрөл
-                  </Table.Th>
-                  <Table.Th ta={"center"} c={"headBlue"} fw={"normal"}>
-                    Хэмжээ
-                  </Table.Th>
-                  <Table.Th ta={"center"} c={"headBlue"} fw={"normal"}>
-                    Сүлжээ/Банк
-                  </Table.Th>
-                  <Table.Th ta={"center"} c={"headBlue"} fw={"normal"}>
-                    Хаяг/Данс
-                  </Table.Th>
-                </Table.Tr>
-              </Table.Thead>
-              <Table.Tbody>{rows}</Table.Tbody>
-            </Table>
+            <ScrollArea scrollbars={"x"}>
+              <Table stickyHeader mt={30} stickyHeaderOffset={60}>
+                <Table.Thead bg={"lightIvory"}>
+                  <Table.Tr>
+                    <Table.Th ta={"center"} c={"headBlue"} fw={"normal"}>
+                      Огноо
+                    </Table.Th>
+                    <Table.Th ta={"center"} c={"headBlue"} fw={"normal"}>
+                      Төрөл
+                    </Table.Th>
+                    <Table.Th ta={"center"} c={"headBlue"} fw={"normal"}>
+                      Хэмжээ
+                    </Table.Th>
+                    <Table.Th ta={"center"} c={"headBlue"} fw={"normal"}>
+                      Сүлжээ/Банк
+                    </Table.Th>
+                    <Table.Th ta={"center"} c={"headBlue"} fw={"normal"}>
+                      Хаяг/Данс
+                    </Table.Th>
+                  </Table.Tr>
+                </Table.Thead>
+                <Table.Tbody>{rows}</Table.Tbody>
+              </Table>
+            </ScrollArea>
             <Flex justify={"end"} w={"100%"} mt={20} pb={40}>
               <Pagination.Root
                 total={Math.ceil(total / limit)}

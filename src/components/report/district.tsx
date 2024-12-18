@@ -133,8 +133,8 @@ export const ServiceForm = ({
           base: "column",
         }}
         pb={{
-          md: 40, 
-          base: 120
+          md: 40,
+          base: 20,
         }}
         columnGap={"50px"}
       >
@@ -198,27 +198,7 @@ export const ServiceForm = ({
           })}
         </Box>
       </Flex>
-      <Flex
-        w={"100%"}
-        justify={"center"}
-        mt={32}
-        pos={{
-          sm: "relative",
-          base: "fixed",
-        }}
-        bottom={{
-          sm: "0",
-          base: "60px",
-        }}
-        left={{
-          sm: "0",
-          base: "20px",
-        }}
-        right={{
-          sm: "0",
-          base: "40px",
-        }}
-      >
+      <Flex w={"100%"} justify={"center"} mt={16}>
         <Button
           w={{
             sm: "auto",

@@ -45,8 +45,7 @@ const NavLinkStyle = (active: boolean) =>
 export const Navbar = () => {
   const pathname = usePathname();
   const { user } = useAppContext();
-  const matches = useMediaQuery("(min-width: 56.25em)");
-  const [opened, { open, close }] = useDisclosure(false);
+  const matches = useMediaQuery("(min-width: 56em)");
   return (
     <Flex
       bg={"lightIvory"}
@@ -130,7 +129,7 @@ export const Navbar = () => {
                 {user != null && (
                   <Flex gap={5} ml={10} align={"center"}>
                     <Text>{money(`${user.wallet}`)}</Text>
-                    <EunitIcon />
+                    <EunitIcon size={20}/>
                   </Flex>
                 )}
               </Flex>
