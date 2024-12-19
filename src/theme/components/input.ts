@@ -1,4 +1,5 @@
 import {
+  InputBase,
   NumberInput,
   Radio,
   RadioGroup,
@@ -240,6 +241,52 @@ export const select = {
       searchable: true,
       checkIconPosition: "right",
       width: "auto",
+      bg: "transparent",
+      leftSectionPointerEvents: "none",
+    },
+  }),
+  InputBase: InputBase.extend({
+    styles(theme, props, ctx) {
+      if (props.variant == "rounded") {
+        return {
+          wrapper: {
+            marginTop: 8,
+          },
+          label: {
+            fontSize: 21,
+          },
+          input: {
+            borderRadius: 5,
+            border: `2px solid ${Colors.headBlue}`,
+            height: "auto",
+            padding: "2px 10px",
+          },
+        };
+      }
+      return {
+        root: {
+          filter: "drop-shadow(0 2px 4px rgb(0 0 0 / 0.1))",
+        },
+
+        input: {
+          border: `2px solid ${Colors.stroke}`,
+          width: props.variant == "small" ? 150 : "100%",
+        },
+      };
+    },
+    vars: (theme, props) => {
+      return {
+        wrapper: {},
+        input: {
+          "--input-bg":
+            props.variant == "small" || props.variant == "rounded"
+              ? "transparent"
+              : "white",
+        },
+      };
+    },
+    defaultProps: {
+      className: "rounded-[8px] ",
       bg: "transparent",
       leftSectionPointerEvents: "none",
     },

@@ -160,15 +160,15 @@ export const ReportList = ({
           {high && (
             <Text
               fz={{
-                md: 20,
-                base: 14,
+                md: 18,
+                base: 12,
               }}
               tt={"uppercase"}
               className={montserratAlternates.className}
               fw="bold"
               mr={3}
               style={{
-                textWrap: "nowrap",
+                textWrap: "wrap",
               }}
             >
               {`${high} `}
@@ -179,8 +179,8 @@ export const ReportList = ({
               {!matches && zipcode && (
                 <Text
                   fz={{
-                    md: 18,
-                    base: 14,
+                    md: 16,
+                    base: 12,
                   }}
                   className={montserratAlternates.className}
                   style={{
@@ -197,30 +197,8 @@ export const ReportList = ({
             </Flex>
           )}
         </Flex>
-        {!matches && text && (
-          <Flex align={"center"}>
-            <Text
-              fz={{
-                md: 18,
-                base: 14,
-              }}
-              className={montserratAlternates.className}
-              style={{
-                textWrap: "nowrap",
-              }}
-            >
-              {`${text} |`}
-            </Text>
-
-            <Flex align={"center"} columnGap={4} justify={"start"}>
-              <Box w={5} h={5} bg={"main"} />
-              <Text fz={14} fw={"bold"} tt={"uppercase"}>
-                {label}
-              </Text>
-            </Flex>
-          </Flex>
-        )}
       </Box>
+
       <Flex
         w={{
           base: "auto",

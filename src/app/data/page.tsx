@@ -111,6 +111,7 @@ const Page = () => {
   const router = useRouter();
   const [location, setLocation] = useState<LocationModel[]>([]);
   const [filteredLocation, setFilteredLocation] = useState<LocationModel[]>([]);
+  const combobox = useCombobox();
   const getLocation = async (e: string | null) => {
     setIsLoading(true);
     const res = await fetch(
@@ -253,12 +254,15 @@ const Page = () => {
     />
   );
 
-  const rows = data?.data?.map((el, i) => {
-    const location = el.location as LocationModel;
-    const date = new Date(`${el.date}`);
+  const rows = Array.from(
+    { length: data?.data.length ?? 0 },
+    (_, i) => data?.data[0]
+  ).map((el, i) => {
+    const location = el?.location as LocationModel;
+    const date = new Date(`${el?.date}`);
     return (
       <tr key={i} className="text-nowrap  ">
-        <td className="px-4 py-2">{el.id}</td>
+        <td className="px-4 py-2">{el?.id}</td>
         <td className="px-4">{parseDate(date, ".")}</td>
         <td className="px-4">{location.district}</td>
         <td className="px-4">{location.khoroo}-р хороо</td>
@@ -266,19 +270,19 @@ const Page = () => {
         <td className="px-4">{location.town}</td>
         <td className="px-4">{location.englishNameOfTown}</td>
         <td className="px-4">{location.zipcode}</td>
-        <td className="px-4">{money(`${el.price}`)}</td>
-        <td className="px-4">{el.area}</td>
-        <td className="px-4">{money(`${el.unitPrice}`)}</td>
-        <td className="px-4">{el.operation}</td>
-        <td className="px-4">{el.buildingFloor}</td>
-        <td className="px-4">{el.howFloor}</td>
-        <td className="px-4">{el.floor}</td>
-        <td className="px-4">{el.door}</td>
-        <td className="px-4">{el.balconyUnit}</td>
-        <td className="px-4">{el.window}</td>
-        <td className="px-4">{el.windowUnit}</td>
-        <td className="px-4">{el.paymentMethod}</td>
-        <td className="px-4">{el.description}</td>
+        <td className="px-4">{money(`${el?.price}`)}</td>
+        <td className="px-4">{el?.area}</td>
+        <td className="px-4">{money(`${el?.unitPrice}`)}</td>
+        <td className="px-4">{el?.operation}</td>
+        <td className="px-4">{el?.buildingFloor}</td>
+        <td className="px-4">{el?.howFloor}</td>
+        <td className="px-4">{el?.floor}</td>
+        <td className="px-4">{el?.door}</td>
+        <td className="px-4">{el?.balconyUnit}</td>
+        <td className="px-4">{el?.window}</td>
+        <td className="px-4">{el?.windowUnit}</td>
+        <td className="px-4">{el?.paymentMethod}</td>
+        <td className="px-4">{el?.description}</td>
       </tr>
     );
   });
@@ -308,37 +312,15 @@ const Page = () => {
       <th className="px-4">Тайлбар</th>
     </tr>
   );
-  const [search, setSearch] = useState("");
-  const combobox = useCombobox({
-    onDropdownClose: () => {
-      combobox.resetSelectedOption();
-      combobox.focusTarget();
-      setSearch("");
-    },
-
-    onDropdownOpen: () => {
-      combobox.focusSearchInput();
-    },
-  });
-  const groceries = [
-    "🍎 Apples",
-    "🍌 Bananas",
-    "🥦 Broccoli",
-    "🥕 Carrots",
-    "🍫 Chocolate",
-    "🍇 Grapes",
-  ];
-
   const [value, setValue] = useState<string | null>(null);
 
-  const options = groceries
-    .filter((item) => item.toLowerCase().includes(search.toLowerCase().trim()))
+  const options = filteredLocation
+    .sort((a, b) => a.englishNameOfTown!.localeCompare(b.englishNameOfTown!))
     .map((item) => (
-      <Combobox.Option value={item} key={item}>
-        {item}
+      <Combobox.Option value={`${item.id}`} key={item.id}>
+        {item?.town}
       </Combobox.Option>
     ));
-
   return (
     <Box>
       <ReportTitle
@@ -381,7 +363,49 @@ const Page = () => {
               placeholder={DataDownloadValue["district"].pl}
               value={form.district}
             />
+            <Combobox
+              store={combobox}
+              withinPortal={false}
+              onOptionSubmit={(val) => {
+                setValue(val);
+                combobox.closeDropdown();
+              }}
+            >
+              <Combobox.Target>
+                <InputBase
+                  my={5}
+                  p={"2px"}
+                  __size="20px"
+                  w={200}
+                  label={DataDownloadValue["town"].label}
+                  component="button"
+                  type="button"
+                  pointer
+                  variant="rounded"
+                  rightSection={
+                    isLoading ? <Loader size={18} /> : <Combobox.Chevron />
+                  }
+                  onClick={() => combobox.toggleDropdown()}
+                  rightSectionPointerEvents="none"
+                >
+                  {value || (
+                    <Input.Placeholder>
+                      {DataDownloadValue["town"].pl}
+                    </Input.Placeholder>
+                  )}
+                </InputBase>
+              </Combobox.Target>
 
+              <Combobox.Dropdown>
+                <Combobox.Options>
+                  {isLoading ? (
+                    <Combobox.Empty>Уншиж байна...</Combobox.Empty>
+                  ) : (
+                    options
+                  )}
+                </Combobox.Options>
+              </Combobox.Dropdown>
+            </Combobox>
             <Select
               value={form.town}
               w={200}
@@ -391,17 +415,16 @@ const Page = () => {
               }}
               onSearchChange={(e) => {
                 const value = e.toLowerCase();
-                console.log(value);
+                if (!value) {
+                  setFilteredLocation(location);
+                  return;
+                }
                 const lc = location.filter(
                   (l) =>
                     l.town?.toLowerCase().includes(value) ||
                     l.englishNameOfTown?.toLowerCase().includes(value)
                 );
-                // return lc
-                console.log(lc);
                 setFilteredLocation(lc);
-                // if (value == null || value == undefined || value == "")
-                //   setFilteredLocation(location);
               }}
               variant="rounded"
               p={"2px"}
@@ -416,7 +439,6 @@ const Page = () => {
                 ?.map((l) => {
                   return {
                     label: l.town!,
-                    items: l.englishNameOfTown,
                     value: `${l.id}`,
                   };
                 })}
@@ -554,6 +576,7 @@ const Page = () => {
             <thead>{ths}</thead>
             <tbody className="relative">
               {rows}
+
               <Overlay
                 style={{
                   position: "absolute",

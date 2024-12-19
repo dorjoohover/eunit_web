@@ -96,7 +96,7 @@ const Page = () => {
           .filter(
             (d) =>
               d.town?.toLowerCase().includes(e) ||
-              d.name.toLowerCase().includes(e) ||
+              d.name?.toLowerCase().includes(e) ||
               d.englishNameOfTown?.toLowerCase().includes(e)
           )
           .sort((a, b) => {
@@ -133,10 +133,11 @@ const Page = () => {
       payload.values!,
       ServiceType.REVIEW
     );
-    if (res?.success) {
+    if (res?.data?.success != false) {
       refetchUser();
-      router.push(`/report/result?id=${res.data}`);
+      router.push(`/report/result?id=${res?.data}`);
     }
+    setLoading(false);
   };
   const getTown = (t?: number) => {
     if (district)
