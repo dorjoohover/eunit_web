@@ -75,6 +75,7 @@ import {
 import { MdApartment } from "react-icons/md";
 import { RiFileDownloadFill } from "react-icons/ri";
 import { Loading } from "../loading";
+import { notifications } from "@mantine/notifications";
 
 type ResultType = {
   data: AdModel[];
@@ -143,15 +144,12 @@ const Page = () => {
   };
   const getResult = async () => {
     setLoading(true);
-    console.log(id);
     if (id == null) return;
     const res = await getRequestResult(+id);
-    console.log(res);
 
     if (res?.success) {
       setData(res.data);
     }
-    console.log("asdf");
     setLoading(false);
   };
 
@@ -225,6 +223,13 @@ const Page = () => {
         },
         ServiceType.DATA
       );
+      if (res?.data?.success == false) {
+        notifications.show({
+          message: res?.message,
+          title: "Мэдэгдэл",
+          color: "warning",
+        });
+      }
       refetchUser();
       onGetExportProduct(res?.data, "Дата", "Дата");
       close();
@@ -405,7 +410,8 @@ const Page = () => {
                   onClick={() => combobox.toggleDropdown()}
                   rightSectionPointerEvents="none"
                 >
-                  {filteredLocation.filter((f) => `${f.id}` == form.town)?.[0]?.town || (
+                  {filteredLocation.filter((f) => `${f.id}` == form.town)?.[0]
+                    ?.town || (
                     <Input.Placeholder>
                       {DataDownloadValue["town"].pl}
                     </Input.Placeholder>
