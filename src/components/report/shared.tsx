@@ -174,29 +174,28 @@ export const ReportList = ({
               {`${high} `}
             </Text>
           )}
-          {text && (
-            <Flex>
-              {!matches && zipcode && (
-                <Text
-                  fz={{
-                    md: 16,
-                    base: 12,
-                  }}
-                  className={montserratAlternates.className}
-                  style={{
-                    textWrap: "nowrap",
-                  }}
-                >
-                  {`${zipcode ? "|" : ""} ${
-                    matches
-                      ? `${text} ${zipcode ? "|" : ""} ${zipcode ?? ""}`
-                      : zipcode ?? text
-                  }`}
-                </Text>
-              )}
-            </Flex>
-          )}
         </Flex>
+        {text && (
+          <Text
+            fz={{
+              md: 18,
+              base: 12,
+            }}
+            className={montserratAlternates.className}
+          >
+            {`${text} ${`${zipcode ? "|" : ""} ${
+              matches ? `${zipcode ?? ""}` : zipcode ?? text
+            }`} `}
+          </Text>
+        )}
+        {!matches && (
+          <Flex align={"center"} columnGap={4} justify={"start"}>
+            <Box w={5} h={5} bg={"main"} />
+            <Text fz={12} fw={"bold"} tt={"uppercase"}>
+              {label}
+            </Text>
+          </Flex>
+        )}
       </Box>
 
       <Flex

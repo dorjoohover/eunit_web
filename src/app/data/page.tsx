@@ -111,7 +111,17 @@ const Page = () => {
   const router = useRouter();
   const [location, setLocation] = useState<LocationModel[]>([]);
   const [filteredLocation, setFilteredLocation] = useState<LocationModel[]>([]);
-  const combobox = useCombobox();
+  const combobox = useCombobox({
+    onDropdownClose: () => {
+      combobox.resetSelectedOption();
+      combobox.focusTarget();
+      setSearch("");
+    },
+
+    onDropdownOpen: () => {
+      combobox.focusSearchInput();
+    },
+  });
   const getLocation = async (e: string | null) => {
     setIsLoading(true);
     const res = await fetch(
@@ -312,9 +322,15 @@ const Page = () => {
       <th className="px-4">Тайлбар</th>
     </tr>
   );
-  const [value, setValue] = useState<string | null>(null);
-
+  const [search, setSearch] = useState("");
   const options = filteredLocation
+    .filter(
+      (item) =>
+        item.town?.toLowerCase().includes(search.toLowerCase().trim()) ||
+        item.englishNameOfTown
+          ?.toLowerCase()
+          .includes(search.toLowerCase().trim())
+    )
     .sort((a, b) => a.englishNameOfTown!.localeCompare(b.englishNameOfTown!))
     .map((item) => (
       <Combobox.Option value={`${item.id}`} key={item.id}>
@@ -367,7 +383,8 @@ const Page = () => {
               store={combobox}
               withinPortal={false}
               onOptionSubmit={(val) => {
-                setValue(val);
+                if (val != null) setForm((prev) => ({ ...prev, town: val }));
+
                 combobox.closeDropdown();
               }}
             >
@@ -388,7 +405,7 @@ const Page = () => {
                   onClick={() => combobox.toggleDropdown()}
                   rightSectionPointerEvents="none"
                 >
-                  {value || (
+                  {filteredLocation.filter((f) => `${f.id}` == form.town)?.[0]?.town || (
                     <Input.Placeholder>
                       {DataDownloadValue["town"].pl}
                     </Input.Placeholder>
@@ -397,54 +414,22 @@ const Page = () => {
               </Combobox.Target>
 
               <Combobox.Dropdown>
+                <Combobox.Search
+                  value={search}
+                  onChange={(event) => setSearch(event.currentTarget.value)}
+                  placeholder="Хайх..."
+                />
                 <Combobox.Options>
                   {isLoading ? (
                     <Combobox.Empty>Уншиж байна...</Combobox.Empty>
+                  ) : options.length == 0 ? (
+                    <Combobox.Empty>Хоосон байна.</Combobox.Empty>
                   ) : (
                     options
                   )}
                 </Combobox.Options>
               </Combobox.Dropdown>
             </Combobox>
-            <Select
-              value={form.town}
-              w={200}
-              my={5}
-              onChange={(e) => {
-                if (e != null) setForm((prev) => ({ ...prev, town: e }));
-              }}
-              onSearchChange={(e) => {
-                const value = e.toLowerCase();
-                if (!value) {
-                  setFilteredLocation(location);
-                  return;
-                }
-                const lc = location.filter(
-                  (l) =>
-                    l.town?.toLowerCase().includes(value) ||
-                    l.englishNameOfTown?.toLowerCase().includes(value)
-                );
-                setFilteredLocation(lc);
-              }}
-              variant="rounded"
-              p={"2px"}
-              __size="20px"
-              rightSection={isLoading ? <Loader size={20} /> : <Box />}
-              withScrollArea={false}
-              styles={{ dropdown: { maxHeight: 200, overflowY: "auto" } }}
-              data={filteredLocation
-                .sort((a, b) =>
-                  a.englishNameOfTown!.localeCompare(b.englishNameOfTown!)
-                )
-                ?.map((l) => {
-                  return {
-                    label: l.town!,
-                    value: `${l.id}`,
-                  };
-                })}
-              label={DataDownloadValue["town"].label}
-              placeholder={DataDownloadValue["town"].pl}
-            />
 
             <Select
               w={200}
