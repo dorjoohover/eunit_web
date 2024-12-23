@@ -21,7 +21,7 @@ import { ServiceCard } from "@/components/shared/card";
 import { LocationModel } from "@/models/location.model";
 import { Assets } from "@/utils/assets";
 import { formatNumber, money, parseDate } from "@/utils/functions";
-import { ConstantApi } from "@/utils/routes";
+import { api, ConstantApi } from "@/utils/routes";
 import {
   defaultMapCenter,
   defaultMapContainerStyle,
@@ -32,7 +32,7 @@ import { Box, Button, Center, Flex, Text } from "@mantine/core";
 import { useFetch, useMediaQuery } from "@mantine/hooks";
 import { GoogleMap, Marker } from "@react-google-maps/api";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BiCalendar, BiDownload } from "react-icons/bi";
 import { CiLocationOn } from "react-icons/ci";
 import {
@@ -41,7 +41,6 @@ import {
   IoMdDownload,
 } from "react-icons/io";
 import { MdApartment } from "react-icons/md";
-import jsPDF from "jspdf";
 import Link from "next/link";
 type ResultType = {
   data: {
@@ -98,21 +97,6 @@ const Page = () => {
                    ? `${data?.location?.khoroo}-р хороо,`
                    : ""
                } ${data?.location.town}`;
-
-  const donwloadPdf = async () => {
-    const doc = new jsPDF();
-    doc.setTextColor(Colors.main);
-    // doc.setwe
-    doc.text(data?.location.town ?? data?.location.name ?? "", 10, 10);
-
-    const numbers = [1, 2, 3];
-    numbers.forEach((num, index) => {
-      doc.text(`Number ${num}`, 10, 20 + index * 10);
-    });
-
-    // Save the PDF
-    doc.save("example.pdf");
-  };
 
   return (
     <Box>
@@ -357,31 +341,40 @@ const Page = () => {
             base: 16,
           }}
         />
-        
+
         <Flex w={"100%"} justify={"center"}>
-          <Button
-            radius={32}
-            px={20}
-            bg={"main"}
-            fz={20}
-            py={12}
-            h={"auto"}
-            leftSection={
-              <Box
-                bg={"white"}
-                p={4}
-                style={{
-                  borderRadius: "100%",
-                }}
-              >
-                <IoMdDownload color={Colors.main} size={14} />
-              </Box>
-            }
-            onClick={() => donwloadPdf()}
-          >
-            Татаж авах (PDF)
-          </Button>
+          <Link href={`${api}request/service/pdf/${id}`} target="_blank">
+            <Button
+              radius={32}
+              px={20}
+              bg={"main"}
+              fz={20}
+              py={12}
+              h={"auto"}
+              leftSection={
+                <Box
+                  bg={"white"}
+                  p={4}
+                  style={{
+                    borderRadius: "100%",
+                  }}
+                >
+                  <IoMdDownload color={Colors.main} size={14} />
+                </Box>
+              }
+            >
+              Татаж авах (PDF)
+            </Button>
+          </Link>
         </Flex>
+
+        <div
+          id="pspdfkit"
+          style={{
+            width: "100%",
+            height: "100vh",
+          }}
+        ></div>
         <Spacer size={32} />
         {/* <Text fz={30} fw={"bold"}>
           Санал болгож буй үйлчилгээ
