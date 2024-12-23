@@ -2,66 +2,54 @@
 import { ReportWrapper } from "@/_context";
 import { Colors } from "@/base/constants";
 import { DistrictCard } from "@/components/shared/card";
-import {
-  defaultMapCenter,
-  defaultMapContainerStyle,
-  defaultMapOptions,
-  defaultMapZoom,
-} from "@/utils/values";
-import { Box, Flex, Grid, Text, Title } from "@mantine/core";
-import { GoogleMap, Marker, MarkerF } from "@react-google-maps/api";
-import Image from "next/image";
-import {
-  AdvancedMarker,
-  AdvancedMarkerAnchorPoint,
-  CollisionBehavior,
-} from "@vis.gl/react-google-maps";
-import { Assets, IconAssets, MarkerAssests, video } from "@/utils/assets";
+import { defaultMapZoom, districts } from "@/utils/values";
+import { Box, Flex, Text, Title } from "@mantine/core";
+import { GoogleMap, MarkerF } from "@react-google-maps/api";
+
+import { MarkerAssests, video } from "@/utils/assets";
 import { useFetch, useMediaQuery } from "@mantine/hooks";
 import { api } from "@/utils/routes";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 export default function Home() {
   const { data, loading } = useFetch<{
     payload: { avg: number; name: string; count: number }[];
   }>(`${api}ad/district`);
-  const center = {
-    lat: 47.918873, // Ulaanbaatar latitude
-    lng: 106.917366, // Ulaanbaatar longitude
-  };
 
   const markers = [
     {
-      id: 1,
+      id: 6,
+
       icon: MarkerAssests.orange,
       position: { lat: 47.921558220631354, lng: 106.90669349078951 },
     },
     {
-      id: 2,
+      id: 1,
       icon: MarkerAssests.yellow,
       position: { lat: 47.92683312588844, lng: 106.92951836341966 },
     },
     {
-      id: 3,
+      id: 0,
       icon: MarkerAssests.pink,
       position: { lat: 47.89864663332739, lng: 106.89576814269692 },
     },
     {
-      id: 4,
+      id: 2,
       icon: MarkerAssests.aqua,
       position: { lat: 47.924932363836156, lng: 106.81154741227641 },
     },
     {
-      id: 5,
+      id: 4,
       icon: MarkerAssests.purple,
       position: { lat: 47.91581798272838, lng: 106.96618360245022 },
     },
     {
-      id: 6,
+      id: 5,
       icon: MarkerAssests.green,
       position: { lat: 47.910709907527625, lng: 106.8783333148136 },
     },
     {
-      id: 7,
+      id: 3,
       icon: MarkerAssests.blue,
       position: { lat: 47.771730825448216, lng: 107.25424468977218 },
     },
@@ -73,6 +61,11 @@ export default function Home() {
       setShowVideo(true);
     }
   }, []);
+
+  const router = useRouter();
+  const handle = (id: number) => {
+    router.push(`/report?${`district=${id}`}`);
+  };
 
   const handleVideoEnd = () => {
     localStorage.setItem("hasViewedVideo", "true");
@@ -125,7 +118,7 @@ export default function Home() {
               base: 32,
             }}
             fw={"900"}
-            tt={'none'}
+            tt={"none"}
           >
             Орон сууцны үнэлгээ
           </Title>
@@ -151,7 +144,7 @@ export default function Home() {
                 if (d.name == "Хан-Уул")
                   return (
                     <DistrictCard
-                      bg="#B026FF"
+                      bg="#FF2079"
                       key={i}
                       text={d.name}
                       price={Math.round(d.avg)}
@@ -283,6 +276,9 @@ export default function Home() {
                     position={marker.position}
                     icon={marker.icon}
                     key={marker.id}
+                    onClick={() => {
+                      handle(marker.id);
+                    }}
                   ></MarkerF>
                 ))}
               </GoogleMap>

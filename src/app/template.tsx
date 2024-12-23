@@ -14,11 +14,12 @@ import {
 import { Loading } from "./loading";
 import { Footer } from "@/components/footer";
 import { useMediaQuery } from "@mantine/hooks";
+import { Box } from "@mantine/core";
 
 const Template = ({ children }: { children: ReactNode }) => {
   const { data, status } = useSession();
   const { user, setUser, refetchUser } = useAppContext();
-  const matches = useMediaQuery("(min-width: 56em)");
+  const matches = useMediaQuery("(min-width: 50em)");
 
   const handler = async () => {
     try {
@@ -63,7 +64,9 @@ const Template = ({ children }: { children: ReactNode }) => {
     <>
       <Navbar />
       {children}
-      <Footer />
+      <Box pl={!matches ? 0 : 60}>
+        <Footer />
+      </Box>
       {matches && <SideBar />}
       {!matches && <BottomNavigationBar />}
     </>

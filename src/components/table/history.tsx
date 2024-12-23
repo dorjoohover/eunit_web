@@ -80,7 +80,7 @@ export const ServiceHistory = () => {
   return (
     <Box>
       <ScrollArea scrollbars="x">
-        <Table stickyHeader mt={30} stickyHeaderOffset={60}>
+        <Table stickyHeader mt={60} stickyHeaderOffset={60}>
           <Table.Thead bg={"lightIvory"}>
             <Table.Tr>
               <Table.Th ta={"center"} c={"headBlue"} fw={"normal"}>
