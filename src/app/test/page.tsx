@@ -75,6 +75,7 @@ export default function Login() {
       // }
       console.log(idToken);
     } catch (error: any) {
+      console.log(error);
       notifications.show({ message: "Invalid OTP. Try again." });
     }
     setLoading(false);
