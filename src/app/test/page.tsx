@@ -51,6 +51,7 @@ export default function Login() {
       );
 
       console.log("OTP sent successfully:", confirmationResult);
+      setStep(2);
       return confirmationResult;
     } catch (error) {
       console.error("Error sending OTP:", error);
