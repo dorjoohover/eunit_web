@@ -63,16 +63,17 @@ export default function Login() {
     try {
       const result = await confirmation.confirm(otp);
       const idToken = await result.user.getIdToken();
-      const res = await fetch("/api/auth/verify-otp", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ idToken }),
-      });
-      if (res.ok) {
-        notifications.show({ message: "Login successful!" });
-      } else {
-        notifications.show({ message: "Verification failed." });
-      }
+      // const res = await fetch("/api/auth/verify-otp", {
+      //   method: "POST",
+      //   headers: { "Content-Type": "application/json" },
+      //   body: JSON.stringify({ idToken }),
+      // });
+      // if (res.ok) {
+      //   notifications.show({ message: "Login successful!" });
+      // } else {
+      //   notifications.show({ message: "Verification failed." });
+      // }
+      console.log(idToken);
     } catch (error: any) {
       notifications.show({ message: "Invalid OTP. Try again." });
     }
