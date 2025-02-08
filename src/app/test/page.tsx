@@ -20,7 +20,7 @@ export default function Login() {
         auth,
         "recaptcha-container",
         {
-          size: "normal",
+          size: "invisible",
         }
       );
     }
@@ -34,7 +34,7 @@ export default function Login() {
           auth,
           "recaptcha-container",
           {
-            size: "normal", // Or 'normal' for a visible CAPTCHA
+            size: "invisible", // Or 'normal' for a visible CAPTCHA
             callback: (response: any) => {
               console.log("reCAPTCHA verified:", response);
             },
@@ -49,7 +49,7 @@ export default function Login() {
         formattedPhone,
         appVerifier
       );
-
+      setConfirmation(confirmationResult);
       console.log("OTP sent successfully:", confirmationResult);
       setStep(2);
       return confirmationResult;

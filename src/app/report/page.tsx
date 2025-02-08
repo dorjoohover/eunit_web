@@ -135,7 +135,8 @@ const Page = () => {
     );
     if (res?.data?.success != false) {
       refetchUser();
-      router.push(`/report/result?id=${res?.data}`);
+      console.log(res?.data.data);
+      router.push(`/report/result?id=${res?.data.res}`);
     }
     setLoading(false);
   };

@@ -165,7 +165,7 @@ const Page = () => {
             }}
           />
           <InlineText
-            text="Таны сонгосон орон сууцны м.кв-н үнэ цэн:"
+            text="Таны сонгосон хотхоны м.кв-н үнэ цэн:"
             label={`    ${money(`${data?.data.min}`, "₮ ")}-${money(
               `${data?.data.max}`,
               "₮ "
@@ -240,8 +240,8 @@ const Page = () => {
           </Text>
           <Spacer size={24} />
 
-          <Spacer size={24} />
-          <ResultWidget title={"Макро мэдээлэл"} props={{ w: "100%" }}>
+          {/* <Spacer size={24} /> */}
+          {/* <ResultWidget title={"Макро мэдээлэл"} props={{ w: "100%" }}>
             <Text
               fz={{
                 md: 24,
@@ -307,7 +307,7 @@ const Page = () => {
                 />
               </Flex>
             </Box>
-          </ResultWidget>
+          </ResultWidget> */}
           <Spacer size={24} />
           <ResultWidget title={"Байршил"}>
             <Spacer size={40} />

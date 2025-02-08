@@ -77,7 +77,7 @@ export const ReportResult = ({
             <ApartmentInfo text={`2024`} title="Ашиглалтанд орсон он" />
             <ApartmentInfo text={`80м.кв`} title="Талбайн хэмжээ" />
           </ResultWidget>
-          <ResultWidget title={"Макро мэдээлэл"}>
+          {/* <ResultWidget title={"Макро мэдээлэл"}>
             <ApartmentInfo
               text={`Улаанбаатар хот, ${
                 districts.filter((d) => d.id == payload.district)[0].name
@@ -91,7 +91,7 @@ export const ReportResult = ({
             />
             <ApartmentInfo text={`2024`} title="Ашиглалтанд орсон он" />
             <ApartmentInfo text={`80м.кв`} title="Талбайн хэмжээ" />
-          </ResultWidget>
+          </ResultWidget> */}
           <ResultWidget title={"Байршил"}>
             <ApartmentInfo
               text={`Улаанбаатар хот, ${

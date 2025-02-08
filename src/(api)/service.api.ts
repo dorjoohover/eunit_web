@@ -29,7 +29,9 @@ export const sendRequest = async (
       startDate: value.startDate,
       endDate: value.endDate,
       count: value.count,
+      payment: 1
     };
+    console.log(body)
     const res = await fetch(`${api}request`, {
       method: "POST",
       mode: "no-cors",
@@ -39,6 +41,7 @@ export const sendRequest = async (
         Authorization: `Bearer ${token?.value ?? ""}`,
       },
     }).then((d) => d.json());
+    console.log(res);
     return {
       data: res.payload,
       token: true,
