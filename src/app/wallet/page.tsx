@@ -167,7 +167,7 @@ const Page = () => {
             justify={"space-between"}
           >
             <Box flex={1} w={"100%"} maw={500}>
-              <WalletCard onClick={open} user={user} />
+              <WalletCard onClick={open} />
             </Box>
             <Box flex={1} maw={500}>
               {/* <form onSubmit={form.onSubmit((values) => send(values))}>

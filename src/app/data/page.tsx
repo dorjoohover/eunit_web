@@ -20,7 +20,7 @@ import {
   Spacer,
 } from "@/components/report/shared";
 import { ServiceCard, WalletCard } from "@/components/shared/card";
-import { Constant, ServiceType } from "@/config/enum";
+import { Constant, PaymentType, ServiceType } from "@/config/enum";
 import { AdModel } from "@/models/ad.model";
 import { LocationModel } from "@/models/location.model";
 import { EunitIcon } from "@/theme/components/icon";
@@ -220,6 +220,7 @@ const Page = () => {
           count: data?.limit,
           startDate: form.date![0]!,
           endDate: form.date![1]!,
+          payment: PaymentType.POINT
         },
         ServiceType.DATA
       );
@@ -631,7 +632,6 @@ const Page = () => {
           </Modal.Header>
           <Box bg={"white"} px={"10%"} pt={20}>
             <WalletCard
-              user={user}
               onClick={() => {
                 router.push("/wallet");
               }}
