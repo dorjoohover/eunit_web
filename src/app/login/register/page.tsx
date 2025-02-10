@@ -101,15 +101,24 @@ export default function Page() {
 
   const [pin, setPin] = useState("");
   const matches = useMediaQuery("(min-width: 50em)");
+  const [isCooldown, setIsCooldown] = useState(false);
+
   const sendCode = async () => {
+    if (isCooldown) {
+      notifications.show({
+        message: "Түр хүлээнэ үү. Дахин оролдоно уу.",
+        color: "red",
+      });
+      return;
+    }
+
     try {
-      // Ensure reCAPTCHA is properly initialized
       if (!(window as any).recaptchaVerifier) {
         (window as any).recaptchaVerifier = new RecaptchaVerifier(
           auth,
           "recaptcha-container",
           {
-            size: "invisible", // Or 'normal' for a visible CAPTCHA
+            size: "invisible",
             callback: (response: any) => {
               console.log("reCAPTCHA verified:", response);
             },
@@ -126,13 +135,17 @@ export default function Page() {
       );
       setConfirmation(confirmationResult);
       console.log("OTP sent successfully:", confirmationResult);
-      notifications.show({
-        message: "Илгээлээ.",
-      });
+
+      notifications.show({ message: "Код илгээлээ.", color: "green" });
+
+      // Set cooldown for 1 minute
+      setIsCooldown(true);
+      setTimeout(() => setIsCooldown(false), 60000);
+
       setStep(2);
-      return confirmationResult;
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error sending OTP:", error);
+      notifications.show({ message: error.message, color: "red" });
     }
   };
 

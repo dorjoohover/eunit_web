@@ -11,7 +11,6 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const { firstname, lastname, email, token } = body;
-    console.log(firstname, lastname, email, token);
     if (!token) {
       return NextResponse.json({ error: "Token is required" }, { status: 400 });
     }
