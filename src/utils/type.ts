@@ -27,6 +27,14 @@ export type CacheVarType = {
   id: string;
 };
 
+export type QpayType = {
+  invoice_id: string;
+  qPay_shortUrl: string;
+  qr_image: string;
+  qr_text: string;
+  urls: { description: string; link: string; logo: string; name: string }[];
+};
+
 export type StepTypes = {
   map?: GoogleMapsType;
   district?: string;

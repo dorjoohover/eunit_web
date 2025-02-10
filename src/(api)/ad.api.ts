@@ -13,7 +13,7 @@ export const calcData = async (
   startDate: Date,
   endDate: Date
 ) => {
-  const token = (await cookies()).get("auth-token");
+  const token = (await cookies()).get("auth_token");
   if (!token?.value) return { token: false };
   try {
     const body = {

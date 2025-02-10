@@ -1,3 +1,4 @@
+import { useAppContext } from "@/_context";
 import { Colors } from "@/base/constants";
 import { UserModel } from "@/models/user.model";
 import { Assets, cardBg } from "@/utils/assets";
@@ -22,13 +23,8 @@ import { BsFillPlusCircleFill } from "react-icons/bs";
 import { FaPlusCircle } from "react-icons/fa";
 import { IoIosArrowRoundForward, IoMdArrowForward } from "react-icons/io";
 
-export const WalletCard = ({
-  onClick,
-  user,
-}: {
-  user?: UserModel;
-  onClick: () => void;
-}) => {
+export const WalletCard = ({ onClick }: { onClick: () => void }) => {
+  const { user } = useAppContext();
   return (
     <Box
       style={{

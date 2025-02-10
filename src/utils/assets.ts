@@ -14,7 +14,7 @@ export class Assets {
   static logoMiniBlue = `${lg}bom-blue.png`;
   static logoWhite = `${lg}bom-white-text.png`;
   static logoBlue = `${lg}bom-blue-text.png`;
-
+  static qpay = `${lg}qpay.png`
   static staticWallet = `${icons}static/wallet.png`;
   static wallet = `${icons}wallet.gif`;
 

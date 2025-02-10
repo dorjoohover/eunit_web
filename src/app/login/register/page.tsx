@@ -3,7 +3,7 @@
 import { notifications } from "@mantine/notifications";
 
 import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
-import { auth } from "./firebase";
+import { auth } from "../firebase";
 import React, { FormEvent, useEffect, useState } from "react";
 import { signIn } from "next-auth/react";
 import { Assets } from "@/utils/assets";
@@ -27,7 +27,6 @@ import { MdOutlinePersonSearch, MdPhoneIphone } from "react-icons/md";
 import { IoEye, IoEyeOff } from "react-icons/io5";
 import { useMediaQuery } from "@mantine/hooks";
 import { FaKey } from "react-icons/fa";
-import { useRouter } from "next/navigation";
 
 export default function Page() {
   const [phone, setPhone] = useState("");
@@ -47,22 +46,28 @@ export default function Page() {
       );
     }
   }, []);
-  const router = useRouter();
+
   const verifyOtp = async () => {
+    if (!payload.email || !payload.firstname || !payload.lastname) {
+      notifications.show({
+        message: "Мэдээлэл дутуу байна.",
+      });
+      return;
+    }
     setLoading(true);
     try {
       const result = await confirmation.confirm(otp);
       const idToken = await result.user.getIdToken(true);
       // const idToken =
-      //   "eyJhbGciOiJSUzI1NiIsImtpZCI6IjhkMjUwZDIyYTkzODVmYzQ4NDJhYTU2YWJhZjUzZmU5NDcxNmVjNTQiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vZXVuaXQtb3RwIiwiYXVkIjoiZXVuaXQtb3RwIiwiYXV0aF90aW1lIjoxNzM5MTUzODgzLCJ1c2VyX2lkIjoiNzBBbGVCUmpsS2JQcnpnTWkyZVFRUEk3bjU1MyIsInN1YiI6IjcwQWxlQlJqbEtiUHJ6Z01pMmVRUVBJN241NTMiLCJpYXQiOjE3MzkxNTM4ODMsImV4cCI6MTczOTE1NzQ4MywicGhvbmVfbnVtYmVyIjoiKzk3Njg4OTkyODY0IiwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJwaG9uZSI6WyIrOTc2ODg5OTI4NjQiXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwaG9uZSJ9fQ.XHoZOeQBoR7qFLYmJTobw1B8Qa70WQ2YP_24QrZ5Lsm3tlRoMyX0JdAM-ZEdzFJClXhnTd8U1xGVvDJFt4bkUpCYTaOaQ9wtXlZ1oKCSusCjmeZlIu0L70S3_EOQarh3sgbho6wN64FXhOwNFotT6kRB6PBfugHHNM0oXUBaOrVhHJWavGzN1dNwlJstJQt2olUsbYm9u9BoHwZrBbxbs5qad_bTkYhpRkjBeHkEeQYuBUC2IK366BO9MuPH1JWbr1MX_Tio3QPWbKM6gVG4xHbmyzqDr0ewTnUnfxVgAnSQ9651v8rYNbhtMg5Vga2gR4D-8Uqh-8VQ2L95sUlgPA";
-      const res = await fetch("/api/login/phone", {
+      //   "eyJhbGciOiJSUzI1NiIsImtpZCI6IjhkMjUwZDIyYTkzODVmYzQ4NDJhYTU2YWJhZjUzZmU5NDcxNmVjNTQiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vZXVuaXQtb3RwIiwiYXVkIjoiZXVuaXQtb3RwIiwiYXV0aF90aW1lIjoxNzM5MTQ2NDYzLCJ1c2VyX2lkIjoiNzBBbGVCUmpsS2JQcnpnTWkyZVFRUEk3bjU1MyIsInN1YiI6IjcwQWxlQlJqbEtiUHJ6Z01pMmVRUVBJN241NTMiLCJpYXQiOjE3MzkxNDY0NjMsImV4cCI6MTczOTE1MDA2MywicGhvbmVfbnVtYmVyIjoiKzk3Njg4OTkyODY0IiwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJwaG9uZSI6WyIrOTc2ODg5OTI4NjQiXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwaG9uZSJ9fQ.Xh_DFlr1-TvUBp8Ai55_3-qq_U1BQLevgLqstzkF9oypYXMPReluQFnnfGErYABcm3fT88HklcuieqwxmoYZWXxPTTBp_qx9KMALi4MlshXdzmt6-RNbmtHVCja29uMacjquTtyb5VsUyla5QGtG6nmns-dzGIL5u1quuYIfGX9Ehy6L0dyOnvB8oauDEJOFfqGOPPAvTSxh6A142xCNII_BW0pooJCAehXLGfsHCIrwftMzpQncIV3NR1o9yZ4EZMxuolXZbbYnih5-6NsvtRGVYupuejZmpCkSw2hzY1Jt43Belvo5vq9hUpN0SRnWLZ27FNYRQjNIcfXJ8xzLGg";
+      const { lastname, firstname, email } = payload;
+      const res = await fetch("/api/register/phone", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token: idToken }),
+        body: JSON.stringify({ token: idToken, lastname, firstname, email }),
       }).then((d) => d.json());
       if (res.success) {
-        notifications.show({ message: "Амжилттай нэвтэрлээ!" });
-        router.push("/");
+        notifications.show({ message: "Амжилттай бүртгүүллээ!" });
       } else {
         notifications.show({ message: res.message });
       }
@@ -71,6 +76,15 @@ export default function Page() {
       notifications.show({ message: "Invalid OTP. Try again." });
     }
     setLoading(false);
+  };
+  const [payload, setPayload] = useState({
+    lastname: "",
+    firstname: "",
+    email: "",
+  });
+
+  const register = (e: FormEvent<HTMLFormElement>) => {
+    console.log(e);
   };
 
   const handleGoogleSignIn = () => {
@@ -175,7 +189,7 @@ export default function Page() {
       <Flex flex={1} align={"center"}>
         <Flex direction={"column"} gap={30} maw={450} h={"80%"} mx={"auto"}>
           <Text ta={"center"} fz={30}>
-            Нэвтрэх
+            Бүртгүүлэх
           </Text>
           <Text ta={"center"}>
             Манай технологи нь нууц үг шаарддаггүй бөгөөд та нэвтрэх болон
@@ -282,6 +296,7 @@ export default function Page() {
                   p={10}
                   bg={"white"}
                   h={"100%"}
+                  mb={16}
                 >
                   <FaKey fill="#aaa" />
                   <PinInput
@@ -308,18 +323,43 @@ export default function Page() {
                   />
                 </Flex>
               </Stack>
+              <TextInput
+                mb={16}
+                variant="icon"
+                placeholder="Овог"
+                onChange={(e) =>
+                  setPayload((prev) => ({ ...prev, lastname: e.target.value }))
+                }
+              />
+              <TextInput
+                mb={16}
+                variant="icon"
+                placeholder="Нэр"
+                onChange={(e) =>
+                  setPayload((prev) => ({ ...prev, firstname: e.target.value }))
+                }
+              />
+              <TextInput
+                mb={16}
+                variant="icon"
+                placeholder="И-майл"
+                onChange={(e) =>
+                  setPayload((prev) => ({ ...prev, email: e.target.value }))
+                }
+              />
               <Button
                 onClick={() => verifyOtp()}
                 bg={"main"}
                 py={18}
                 h={"auto"}
-                fz={24}
                 w={"100%"}
+                fz={24}
               >
-                Нэвтрэх
+                Бүртгүүлэх
               </Button>
             </div>
           )}
+
           {/* <form
             onSubmit={form.onSubmit((values) => {
               // console.log(values);

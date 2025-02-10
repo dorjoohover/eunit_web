@@ -10,7 +10,7 @@ export const loginUser = async (
   name: string
 ) => {
   const cookie = await cookies();
-  const token = cookie.get("auth-token")?.value;
+  const token = cookie.get("auth_token")?.value;
   if (!token) {
     try {
       console.log(token);
@@ -26,7 +26,7 @@ export const loginUser = async (
       }).then((d) => d.json());
       console.log(res);
       if (res) {
-        cookie.set("auth-token", res.payload.accessToken, {
+        cookie.set("auth_token", res.payload.accessToken, {
           httpOnly: true,
           maxAge: 60 * 60 * 1000 * 12,
           sameSite: "none",
@@ -64,7 +64,8 @@ export const getUsers = async () => {
 export async function logOut() {
   try {
     const cookie = await cookies();
-    cookie.delete("auth-token");
+    console.log('logout')
+    cookie.delete("auth_token");
     // console.log("Logout request succeeded:");
     // return res;
   } catch (error) {
@@ -75,7 +76,7 @@ export async function logOut() {
 
 export const getUserData = async () => {
   try {
-    const token = (await cookies()).get("auth-token")?.value;
+    const token = (await cookies()).get("auth_token")?.value;
     if (!token) {
       return { token: false };
     }

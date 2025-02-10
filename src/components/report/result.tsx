@@ -210,7 +210,7 @@ export const UserWidget = ({ user }: { user?: UserModel }) => {
             base: 16,
           }}
         >
-          {user?.name ?? "a"}
+          {user?.lastname ?? ""} {user?.firstname ?? ""}
         </Text>
         <Text
           c={"grey"}

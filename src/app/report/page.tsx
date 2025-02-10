@@ -1,5 +1,5 @@
 "use client";
-import { sendRequest } from "@/(api)/service.api";
+import { checkPayment, sendRequest } from "@/(api)/service.api";
 import { useAppContext, useReportContext } from "@/_context";
 import { Colors } from "@/base/constants";
 import { locale } from "@/base/vocabs/mn";
@@ -7,7 +7,7 @@ import { ChooseDistrict, ServiceForm } from "@/components/report/district";
 import { ChooseLocation } from "@/components/report/location";
 import { ReportTitle } from "@/components/report/shared";
 import { ChargeCard, WalletCard } from "@/components/shared/card";
-import { Constant, ServiceType } from "@/config/enum";
+import { Constant, PaymentType, ServiceType } from "@/config/enum";
 import { LocationModel } from "@/models/location.model";
 import { colors } from "@/theme/colors";
 import { EunitIcon } from "@/theme/components/icon";
@@ -30,8 +30,9 @@ import { notifications } from "@mantine/notifications";
 import { IconSearch } from "@tabler/icons-react";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
-
+import { use, useEffect, useState } from "react";
+import { debounce } from "lodash";
+import { QpayType } from "@/utils/type";
 type DistrictType = {
   district: string;
   count: number;
@@ -83,30 +84,43 @@ const Page = () => {
       setLoading(false);
     }
   };
-
+  const [searchTerm, setSearchTerm] = useState("");
   const [filteredData, setFilteredData] = useState<LocationModel[] | null>(
     null
   );
   const [town, setTown] = useState(true);
   const [isList, setIsList] = useState(true);
-  const filter = (e: string) => {
-    if (data != null) {
+  useEffect(() => {
+    if (!data) return;
+
+    const debouncedFilter = debounce(() => {
+      const query = searchTerm.toLowerCase();
       setFilteredData(
-        (data as LocationModel[])
-          .filter(
-            (d) =>
-              d.town?.toLowerCase().includes(e) ||
-              d.name?.toLowerCase().includes(e) ||
-              d.englishNameOfTown?.toLowerCase().includes(e)
-          )
-          .sort((a, b) => {
-            return a.englishNameOfTown && b.englishNameOfTown
-              ? a.englishNameOfTown.localeCompare(b.englishNameOfTown)
-              : a.name.localeCompare(b.name);
-          })
+        (data as LocationModel[]).filter(
+          ({ town, name, englishNameOfTown }) =>
+            town?.toLowerCase().includes(query) ||
+            name?.toLowerCase().includes(query) ||
+            englishNameOfTown?.toLowerCase().includes(query)
+        )
       );
-    }
-  };
+    }, 100);
+
+    debouncedFilter();
+
+    return () => debouncedFilter.cancel();
+  }, [searchTerm, data]);
+  // const filter = (e: string) => {
+  //   if (data != null) {
+  //     setFilteredData(
+  //       (data as LocationModel[]).filter(
+  //         (d) =>
+  //           d.town?.toLowerCase().includes(e) ||
+  //           d.name?.toLowerCase().includes(e) ||
+  //           d.englishNameOfTown?.toLowerCase().includes(e)
+  //       )
+  //     );
+  //   }
+  // };
   const checker = () => {
     if (
       payload.district != null ||
@@ -117,8 +131,11 @@ const Page = () => {
     return false;
   };
   const router = useRouter();
-
-  const submit = async () => {
+  const [qpay, setQpay] = useState<{
+    qpay: QpayType;
+    id: number;
+  } | null>(null);
+  const submit = async (payment: number) => {
     setLoading(true);
     if (!checker()) return;
     if (user?.wallet && user?.wallet - 1000 < 0) {
@@ -130,12 +147,20 @@ const Page = () => {
     }
     const res = await sendRequest(
       payload.location!,
-      payload.values!,
+      { ...payload.values!, payment: payment },
       ServiceType.REVIEW
     );
+    if (payment == PaymentType.QPAY) {
+      console.log(res);
+      setQpay({
+        qpay: res?.data.data,
+        id: res?.data.res,
+      });
+      setLoading(false);
+      return;
+    }
     if (res?.data?.success != false) {
       refetchUser();
-      console.log(res?.data.data);
       router.push(`/report/result?id=${res?.data.res}`);
     }
     setLoading(false);
@@ -212,7 +237,16 @@ const Page = () => {
     };
   };
   const matches = useMediaQuery("(min-width: 36em)");
+  const check = async () => {
+    setLoading(true);
+    const res = await checkPayment(qpay?.id!, qpay?.qpay.invoice_id!);
 
+    if (res?.data) {
+      refetchUser();
+      router.push(`/report/result?id=${qpay?.id}`);
+    }
+    setLoading(false);
+  };
   return (
     <Box>
       <ReportTitle {...reportTitleText()}>
@@ -316,7 +350,7 @@ const Page = () => {
                   sm: "auto",
                 }}
                 placeholder={"Хайлт"}
-                onChange={(e) => filter(e.target.value)}
+                onChange={(e) => setSearchTerm(e.target.value)}
                 rightSection={<IconSearch color={Colors.deepMose} />}
               />
               <Text
@@ -418,7 +452,7 @@ const Page = () => {
         opened={opened}
         centered
         fullScreen={!matches}
-        size={matches ? "lg" : "xl"}
+        size={matches ? (qpay != null ? "md" : "lg") : "xl"}
         onClose={close}
       >
         <Modal.Overlay />
@@ -430,64 +464,144 @@ const Page = () => {
             </Modal.Title>
             <Modal.CloseButton />
           </Modal.Header>
-          <Box
-            bg={"white"}
-            px={{
-              sm: "10%",
-              base: 16,
-            }}
-            pt={20}
-          >
-            <WalletCard
-              user={user}
-              onClick={() => {
-                router.push("/wallet");
+          {qpay == null && (
+            <Box
+              bg={"white"}
+              px={{
+                sm: "10%",
+                base: 16,
               }}
-            />
-            <Highlight
-              mt={24}
-              mb={32}
-              fz={18}
-              highlight={["урамшуулал", "20,000 E-unit"]}
-              highlightStyles={{
-                background: Colors.main,
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-              }}
+              pt={20}
             >
-              Шинэ хэрэглэгчийн урамшуулал бүхий 20,000 E-unit ашиглан энэхүү
-              үйлчилгээг авах боломжтой.
-            </Highlight>
+              <WalletCard
+                onClick={() => {
+                  router.push("/wallet");
+                }}
+              />
+              <Highlight
+                mt={24}
+                mb={32}
+                fz={18}
+                highlight={["урамшуулал", "3,000 E-unit"]}
+                highlightStyles={{
+                  background: Colors.main,
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                }}
+              >
+                Шинэ хэрэглэгчийн урамшуулал бүхий 3,000 E-unit ашиглан энэхүү
+                үйлчилгээг авах боломжтой.
+              </Highlight>
 
-            <Button
-              w={"100%"}
-              fz={24}
-              bg={"main"}
-              py={16}
-              h={"auto"}
-              mb={40}
-              disabled={loading}
-              onClick={() => {
-                if (!loading) submit();
+              <Flex>
+                {user?.wallet && user?.wallet > 1000 && (
+                  <Button
+                    w={"100%"}
+                    fz={24}
+                    bg={"main"}
+                    py={16}
+                    h={"auto"}
+                    mb={40}
+                    disabled={loading}
+                    onClick={() => {
+                      if (!loading) submit(PaymentType.POINT);
+                    }}
+                  >
+                    {loading ? (
+                      <Center>
+                        <Loader color={"white"} />
+                      </Center>
+                    ) : (
+                      <Flex align={"center"}>
+                        <Text c={"white"} fz={24}>
+                          1,000.00
+                        </Text>
+                        <EunitIcon />
+                        <Text c={"white"} fz={24}>
+                          төлөх
+                        </Text>
+                      </Flex>
+                    )}
+                  </Button>
+                )}
+                <Button
+                  w={"100%"}
+                  fz={24}
+                  bg={"main"}
+                  py={16}
+                  h={"auto"}
+                  mb={40}
+                  disabled={loading}
+                  onClick={() => {
+                    if (!loading) submit(PaymentType.QPAY);
+                  }}
+                >
+                  {loading ? (
+                    <Center>
+                      <Loader color={"white"} />
+                    </Center>
+                  ) : (
+                    <Flex align={"center"}>
+                      <Text c={"white"} fz={24}>
+                        QPAY
+                      </Text>
+                      <Image
+                        src={Assets.qpay}
+                        width={25}
+                        height={25}
+                        alt="qpay logo"
+                      />
+                      <Text c={"white"} fz={24}>
+                        төлөх
+                      </Text>
+                    </Flex>
+                  )}
+                </Button>
+              </Flex>
+            </Box>
+          )}
+          {qpay != null && (
+            <Box
+              bg={"white"}
+              px={{
+                sm: "10%",
+                base: 16,
               }}
+              pt={20}
             >
-              {loading ? (
-                <Center>
-                  <Loader color={"white"} />
-                </Center>
-              ) : (
-                <Flex align={"center"}>
-                  <Text c={"white"} fz={24}>
-                    1,000.00
-                  </Text>
-                  <EunitIcon />
-                  <Text c={"white"} fz={24}>
-                    төлөх
-                  </Text>
-                </Flex>
-              )}
-            </Button>
-          </Box>
+              <Image
+                className="mx-auto"
+                src={`data:image/png;base64,${qpay?.qpay.qr_image}`}
+                alt="qpay image"
+                width={200}
+                height={200}
+              />
+              <Button
+                w={"100%"}
+                fz={24}
+                bg={"main"}
+                py={10}
+                h={"auto"}
+                mb={40}
+                disabled={loading}
+                onClick={() => {
+                  check();
+                }}
+              >
+                {loading ? (
+                  <Center>
+                    <Loader color={"white"} />
+                  </Center>
+                ) : (
+                  <Flex align={"center"}>
+                    <Text c={"white"} fz={24}>
+                      Төлбөр шалгах
+                    </Text>
+                  </Flex>
+                )}
+              </Button>
+            </Box>
+          )}
         </Modal.Content>
       </Modal.Root>
       <Box

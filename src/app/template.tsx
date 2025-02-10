@@ -37,7 +37,7 @@ const Template = ({ children }: { children: ReactNode }) => {
         if (data && dataUser) {
           setUser(dataUser);
         } else {
-          logOut();
+          // logOut();
           refetchUser();
         }
       }
@@ -51,7 +51,7 @@ const Template = ({ children }: { children: ReactNode }) => {
       handler();
     }
     if (status === "unauthenticated") {
-      logOut();
+      // logOut();
       refetchUser();
     }
   }, [status]);

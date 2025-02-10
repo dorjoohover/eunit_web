@@ -43,7 +43,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const token = (await cookies()).get("auth-token");
+  const token = (await cookies()).get("auth_token");
   return (
     <html lang="en">
       <Head>

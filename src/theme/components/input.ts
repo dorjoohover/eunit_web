@@ -140,7 +140,7 @@ export const inputs = {
           input: {
             border: `2px solid ${Colors.stroke}`,
             color: "#566476",
-            padding: "8px 28px",
+            padding: props.pe?.toString() ?? `8px 28px`,
             height: "auto",
             background: "white",
             borderRadius: 10,

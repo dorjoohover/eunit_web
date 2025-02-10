@@ -1,46 +1,28 @@
-import { type NextRequest } from "next/server";
-import { getUser } from "./(api)/user.api";
-export async function middleware(req: NextRequest) {
-  const token = req.cookies.get("auth-token")?.value;
-  if (!token) return;
-  //  return Response.redirect(new URL("/login", req.url));
+import { NextResponse, type NextRequest } from "next/server";
+import { currentUrl } from "./utils/routes";
 
-  const userData = await getUser();
-  // const userData = null
-  if (userData == null && token != undefined) {
-    // const log = await logOut();
-  }
-  // console.log(userData)
-  // if (userData) {
-  //   req.user = JSON.parse(userData as string);
-  //   return NextResponse.next();
-  // }
+export async function middleware(req: NextRequest) {
+  const token = req.cookies.get("auth_token")?.value;
+
   if (token && req.nextUrl.pathname.startsWith("/login")) {
-    return Response.redirect(new URL("/", req.url));
+    return NextResponse.redirect(new URL("/", req.url));
   }
+
+  const needUserUrls: Record<string, string> = {
+    wallet: "",
+    profile: "",
+    report: "location",
+  };
+
   const url = req.nextUrl.pathname;
 
-  const needUser = url.startsWith("/wallet") || url.startsWith("/profile");
-  if (!token && needUser && !userData) {
-    return Response.redirect(new URL("/login", req.url));
-  }
-
-  const needAdmin = req.nextUrl.pathname.startsWith("/admin");
-  if (needAdmin && token) {
-    const admin = false;
-    if (needAdmin && !admin) {
-      return Response.redirect(new URL("/", req.url));
-    } else {
-      const red =
-        req.nextUrl.pathname == "/admin" ||
-        req.nextUrl.pathname.toLowerCase().startsWith("/admin/request");
-      if (red && !url.toLocaleLowerCase().startsWith("/admin/request/"))
-        return Response.redirect(new URL("/admin/request/realState", req.url));
-      const users = url.toLocaleLowerCase() == "/admin/users";
-      if (users)
-        return Response.redirect(new URL("/admin/users/default", req.url));
+  for (const [k, v] of Object.entries(needUserUrls)) {
+    if (url.startsWith(`/${k}`) && (req.nextUrl.search.includes(v) || v === "") && !token) {
+      return NextResponse.redirect(new URL("/login", req.url));
     }
   }
+
+  return NextResponse.next();
 }
 
 export const config = {

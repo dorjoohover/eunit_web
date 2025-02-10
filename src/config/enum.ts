@@ -13,6 +13,11 @@ export enum UserType {
   admin = 10,
 }
 
+export enum PaymentType {
+  QPAY = 1,
+  POINT = 2,
+}
+
 export enum TransactionType {
   income = 10,
   outcome = 20,

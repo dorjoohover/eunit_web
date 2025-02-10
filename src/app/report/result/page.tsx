@@ -42,6 +42,7 @@ import {
 } from "react-icons/io";
 import { MdApartment } from "react-icons/md";
 import Link from "next/link";
+import { notifications } from "@mantine/notifications";
 type ResultType = {
   data: {
     min?: number;
@@ -62,7 +63,6 @@ const Page = () => {
   const [loading, setLoading] = useState(false);
   const id = params.get("id");
   const { user, refetchUser } = useAppContext();
-  const area = params.get("area");
   const [data, setData] = useState<ResultType>();
   const router = useRouter();
   const getResult = async () => {
@@ -71,6 +71,13 @@ const Page = () => {
 
     refetchUser();
     const res = await getRequestResult(+id);
+    if (!res.success) {
+      notifications.show({
+        message: res.message,
+      });
+      router.back();
+      return;
+    }
     if (!res?.token) {
       router.push("/login");
       return;

@@ -12,23 +12,35 @@ function clearCookie() {
   // if (hasToken) cookie.delete("token");
 }
 export async function getUser(): Promise<UserModel | null> {
-  const token = (await cookies()).get("auth-token")?.value;
+  const cookie = await cookies();
+  const token = cookie.get("auth_token")?.value;
 
   if (token) {
-    const res = await fetch(`${api}${UserApi.me}`, {
-      headers: {
-        Authorization: `Bearer ${token ?? ""}`,
-      },
-      cache: "no-store",
-    })
-      .then((d) => d.json())
-      .catch((e) => {
-        clearCookie();
+    try {
+      const res = await fetch(`${api}${UserApi.me}`, {
+        headers: {
+          Authorization: `Bearer ${token ?? ""}`,
+        },
+        cache: "no-store",
+      })
+        .then((d) => d.json())
+        .catch((e) => {
+          console.log(e)
+          cookie.delete("auth_token");
+          return null;
+        });
+      if (res?.succeed) {
+        return res.payload as UserModel;
+      } else {
+        console.log('else')
+        cookie.delete("auth_token");
         return null;
-      });
-    if (res.succeed) {
-      return res.payload as UserModel;
-    } else {
+      }
+    } catch (error: any) {
+      if (error.message == "expired") {
+        console.log('expired')
+        cookie.delete("auth_token");
+      }
       return null;
     }
   } else {
@@ -37,7 +49,7 @@ export async function getUser(): Promise<UserModel | null> {
 }
 
 export const userHistory = async (limit: number, page: number) => {
-  const token = (await cookies()).get("auth-token")?.value;
+  const token = (await cookies()).get("auth_token")?.value;
   if (token) {
     try {
       const res = await fetch(`${PaymentApi.user}/${limit}/${page}`, {
@@ -58,7 +70,7 @@ export const userHistory = async (limit: number, page: number) => {
 };
 
 export const sendFeedback = async (message: string, title: string) => {
-  const token = (await cookies()).get("auth-token")?.value;
+  const token = (await cookies()).get("auth_token")?.value;
   if (token) {
     try {
       await fetch(`${api}${UserApi.me}`, {
@@ -85,7 +97,7 @@ export const sendFeedback = async (message: string, title: string) => {
 
 export const getFeedback = async () => {
   try {
-    const token = (await cookies()).get("auth-token")?.value;
+    const token = (await cookies()).get("auth_token")?.value;
 
     const res = await fetch(`${api}${UserApi.feedbackGet}`, {
       headers: {
@@ -106,7 +118,7 @@ export const sendPointByUser = async (
   message: string
 ) => {
   try {
-    const token = (await cookies()).get("auth-token")?.value;
+    const token = (await cookies()).get("auth_token")?.value;
     const res = await fetch(`${PaymentApi.transaction}`, {
       method: "POST",
       headers: {
@@ -134,7 +146,7 @@ export const saveUser = async (
 ) => {
   try {
     const cookie = await cookies();
-    const token = cookie.get("auth-token")?.value;
+    const token = cookie.get("auth_token")?.value;
     const body = {
       lastname: lastname,
       firstname: firstname,
@@ -161,7 +173,7 @@ export const saveUser = async (
 
 export const getUsers = async (): Promise<UserModel[] | boolean> => {
   try {
-    const token = (await cookies()).get("auth-token")?.value;
+    const token = (await cookies()).get("auth_token")?.value;
     if (token) {
       const res = await fetch(`${api}${UserApi.user}`, {
         headers: {
