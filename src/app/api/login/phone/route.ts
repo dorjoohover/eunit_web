@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { cookies } from "next/headers";
+import { api } from "@/utils/routes";
 
-const API_URL = "http://localhost:3001/api/v1/auth/phone-login";
+const API_URL = api + "auth/phone-login";
 
 export async function POST(req: NextRequest) {
   let response = new NextResponse();

@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { cookies } from "next/headers";
+import { api } from "@/utils/routes";
 
-const API_URL = "http://localhost:3001/api/v1/auth/register";
+const API_URL = api + "auth/register";
 
 export async function POST(req: NextRequest) {
   let response = new NextResponse();
@@ -44,7 +45,10 @@ export async function POST(req: NextRequest) {
         maxAge: 60 * 60,
       });
 
-      response = NextResponse.json({ success: true, data: data.payload.message });
+      response = NextResponse.json({
+        success: true,
+        data: data.payload.message,
+      });
     }
 
     return response;
