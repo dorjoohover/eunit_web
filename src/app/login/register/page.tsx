@@ -83,10 +83,6 @@ export default function Page() {
     email: "",
   });
 
-  const register = (e: FormEvent<HTMLFormElement>) => {
-    console.log(e);
-  };
-
   const handleGoogleSignIn = () => {
     signIn("google", { callbackUrl: "/" });
   };
@@ -317,7 +313,7 @@ export default function Page() {
                       },
                     }}
                     value={pin}
-                    onChange={setPin}
+                    onChange={(e) => setPin(e)}
                     type="number"
                     oneTimeCode
                   />

@@ -302,7 +302,7 @@ export default function Page() {
                       },
                     }}
                     value={pin}
-                    onChange={setPin}
+                    onChange={(e) => setPin(e)}
                     type="number"
                     oneTimeCode
                   />
