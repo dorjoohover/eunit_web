@@ -56,7 +56,7 @@ export default function Page() {
     }
     setLoading(true);
     try {
-      const result = await confirmation.confirm(otp);
+      const result = await confirmation.confirm(pin);
       const idToken = await result.user.getIdToken(true);
       // const idToken =
       //   "eyJhbGciOiJSUzI1NiIsImtpZCI6IjhkMjUwZDIyYTkzODVmYzQ4NDJhYTU2YWJhZjUzZmU5NDcxNmVjNTQiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vZXVuaXQtb3RwIiwiYXVkIjoiZXVuaXQtb3RwIiwiYXV0aF90aW1lIjoxNzM5MTQ2NDYzLCJ1c2VyX2lkIjoiNzBBbGVCUmpsS2JQcnpnTWkyZVFRUEk3bjU1MyIsInN1YiI6IjcwQWxlQlJqbEtiUHJ6Z01pMmVRUVBJN241NTMiLCJpYXQiOjE3MzkxNDY0NjMsImV4cCI6MTczOTE1MDA2MywicGhvbmVfbnVtYmVyIjoiKzk3Njg4OTkyODY0IiwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJwaG9uZSI6WyIrOTc2ODg5OTI4NjQiXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwaG9uZSJ9fQ.Xh_DFlr1-TvUBp8Ai55_3-qq_U1BQLevgLqstzkF9oypYXMPReluQFnnfGErYABcm3fT88HklcuieqwxmoYZWXxPTTBp_qx9KMALi4MlshXdzmt6-RNbmtHVCja29uMacjquTtyb5VsUyla5QGtG6nmns-dzGIL5u1quuYIfGX9Ehy6L0dyOnvB8oauDEJOFfqGOPPAvTSxh6A142xCNII_BW0pooJCAehXLGfsHCIrwftMzpQncIV3NR1o9yZ4EZMxuolXZbbYnih5-6NsvtRGVYupuejZmpCkSw2hzY1Jt43Belvo5vq9hUpN0SRnWLZ27FNYRQjNIcfXJ8xzLGg";
