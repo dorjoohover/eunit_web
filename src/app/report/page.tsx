@@ -509,7 +509,7 @@ const Page = () => {
                   >
                     {loading ? (
                       <Center>
-                        <Loader color={"white"} />
+                        <Loader color={"white"} type="bars" />
                       </Center>
                     ) : (
                       <Flex align={"center"}>
@@ -538,7 +538,7 @@ const Page = () => {
                 >
                   {loading ? (
                     <Center>
-                      <Loader color={"white"} />
+                      <Loader color={"white"} type="bars" />
                     </Center>
                   ) : (
                     <Flex align={"center"}>
@@ -590,7 +590,7 @@ const Page = () => {
               >
                 {loading ? (
                   <Center>
-                    <Loader color={"white"} />
+                    <Loader color={"white"} type="bars" />
                   </Center>
                 ) : (
                   <Flex align={"center"}>
@@ -615,7 +615,7 @@ const Page = () => {
       >
         {loading && (
           <Center h={400}>
-            <Loader color="main" />
+            <Loader color="main" type="bars" />
           </Center>
         )}
         {!loading &&

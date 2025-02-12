@@ -17,6 +17,7 @@
 body {
   font-size: 18px;
   overflow-x: hidden;
+  -webkit-overflow-scrolling: auto;
 }
 
 @layer utilities {

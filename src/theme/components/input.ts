@@ -189,7 +189,13 @@ export const inputs = {
         };
       }
 
-      return { root: {}, wrapper: {}, input: {} };
+      return {
+        root: {},
+        wrapper: {},
+        input: {
+          "--input-placeholder-color": props.c,
+        },
+      };
     },
     defaultProps: {},
   }),

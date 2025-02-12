@@ -406,7 +406,7 @@ const Page = () => {
                   pointer
                   variant="rounded"
                   rightSection={
-                    isLoading ? <Loader size={18} /> : <Combobox.Chevron />
+                    isLoading ? <Loader size={18} type="bars" /> : <Combobox.Chevron />
                   }
                   onClick={() => combobox.toggleDropdown()}
                   rightSectionPointerEvents="none"

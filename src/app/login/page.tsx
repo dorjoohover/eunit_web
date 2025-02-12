@@ -7,6 +7,7 @@ import { auth } from "./firebase";
 import React, { FormEvent, useEffect, useState } from "react";
 import { signIn } from "next-auth/react";
 import { Assets } from "@/utils/assets";
+import { HiOutlineRefresh, HiOutlineX } from "react-icons/hi";
 import {
   Box,
   Button,
@@ -14,6 +15,8 @@ import {
   Container,
   Flex,
   Image,
+  Loader,
+  Modal,
   PinInput,
   Stack,
   Text,
@@ -22,7 +25,7 @@ import {
 import { GoogleIcon } from "@/components/icons";
 import { Colors } from "@/base/constants";
 import { useForm } from "@mantine/form";
-import { BiPhone } from "react-icons/bi";
+import { BiCloset, BiPhone } from "react-icons/bi";
 import { MdOutlinePersonSearch, MdPhoneIphone } from "react-icons/md";
 import { IoEye, IoEyeOff } from "react-icons/io5";
 import { useMediaQuery } from "@mantine/hooks";
@@ -35,18 +38,14 @@ export default function Page() {
   const [confirmation, setConfirmation] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1);
-
+  const [resendTimer, setResendTimer] = useState(60);
   useEffect(() => {
-    if (!(window as any).recaptchaVerifier) {
-      (window as any).recaptchaVerifier = new RecaptchaVerifier(
-        auth,
-        "recaptcha-container",
-        {
-          size: "invisible",
-        }
-      );
+    if (resendTimer > 0) {
+      const timer = setTimeout(() => setResendTimer(resendTimer - 1), 1000);
+      return () => clearTimeout(timer);
     }
-  }, []);
+  }, [resendTimer]);
+
   const router = useRouter();
   const verifyOtp = async () => {
     setLoading(true);
@@ -76,251 +75,192 @@ export default function Page() {
   const handleGoogleSignIn = () => {
     signIn("google", { callbackUrl: "/" });
   };
-
-  useEffect(() => {
-    if (!(window as any).recaptchaVerifier) {
-      (window as any).recaptchaVerifier = new RecaptchaVerifier(
-        auth,
-        "recaptcha-container",
-        {
-          size: "invisible",
-        }
-      );
-    }
-  }, []);
-
   const [pin, setPin] = useState("");
   const matches = useMediaQuery("(min-width: 50em)");
+
   const sendCode = async () => {
     try {
+      setLoading(true);
+      setResendTimer(60);
       // Ensure reCAPTCHA is properly initialized
-      if (!(window as any).recaptchaVerifier) {
-        (window as any).recaptchaVerifier = new RecaptchaVerifier(
-          auth,
-          "recaptcha-container",
-          {
-            size: "invisible", // Or 'normal' for a visible CAPTCHA
-            callback: (response: any) => {
-              console.log("reCAPTCHA verified:", response);
-            },
-          }
-        );
-      }
+      const recaptcha = new RecaptchaVerifier(auth, "recaptcha-container", {
+        size: "invisible",
+      });
 
-      const appVerifier = (window as any).recaptchaVerifier;
       const formattedPhone = `+976${phone}`;
       const confirmationResult = await signInWithPhoneNumber(
         auth,
         formattedPhone,
-        appVerifier
+        recaptcha
       );
       setConfirmation(confirmationResult);
       console.log("OTP sent successfully:", confirmationResult);
       notifications.show({
         message: "Илгээлээ.",
       });
+      setLoading(false);
       setStep(2);
       return confirmationResult;
-    } catch (error) {
+    } catch (error: any) {
+      notifications.show({
+        message: `${error?.message ?? error}`,
+      });
       console.error("Error sending OTP:", error);
     }
   };
 
   return (
-    <Flex
-      pt={60}
-      h={matches ? "calc(100vh - 60px)" : "100%"}
-      px={20}
-      bg={"lightIvory"}
-      justify={"center"}
-      direction={{
-        sm: "row",
-        base: "column-reverse",
-      }}
-      pb={{
-        sm: 0,
-        base: 32,
-      }}
-    >
+    <div>
       <Flex
-        flex={1}
+        pt={60}
+        h={matches ? "calc(100vh - 60px)" : "100%"}
+        px={20}
+        bg={"lightIvory"}
         justify={"center"}
-        mt={{
-          sm: 0,
-          base: 16,
+        direction={{
+          sm: "row",
+          base: "column-reverse",
         }}
-        align={"center"}
+        pb={{
+          sm: 0,
+          base: 32,
+        }}
+        gap={"5%"}
       >
-        <Box
-          pos={"relative"}
-          maw={512}
-          w={"auto"}
-          h={"80%"}
-          mx={"auto"}
-          style={{
-            borderRadius: 30,
-            overflow: "hidden",
+        <Flex
+          flex={1}
+          justify={!matches ? "center" : "right"}
+          mt={{
+            sm: 0,
+            base: 16,
           }}
+          align={"center"}
         >
-          {" "}
-          <Image
-            src={Assets.login}
-            alt="login page side image"
-            className="object-contain h-full"
-          />
-          {/* <div className="absolute top-0 left-0 w-full h-full bg-blue-900/60" /> */}
-        </Box>
-      </Flex>
-      <div id="recaptcha-container"></div>
-      <Flex flex={1} align={"center"}>
-        <Flex direction={"column"} gap={30} maw={450} h={"80%"} mx={"auto"}>
-          <Text ta={"center"} fz={30}>
-            Нэвтрэх
-          </Text>
-          <Text ta={"center"}>
-            Манай технологи нь нууц үг шаарддаггүй бөгөөд та нэвтрэх болон
-            бүртгүүлэхдээ өөрийн GMAIL хаягийг ашиглахад хангалттай
-          </Text>
-          <Button
-            c={"black"}
-            unstyled
-            bg={"white"}
+          <Box
+            pos={"relative"}
+            maw={"calc(100vh / 1070 * 512 )"}
             w={"100%"}
-            h={"auto"}
+            h={"calc(100vh / 1070 * 685)"}
             style={{
-              border: `2px solid ${Colors.stroke}`,
-              borderRadius: 10,
+              borderRadius: 30,
+              overflow: "hidden",
             }}
-            fz={"1.1em"}
-            onClick={() => handleGoogleSignIn()}
           >
-            <Flex w={"100%"} justify={"center"} align={"center"} py={8}>
-              <GoogleIcon size="1.4em" />
-              <Text c={"black"} fz={"1.1em"}>
-                Google хаягаар нэвтрэх
-              </Text>
-            </Flex>
-          </Button>
-          <Flex gap={8} align={"center"}>
-            <Box h={2} w={"100%"} bg={"#E0E0E0"}></Box>
-            <Text fw={500} fz={18}>
-              эсвэл
+            {" "}
+            <Image
+              src={Assets.login}
+              alt="login page side image"
+              className="object-contain h-full"
+            />
+            {/* <div className="absolute top-0 left-0 w-full h-full bg-blue-900/60" /> */}
+          </Box>
+        </Flex>
+
+        <Flex flex={1} justify={!matches ? "center" : "left"} align={"center"}>
+          <Flex
+            direction={"column"}
+            gap={0}
+            maw={450}
+            justify={"center"}
+            h={"calc(100vh / 1070 * 685)"}
+          >
+            <Text ta={"center"} fz={30} mb={25}>
+              Нэвтрэх
             </Text>
-            <Box h={2} w={"100%"} bg={"#E0E0E0"}></Box>
-          </Flex>
-          {step == 1 && (
-            <TextInput
-              variant="icon"
-              pe={"8px 100px 8px 80px"}
-              // className="relative"
-              leftSection={
-                <Box className="flex">
-                  <Flex
-                    justify={"center"}
-                    align={"center"}
-                    gap={0}
-                    rowGap={0}
-                    columnGap={0}
-                    px={10}
-                  >
-                    <MdPhoneIphone size={26} fill="#aaa" />
+            <Text ta={"center"} mb={25}>
+              Манай технологи нь нууц үг шаарддаггүй бөгөөд та нэвтрэх болон
+              бүртгүүлэхдээ өөрийн GMAIL хаягийг ашиглахад хангалттай
+            </Text>
+            <Button
+              c={"black"}
+              unstyled
+              bg={"white"}
+              w={"100%"}
+              h={"auto"}
+              style={{
+                border: `2px solid ${Colors.stroke}`,
+                borderRadius: 10,
+              }}
+              fz={"1.1em"}
+              onClick={() => handleGoogleSignIn()}
+            >
+              <Flex w={"100%"} justify={"center"} align={"center"} py={8}>
+                <GoogleIcon size="1.4em" />
+                <Text c={"black"} fz={"1.1em"}>
+                  Google хаягаар нэвтрэх
+                </Text>
+              </Flex>
+            </Button>
+            <Flex gap={8} align={"center"} my={30}>
+              <Box h={2} w={"100%"} bg={"#E0E0E0"}></Box>
+              <Text fw={500} fz={18}>
+                эсвэл
+              </Text>
+              <Box h={2} w={"100%"} bg={"#E0E0E0"}></Box>
+            </Flex>
+            {step == 1 && (
+              <TextInput
+                variant="icon"
+                pe={"8px 20px 8px 80px"}
+                // className="relative"
+                leftSection={
+                  <Box className="flex">
                     <Flex
+                      justify={"center"}
+                      align={"center"}
                       gap={0}
                       rowGap={0}
-                      align={"center"}
                       columnGap={0}
-                      mr={0}
-                      pr={0}
+                      px={10}
                     >
-                      <Text
-                        className=" flex align-center"
-                        c="#566476"
-                        style={{
-                          fontSize: 18,
-                        }}
+                      <MdPhoneIphone size={26} fill="#aaa" />
+                      <Flex
+                        gap={0}
+                        rowGap={0}
+                        align={"center"}
+                        columnGap={0}
+                        mr={0}
+                        pr={0}
                       >
-                        +976
-                      </Text>
-                      <Box w={1} bg={"#566476"} py={8} ml={4}></Box>
+                        <Text
+                          className=" flex align-center"
+                          c="#566476"
+                          style={{
+                            fontSize: 18,
+                          }}
+                        >
+                          +976
+                        </Text>
+                        <Box w={1} bg={"#566476"} py={8} ml={4}></Box>
+                      </Flex>
                     </Flex>
-                  </Flex>
-                </Box>
-              }
-              onChange={(e) => setPhone(e.target.value)}
-              styles={{
-                label: {
-                  color: "#566476",
-                  fontSize: 18,
-                },
-              }}
-              label="Утасны дугаар"
-              rightSectionWidth={100}
-              leftSectionWidth={80}
-              rightSection={
-                <Button
-                  size="xs"
-                  onClick={sendCode}
-                  c={"#546274"}
-                  bg={"#ECEFF2"}
-                  radius={6}
-                >
-                  Код авах
-                </Button>
-              }
-            />
-          )}
-          {step == 2 && (
-            <div>
-              {" "}
-              <Stack align="start">
-                <Text fz={18} fw={500} c="#566476">
-                  Нэг удаагийн нууц үг
-                </Text>
-                <Flex
-                  className="border-[#E7E5E4] border-2 rounded-[10px]"
-                  align={"center"}
-                  p={10}
-                  bg={"white"}
-                  h={"100%"}
-                >
-                  <FaKey fill="#aaa" />
-                  <PinInput
-                    length={6}
-                    styles={{
-                      root: {
-                        width: "100%",
-                        height: 64,
-                      },
-                      pinInput: {
-                        height: "100%",
-                        flex: 1,
-                      },
-                      input: {
-                        backgroundColor: "#ECEFF2",
-                        height: "100%",
-                        borderRadius: 6,
-                      },
-                    }}
-                    value={pin}
-                    onChange={(e) => setPin(e)}
-                    type="number"
-                    oneTimeCode
-                  />
-                </Flex>
-              </Stack>
-              <Button
-                onClick={() => verifyOtp()}
-                bg={"main"}
-                py={18}
-                h={"auto"}
-                fz={24}
-                w={"100%"}
-              >
-                Нэвтрэх
-              </Button>
-            </div>
-          )}
-          {/* <form
+                  </Box>
+                }
+                onChange={(e) => setPhone(e.target.value)}
+                styles={{
+                  label: {
+                    color: "#566476",
+                    fontSize: 18,
+                  },
+                }}
+                label="Утасны дугаар"
+                leftSectionWidth={80}
+              />
+            )}
+            <Button
+              onClick={() => sendCode()}
+              w={"100%"}
+              bg={"main"}
+              radius={10}
+              fz={24}
+              py={18}
+              h={"auto"}
+              mt={25}
+            >
+              {loading ? <Loader type="bars" color="white" /> : "Нэвтрэх"}
+            </Button>
+
+            {/* <form
             onSubmit={form.onSubmit((values) => {
               // console.log(values);
             })}
@@ -349,12 +289,97 @@ export default function Page() {
                 Би нууцлалын бодлого болон дотоод журмын дүрмийг зөвшөөрч байна.
               </Text>
             </Flex>
-            <Button type="submit" w={"100%"}>
-              Нэвтрэх
-            </Button>
+        
           </form> */}
+          </Flex>
         </Flex>
-      </Flex>
-    </Flex>
+      </Flex>{" "}
+      {step == 2 && (
+        <Modal.Root
+          opened={step == 2}
+          centered
+          size={"md"}
+          onClose={() => setStep(1)}
+        >
+          <Modal.Overlay />
+
+          <Modal.Content px={32} py={20} radius={20} bg={"lightIvory"}>
+            <Modal.Header px={0} bg={"lightIvory"}>
+              <Modal.Title c={"headBlue"} fz={30} fw={"bold"}>
+                Нэг удаагийн нууц үг
+              </Modal.Title>
+              <Button
+                unstyled
+                p={8}
+                onClick={() => setStep(1)}
+                className={`border bg-transparent hover:bg-main hover:text-white transition-all rounded-full border-[${Colors.stroke}]`}
+              >
+                <HiOutlineX size={26} />
+              </Button>
+            </Modal.Header>
+            <div>
+              <Stack align="start">
+                <Text fz={18} fw={200} lh={1.2} mb={40}>
+                  Таны дугаарт нэг удаагийн нууц үг явуулсан бөгөөд хугацаа
+                  дууссаны дараа дахин илгээх товч дээр дарна уу.
+                </Text>
+                <TextInput
+                  variant="icon"
+                  maxLength={6}
+                  w={"100%"}
+                  mb={25}
+                  pe={"8px 150px 8px 20px"}
+                  // className="relative"
+                  rightSection={
+                    <Box className="flex">
+                      {resendTimer == 0 ? (
+                        <Button
+                          px={0}
+                          bg={"transparent"}
+                          c={"main"}
+                          rightSection={
+                            <HiOutlineRefresh
+                              color={Colors.main}
+                              fontSize={24}
+                            />
+                          }
+                          onClick={() => sendCode()}
+                        >
+                          Дахин илгээх
+                        </Button>
+                      ) : (
+                        <Text c={"main"}>{resendTimer} секунд</Text>
+                      )}
+                    </Box>
+                  }
+                  onChange={(e) => setPin(e.target.value)}
+                  ta={"start"}
+                  styles={{
+                    input: {},
+                  }}
+                  style={{}}
+                  c={"#546274"}
+                  error={pin.length == 6 ? false : "*6 оронтой тоо байх ёстой."}
+                  placeholder="Нууц үг оруулна уу."
+                  rightSectionWidth={150}
+                />
+              </Stack>
+              <Button
+                onClick={() => verifyOtp()}
+                bg={pin.length == 6 ? "main" : "#546274"}
+                py={18}
+                h={"auto"}
+                fz={24}
+                w={"100%"}
+                disabled={pin.length != 6}
+              >
+                Баталгаажуулах
+              </Button>
+            </div>
+          </Modal.Content>
+        </Modal.Root>
+      )}
+      <div id="recaptcha-container"></div>
+    </div>
   );
 }
