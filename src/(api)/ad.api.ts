@@ -22,6 +22,7 @@ export const calcData = async (
       type: service,
       startDate: startDate,
       endDate: endDate,
+      // payment: payment,
     };
     const res = await fetch(`${api}ad/calc`, {
       method: "POST",

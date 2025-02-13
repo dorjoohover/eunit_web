@@ -121,7 +121,8 @@ export default function Page() {
           sm: 0,
           base: 32,
         }}
-        columnGap={"5%"}
+        columnGap={matches ? "5%" : "0%"}
+        // rowGap={!matches ? "5%" : "0%"}
       >
         <Flex
           flex={1}
@@ -197,7 +198,7 @@ export default function Page() {
             <Flex>
               {step == 1 && (
                 <TextInput
-                  flex={1}
+                  flex={3}
                   variant="icon"
                   pe={"8px 20px 8px 80px"}
                   // className="relative"
@@ -246,7 +247,7 @@ export default function Page() {
                 />
               )}
               <Button
-                flex={1}
+                flex={2}
                 onClick={() => sendCode()}
                 w={"100%"}
                 bg={"main"}

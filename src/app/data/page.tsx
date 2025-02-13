@@ -1,25 +1,16 @@
 "use client";
 
 import { calcData } from "@/(api)/ad.api";
-import { getUserData } from "@/(api)/auth.api";
-import { getRequestResult, sendRequest } from "@/(api)/service.api";
+import {
+  checkPayment,
+  getRequestResult,
+  sendRequest,
+} from "@/(api)/service.api";
 import { useAppContext } from "@/_context";
 import { Colors } from "@/base/constants";
 import * as XLSX from "xlsx";
-import { DownloadIcon } from "@/components/icons";
-import {
-  AnalyzeWidget,
-  ApartmentInfo,
-  ResultWidget,
-  UserWidget,
-} from "@/components/report/result";
-import {
-  IconText,
-  InlineText,
-  ReportTitle,
-  Spacer,
-} from "@/components/report/shared";
-import { ServiceCard, WalletCard } from "@/components/shared/card";
+import { ReportTitle, Spacer } from "@/components/report/shared";
+import { WalletCard } from "@/components/shared/card";
 import { Constant, PaymentType, ServiceType } from "@/config/enum";
 import { AdModel } from "@/models/ad.model";
 import { LocationModel } from "@/models/location.model";
@@ -27,55 +18,37 @@ import { EunitIcon } from "@/theme/components/icon";
 import { Assets } from "@/utils/assets";
 import { money, parseDate } from "@/utils/functions";
 import { ConstantApi } from "@/utils/routes";
-import {
-  DataDownloadValue,
-  defaultMapCenter,
-  defaultMapContainerStyle,
-  defaultMapOptions,
-  defaultMapZoom,
-  districts,
-} from "@/utils/values";
+import { DataDownloadValue, districts } from "@/utils/values";
 import {
   Box,
   Button,
   Center,
   Combobox,
   Flex,
+  Grid,
   Highlight,
   Input,
   InputBase,
   Loader,
   Modal,
-  NumberInput,
   Overlay,
   rem,
   ScrollArea,
   Select,
-  Table,
   Text,
-  TextInput,
   useCombobox,
 } from "@mantine/core";
-import { DatePicker, DatePickerInput, DatesRangeValue } from "@mantine/dates";
-import { useForm } from "@mantine/form";
-import { useDisclosure, useFetch } from "@mantine/hooks";
-import { GoogleMap, Marker } from "@react-google-maps/api";
+import { DatePickerInput } from "@mantine/dates";
+import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import { IconCalendar } from "@tabler/icons-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { BiCalendar, BiDownload } from "react-icons/bi";
-import { CiLocationOn } from "react-icons/ci";
 import { FaUnlockAlt } from "react-icons/fa";
-import { FiUnlock } from "react-icons/fi";
-import {
-  IoIosArrowRoundBack,
-  IoMdArrowBack,
-  IoMdDownload,
-} from "react-icons/io";
-import { MdApartment } from "react-icons/md";
 import { RiFileDownloadFill } from "react-icons/ri";
-import { Loading } from "../loading";
 import { notifications } from "@mantine/notifications";
+import Image from "next/image";
+import Link from "next/link";
+import { QpayType } from "@/utils/type";
 
 type ResultType = {
   data: AdModel[];
@@ -94,6 +67,8 @@ const Page = () => {
   const params = useSearchParams();
   const [loading, setLoading] = useState(false);
   const id = params.get("id");
+  const matches = useMediaQuery("(min-width: 36em)");
+  const matchesPad = useMediaQuery("(min-width: 50em)");
   const { user, refetchUser } = useAppContext();
   const date = new Date();
   const [opened, { open, close }] = useDisclosure(false);
@@ -112,6 +87,7 @@ const Page = () => {
   const router = useRouter();
   const [location, setLocation] = useState<LocationModel[]>([]);
   const [filteredLocation, setFilteredLocation] = useState<LocationModel[]>([]);
+  const [success, setSuccess] = useState(false);
   const combobox = useCombobox({
     onDropdownClose: () => {
       combobox.resetSelectedOption();
@@ -209,8 +185,11 @@ const Page = () => {
       setLoading(false);
     }
   };
-
-  const excel = async () => {
+  const [qpay, setQpay] = useState<{
+    qpay: QpayType;
+    id: number;
+  } | null>(null);
+  const excel = async (type: number) => {
     setLoading(true);
     if (form.town && form.area) {
       const res = await sendRequest(
@@ -220,7 +199,7 @@ const Page = () => {
           count: data?.limit,
           startDate: form.date![0]!,
           endDate: form.date![1]!,
-          payment: PaymentType.POINT
+          payment: type,
         },
         ServiceType.DATA
       );
@@ -231,8 +210,20 @@ const Page = () => {
           color: "warning",
         });
       }
-      refetchUser();
-      onGetExportProduct(res?.data, "Дата", "Дата");
+      if (type == PaymentType.QPAY) {
+        console.log(res);
+        setQpay({
+          qpay: res?.data.data,
+          id: res?.data.res,
+        });
+        setLoading(false);
+        return;
+      }
+      if (res?.data?.success != false) {
+        refetchUser();
+        onGetExportProduct(res?.data, "Дата", "Дата");
+      }
+
       close();
     }
     setLoading(false);
@@ -343,6 +334,17 @@ const Page = () => {
         {item?.town}
       </Combobox.Option>
     ));
+
+  const check = async () => {
+    setLoading(true);
+    const res = await checkPayment(qpay?.id!, qpay?.qpay.invoice_id!);
+
+    if (res?.data) {
+      refetchUser();
+      onGetExportProduct(res?.data, "Дата", "Дата");
+    }
+    setLoading(false);
+  };
   return (
     <Box>
       <ReportTitle
@@ -406,7 +408,11 @@ const Page = () => {
                   pointer
                   variant="rounded"
                   rightSection={
-                    isLoading ? <Loader size={18} type="bars" /> : <Combobox.Chevron />
+                    isLoading ? (
+                      <Loader size={18} type="bars" />
+                    ) : (
+                      <Combobox.Chevron />
+                    )
                   }
                   onClick={() => combobox.toggleDropdown()}
                   rightSectionPointerEvents="none"
@@ -630,47 +636,169 @@ const Page = () => {
             </Modal.Title>
             <Modal.CloseButton />
           </Modal.Header>
-          <Box bg={"white"} px={"10%"} pt={20}>
-            <WalletCard
-              onClick={() => {
-                router.push("/wallet");
-              }}
-            />
-            <Highlight
-              mt={24}
-              mb={32}
-              fz={18}
-              highlight={["урамшуулал", "20,000 E-unit"]}
-              highlightStyles={{
-                background: Colors.main,
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-              }}
-            >
-              Шинэ хэрэглэгчийн урамшуулал бүхий 20,000 E-unit ашиглан энэхүү
-              үйлчилгээг авах боломжтой.
-            </Highlight>
-
-            <Button
-              w={"100%"}
-              fz={24}
-              bg={"main"}
-              py={16}
-              h={"auto"}
-              mb={40}
-              onClick={() => excel()}
-            >
-              <Flex align={"center"}>
-                <Text c={"white"} fz={24}>
-                  {money(`${(data?.limit ?? 0) * 100}`)}
-                </Text>
-                <EunitIcon />
-                <Text c={"white"} fz={24}>
-                  төлөх
-                </Text>
+          {qpay == null && (
+            <Box bg={"white"} px={"10%"} pt={20}>
+              <WalletCard
+                onClick={() => {
+                  router.push("/wallet");
+                }}
+              />
+              <Highlight
+                mt={24}
+                mb={32}
+                fz={18}
+                highlight={["урамшуулал", "20,000 E-unit"]}
+                highlightStyles={{
+                  background: Colors.main,
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                }}
+              >
+                Шинэ хэрэглэгчийн урамшуулал бүхий 20,000 E-unit ашиглан энэхүү
+                үйлчилгээг авах боломжтой.
+              </Highlight>
+              <Flex>
+                {user?.wallet && user?.wallet > (data?.limit ?? 0) * 100 && (
+                  <Button
+                    w={"100%"}
+                    fz={24}
+                    bg={"main"}
+                    py={16}
+                    h={"auto"}
+                    mb={40}
+                    disabled={loading}
+                    onClick={() => {
+                      if (!loading) excel(PaymentType.POINT);
+                    }}
+                  >
+                    {loading ? (
+                      <Center>
+                        <Loader color={"white"} type="bars" />
+                      </Center>
+                    ) : (
+                      <Flex align={"center"}>
+                        <Text c={"white"} fz={24}>
+                          {money(`${(data?.limit ?? 0) * 100}`)}
+                        </Text>
+                        <EunitIcon />
+                      </Flex>
+                    )}
+                  </Button>
+                )}
+                <Button
+                  w={"100%"}
+                  fz={24}
+                  bg={"main"}
+                  py={16}
+                  h={"auto"}
+                  mb={40}
+                  disabled={loading}
+                  onClick={() => {
+                    if (!loading) excel(PaymentType.QPAY);
+                  }}
+                >
+                  {loading ? (
+                    <Center>
+                      <Loader color={"white"} type="bars" />
+                    </Center>
+                  ) : (
+                    <Flex align={"center"}>
+                      <Text c={"white"} fz={24}>
+                        QPAY
+                      </Text>
+                      <Image
+                        src={Assets.qpay}
+                        width={25}
+                        height={25}
+                        alt="qpay logo"
+                      />
+                    </Flex>
+                  )}
+                </Button>
               </Flex>
-            </Button>
-          </Box>
+            </Box>
+          )}
+          {qpay != null && (
+            <Box
+              bg={"white"}
+              px={{
+                sm: "10%",
+                base: 16,
+              }}
+              pt={20}
+            >
+              {!matchesPad && matches && (
+                <Grid mb={20}>
+                  {qpay.qpay.urls.map((url, k) => {
+                    return (
+                      <Grid.Col key={k} span={3}>
+                        <Link href={url.link}>
+                          <Image
+                            src={url.logo}
+                            width={60}
+                            height={60}
+                            alt={url.name}
+                          />
+                        </Link>
+                      </Grid.Col>
+                    );
+                  })}
+                </Grid>
+              )}
+              {!matches ? (
+                <Grid mb={20}>
+                  {qpay.qpay.urls.map((url, k) => {
+                    return (
+                      <Grid.Col key={k} span={3}>
+                        {/* {JSON.stringify(url)} */}
+
+                        <Image
+                          src={url.logo}
+                          width={60}
+                          height={60}
+                          alt={url.name}
+                        />
+                        {/* <a href={url.link}>
+                        </a> */}
+                      </Grid.Col>
+                    );
+                  })}
+                </Grid>
+              ) : (
+                <Image
+                  className="mx-auto"
+                  src={`data:image/png;base64,${qpay?.qpay.qr_image}`}
+                  alt="qpay image"
+                  width={200}
+                  height={200}
+                />
+              )}
+              <Button
+                w={"100%"}
+                fz={24}
+                bg={"main"}
+                py={10}
+                h={"auto"}
+                mb={40}
+                disabled={loading}
+                onClick={() => {
+                  check();
+                }}
+              >
+                {loading ? (
+                  <Center>
+                    <Loader color={"white"} type="bars" />
+                  </Center>
+                ) : (
+                  <Flex align={"center"}>
+                    <Text c={"white"} fz={24}>
+                      Төлбөр шалгах
+                    </Text>
+                  </Flex>
+                )}
+              </Button>
+            </Box>
+          )}
         </Modal.Content>
       </Modal.Root>
       <Box
