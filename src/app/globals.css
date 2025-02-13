@@ -13,11 +13,14 @@
     --foreground: #ededed;
   }
 }
+* {
+  -webkit-overflow-scrolling: unset !important;
+}
 
 body {
   font-size: 18px;
   overflow-x: hidden;
-  -webkit-overflow-scrolling: auto;
+  -webkit-overflow-scrolling: unset !important;
 }
 
 @layer utilities {
