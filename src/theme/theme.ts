@@ -1,9 +1,10 @@
 "use client";
-import { createTheme } from "@mantine/core";
+import { createTheme, Loader } from "@mantine/core";
 import { colors } from "./colors";
 import { components } from "./components";
 import { Sizes } from "@/base/constants";
 import { exo2 } from "@/utils/fonts";
+import { RingLoader } from "./components/loader";
 
 export const theme = createTheme({
   colors: colors,
@@ -15,9 +16,16 @@ export const theme = createTheme({
     lg: Sizes.lg,
     "2xl": Sizes["2xl"],
   },
-  components: components,
+  components: {
+    ...components,
+    Loader: Loader.extend({
+      defaultProps: {
+        loaders: { ...Loader.defaultLoaders, ring: RingLoader },
+        type: "ring",
+      },
+    }),
+  },
   headings: {
     fontFamily: exo2.style.fontFamily,
   },
-  
 });

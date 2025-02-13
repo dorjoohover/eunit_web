@@ -24,12 +24,8 @@ import {
 } from "@mantine/core";
 import { GoogleIcon } from "@/components/icons";
 import { Colors } from "@/base/constants";
-import { useForm } from "@mantine/form";
-import { BiCloset, BiPhone } from "react-icons/bi";
 import { MdOutlinePersonSearch, MdPhoneIphone } from "react-icons/md";
-import { IoEye, IoEyeOff } from "react-icons/io5";
 import { useMediaQuery } from "@mantine/hooks";
-import { FaKey } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 
 export default function Page() {
@@ -86,7 +82,7 @@ export default function Page() {
       const recaptcha = new RecaptchaVerifier(auth, "recaptcha-container", {
         size: "invisible",
       });
-
+      console.log(phone);
       const formattedPhone = `+976${phone}`;
       const confirmationResult = await signInWithPhoneNumber(
         auth,
@@ -125,7 +121,7 @@ export default function Page() {
           sm: 0,
           base: 32,
         }}
-        gap={"5%"}
+        columnGap={"5%"}
       >
         <Flex
           flex={1}
@@ -198,67 +194,71 @@ export default function Page() {
               </Text>
               <Box h={2} w={"100%"} bg={"#E0E0E0"}></Box>
             </Flex>
-            {step == 1 && (
-              <TextInput
-                variant="icon"
-                pe={"8px 20px 8px 80px"}
-                // className="relative"
-                leftSection={
-                  <Box className="flex">
-                    <Flex
-                      justify={"center"}
-                      align={"center"}
-                      gap={0}
-                      rowGap={0}
-                      columnGap={0}
-                      px={10}
-                    >
-                      <MdPhoneIphone size={26} fill="#aaa" />
+            <Flex>
+              {step == 1 && (
+                <TextInput
+                  flex={1}
+                  variant="icon"
+                  pe={"8px 20px 8px 80px"}
+                  // className="relative"
+                  leftSection={
+                    <Box className="flex">
                       <Flex
+                        justify={"center"}
+                        align={"center"}
                         gap={0}
                         rowGap={0}
-                        align={"center"}
                         columnGap={0}
-                        mr={0}
-                        pr={0}
+                        px={10}
                       >
-                        <Text
-                          className=" flex align-center"
-                          c="#566476"
-                          style={{
-                            fontSize: 18,
-                          }}
+                        <MdPhoneIphone size={26} fill="#aaa" />
+                        <Flex
+                          gap={0}
+                          rowGap={0}
+                          align={"center"}
+                          columnGap={0}
+                          mr={0}
+                          pr={0}
                         >
-                          +976
-                        </Text>
-                        <Box w={1} bg={"#566476"} py={8} ml={4}></Box>
+                          <Text
+                            className=" flex align-center"
+                            c="#566476"
+                            style={{
+                              fontSize: 18,
+                            }}
+                          >
+                            +976
+                          </Text>
+                          <Box w={1} bg={"#566476"} py={8} ml={4}></Box>
+                        </Flex>
                       </Flex>
-                    </Flex>
-                  </Box>
-                }
-                onChange={(e) => setPhone(e.target.value)}
-                styles={{
-                  label: {
-                    color: "#566476",
-                    fontSize: 18,
-                  },
-                }}
-                label="Утасны дугаар"
-                leftSectionWidth={80}
-              />
-            )}
-            <Button
-              onClick={() => sendCode()}
-              w={"100%"}
-              bg={"main"}
-              radius={10}
-              fz={24}
-              py={18}
-              h={"auto"}
-              mt={25}
-            >
-              {loading ? <Loader type="bars" color="white" /> : "Нэвтрэх"}
-            </Button>
+                    </Box>
+                  }
+                  onChange={(e) => setPhone(e.target.value)}
+                  styles={{
+                    label: {
+                      color: "#566476",
+                      fontSize: 18,
+                    },
+                  }}
+                  label="Утасны дугаар"
+                  leftSectionWidth={80}
+                />
+              )}
+              <Button
+                flex={1}
+                onClick={() => sendCode()}
+                w={"100%"}
+                bg={"main"}
+                radius={10}
+                fz={24}
+                py={8}
+                h={54}
+                mt={25}
+              >
+                {loading ? <Loader type="bars" color="white" /> : "Нэвтрэх"}
+              </Button>
+            </Flex>
 
             {/* <form
             onSubmit={form.onSubmit((values) => {

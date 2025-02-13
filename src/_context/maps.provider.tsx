@@ -31,7 +31,11 @@ export function MapProvider({ children }: MapProviderProps) {
 
   // Show a loading message or spinner while the API script is loading
   if (!scriptLoaded) {
-    return <Loading />;
+    return (
+      <Center>
+        <Loader type="ring" color={"red"} />
+      </Center>
+    );
   }
 
   // Return the children prop wrapped by this MapProvider component
@@ -41,7 +45,7 @@ export function MapProvider({ children }: MapProviderProps) {
 // Optional: Wrap your MapProvider with Suspense for better error handling
 export function MapProviderWithSuspense({ children }: MapProviderProps) {
   return (
-    <Suspense fallback={<Loading />}>
+    <Suspense fallback={<Loader type="ring" color="red" />}>
       <MapProvider>{children}</MapProvider>
     </Suspense>
   );
