@@ -16,7 +16,7 @@ export const Loading = () => {
       bg={"main"}
       inset={0}
     >
-      <Loader color="white" type="bars" />
+      <Loader color="white" type="ring" />
     </Flex>
     // <motion.div
     //   className="fixed top-0 left-0 z-50 w-screen h-screen bg-[#001529e6] lds-ellipsis"
