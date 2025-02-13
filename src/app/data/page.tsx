@@ -750,16 +750,14 @@ const Page = () => {
                   {qpay.qpay.urls.map((url, k) => {
                     return (
                       <Grid.Col key={k} span={3}>
-                        {/* {JSON.stringify(url)} */}
-
-                        <Image
-                          src={url.logo}
-                          width={60}
-                          height={60}
-                          alt={url.name}
-                        />
-                        {/* <a href={url.link}>
-                        </a> */}
+                        <Link href={url.link}>
+                          <Image
+                            src={url.logo}
+                            width={60}
+                            height={60}
+                            alt={url.name}
+                          />{" "}
+                        </Link>
                       </Grid.Col>
                     );
                   })}
