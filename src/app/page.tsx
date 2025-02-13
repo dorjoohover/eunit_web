@@ -39,38 +39,39 @@ export default function Home() {
     () => [
       {
         id: 6,
+
         icon: MarkerAssests.orange,
-        position: { lat: 47.921558, lng: 106.906693 },
+        position: { lat: 47.921558220631354, lng: 106.90669349078951 },
       },
       {
         id: 1,
         icon: MarkerAssests.yellow,
-        position: { lat: 47.926833, lng: 106.929518 },
+        position: { lat: 47.92683312588844, lng: 106.92951836341966 },
       },
       {
         id: 0,
         icon: MarkerAssests.pink,
-        position: { lat: 47.898646, lng: 106.895768 },
+        position: { lat: 47.89864663332739, lng: 106.89576814269692 },
       },
       {
         id: 2,
         icon: MarkerAssests.aqua,
-        position: { lat: 47.924932, lng: 106.811547 },
+        position: { lat: 47.924932363836156, lng: 106.81154741227641 },
       },
       {
         id: 4,
         icon: MarkerAssests.purple,
-        position: { lat: 47.915817, lng: 106.966183 },
+        position: { lat: 47.91581798272838, lng: 106.96618360245022 },
       },
       {
         id: 5,
         icon: MarkerAssests.green,
-        position: { lat: 47.910709, lng: 106.878333 },
+        position: { lat: 47.910709907527625, lng: 106.8783333148136 },
       },
       {
         id: 3,
         icon: MarkerAssests.blue,
-        position: { lat: 47.77173, lng: 107.254244 },
+        position: { lat: 47.771730825448216, lng: 107.25424468977218 },
       },
     ],
     []
@@ -141,7 +142,7 @@ export default function Home() {
 
           {loading ? (
             <Center h="100vh">
-              <Loader type="ring"/>
+              <Loader type="ring" />
             </Center>
           ) : (
             <div className="parent">
@@ -172,7 +173,10 @@ export default function Home() {
               >
                 <GoogleMap
                   mapContainerStyle={{ width: "100%", height: "100%" }}
-                  center={{ lat: 47.853015, lng: 107.039474 }}
+                  center={{
+                    lat: 47.85301568040689,
+                    lng: 107.03947398892948,
+                  }}
                   zoom={defaultMapZoom}
                   options={{
                     zoomControl: true,

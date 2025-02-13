@@ -5,6 +5,18 @@ const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "s3.qpay.mn",
+      },
+      {
+        protocol: "https",
+        hostname: "qpay.mn",
+      },
+    ],
+  },
   reactStrictMode: true,
 };
 

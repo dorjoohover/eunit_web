@@ -19,6 +19,7 @@ import {
   Button,
   Center,
   Flex,
+  Grid,
   Highlight,
   Loader,
   Modal,
@@ -237,6 +238,7 @@ const Page = () => {
     };
   };
   const matches = useMediaQuery("(min-width: 36em)");
+  const matchesPad = useMediaQuery("(min-width: 50em)");
   const check = async () => {
     setLoading(true);
     const res = await checkPayment(qpay?.id!, qpay?.qpay.invoice_id!);
@@ -451,13 +453,13 @@ const Page = () => {
       <Modal.Root
         opened={opened}
         centered
-        fullScreen={!matches}
+        // fullScreen={!matches}
         size={matches ? (qpay != null ? "md" : "lg") : "xl"}
         onClose={close}
       >
         <Modal.Overlay />
 
-        <Modal.Content radius={20} bg={"transparent"}>
+        <Modal.Content radius={20} bg={"transparent"} className="items-center">
           <Modal.Header>
             <Modal.Title c={"#546274"} tt={"uppercase"}>
               Төлбөр төлөлт
@@ -517,9 +519,6 @@ const Page = () => {
                           1,000.00
                         </Text>
                         <EunitIcon />
-                        <Text c={"white"} fz={24}>
-                          төлөх
-                        </Text>
                       </Flex>
                     )}
                   </Button>
@@ -551,9 +550,6 @@ const Page = () => {
                         height={25}
                         alt="qpay logo"
                       />
-                      <Text c={"white"} fz={24}>
-                        төлөх
-                      </Text>
                     </Flex>
                   )}
                 </Button>
@@ -569,13 +565,54 @@ const Page = () => {
               }}
               pt={20}
             >
-              <Image
-                className="mx-auto"
-                src={`data:image/png;base64,${qpay?.qpay.qr_image}`}
-                alt="qpay image"
-                width={200}
-                height={200}
-              />
+              {!matchesPad && matches && (
+                <Grid mb={20}>
+                  {qpay.qpay.urls.map((url, k) => {
+                    return (
+                      <Grid.Col key={k} span={3}>
+                        {/* {JSON.stringify(url)} */}
+
+                        <Image
+                          src={url.logo}
+                          width={60}
+                          height={60}
+                          alt={url.name}
+                        />
+                        {/* <a href={url.link}>
+                        </a> */}
+                      </Grid.Col>
+                    );
+                  })}
+                </Grid>
+              )}
+              {!matches ? (
+                <Grid mb={20}>
+                  {qpay.qpay.urls.map((url, k) => {
+                    return (
+                      <Grid.Col key={k} span={3}>
+                        {/* {JSON.stringify(url)} */}
+
+                        <Image
+                          src={url.logo}
+                          width={60}
+                          height={60}
+                          alt={url.name}
+                        />
+                        {/* <a href={url.link}>
+                        </a> */}
+                      </Grid.Col>
+                    );
+                  })}
+                </Grid>
+              ) : (
+                <Image
+                  className="mx-auto"
+                  src={`data:image/png;base64,${qpay?.qpay.qr_image}`}
+                  alt="qpay image"
+                  width={200}
+                  height={200}
+                />
+              )}
               <Button
                 w={"100%"}
                 fz={24}
