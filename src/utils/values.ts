@@ -74,9 +74,13 @@ export const defaultMapOptions = {
   gestureHandling: "greedy",
 };
 export const defaultMapZoom = 18;
+export const defaultPhoneMapCenter = {
+  lat: 47.8566464,
+  lng: 106.9554304,
+};
 export const defaultMapCenter = {
-  lat: 47.9166464,
-  lng: 106.9154304,
+  lat: 47.8566464,
+  lng: 107.0554304,
 };
 
 export const TransactionValue = (type: TransactionType) => {

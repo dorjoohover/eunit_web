@@ -16,11 +16,11 @@ export async function middleware(req: NextRequest) {
 
   const url = req.nextUrl.pathname;
 
-  for (const [k, v] of Object.entries(needUserUrls)) {
-    if (url.startsWith(`/${k}`) && (req.nextUrl.search.includes(v) || v === "") && !token) {
-      return NextResponse.redirect(new URL("/login", req.url));
-    }
-  }
+  // for (const [k, v] of Object.entries(needUserUrls)) {
+  //   if (url.startsWith(`/${k}`) && (req.nextUrl.search.includes(v) || v === "") && !token) {
+  //     return NextResponse.redirect(new URL("/login", req.url));
+  //   }
+  // }
 
   return NextResponse.next();
 }

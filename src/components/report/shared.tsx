@@ -35,6 +35,8 @@ export const ReportTitle = ({
   >;
   children?: ReactNode;
 }) => {
+  const matches = useMediaQuery("(min-width: 50em)");
+
   return (
     <Box
       bg={"lightIvory"}
@@ -71,47 +73,51 @@ export const ReportTitle = ({
         >
           {text}
         </Title>
-        <Flex
-          direction={"column"}
-          justify={"center"}
-          gap={0}
-          columnGap={0}
-          h={"100%"}
-          rowGap={0}
-        >
-          <Title
-            fz={{
-              md: 45,
-              sm: 28,
-              base: 25,
-            }}
-            fw={"800"}
-            c={"midnightBlue"}
-            style={{
-              lineHeight: 1,
-              letterSpacing: 0,
-            }}
-            variant="full"
+        {text1 && text2 ? (
+          <Flex
+            direction={"column"}
+            justify={"center"}
+            gap={0}
+            columnGap={0}
+            h={"100%"}
+            rowGap={0}
           >
-            {text1}
-          </Title>
-          <Title
-            fz={{
-              md: 45,
-              sm: 28,
-              base: 25,
-            }}
-            fw={"800"}
-            c={"midnightBlue"}
-            style={{
-              lineHeight: 1,
-              letterSpacing: 0,
-            }}
-            variant="full"
-          >
-            {text2}
-          </Title>
-        </Flex>
+            <Title
+              fz={{
+                md: 45,
+                sm: 28,
+                base: 23,
+              }}
+              fw={"800"}
+              c={"midnightBlue"}
+              style={{
+                lineHeight: 1,
+                letterSpacing: 0,
+              }}
+              variant="full"
+            >
+              {text1}
+            </Title>
+            <Title
+              fz={{
+                md: 45,
+                sm: 28,
+                base: 23,
+              }}
+              fw={"800"}
+              c={"midnightBlue"}
+              style={{
+                lineHeight: 1,
+                letterSpacing: 0,
+              }}
+              variant="full"
+            >
+              {text2}
+            </Title>
+          </Flex>
+        ) : (
+          <Flex maw={matches ? "100%" : "0%"} />
+        )}
       </Flex>
       {children}
     </Box>

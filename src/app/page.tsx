@@ -2,7 +2,12 @@
 import { ReportWrapper } from "@/_context";
 import { Colors } from "@/base/constants";
 import { DistrictCard } from "@/components/shared/card";
-import { defaultMapZoom, districts } from "@/utils/values";
+import {
+  defaultMapCenter,
+  defaultMapZoom,
+  defaultPhoneMapCenter,
+  districts,
+} from "@/utils/values";
 import { Box, Center, Flex, Loader, Text, Title } from "@mantine/core";
 import { GoogleMap, MarkerF } from "@react-google-maps/api";
 import { MarkerAssests, video } from "@/utils/assets";
@@ -30,7 +35,7 @@ export default function Home() {
     localStorage.setItem("hasViewedVideo", "true");
     setShowVideo(false);
   };
-
+  const [mapLoading, setMaploading] = useState(false);
   const handleNavigation = (id: number) => {
     router.push(`/report?district=${id}`);
   };
@@ -89,13 +94,20 @@ export default function Home() {
     }),
     []
   );
+  const handleMapLoad = (map: any) => {
+    setMaploading(true);
 
+    google.maps.event.addListenerOnce(map, "tilesloaded", () => {
+      setMaploading(false);
+    });
+  };
   return (
     <div
-      className="relative top-[60px]"
+      className="relative pt-16"
       style={{
         backgroundColor: Colors.lightIvory,
-        width: matches ? "calc(100vw - 70px)" : "100%",
+        width: matches ? "100%" : "100%",
+        paddingLeft: matches ? 60 : 0,
       }}
     >
       {showVideo && (
@@ -113,11 +125,11 @@ export default function Home() {
 
       <ReportWrapper>
         <Box
-          pb={80}
+          pb={{ md: 100, sm: 60, base: 20 }}
           mx="auto"
           px={16}
           maw={1100}
-          mb={{ md: 100, sm: 60, base: 20 }}
+          // mb={{ md: 100, sm: 60, base: 20 }}
         >
           <Title
             c="headBlue"
@@ -139,69 +151,72 @@ export default function Home() {
               </Text>
             </Box>
           </Flex>
+          {loading ||
+            (mapLoading && (
+              <Center h="80vh">
+                <Loader type="bars" />
+              </Center>
+            ))}
 
-          {loading ? (
-            <Center h="100vh">
-              <Loader type="ring" />
-            </Center>
-          ) : (
-            <div className="parent">
-              {data?.payload?.map((d, i) => {
-                const k = d.name as keyof typeof districtColors;
-                return (
-                  <Box key={i} className={`div${i + 1}`}>
-                    {districtColors[k] && (
-                      <DistrictCard
-                        bg={districtColors[k]}
-                        text={d.name}
-                        price={Math.round(d.avg)}
-                        count={d.count}
-                      />
-                    )}
-                  </Box>
-                );
-              })}
-
-              <Box
-                w="100%"
-                className="div8"
-                style={{
-                  borderRadius: 15,
-                  overflow: "hidden",
-                  filter: "drop-shadow(0px 0px 10px #00000025)",
-                }}
-              >
-                <GoogleMap
-                  mapContainerStyle={{ width: "100%", height: "100%" }}
-                  center={{
-                    lat: 47.85301568040689,
-                    lng: 107.03947398892948,
-                  }}
-                  zoom={defaultMapZoom}
-                  options={{
-                    zoomControl: true,
-                    tilt: 0,
-                    mapTypeId: google.maps.MapTypeId.TERRAIN,
-                    disableDefaultUI: false,
-                    mapTypeControl: false,
-                    fullscreenControl: false,
-                    streetViewControl: false,
-                    zoom: 11,
-                    gestureHandling: "greedy",
-                  }}
-                >
-                  {markers.map((marker) => (
-                    <MarkerF
-                      key={marker.id}
-                      position={marker.position}
-                      icon={marker.icon}
-                      onClick={() => handleNavigation(marker.id)}
+          <div
+            className="parent"
+            style={{
+              visibility: loading || mapLoading ? "hidden" : "visible",
+            }}
+          >
+            {data?.payload?.map((d, i) => {
+              const k = d.name as keyof typeof districtColors;
+              return (
+                <Box key={i} className={`div${i + 1}`}>
+                  {districtColors[k] && (
+                    <DistrictCard
+                      bg={districtColors[k]}
+                      text={d.name}
+                      price={Math.round(d.avg)}
+                      count={d.count}
                     />
-                  ))}
-                </GoogleMap>
-              </Box>
-            </div>
-          )}
+                  )}
+                </Box>
+              );
+            })}
+
+            <Box
+              w="100%"
+              className="div8"
+              style={{
+                borderRadius: 15,
+                overflow: "hidden",
+                filter: "drop-shadow(0px 0px 10px #00000025)",
+              }}
+            >
+              <GoogleMap
+                mapContainerStyle={{ width: "100%", height: "100%" }}
+                center={matches ? defaultMapCenter : defaultPhoneMapCenter}
+                zoom={defaultMapZoom}
+                options={{
+                  zoomControl: true,
+                  tilt: 0,
+                  mapTypeId: google.maps.MapTypeId.TERRAIN,
+                  disableDefaultUI: false,
+                  mapTypeControl: false,
+                  fullscreenControl: false,
+                  streetViewControl: false,
+                  zoom: 11,
+                  gestureHandling: "greedy",
+                }}
+                onLoad={(e) => handleMapLoad(e)}
+              >
+                {markers.map((marker) => (
+                  <MarkerF
+                    key={marker.id}
+                    position={marker.position}
+                    icon={marker.icon}
+                    onClick={() => handleNavigation(marker.id)}
+                  />
+                ))}
+              </GoogleMap>
+            </Box>
+          </div>
         </Box>
       </ReportWrapper>
     </div>

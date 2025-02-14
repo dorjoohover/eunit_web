@@ -234,7 +234,7 @@ const Page = () => {
       fz: {
         md: 120,
         sm: 100,
-        base: 60,
+        base: 56,
       },
     };
   };

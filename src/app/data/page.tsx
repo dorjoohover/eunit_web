@@ -624,7 +624,7 @@ const Page = () => {
             Excel татах
           </Button>
         </Flex>
-        <Spacer size={80} />
+        {/* <Spacer size={80} /> */}
       </ReportTitle>
       <Modal.Root opened={opened} centered size={"lg"} onClose={close}>
         <Modal.Overlay />

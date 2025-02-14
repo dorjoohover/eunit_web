@@ -33,7 +33,7 @@ export default function Page() {
 
   const [confirmation, setConfirmation] = useState<any>(null);
   const [loading, setLoading] = useState(false);
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(2);
   const [resendTimer, setResendTimer] = useState(60);
   useEffect(() => {
     if (resendTimer > 0) {
@@ -374,7 +374,11 @@ export default function Page() {
                 w={"100%"}
                 disabled={pin.length != 6}
               >
-                Баталгаажуулах
+                {loading ? (
+                  <Loader type="bars" color="white" />
+                ) : (
+                  "Баталгаажуулах"
+                )}
               </Button>
             </div>
           </Modal.Content>

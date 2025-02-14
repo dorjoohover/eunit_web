@@ -32,8 +32,8 @@ export function MapProvider({ children }: MapProviderProps) {
   // Show a loading message or spinner while the API script is loading
   if (!scriptLoaded) {
     return (
-      <Center>
-        <Loader type="ring" color={"red"} />
+      <Center h={"100vh"}>
+        <Loader type="ring" />
       </Center>
     );
   }

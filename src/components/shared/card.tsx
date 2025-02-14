@@ -31,6 +31,7 @@ export const WalletCard = ({ onClick }: { onClick: () => void }) => {
         borderRadius: 30,
         background: "linear-gradient(#9C2CF3 0%, #3A49F9 100%)",
         overflow: "hidden",
+        aspectRatio: 3 / 2,
       }}
       w={"100%"}
       px={32}
@@ -48,8 +49,8 @@ export const WalletCard = ({ onClick }: { onClick: () => void }) => {
         justify={"space-between"}
       >
         <WalletText
-          label="Хэтэвчний үлдэгдэл"
-          text={`${money(`${user?.wallet}`)} E-unit`}
+          label="Урамшууллын үлдэгдэл"
+          text={`${money(`${user?.wallet ?? 0}`)} E-unit`}
           children={
             <Image
               src={Assets.logoMiniWhite}
@@ -60,21 +61,24 @@ export const WalletCard = ({ onClick }: { onClick: () => void }) => {
           }
         />
         <Box h={50} />
-        <WalletText
-          label="Нэр"
-          text={user?.name ?? ""}
-          children={
-            <Button
-              bg={"white"}
-              c={"headBlue"}
-              rightSection={<BsFillPlusCircleFill size={18} fill="headBlue" />}
-              radius={20}
-              onClick={onClick}
-            >
-              Цэнэглэх
-            </Button>
-          }
-        />
+        {user?.name && (
+          <WalletText
+            label="Нэр"
+            text={user?.name ?? ""}
+            children={
+              <></>
+              // <Button
+              //   bg={"white"}
+              //   c={"headBlue"}
+              //   rightSection={<BsFillPlusCircleFill size={18} fill="headBlue" />}
+              //   radius={20}
+              //   onClick={onClick}
+              // >
+              //   Цэнэглэх
+              // </Button>
+            }
+          />
+        )}
       </Flex>
     </Box>
   );
@@ -289,7 +293,10 @@ export const DistrictCard = ({
     >
       <Box>
         <Flex
-          w={150}
+          w={{
+            xs: 150,
+            base: "auto",
+          }}
           gap={10}
           bg={"headBlue"}
           justify={"center"}
