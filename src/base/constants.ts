@@ -1,3 +1,5 @@
+import { Viewport } from "next";
+
 export class Sizes {
   static xs = "0.5rem";
   static sm = "0.625rem";
@@ -33,3 +35,9 @@ export class Colors {
   static deepMose20 = "#17262433";
   static midnightBlue = "#141E49";
 }
+
+export const viewport: Viewport = {
+  maximumScale: 1,
+  minimumScale: 1,
+  initialScale: 1,
+};
