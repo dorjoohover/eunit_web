@@ -137,7 +137,7 @@ export const Footer = () => {
               Утасны дугаар
             </Text>
             <Link
-              href={"tel:+976-88992864"}
+              href={"tel:+976-95992333"}
               style={{
                 color: Colors.lightIvory,
               }}
