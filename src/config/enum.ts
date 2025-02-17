@@ -16,6 +16,13 @@ export enum UserType {
 export enum PaymentType {
   QPAY = 1,
   POINT = 2,
+  LOYALTY = 3,
+}
+
+export const PaymentTypeValue = {
+  1: "Qpay", 
+  2: "Оноо",
+  3: "Урамшуулал"
 }
 
 export enum TransactionType {

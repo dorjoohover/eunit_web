@@ -64,7 +64,7 @@ const Template = ({ children }: { children: ReactNode }) => {
     <>
       <Navbar />
       {children}
-      <Box pl={!matches ? 0 : 60}>
+      <Box pl={!matches ? 0 : 60} mt={59}>
         <Footer />
       </Box>
       {matches && <SideBar />}

@@ -35,6 +35,7 @@ export class IconAssets {
   static fb = `${icons}fb.svg`;
   static in = `${icons}in.svg`;
   static rightArrow = `${icons}rightArrow.svg`;
+  static footer = `${icons}footer.svg`;
 }
 
 export class DistrictAssets {

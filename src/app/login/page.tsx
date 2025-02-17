@@ -33,7 +33,7 @@ export default function Page() {
 
   const [confirmation, setConfirmation] = useState<any>(null);
   const [loading, setLoading] = useState(false);
-  const [step, setStep] = useState(2);
+  const [step, setStep] = useState(1);
   const [resendTimer, setResendTimer] = useState(60);
   useEffect(() => {
     if (resendTimer > 0) {

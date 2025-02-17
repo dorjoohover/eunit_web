@@ -129,7 +129,7 @@ export const Navbar = () => {
                 {user != null && (
                   <Flex gap={5} ml={10} align={"center"}>
                     <Text>{money(`${user.wallet}`)}</Text>
-                    <EunitIcon size={20}/>
+                    <EunitIcon size={20} />
                   </Flex>
                 )}
               </Flex>
@@ -202,10 +202,9 @@ export const BottomNavigationBar = () => {
     <Flex
       align={"start"}
       pos={"fixed"}
-      py={10}
       style={{
-        borderTopLeftRadius: 5,
-        borderTopRightRadius: 5,
+        borderTopLeftRadius: 10,
+        borderTopRightRadius: 10,
         overflow: "hidden",
         zIndex: 1000,
         filter: "drop-shadow(0px 3px 4px #000000)",
@@ -213,9 +212,11 @@ export const BottomNavigationBar = () => {
       bottom={0}
       left={0}
       right={0}
-      columnGap={10}
+      columnGap={0}
       bg={"white"}
+      py={2}
       w={"100%"}
+      px={30}
     >
       {NavbarValue.map((d, i) => {
         const include =
@@ -231,9 +232,11 @@ export const BottomNavigationBar = () => {
               href={d.href}
               // className={NavLinkStyle(include)}
               style={{
-                borderBottomColor: include ? Colors.main : "transparent",
-                margin: "0 10px",
-                height: "40px",
+                borderTop: include ? `${Colors.main} 2px solid` : "transparent",
+                padding: "0 10px",
+          
+                height: "60px",
+                background: include ? "#2850FA1a" : "transparent",
               }}
               className="h-full flex-1"
             >
@@ -243,17 +246,18 @@ export const BottomNavigationBar = () => {
                 justify={"center"}
                 align={"center"}
                 gap={0}
+                rowGap={0}
+                columnGap={0}
               >
                 <BottomIcon
                   d={d.href}
                   color={include ? Colors.main : "#7B94A7"}
                 />
-                {include && (
-                  <Text fz={12} c={"main"}>
-                    {" "}
-                    {d.name}
-                  </Text>
-                )}
+
+                <Text fz={12} c={include ? "main" : "#7B94A7"}>
+                  {" "}
+                  {d.name}
+                </Text>
               </Flex>
             </Link>
           </Tooltip>

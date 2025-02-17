@@ -4,7 +4,7 @@ import { useAppContext } from "@/_context";
 import { Colors } from "@/base/constants";
 import { ReportTitle } from "@/components/report/shared";
 import { ChargeCard, WalletCard } from "@/components/shared/card";
-import { TransactionType } from "@/config/enum";
+import { PaymentType, PaymentTypeValue, TransactionType } from "@/config/enum";
 import { PaymentModel } from "@/models/payment.model";
 import { TransactionModel } from "@/models/transaction.model";
 import { UserModel } from "@/models/user.model";
@@ -77,13 +77,12 @@ const Page = () => {
   const charge = () => {};
   const [value, setValue] = useState<Date | null>(null);
   const rows = history.map((element) => {
-    const remitter = element.remitter as UserModel;
-    const receiver = element.receiver as UserModel;
+    const user = element.user as UserModel;
+
     const transactionType =
-      remitter.id == user?.id
-        ? TransactionType.outcome
-        : TransactionType.income;
+      element.point < 0 ? TransactionType.outcome : TransactionType.income;
     const typeValues = TransactionValue(transactionType);
+    const type = (element.paymentType ?? "2") as keyof typeof PaymentTypeValue;
     return (
       <Table.Tr key={element.id}>
         <Table.Td>
@@ -104,13 +103,11 @@ const Page = () => {
             </Text>
           </Box>
         </Table.Td>
-        <Table.Td ta={"center"}>{money(element.point.toString())}</Table.Td>
-        <Table.Td>{(element.payment as PaymentModel)?.point}</Table.Td>
         <Table.Td ta={"center"}>
-          {transactionType == TransactionType.income
-            ? remitter.name
-            : receiver.name}
+          {money(Math.abs(element.point).toString())}
         </Table.Td>
+        <Table.Td ta={"center"}>{PaymentTypeValue[type]}</Table.Td>
+        <Table.Td ta={"center"}>{element.message}</Table.Td>
       </Table.Tr>
     );
   });
@@ -119,6 +116,7 @@ const Page = () => {
   const [total, setTotal] = useState(0);
   const getHistory = async (page = 1, l = limit) => {
     await userHistory(l, page).then((d) => {
+      console.log(d);
       if (d.succeed) {
         setTotal(d.payload[1]);
         setHistory(d.payload[0]);
@@ -233,7 +231,7 @@ const Page = () => {
               <Button>Хайх</Button>
             </Flex> */}
             <ScrollArea scrollbars={"x"}>
-              <Table stickyHeader mt={30} stickyHeaderOffset={60}>
+              <Table stickyHeader mt={60} stickyHeaderOffset={60}>
                 <Table.Thead bg={"lightIvory"}>
                   <Table.Tr>
                     <Table.Th ta={"center"} c={"headBlue"} fw={"normal"}>

@@ -243,7 +243,9 @@ const Page = () => {
   const check = async () => {
     setLoading(true);
     const res = await checkPayment(qpay?.id!, qpay?.qpay.invoice_id!);
-
+    if(!res?.data) notifications.show({
+      message: 'Төлбөр төлөгдөөгүй байна.'
+    })
     if (res?.data) {
       refetchUser();
       router.push(`/report/result?id=${qpay?.id}`);

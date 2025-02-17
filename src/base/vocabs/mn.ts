@@ -12,7 +12,7 @@ export const locale = {
       ESTIMATE: "Үнэлгээ",
       WALLET: "Хэтэвч",
       CONTACT: "Холбогдох",
-      DATA: "Дата татах",
+      DATA: "Дата",
       LOGIN: "Нэвтрэх",
       PROFILE: "Profile",
       REALSTATE_INFORMATION: "орон сууцны мэдээлэл",

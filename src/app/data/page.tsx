@@ -140,7 +140,6 @@ const Page = () => {
   ) => {
     try {
       setLoading(true);
-
       const res = await getRequestResult(+id);
       const ads = res?.data.data.data;
       const location = res?.data.location as LocationModel;
@@ -177,6 +176,8 @@ const Page = () => {
         XLSX.utils.book_append_sheet(workbook, worksheet, worksheetname);
         // Save the workbook as an Excel file
         XLSX.writeFile(workbook, `${title}.xlsx`);
+        setQpay(null);
+        close();
         setLoading(false);
       } else {
         setLoading(false);
@@ -191,6 +192,7 @@ const Page = () => {
   } | null>(null);
   const excel = async (type: number) => {
     setLoading(true);
+
     if (form.town && form.area) {
       const res = await sendRequest(
         +form.town,
@@ -211,7 +213,6 @@ const Page = () => {
         });
       }
       if (type == PaymentType.QPAY) {
-        console.log(res);
         setQpay({
           qpay: res?.data.data,
           id: res?.data.res,
@@ -221,7 +222,8 @@ const Page = () => {
       }
       if (res?.data?.success != false) {
         refetchUser();
-        onGetExportProduct(res?.data, "Дата", "Дата");
+        console.log(res?.data);
+        onGetExportProduct(res?.data?.res, "Дата", "Дата");
       }
 
       close();
@@ -338,10 +340,14 @@ const Page = () => {
   const check = async () => {
     setLoading(true);
     const res = await checkPayment(qpay?.id!, qpay?.qpay.invoice_id!);
+    if (!res?.data)
+      notifications.show({
+        message: "Төлбөр төлөгдөөгүй байна",
+      });
 
-    if (res?.data) {
+    if (res?.data && qpay?.id) {
       refetchUser();
-      onGetExportProduct(res?.data, "Дата", "Дата");
+      onGetExportProduct(qpay?.id, "Дата", "Дата");
     }
     setLoading(false);
   };
@@ -371,7 +377,6 @@ const Page = () => {
         >
           <Flex>
             <Select
-              w={200}
               my={5}
               variant="rounded"
               p={"2px"}
@@ -398,10 +403,11 @@ const Page = () => {
             >
               <Combobox.Target>
                 <InputBase
+                  maw={315}
+                  w={"100%"}
                   my={5}
                   p={"2px"}
                   __size="20px"
-                  w={200}
                   label={DataDownloadValue["town"].label}
                   component="button"
                   type="button"
@@ -477,6 +483,7 @@ const Page = () => {
 
           <Flex align={"end"}>
             <DatePickerInput
+              maw={315}
               rightSection={icon}
               type="range"
               w={"100%"}
@@ -595,7 +602,7 @@ const Page = () => {
           </table>
         </ScrollArea>
         <Spacer size={60} />
-        <Flex justify={"space-between"}>
+        <Flex justify={"space-between"} pb={30}>
           {/* <Button
             bg={"main"}
             c={"white"}
