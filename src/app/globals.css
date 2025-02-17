@@ -22,6 +22,11 @@ body {
   overflow-x: hidden;
   -webkit-overflow-scrolling: unset !important;
 }
+input,
+textarea,
+select {
+  touch-action: manipulation;
+}
 
 @layer utilities {
   .text-balance {
