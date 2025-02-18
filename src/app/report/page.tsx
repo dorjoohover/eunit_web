@@ -149,7 +149,7 @@ const Page = () => {
         message: "Үлдэгдэл хүрэлцэхгүй байна.",
       });
     }
-    if (payment == PaymentType.QPAY) {
+    if (payment == PaymentType.QPAY && qpay != null) {
       setStep(2);
       setLoading(false);
       return;

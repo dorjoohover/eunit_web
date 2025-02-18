@@ -56,14 +56,20 @@ export default function Page() {
         body: JSON.stringify({ token: idToken }),
       }).then((d) => d.json());
       if (res.success) {
-        notifications.show({ message: "Амжилттай нэвтэрлээ!" });
+        notifications.show({
+          position: "top-center",
+          message: "Амжилттай нэвтэрлээ!",
+        });
         router.push("/");
       } else {
-        notifications.show({ message: res.message });
+        notifications.show({ position: "top-center", message: res.message });
       }
     } catch (error: any) {
       console.log(error);
-      notifications.show({ message: "Invalid OTP. Try again." });
+      notifications.show({
+        position: "top-center",
+        message: "Invalid OTP. Try again.",
+      });
     }
     setLoading(false);
   };
@@ -104,6 +110,7 @@ export default function Page() {
       return confirmationResult;
     } catch (error: any) {
       notifications.show({
+        position: "top-center",
         message: `${error?.message ?? error}`,
       });
       setLoading(false);
@@ -204,7 +211,7 @@ export default function Page() {
             <Flex>
               {step == 1 && (
                 <TextInput
-                  flex={3}
+                  flex={2}
                   variant="icon"
                   pe={"8px 20px 8px 80px"}
                   // className="relative"
@@ -253,7 +260,7 @@ export default function Page() {
                 />
               )}
               <Button
-                flex={2}
+                flex={1}
                 onClick={() => {
                   sendCode();
                 }}
