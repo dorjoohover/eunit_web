@@ -24,7 +24,7 @@ body {
 }
 
 input {
-  font-size: 16px;
+  font-size: 16px !important;
   touch-action: manipulation;
   transform: scale(0.875);
 }
