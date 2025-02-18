@@ -74,10 +74,13 @@ export default function Page() {
   const [pin, setPin] = useState("");
   const matches = useMediaQuery("(min-width: 50em)");
 
-  const sendCode = async () => {
+  const sendCode = async (resend = false) => {
     try {
       setLoading(true);
       setResendTimer(60);
+      if (resend) {
+        (window as any).recaptchaVerifier.clear();
+      }
       // Ensure reCAPTCHA is properly initialized
       const recaptcha = new RecaptchaVerifier(auth, "recaptcha-container", {
         size: "invisible",
@@ -250,7 +253,6 @@ export default function Page() {
               <Button
                 flex={2}
                 onClick={() => {
-                  (window as any).recaptchaVerifier.clear();
                   sendCode();
                 }}
                 w={"100%"}
@@ -348,7 +350,7 @@ export default function Page() {
                               fontSize={24}
                             />
                           }
-                          onClick={() => sendCode()}
+                          onClick={() => sendCode(true)}
                         >
                           Дахин илгээх
                         </Button>
