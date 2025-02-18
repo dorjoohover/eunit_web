@@ -178,6 +178,7 @@ const ProfileSide = ({
       }}
       align={"center"}
       w={"auto"}
+      justify={"space-between"}
     >
       <Text
         c={"headBlue"}
@@ -219,6 +220,7 @@ const ProfileSide = ({
           lh={{
             md: 3,
           }}
+          w={"100%"}
         >
           {text}
         </Text>

@@ -268,7 +268,7 @@ export default function Page() {
                 w={"100%"}
                 bg={"main"}
                 radius={10}
-                fz={24}
+                fz={20}
                 py={8}
                 h={54}
                 mt={25}
