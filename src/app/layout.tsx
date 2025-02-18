@@ -63,11 +63,6 @@ export default async function RootLayout({
           type="image/png"
           sizes="32x32"
         />
-        {/* <ColorSchemeScript defaultColorScheme="light" /> */}
-        <meta
-          name="viewport"
-          content="minimum-scale=1, initial-scale=1, width=device-width, user-scalable=no"
-        />
       </Head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased relative`}
