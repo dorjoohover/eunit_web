@@ -26,6 +26,7 @@ body {
 input {
   font-size: 16px;
   touch-action: manipulation;
+  transform: scale(0.875);
 }
 
 @layer utilities {
