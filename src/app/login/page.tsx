@@ -101,6 +101,7 @@ export default function Page() {
       notifications.show({
         message: `${error?.message ?? error}`,
       });
+      setLoading(false);
       console.error("Error sending OTP:", error);
     }
   };
