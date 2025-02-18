@@ -22,9 +22,11 @@ body {
   overflow-x: hidden;
   -webkit-overflow-scrolling: unset !important;
 }
-input,
-textarea,
-select {
+* {
+  transform: scale(1);
+}
+input {
+  font-size: 16px;
   touch-action: manipulation;
 }
 
