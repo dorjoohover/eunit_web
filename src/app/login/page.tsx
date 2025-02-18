@@ -122,7 +122,7 @@ export default function Page() {
   return (
     <div>
       <Flex
-        pt={60}
+        pt={80}
         h={matches ? "calc(100vh - 60px)" : "100%"}
         px={20}
         bg={"lightIvory"}
@@ -132,10 +132,10 @@ export default function Page() {
           base: "column-reverse",
         }}
         pb={{
-          sm: 0,
-          base: 32,
+          sm: 60,
+          base: 20,
         }}
-        columnGap={matches ? "5%" : "0%"}
+        columnGap={matches ? "5%" : "5%"}
         // rowGap={!matches ? "5%" : "0%"}
       >
         <Flex
@@ -173,7 +173,7 @@ export default function Page() {
             gap={0}
             maw={450}
             justify={"center"}
-            h={"calc(100vh / 1070 * 685)"}
+            h={matches ? "calc(100vh / 1070 * 685)" : "calc(80vh / 1070 * 685)"}
           >
             <Text ta={"center"} fz={30} mb={25}>
               Нэвтрэх
@@ -212,9 +212,12 @@ export default function Page() {
             <Flex>
               {step == 1 && (
                 <TextInput
-                  flex={2}
+                  flex={{
+                    base: 8,
+                    lg: 4,
+                  }}
                   variant="icon"
-                  pe={"8px 20px 8px 80px"}
+                  pe={"8px 20px 8px 65px"}
                   // className="relative"
                   leftSection={
                     <Box className="flex">
@@ -253,7 +256,7 @@ export default function Page() {
                   styles={{
                     label: {
                       color: "#566476",
-                      fontSize: 18,
+                      fontSize: 16,
                     },
                   }}
                   label="Утасны дугаар"
@@ -261,14 +264,21 @@ export default function Page() {
                 />
               )}
               <Button
-                flex={1}
+                flex={{
+                  base: 3,
+                  lg: 2,
+                }}
                 onClick={() => {
                   sendCode();
                 }}
                 w={"100%"}
                 bg={"main"}
                 radius={10}
-                fz={20}
+                fz={{
+                  base: 16,
+                  sm: 20,
+                  lg: 24,
+                }}
                 py={8}
                 h={54}
                 mt={25}
@@ -276,38 +286,6 @@ export default function Page() {
                 {loading ? <Loader type="bars" color="white" /> : "Нэвтрэх"}
               </Button>
             </Flex>
-
-            {/* <form
-            onSubmit={form.onSubmit((values) => {
-              // console.log(values);
-            })}
-          >
-            <TextInput
-              mb={30}
-              variant="icon"
-              leftSection={<MdOutlinePersonSearch />}
-              rightSection={<IoEye />}
-              // rightSection={<IoEyeOff/>}
-              key={form.key("password")}
-              {...form.getInputProps("password")}
-            />
-
-            <Flex mb={30}>
-              <Checkbox
-                checked={form.values.accept}
-                onChange={(e) =>
-                  form.setValues((prev) => ({
-                    ...prev,
-                    accept: e.currentTarget.checked,
-                  }))
-                }
-              />
-              <Text fz={18}>
-                Би нууцлалын бодлого болон дотоод журмын дүрмийг зөвшөөрч байна.
-              </Text>
-            </Flex>
-        
-          </form> */}
           </Flex>
         </Flex>
       </Flex>{" "}

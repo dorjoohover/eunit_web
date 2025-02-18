@@ -35,7 +35,7 @@ export const Footer = () => {
         style={{
           zIndex: 1,
         }}
-        pos={'relative'}
+        pos={"relative"}
         px={{
           md: 80,
           sm: 40,
