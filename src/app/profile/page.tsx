@@ -1,4 +1,5 @@
 "use client";
+import { logOut } from "@/(api)/auth.api";
 import { saveUser } from "@/(api)/user.api";
 import { useAppContext } from "@/_context";
 import { Colors } from "@/base/constants";
@@ -9,6 +10,7 @@ import { Box, Button, Flex, Tabs, Text, TextInput } from "@mantine/core";
 import { useForm, UseFormReturnType } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { useEffect, useState } from "react";
+import { HiOutlineExternalLink } from "react-icons/hi";
 
 type ProfileType = {
   firstname?: string;
@@ -124,6 +126,20 @@ const Page = () => {
                   my={32}
                 >
                   {edit ? " Хадгалах" : "Засах"}
+                </Button>
+                <Button
+                  onClick={() => logOut()}
+                  fz={20}
+                  variant="outline"
+                  c={"red"}
+                  py={16}
+                  h={"auto"}
+                  w={{
+                    sm: 200,
+                    base: "100%",
+                  }}
+                >
+                  <HiOutlineExternalLink /> <span>Гарах</span>
                 </Button>
                 <Spacer size={40} />
               </form>

@@ -22,9 +22,7 @@ body {
   overflow-x: hidden;
   -webkit-overflow-scrolling: unset !important;
 }
-* {
-  transform: scale(1);
-}
+
 input {
   font-size: 16px;
   touch-action: manipulation;
