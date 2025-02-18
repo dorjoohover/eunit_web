@@ -249,7 +249,10 @@ export default function Page() {
               )}
               <Button
                 flex={2}
-                onClick={() => sendCode()}
+                onClick={() => {
+                  (window as any).recaptchaVerifier.clear();
+                  sendCode();
+                }}
                 w={"100%"}
                 bg={"main"}
                 radius={10}
