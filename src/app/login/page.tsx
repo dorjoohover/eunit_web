@@ -78,13 +78,14 @@ export default function Page() {
     try {
       setLoading(true);
       setResendTimer(60);
-      if (resend) {
-        (window as any).recaptchaVerifier.clear();
-      }
       // Ensure reCAPTCHA is properly initialized
       const recaptcha = new RecaptchaVerifier(auth, "recaptcha-container", {
         size: "invisible",
       });
+      if (resend) {
+        recaptcha.clear();
+      }
+
       console.log(phone);
       const formattedPhone = `+976${phone}`;
       const confirmationResult = await signInWithPhoneNumber(
