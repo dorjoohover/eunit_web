@@ -61,7 +61,7 @@ export default function Page() {
           position: "top-center",
           message: "Амжилттай нэвтэрлээ!",
         });
-        router.push("/");
+        router.refresh()
       } else {
         notifications.show({ position: "top-center", message: res.message });
       }
