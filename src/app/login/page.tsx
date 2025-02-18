@@ -17,6 +17,7 @@ import {
   Image,
   Loader,
   Modal,
+  NumberInput,
   PinInput,
   Stack,
   Text,
@@ -339,7 +340,7 @@ export default function Page() {
                   Таны дугаарт нэг удаагийн нууц үг явуулсан бөгөөд хугацаа
                   дууссаны дараа дахин илгээх товч дээр дарна уу.
                 </Text>
-                <TextInput
+                <NumberInput
                   variant="icon"
                   maxLength={6}
                   w={"100%"}
@@ -368,7 +369,7 @@ export default function Page() {
                       )}
                     </Box>
                   }
-                  onChange={(e) => setPin(e.target.value)}
+                  onChange={(e) => setPin(`${e}`)}
                   ta={"start"}
                   styles={{
                     input: {},

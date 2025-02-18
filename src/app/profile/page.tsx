@@ -134,6 +134,7 @@ const Page = () => {
                   c={"red"}
                   py={16}
                   h={"auto"}
+                  color="red"
                   w={{
                     sm: 200,
                     base: "100%",
