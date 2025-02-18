@@ -736,7 +736,7 @@ const Page = () => {
             >
               {!matchesPad && matches && (
                 <Grid mb={20}>
-                  {qpay.qpay.urls.map((url, k) => {
+                  {qpay.qpay?.urls.map((url, k) => {
                     return (
                       <Grid.Col key={k} span={3}>
                         <Link href={url.link}>
@@ -754,7 +754,7 @@ const Page = () => {
               )}
               {!matches ? (
                 <Grid mb={20}>
-                  {qpay.qpay.urls.map((url, k) => {
+                  {qpay.qpay?.urls.map((url, k) => {
                     return (
                       <Grid.Col key={k} span={3}>
                         <Link href={url.link}>

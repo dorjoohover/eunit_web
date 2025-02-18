@@ -137,6 +137,8 @@ const Page = () => {
     qpay: QpayType;
     id: number;
   } | null>(null);
+
+  const [step, setStep] = useState(0);
   const submit = async (payment: number) => {
     setLoading(true);
     if (!checker()) return;
@@ -147,17 +149,23 @@ const Page = () => {
         message: "Үлдэгдэл хүрэлцэхгүй байна.",
       });
     }
+    if (payment == PaymentType.QPAY) {
+      setStep(2);
+      setLoading(false);
+      return;
+    }
     const res = await sendRequest(
       payload.location!,
       { ...payload.values!, payment: payment },
       ServiceType.REVIEW
     );
+    console.log(res);
     if (payment == PaymentType.QPAY) {
-      console.log(res);
       setQpay({
         qpay: res?.data.data,
         id: res?.data.res,
       });
+      setStep(2);
       setLoading(false);
       return;
     }
@@ -202,7 +210,7 @@ const Page = () => {
   ) => {
     if (location && values) {
       setPayload((prev) => ({ ...prev, values: values }));
-      open();
+      setStep(1);
     } else {
       router.push(
         `/report?${
@@ -243,9 +251,11 @@ const Page = () => {
   const check = async () => {
     setLoading(true);
     const res = await checkPayment(qpay?.id!, qpay?.qpay.invoice_id!);
-    if(!res?.data) notifications.show({
-      message: 'Төлбөр төлөгдөөгүй байна.'
-    })
+    if (!res?.data)
+      notifications.show({
+        position: "top-center",
+        message: "Төлбөр төлөгдөөгүй байна.",
+      });
     if (res?.data) {
       refetchUser();
       router.push(`/report/result?id=${qpay?.id}`);
@@ -454,11 +464,13 @@ const Page = () => {
         )}
       </ReportTitle>
       <Modal.Root
-        opened={opened}
+        opened={step != 0}
         centered
         // fullScreen={!matches}
         size={matches ? (qpay != null ? "md" : "lg") : "xl"}
-        onClose={close}
+        onClose={() => {
+          setStep(0);
+        }}
       >
         <Modal.Overlay />
 
@@ -469,7 +481,7 @@ const Page = () => {
             </Modal.Title>
             <Modal.CloseButton />
           </Modal.Header>
-          {qpay == null && (
+          {step == 1 && (
             <Box
               bg={"white"}
               px={{
@@ -559,7 +571,7 @@ const Page = () => {
               </Flex>
             </Box>
           )}
-          {qpay != null && (
+          {qpay != null && step == 2 && (
             <Box
               bg={"white"}
               px={{
@@ -570,7 +582,7 @@ const Page = () => {
             >
               {!matchesPad && matches && (
                 <Grid mb={20}>
-                  {qpay.qpay.urls.map((url, k) => {
+                  {qpay.qpay?.urls.map((url, k) => {
                     return (
                       <Grid.Col key={k} span={3}>
                         <Link href={url.link}>
@@ -588,7 +600,7 @@ const Page = () => {
               )}
               {!matches ? (
                 <Grid mb={20}>
-                  {qpay.qpay.urls.map((url, k) => {
+                  {qpay.qpay?.urls.map((url, k) => {
                     return (
                       <Grid.Col key={k} span={3}>
                         <Link href={url.link}>
