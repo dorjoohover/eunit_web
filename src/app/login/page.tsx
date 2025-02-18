@@ -83,6 +83,7 @@ export default function Page() {
         size: "invisible",
       });
       if (resend) {
+        auth.settings.appVerificationDisabledForTesting = false;
         recaptcha.clear();
       }
 
