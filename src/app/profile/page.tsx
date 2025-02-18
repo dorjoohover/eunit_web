@@ -140,7 +140,7 @@ const Page = () => {
                     base: "100%",
                   }}
                 >
-                  <HiOutlineExternalLink /> <span>Гарах</span>
+                  <HiOutlineExternalLink /> <span className="ml-4">Гарах</span>
                 </Button>
                 <Spacer size={40} />
               </form>
