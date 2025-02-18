@@ -61,7 +61,7 @@ export default function Page() {
           position: "top-center",
           message: "Амжилттай нэвтэрлээ!",
         });
-        router.refresh()
+        router.refresh();
       } else {
         notifications.show({ position: "top-center", message: res.message });
       }
@@ -88,7 +88,11 @@ export default function Page() {
       // Ensure reCAPTCHA is properly initialized
       const recaptcha = new RecaptchaVerifier(auth, "recaptcha-container", {
         size: "invisible",
+        callback: (response: any) => {
+          console.log("callback", response);
+        },
       });
+
       if (resend) {
         auth.settings.appVerificationDisabledForTesting = false;
         recaptcha.clear();
@@ -110,6 +114,7 @@ export default function Page() {
       setStep(2);
       return confirmationResult;
     } catch (error: any) {
+      console.log(error);
       notifications.show({
         position: "top-center",
         message: `${error?.message ?? error}`,
@@ -125,6 +130,8 @@ export default function Page() {
         pt={80}
         h={matches ? "calc(100vh - 60px)" : "100%"}
         px={20}
+        w={!matches ? "100%" : "calc(100vw - 60px)"}
+        left={!matches ? 0 : 60}
         bg={"lightIvory"}
         justify={"center"}
         direction={{

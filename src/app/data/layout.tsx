@@ -10,7 +10,7 @@ const RootLayout = ({ children }: { children: ReactNode }) => {
   return (
     <Suspense fallback={<Loading />}>
       <div
-        className={`bg-[${Colors.lightIvory}] relative  top-[60px] ${
+        className={`bg-[${Colors.lightIvory}] relative  pt-[60px] ${
           matches && "left-[60px]"
         }`}
         style={{
