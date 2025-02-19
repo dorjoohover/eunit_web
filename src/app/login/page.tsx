@@ -241,9 +241,6 @@ export default function Page() {
                     base: 8,
                     lg: 4,
                   }}
-                  h={54}
-                  mih={54}
-                  maw={54}
                   variant="icon"
                   pe={"8px 20px 8px 65px"}
                   // className="relative"

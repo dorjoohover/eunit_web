@@ -30,9 +30,21 @@ export const inputs = {
           },
         };
       }
+      if (props.variant == "icon") {
+        return {
+          input: {
+            border: `2px solid ${Colors.stroke}`,
+            color: "#566476",
+            padding: props.pe?.toString() ?? `8px 28px`,
+            height: props.height,
+            background: "white",
+            borderRadius: 10,
+          },
+        };
+      }
       return {
         input: {
-          color: props.c?.toString() ?? '',
+          color: props.c?.toString() ?? "",
           background:
             props.value == undefined || props.value == ""
               ? "white"
