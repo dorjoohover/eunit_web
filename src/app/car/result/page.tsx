@@ -14,7 +14,7 @@ import { IoIosArrowRoundBack, IoMdDownload } from "react-icons/io";
 import { MdApartment } from "react-icons/md";
 import Link from "next/link";
 import { notifications } from "@mantine/notifications";
-import { FaBeer, FaPaintBrush } from "react-icons/fa";
+import { FaBeer, FaCar, FaPaintBrush } from "react-icons/fa";
 
 type ResultType = {
   brand?: string;
@@ -90,13 +90,7 @@ const Page = () => {
     <Box>
       <ReportTitle text={data?.mark ?? "TOYOTA, PRIUS 20"}>
         <Box>
-          <Flex
-            style={{
-              borderBottom: `1px solid ${Colors.deepMose20}`,
-            }}
-            mb={40}
-            pb={10}
-          >
+          <Flex mb={40} pb={10}>
             <Text
               fz={{
                 sm: 30,
@@ -133,7 +127,7 @@ const Page = () => {
             w={"100%"}
             columnGap={40}
           >
-            <IconText child={<MdApartment size={24} />} text={"Автомашин"} />
+            <IconText child={<FaCar size={24} />} text={"Автомашин"} />
           </Flex>
 
           <Spacer
