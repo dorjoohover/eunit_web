@@ -129,9 +129,13 @@ export default function Page() {
 
       setConfirmation(confirmationResult);
       setStep(2);
-    } catch (error) {
+    } catch (error: any) {
+      let message = "Алдаа гарлаа";
+      if (error.message == "Firebase: Error (auth/internal-error).") {
+        message = "Алдаа гарлаа түр хүлээгээд дахин оролдон уу";
+      }
       notifications.show({
-        message: `${(error as Error)?.message || "Failed to send OTP"}`,
+        message: `${message}`,
       });
     } finally {
       setLoading(false);
@@ -237,6 +241,7 @@ export default function Page() {
                     base: 8,
                     lg: 4,
                   }}
+                  height={54}
                   variant="icon"
                   pe={"8px 20px 8px 65px"}
                   // className="relative"
