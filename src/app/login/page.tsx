@@ -50,7 +50,14 @@ export default function Page() {
       return () => clearTimeout(timer);
     }
   }, [resendTimer]);
-
+  useEffect(() => {
+    return () => {
+      if (window.recaptchaVerifier) {
+        window.recaptchaVerifier.clear();
+        delete window.recaptchaVerifier;
+      }
+    };
+  }, []);
   const router = useRouter();
   const verifyOtp = async () => {
     setLoading(true);
@@ -77,7 +84,11 @@ export default function Page() {
       console.log(error);
       notifications.show({
         position: "top-center",
-        message: "Invalid OTP. Try again.",
+        message: error.message.includes(
+          "Firebase: Error (auth/invalid-verification-code)"
+        )
+          ? "OTP код буруу байна."
+          : "Алдаа гарлаа",
       });
     }
     setLoading(false);
@@ -89,39 +100,24 @@ export default function Page() {
   const [pin, setPin] = useState("");
   const matches = useMediaQuery("(min-width: 50em)");
 
-  const sendCode = async (
-    resend = false
-  ): Promise<ConfirmationResult | void> => {
+  const sendCode = async (resend = false) => {
     try {
       setLoading(true);
       setResendTimer(60);
-      // ✅ Initialize reCAPTCHA only if it hasn't been created before
+
+      // Initialize or reuse verifier
       if (!window.recaptchaVerifier) {
         window.recaptchaVerifier = new RecaptchaVerifier(
           auth,
           "recaptcha-container",
-          {
-            size: "invisible",
-            callback: (response: string) => {
-              console.log("reCAPTCHA solved:", response);
-            },
-          }
+          { size: "invisible" }
         );
       }
 
-      // ✅ If resending, reset reCAPTCHA properly
+      // Reset verifier if resending
       if (resend) {
-        await window.recaptchaVerifier.clear(); // Clears previous instance
-        window.recaptchaVerifier = new RecaptchaVerifier(
-          auth,
-          "recaptcha-container",
-          {
-            size: "invisible",
-            callback: (response: string) => {
-              console.log("reCAPTCHA solved (resend):", response);
-            },
-          }
-        );
+        await window.recaptchaVerifier.clear();
+        await window.recaptchaVerifier.verify();
       }
 
       const formattedPhone = `+976${phone}`;
@@ -132,20 +128,12 @@ export default function Page() {
       );
 
       setConfirmation(confirmationResult);
-      console.log("OTP sent successfully:", confirmationResult);
-      notifications.show({ message: "Илгээлээ." });
-
-      setLoading(false);
       setStep(2);
-      return confirmationResult;
     } catch (error) {
-      console.error("Error sending OTP:", error);
-
       notifications.show({
-        position: "top-center",
-        message: `${(error as Error)?.message ?? error}`,
+        message: `Error: ${(error as Error)?.message || "Failed to send OTP"}`,
       });
-
+    } finally {
       setLoading(false);
     }
   };
