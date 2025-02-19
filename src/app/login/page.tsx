@@ -63,7 +63,9 @@ export default function Page() {
     setLoading(true);
     try {
       const result = await confirmation.confirm(pin);
+      console.log(result)
       const idToken = await result.user.getIdToken(true);
+      console.log(idToken);
       // const idToken =
       //   "eyJhbGciOiJSUzI1NiIsImtpZCI6IjhkMjUwZDIyYTkzODVmYzQ4NDJhYTU2YWJhZjUzZmU5NDcxNmVjNTQiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vZXVuaXQtb3RwIiwiYXVkIjoiZXVuaXQtb3RwIiwiYXV0aF90aW1lIjoxNzM5MTUzODgzLCJ1c2VyX2lkIjoiNzBBbGVCUmpsS2JQcnpnTWkyZVFRUEk3bjU1MyIsInN1YiI6IjcwQWxlQlJqbEtiUHJ6Z01pMmVRUVBJN241NTMiLCJpYXQiOjE3MzkxNTM4ODMsImV4cCI6MTczOTE1NzQ4MywicGhvbmVfbnVtYmVyIjoiKzk3Njg4OTkyODY0IiwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJwaG9uZSI6WyIrOTc2ODg5OTI4NjQiXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwaG9uZSJ9fQ.XHoZOeQBoR7qFLYmJTobw1B8Qa70WQ2YP_24QrZ5Lsm3tlRoMyX0JdAM-ZEdzFJClXhnTd8U1xGVvDJFt4bkUpCYTaOaQ9wtXlZ1oKCSusCjmeZlIu0L70S3_EOQarh3sgbho6wN64FXhOwNFotT6kRB6PBfugHHNM0oXUBaOrVhHJWavGzN1dNwlJstJQt2olUsbYm9u9BoHwZrBbxbs5qad_bTkYhpRkjBeHkEeQYuBUC2IK366BO9MuPH1JWbr1MX_Tio3QPWbKM6gVG4xHbmyzqDr0ewTnUnfxVgAnSQ9651v8rYNbhtMg5Vga2gR4D-8Uqh-8VQ2L95sUlgPA";
       const res = await fetch("/api/login/phone", {
