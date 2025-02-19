@@ -18,7 +18,7 @@ export const sendRequest = async (
   service: number
 ) => {
   const token = (await cookies()).get("auth_token");
-  console.log(token)
+  console.log(token);
   if (!token?.value) return { token: false };
   try {
     const body = {
@@ -90,8 +90,8 @@ export const getRequestResult = async (id: number) => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token?.value ?? ""}`,
       },
-    }).then((d) => d.json())
-    console.log(res)
+    }).then((d) => d.json());
+    console.log(res);
     return {
       data: res.payload,
       token: true,
@@ -100,7 +100,7 @@ export const getRequestResult = async (id: number) => {
       success: res.succeed,
     };
   } catch (error: any) {
-    console.log(error)
+    console.log(error);
     return {
       success: false,
       message: error.message,
@@ -143,6 +143,64 @@ export const getRequestAllUser = async () => {
         Authorization: `Bearer ${token?.value ?? ""}`,
       },
     }).then((d) => d.json());
+    return {
+      data: res.payload,
+      token: true,
+      message: res?.payload?.message,
+      status: res?.payload?.status,
+      success: res.succeed,
+    };
+  } catch (error) {
+    // console.error(error);
+  }
+};
+
+export const carEvaluate = async (
+  value: {
+    brand?: string;
+    mark?: string;
+    motor?: string;
+    motorType?: string;
+    engineType?: string;
+    steerType?: string;
+    wheelDrive?: string;
+    color?: string;
+    meter?: string;
+    manufactured?: string;
+    imported?: string;
+    payment?: number;
+  },
+  service: number
+) => {
+  const token = (await cookies()).get("auth_token");
+  console.log(token);
+  if (!token?.value) return { token: false };
+  try {
+    const body = {
+      brand: value.brand,
+      mark: value.mark,
+      motor: value.motor,
+      motorType: value.motorType,
+      engineType: value.engineType,
+      steerType: value.steerType,
+      wheelDrive: value.wheelDrive,
+      color: value.color,
+      meter: value.meter,
+      manufactured: value.manufactured,
+      imported: value.imported,
+      service,
+    };
+    console.log(body);
+    const res = await fetch(`${api}request`, {
+      method: "POST",
+      mode: "no-cors",
+      body: JSON.stringify(body),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token?.value ?? ""}`,
+      },
+    }).then((d) => d.json());
+    console.log(res);
     return {
       data: res.payload,
       token: true,

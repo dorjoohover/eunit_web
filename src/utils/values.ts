@@ -253,6 +253,53 @@ export const DataDownloadValue = {
   },
 };
 
+export const CarEvaluateValues = {
+  brand: {
+    label: "Брэнд",
+    pl: "Сонгоно уу",
+  },
+  mark: {
+    label: "Марк",
+    pl: "Сонгоно уу",
+  },
+  motor: {
+    label: "Хөдөлгүүрийн багтаамж",
+    pl: "Сонгоно уу",
+  },
+  motorType: {
+    label: "Хөдөлгүүрийн төрөл",
+    pl: "Сонгоно уу",
+  },
+  engineType: {
+    label: "Хурдны хайрцаг",
+    pl: "Сонгоно уу",
+  },
+  steerType: {
+    label: "Хүрд",
+    pl: "Сонгоно уу",
+  },
+  wheelDrive: {
+    label: "Хөтлөгч",
+    pl: "Сонгоно уу",
+  },
+  color: {
+    label: "Өнгө",
+    pl: "Сонгоно уу",
+  },
+  meter: {
+    label: "Гүйлт",
+    pl: "Оруулна уу",
+  },
+  manufactured: {
+    label: "Үйлдвэрлэгдсэн он",
+    pl: "Оруулна уу",
+  },
+  imported: {
+    label: "Импортлогдсон он",
+    pl: "Оруулна уу",
+  },
+};
+
 export const locationCenter = {
   lat: 47.91887307876936,
   lng: 106.91757202148438,
@@ -281,6 +328,7 @@ export const NavbarValue = [
   { name: locale.data.NAVBAR.ESTIMATE, href: "/report" },
   { name: locale.data.NAVBAR.DATA, href: "/data" },
   { name: locale.data.NAVBAR.WALLET, href: "/wallet" },
+  { name: locale.data.NAVBAR.CAR, href: "/car" },
   // { name: locale.data.NAVBAR.CONTACT, href: "/contact" },
 ];
 
