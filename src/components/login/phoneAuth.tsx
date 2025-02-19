@@ -7,6 +7,19 @@ import {
 } from "firebase/auth";
 import { notifications } from "@mantine/notifications";
 import { useRouter } from "next/navigation";
+import {
+  Box,
+  Button,
+  Flex,
+  Loader,
+  Modal,
+  NumberInput,
+  Stack,
+  Text,
+} from "@mantine/core";
+import { MdPhoneIphone } from "react-icons/md";
+import { HiOutlineRefresh, HiOutlineX } from "react-icons/hi";
+import { Colors } from "@/base/constants";
 declare global {
   interface Window {
     recaptchaVerifier?: RecaptchaVerifier;
@@ -44,6 +57,10 @@ const PhoneAuth = () => {
       );
       setConfirmationResult(confirmation);
       startCountdown();
+      notifications.show({
+        message: 'Илгээлээ.',
+        position: 'top-center'
+      })
     } catch (error) {
       console.error(error);
     } finally {
@@ -105,39 +122,188 @@ const PhoneAuth = () => {
       });
     }, 1000);
   };
-
+  const close = () => {
+    setLoading(false);
+    setCountdown(60);
+    startCountdown();
+    setConfirmationResult(null);
+  };
   return (
-    <div>
+    <Flex align={"end"}>
       {!confirmationResult ? (
         <>
-          <input
-            type="tel"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            placeholder="Enter phone number with country code"
+          <NumberInput
+            flex={{
+              base: 8,
+              md: 3,
+            }}
+            variant="icon"
+            pe={"8px 20px 8px 65px"}
+            // className="relative"
+            leftSection={
+              <Box className="flex">
+                <Flex
+                  justify={"center"}
+                  align={"center"}
+                  gap={0}
+                  rowGap={0}
+                  columnGap={0}
+                  px={10}
+                >
+                  <MdPhoneIphone size={26} fill="#aaa" />
+                  <Flex
+                    gap={0}
+                    rowGap={0}
+                    align={"center"}
+                    columnGap={0}
+                    mr={0}
+                    pr={0}
+                  >
+                    <Text
+                      className=" flex align-center"
+                      c="#566476"
+                      style={{
+                        fontSize: 18,
+                      }}
+                    >
+                      +976
+                    </Text>
+                    <Box w={1} bg={"#566476"} py={8} ml={4}></Box>
+                  </Flex>
+                </Flex>
+              </Box>
+            }
+            height={54}
+            onChange={(e) => setPhone(e as string)}
+            styles={{
+              label: {
+                color: "#566476",
+                fontSize: 16,
+              },
+            }}
+            label="Утасны дугаар"
+            leftSectionWidth={80}
           />
-          <button onClick={sendOTP} disabled={loading}>
-            {loading ? "Sending..." : "Send OTP"}
-          </button>
+          <Button
+            flex={{
+              base: 3,
+              md: 2,
+            }}
+            onClick={sendOTP}
+            w={"100%"}
+            bg={"main"}
+            radius={10}
+            fz={{
+              base: 16,
+              sm: 20,
+              lg: 24,
+            }}
+            disabled={loading}
+            py={8}
+            h={54}
+            mt={25}
+          >
+            {loading ? <Loader type="bars" color="white" /> : "Нэвтрэх"}
+          </Button>
         </>
       ) : (
         <>
-          <input
-            type="number"
-            value={otp}
-            onChange={(e) => setOtp(e.target.value)}
-            placeholder="Enter OTP"
-          />
-          <button onClick={verifyOTP} disabled={loading}>
-            {loading ? "Verifying..." : "Verify OTP"}
-          </button>
-          <button onClick={resendOTP} disabled={countdown > 0 || loading}>
-            Resend OTP {countdown > 0 ? `(${countdown})` : ""}
-          </button>
+          <Modal.Root
+            opened={confirmationResult != null}
+            centered
+            size={"md"}
+            onClose={() => setConfirmationResult(null)}
+          >
+            <Modal.Overlay />
+
+            <Modal.Content px={32} py={20} radius={20} bg={"lightIvory"}>
+              <Modal.Header px={0} bg={"lightIvory"}>
+                <Modal.Title c={"headBlue"} fz={30} fw={"bold"}>
+                  Нэг удаагийн нууц үг
+                </Modal.Title>
+                <Button
+                  unstyled
+                  p={8}
+                  onClick={close}
+                  className={`border bg-transparent hover:bg-main hover:text-white transition-all rounded-full border-[${Colors.stroke}]`}
+                >
+                  <HiOutlineX size={26} />
+                </Button>
+              </Modal.Header>
+              <div>
+                <Stack align="start">
+                  <Text fz={18} fw={200} lh={1.2} mb={40}>
+                    Таны дугаарт нэг удаагийн нууц үг явуулсан бөгөөд хугацаа
+                    дууссаны дараа дахин илгээх товч дээр дарна уу.
+                  </Text>
+                  <NumberInput
+                    variant="icon"
+                    maxLength={6}
+                    w={"100%"}
+                    mb={25}
+                    maw={"100%"}
+                    pe={"8px 150px 8px 20px"}
+                    // className="relative"
+                    rightSection={
+                      <Box className="flex">
+                        {countdown > 0 || loading ? (
+                          <Button
+                            px={0}
+                            bg={"transparent"}
+                            c={"main"}
+                            rightSection={
+                              <HiOutlineRefresh
+                                color={Colors.main}
+                                fontSize={24}
+                              />
+                            }
+                            onClick={() => resendOTP()}
+                          >
+                            Дахин илгээх
+                          </Button>
+                        ) : (
+                          <Text c={"main"}>{countdown} секунд</Text>
+                        )}
+                      </Box>
+                    }
+                    onChange={(e) => setOtp(`${e}`)}
+                    ta={"start"}
+                    styles={{
+                      input: {
+                        color: "#546274",
+                      },
+                    }}
+                    style={{}}
+                    c={"#546274"}
+                    error={
+                      otp.length == 6 ? false : "*6 оронтой тоо байх ёстой."
+                    }
+                    placeholder="Нууц үг оруулна уу."
+                    rightSectionWidth={150}
+                  />
+                </Stack>
+                <Button
+                  onClick={() => verifyOTP()}
+                  bg={otp.length == 6 ? "main" : "#546274"}
+                  py={18}
+                  h={"auto"}
+                  fz={24}
+                  w={"100%"}
+                  disabled={otp.length != 6}
+                >
+                  {loading ? (
+                    <Loader type="bars" color="white" />
+                  ) : (
+                    "Баталгаажуулах"
+                  )}
+                </Button>
+              </div>
+            </Modal.Content>
+          </Modal.Root>
         </>
       )}
       <div id="recaptcha-container" />
-    </div>
+    </Flex>
   );
 };
 

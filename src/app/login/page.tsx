@@ -32,11 +32,82 @@ export default function Page() {
   const matches = useMediaQuery("(min-width: 50em)");
 
   return (
-    <div className="p-16">
-      <h1>Login</h1>
-      <PhoneAuth />
-      <div>OR</div>
-      <GoogleAuth />
+    <div>
+      <Flex
+        pt={80}
+        h={matches ? "calc(100vh - 60px)" : "100%"}
+        px={20}
+        w={!matches ? "100%" : "calc(100vw - 60px)"}
+        left={!matches ? 0 : 60}
+        bg={"lightIvory"}
+        justify={"center"}
+        direction={{
+          sm: "row",
+          base: "column-reverse",
+        }}
+        pb={{
+          sm: 60,
+          base: 20,
+        }}
+        columnGap={matches ? "5%" : "5%"}
+        // rowGap={!matches ? "5%" : "0%"}
+      >
+        <Flex
+          flex={1}
+          justify={!matches ? "center" : "right"}
+          mt={{
+            sm: 0,
+            base: 16,
+          }}
+          align={"center"}
+        >
+          <Box
+            pos={"relative"}
+            maw={"calc(100vh / 1070 * 512)"}
+            w={"100%"}
+            h={"calc(100vh / 1070 * 685)"}
+            style={{
+              borderRadius: 30,
+              overflow: "hidden",
+            }}
+          >
+            <Image
+              src={Assets.login}
+              alt="login page side image"
+              className="object-contain h-full"
+            />
+            {/* <div className="absolute top-0 left-0 w-full h-full bg-blue-900/60" /> */}
+          </Box>
+        </Flex>
+        <Flex flex={1} justify={!matches ? "center" : "left"} align={"center"}>
+          <Flex
+            direction={"column"}
+            gap={0}
+            maw={450}
+            justify={"center"}
+            h={matches ? "calc(100vh / 1070 * 685)" : "calc(80vh / 1070 * 685)"}
+          >
+            <Text ta={"center"} fz={30} mb={25}>
+              Нэвтрэх
+            </Text>
+            <Text ta={"center"} mb={25}>
+              Манай технологи нь нууц үг шаарддаггүй бөгөөд та нэвтрэх болон
+              бүртгүүлэхдээ өөрийн GMAIL хаягийг ашиглахад хангалттай
+            </Text>
+            <GoogleAuth />
+            <Flex gap={8} align={"center"} my={30}>
+              <Box h={2} w={"100%"} bg={"#E0E0E0"}></Box>
+              <Text fw={500} fz={18}>
+                эсвэл
+              </Text>
+              <Box h={2} w={"100%"} bg={"#E0E0E0"}></Box>
+            </Flex>
+            <Flex align={"end"}>
+              <PhoneAuth />
+            </Flex>
+          </Flex>
+        </Flex>
+      </Flex>
     </div>
 
     // <div>
