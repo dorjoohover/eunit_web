@@ -115,13 +115,13 @@ const Page = () => {
                     );
                   })}
                 </Box>
-                <Flex gap={20}>
+                <Flex gap={20} my={24}>
                   <Button
                     type={"submit"}
                     fz={20}
                     bg={edit ? "#546274" : "main"}
                     py={16}
-                    h={"auto"}
+                    h={60}
                     w={{
                       sm: 200,
                       base: "100%",
@@ -139,7 +139,7 @@ const Page = () => {
                     variant="outline"
                     c={"red"}
                     py={16}
-                    h={"auto"}
+                    h={60}
                     color="red"
                     w={{
                       sm: 200,
