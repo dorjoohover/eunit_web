@@ -311,6 +311,7 @@ export default function Page() {
                   sm: 20,
                   lg: 24,
                 }}
+                disabled={loading}
                 py={8}
                 h={54}
                 mt={25}
