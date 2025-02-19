@@ -95,8 +95,7 @@ export default function Page() {
     try {
       setLoading(true);
       setResendTimer(60);
-
-      // Initialize reCAPTCHA only if it hasn't been created
+      // ✅ Initialize reCAPTCHA only if it hasn't been created before
       if (!window.recaptchaVerifier) {
         window.recaptchaVerifier = new RecaptchaVerifier(
           auth,
@@ -108,16 +107,18 @@ export default function Page() {
             },
           }
         );
-      } else if (resend) {
-        // If resending, reset reCAPTCHA properly
-        window.recaptchaVerifier.clear();
+      }
+
+      // ✅ If resending, reset reCAPTCHA properly
+      if (resend) {
+        await window.recaptchaVerifier.clear(); // Clears previous instance
         window.recaptchaVerifier = new RecaptchaVerifier(
           auth,
           "recaptcha-container",
           {
             size: "invisible",
             callback: (response: string) => {
-              console.log("reCAPTCHA solved:", response);
+              console.log("reCAPTCHA solved (resend):", response);
             },
           }
         );
