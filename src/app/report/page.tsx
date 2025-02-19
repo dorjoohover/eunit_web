@@ -144,6 +144,7 @@ const Page = () => {
     if (!checker()) return;
     if (user?.wallet && user?.wallet - 1000 < 0) {
       notifications.show({
+        position: "top-center",
         color: "warning",
         title: "Анхааруулга",
         message: "Үлдэгдэл хүрэлцэхгүй байна.",
@@ -618,7 +619,7 @@ const Page = () => {
               ) : (
                 <Image
                   className="mx-auto"
-                  src={`data:image/png;base64,${qpay?.qpay.qr_image}`}
+                  src={`data:image/png;base64,${qpay?.qpay?.qr_image}`}
                   alt="qpay image"
                   width={200}
                   height={200}
@@ -731,6 +732,7 @@ const Page = () => {
                 onClick={() => {
                   // nextStep(d.id);
                   notifications.show({
+                    position: "top-center",
                     title: "Мэдэгдэл",
                     message: "Тун удахгүй",
                   });
