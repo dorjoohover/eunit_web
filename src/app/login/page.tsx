@@ -131,7 +131,7 @@ export default function Page() {
       setStep(2);
     } catch (error) {
       notifications.show({
-        message: `Error: ${(error as Error)?.message || "Failed to send OTP"}`,
+        message: `${(error as Error)?.message || "Failed to send OTP"}`,
       });
     } finally {
       setLoading(false);
@@ -232,7 +232,7 @@ export default function Page() {
             </Flex>
             <Flex>
               {step == 1 && (
-                <TextInput
+                <NumberInput
                   flex={{
                     base: 8,
                     lg: 4,
@@ -273,7 +273,7 @@ export default function Page() {
                       </Flex>
                     </Box>
                   }
-                  onChange={(e) => setPhone(e.target.value)}
+                  onChange={(e) => setPhone(e as string)}
                   styles={{
                     label: {
                       color: "#566476",
