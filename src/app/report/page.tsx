@@ -142,6 +142,7 @@ const Page = () => {
   const submit = async (payment: number) => {
     setLoading(true);
     if (!checker()) return;
+    console.log(user?.wallet);
     if (
       payment != PaymentType.QPAY &&
       user?.wallet &&
@@ -515,7 +516,7 @@ const Page = () => {
                 үйлчилгээг авах боломжтой.
               </Highlight>
 
-              <Flex>
+              <Flex direction={matches ? "column" : "row"}>
                 {user?.wallet && user?.wallet > 1000 && (
                   <Button
                     w={"100%"}
