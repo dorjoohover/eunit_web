@@ -2,7 +2,11 @@
 
 import { notifications } from "@mantine/notifications";
 
-import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
+import {
+  ConfirmationResult,
+  RecaptchaVerifier,
+  signInWithPhoneNumber,
+} from "firebase/auth";
 import { auth } from "./firebase";
 import React, { FormEvent, useEffect, useState } from "react";
 import { signIn } from "next-auth/react";
@@ -81,21 +85,41 @@ export default function Page() {
   const [pin, setPin] = useState("");
   const matches = useMediaQuery("(min-width: 50em)");
 
-  const sendCode = async (resend = false) => {
+  const sendCode = async (
+    resend = false
+  ): Promise<ConfirmationResult | void> => {
     try {
       setLoading(true);
       setResendTimer(60);
-      // Ensure reCAPTCHA is properly initialized
-      const recaptcha = new RecaptchaVerifier(auth, "recaptcha-container", {
-        size: "invisible",
-        callback: (response: any) => {
-          console.log("callback", response);
-        },
-      });
 
+      // Ensure reCAPTCHA is initialized only once
+      if (!(window as any).recaptchaVerifier) {
+        (window as any).recaptchaVerifier = new RecaptchaVerifier(
+          auth,
+          "recaptcha-container",
+          {
+            size: "invisible",
+            callback: (response: string) => {
+              console.log("callback", response);
+            },
+          }
+        );
+      }
+
+      // Handle reCAPTCHA reset on resend
       if (resend) {
         auth.settings.appVerificationDisabledForTesting = false;
-        recaptcha.clear();
+        (window as any).recaptchaVerifier.clear();
+        (window as any).recaptchaVerifier = new RecaptchaVerifier(
+          auth,
+          "recaptcha-container",
+          {
+            size: "invisible",
+            callback: (response: string) => {
+              console.log("callback", response);
+            },
+          }
+        );
       }
 
       console.log(phone);
@@ -103,24 +127,25 @@ export default function Page() {
       const confirmationResult = await signInWithPhoneNumber(
         auth,
         formattedPhone,
-        recaptcha
+        (window as any).recaptchaVerifier
       );
+
       setConfirmation(confirmationResult);
       console.log("OTP sent successfully:", confirmationResult);
-      notifications.show({
-        message: "Илгээлээ.",
-      });
+      notifications.show({ message: "Илгээлээ." });
+
       setLoading(false);
       setStep(2);
       return confirmationResult;
-    } catch (error: any) {
-      console.log(error);
+    } catch (error: unknown) {
+      console.error("Error sending OTP:", error);
+
       notifications.show({
         position: "top-center",
-        message: `${error?.message ?? error}`,
+        message: `${(error as Error)?.message ?? error}`,
       });
+
       setLoading(false);
-      console.error("Error sending OTP:", error);
     }
   };
 
@@ -330,6 +355,7 @@ export default function Page() {
                   maxLength={6}
                   w={"100%"}
                   mb={25}
+                  maw={"100%"}
                   pe={"8px 150px 8px 20px"}
                   // className="relative"
                   rightSection={
@@ -357,7 +383,9 @@ export default function Page() {
                   onChange={(e) => setPin(`${e}`)}
                   ta={"start"}
                   styles={{
-                    input: {},
+                    input: {
+                      color: '#546274'
+                    },
                   }}
                   style={{}}
                   c={"#546274"}

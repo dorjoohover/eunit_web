@@ -32,6 +32,7 @@ export const inputs = {
       }
       return {
         input: {
+          color: props.c?.toString() ?? '',
           background:
             props.value == undefined || props.value == ""
               ? "white"
@@ -48,7 +49,12 @@ export const inputs = {
       c: "grey",
       fw: 500,
     },
-
+    vars: (theme, props) => {
+      return {
+        root: {},
+        controls: {},
+      };
+    },
     // vars: (theme, props) => {
     //   return {
     //     root: {
