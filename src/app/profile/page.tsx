@@ -9,6 +9,7 @@ import { ProfileValues } from "@/utils/values";
 import { Box, Button, Flex, Tabs, Text, TextInput } from "@mantine/core";
 import { useForm, UseFormReturnType } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { HiOutlineExternalLink } from "react-icons/hi";
 
@@ -60,6 +61,7 @@ const Page = () => {
       });
     }
   };
+  const router = useRouter();
   return (
     <Box>
       <ReportTitle text={"Хэрэглэгч"}>
@@ -128,7 +130,10 @@ const Page = () => {
                   {edit ? " Хадгалах" : "Засах"}
                 </Button>
                 <Button
-                  onClick={() => logOut()}
+                  onClick={() => {
+                    logOut();
+                    router.refresh();
+                  }}
                   fz={20}
                   variant="outline"
                   c={"red"}

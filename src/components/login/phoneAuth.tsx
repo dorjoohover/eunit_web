@@ -58,9 +58,9 @@ const PhoneAuth = () => {
       setConfirmationResult(confirmation);
       startCountdown();
       notifications.show({
-        message: 'Илгээлээ.',
-        position: 'top-center'
-      })
+        message: "Илгээлээ.",
+        position: "top-center",
+      });
     } catch (error) {
       console.error(error);
     } finally {
@@ -247,6 +247,8 @@ const PhoneAuth = () => {
                     rightSection={
                       <Box className="flex">
                         {countdown > 0 || loading ? (
+                          <Text c={"main"}>{countdown} секунд</Text>
+                        ) : (
                           <Button
                             px={0}
                             bg={"transparent"}
@@ -261,8 +263,6 @@ const PhoneAuth = () => {
                           >
                             Дахин илгээх
                           </Button>
-                        ) : (
-                          <Text c={"main"}>{countdown} секунд</Text>
                         )}
                       </Box>
                     }
