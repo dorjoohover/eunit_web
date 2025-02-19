@@ -23,24 +23,24 @@ const Template = ({ children }: { children: ReactNode }) => {
 
   const handler = async () => {
     try {
-      const { data: dataUser } = await getUserData();
-      if ((dataUser == undefined || dataUser == null) && user == undefined) {
-        if (data?.user != undefined) {
-          const res = await loginUser(
-            data?.user.email!,
-            data?.user.image!,
-            data?.user.name!
-          );
-          if (res) setUser(res);
-        }
-      } else {
-        if (data && dataUser) {
-          setUser(dataUser);
-        } else {
-          // logOut();
-          refetchUser();
-        }
-      }
+      // const { data: dataUser } = await getUserData();
+      // if ((dataUser == undefined || dataUser == null) && user == undefined) {
+      //   if (data?.user != undefined) {
+      //     const res = await loginUser(
+      //       data?.user.email!,
+      //       data?.user.image!,
+      //       data?.user.name!
+      //     );
+      //     if (res) setUser(res);
+      //   }
+      // } else {
+      //   if (data && dataUser) {
+      //     setUser(dataUser);
+      //   } else {
+      //     // logOut();
+      //     refetchUser();
+      //   }
+      // }
     } catch (error) {
       // console.error("Error during handler execution:", error);
     }

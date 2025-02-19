@@ -134,6 +134,7 @@ export default function Page() {
       if (error.message == "Firebase: Error (auth/internal-error).") {
         message = "Алдаа гарлаа түр хүлээгээд дахин оролдон уу";
       }
+      router.refresh();
       notifications.show({
         message: `${message}`,
       });
@@ -234,7 +235,7 @@ export default function Page() {
               </Text>
               <Box h={2} w={"100%"} bg={"#E0E0E0"}></Box>
             </Flex>
-            <Flex>
+            <Flex align={"end"}>
               {step == 1 && (
                 <NumberInput
                   flex={{
