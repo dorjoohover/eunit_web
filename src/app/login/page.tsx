@@ -32,7 +32,11 @@ import { Colors } from "@/base/constants";
 import { MdOutlinePersonSearch, MdPhoneIphone } from "react-icons/md";
 import { useMediaQuery } from "@mantine/hooks";
 import { useRouter } from "next/navigation";
-
+declare global {
+  interface Window {
+    recaptchaVerifier?: RecaptchaVerifier;
+  }
+}
 export default function Page() {
   const [phone, setPhone] = useState("");
 
@@ -92,42 +96,38 @@ export default function Page() {
       setLoading(true);
       setResendTimer(60);
 
-      // Ensure reCAPTCHA is initialized only once
-      if (!(window as any).recaptchaVerifier) {
-        (window as any).recaptchaVerifier = new RecaptchaVerifier(
+      // Initialize reCAPTCHA only if it hasn't been created
+      if (!window.recaptchaVerifier) {
+        window.recaptchaVerifier = new RecaptchaVerifier(
           auth,
           "recaptcha-container",
           {
             size: "invisible",
             callback: (response: string) => {
-              console.log("callback", response);
+              console.log("reCAPTCHA solved:", response);
             },
           }
         );
-      }
-
-      // Handle reCAPTCHA reset on resend
-      if (resend) {
-        auth.settings.appVerificationDisabledForTesting = false;
-        (window as any).recaptchaVerifier.clear();
-        (window as any).recaptchaVerifier = new RecaptchaVerifier(
+      } else if (resend) {
+        // If resending, reset reCAPTCHA properly
+        window.recaptchaVerifier.clear();
+        window.recaptchaVerifier = new RecaptchaVerifier(
           auth,
           "recaptcha-container",
           {
             size: "invisible",
             callback: (response: string) => {
-              console.log("callback", response);
+              console.log("reCAPTCHA solved:", response);
             },
           }
         );
       }
 
-      console.log(phone);
       const formattedPhone = `+976${phone}`;
       const confirmationResult = await signInWithPhoneNumber(
         auth,
         formattedPhone,
-        (window as any).recaptchaVerifier
+        window.recaptchaVerifier
       );
 
       setConfirmation(confirmationResult);
@@ -137,7 +137,7 @@ export default function Page() {
       setLoading(false);
       setStep(2);
       return confirmationResult;
-    } catch (error: unknown) {
+    } catch (error) {
       console.error("Error sending OTP:", error);
 
       notifications.show({
@@ -384,7 +384,7 @@ export default function Page() {
                   ta={"start"}
                   styles={{
                     input: {
-                      color: '#546274'
+                      color: "#546274",
                     },
                   }}
                   style={{}}
