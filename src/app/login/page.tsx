@@ -277,6 +277,7 @@ export default function Page() {
                       </Flex>
                     </Box>
                   }
+                  height={54}
                   onChange={(e) => setPhone(e as string)}
                   styles={{
                     label: {
