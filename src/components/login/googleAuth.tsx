@@ -11,7 +11,7 @@ const GoogleAuth = () => {
   const signInWithGoogle = async () => {
     try {
       const user = await signInWithPopup(auth, googleProvider);
-      const token = user.user.getIdToken();
+      const token = await user.user.getIdToken();
       console.log(token)
       if (token) {
         const res = await fetch("/api/login/phone", {
