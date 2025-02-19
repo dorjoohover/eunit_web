@@ -5,6 +5,8 @@ import {
   signInWithPhoneNumber,
   ConfirmationResult,
 } from "firebase/auth";
+import { notifications } from "@mantine/notifications";
+import { useRouter } from "next/navigation";
 declare global {
   interface Window {
     recaptchaVerifier?: RecaptchaVerifier;
@@ -16,7 +18,7 @@ const PhoneAuth = () => {
   const [confirmationResult, setConfirmationResult] =
     useState<ConfirmationResult | null>(null);
   const [loading, setLoading] = useState(false);
-  const [countdown, setCountdown] = useState(30);
+  const [countdown, setCountdown] = useState(60);
 
   useEffect(() => {
     window.recaptchaVerifier = new RecaptchaVerifier(
@@ -48,12 +50,33 @@ const PhoneAuth = () => {
       setLoading(false);
     }
   };
-
+  const router = useRouter();
   const verifyOTP = async () => {
     try {
       setLoading(true);
-      await confirmationResult?.confirm(otp);
-      // User signed in
+      const confirm = await confirmationResult?.confirm(otp);
+      const token = await confirm?.user?.getIdToken();
+      if (token) {
+        const res = await fetch("/api/login/phone", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ token: token }),
+        }).then((d) => d.json());
+        if (res.success) {
+          notifications.show({
+            position: "top-center",
+            message: "Амжилттай нэвтэрлээ!",
+          });
+          router.refresh();
+        } else {
+          notifications.show({ position: "top-center", message: res.message });
+        }
+      } else {
+        notifications.show({
+          position: "top-center",
+          message: "Амжилтгүй дахин оролдоно уу",
+        });
+      }
     } catch (error) {
       console.error("Invalid OTP");
     } finally {
@@ -65,7 +88,7 @@ const PhoneAuth = () => {
     try {
       setLoading(true);
       await sendOTP();
-      setCountdown(30);
+      setCountdown(60);
       startCountdown();
     } catch (error) {
       console.error(error);
