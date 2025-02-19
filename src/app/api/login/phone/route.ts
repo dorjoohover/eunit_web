@@ -34,19 +34,12 @@ export async function POST(req: NextRequest) {
         { status: response.status }
       );
     } else {
-      if (data?.payload?.registered) {
-        cookie.set("auth_token", token, {
-          sameSite: "strict",
-          maxAge: 60 * 60,
-        });
+      cookie.set("auth_token", token, {
+        sameSite: "strict",
+        maxAge: 60 * 60,
+      });
 
-        response = NextResponse.json({ success: true, data: data.payload });
-      } else {
-        response = NextResponse.json(
-          { success: false, message: "Бүртгэлгүй хэрэглэгч байна." },
-          { status: 400 }
-        );
-      }
+      response = NextResponse.json({ success: true, data: data.payload });
     }
 
     return response;

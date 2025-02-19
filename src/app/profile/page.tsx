@@ -115,38 +115,41 @@ const Page = () => {
                     );
                   })}
                 </Box>
-                <Button
-                  type={"submit"}
-                  fz={20}
-                  bg={edit ? "#546274" : "main"}
-                  py={16}
-                  h={"auto"}
-                  w={{
-                    sm: 200,
-                    base: "100%",
-                  }}
-                  my={32}
-                >
-                  {edit ? " Хадгалах" : "Засах"}
-                </Button>
-                <Button
-                  onClick={() => {
-                    logOut();
-                    router.refresh();
-                  }}
-                  fz={20}
-                  variant="outline"
-                  c={"red"}
-                  py={16}
-                  h={"auto"}
-                  color="red"
-                  w={{
-                    sm: 200,
-                    base: "100%",
-                  }}
-                >
-                  <HiOutlineExternalLink /> <span className="ml-4">Гарах</span>
-                </Button>
+                <Flex gap={20}>
+                  <Button
+                    type={"submit"}
+                    fz={20}
+                    bg={edit ? "#546274" : "main"}
+                    py={16}
+                    h={"auto"}
+                    w={{
+                      sm: 200,
+                      base: "100%",
+                    }}
+                    my={32}
+                  >
+                    {edit ? " Хадгалах" : "Засах"}
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      logOut();
+                      router.refresh();
+                    }}
+                    fz={20}
+                    variant="outline"
+                    c={"red"}
+                    py={16}
+                    h={"auto"}
+                    color="red"
+                    w={{
+                      sm: 200,
+                      base: "100%",
+                    }}
+                  >
+                    <HiOutlineExternalLink />{" "}
+                    <span className="ml-4">Гарах</span>
+                  </Button>
+                </Flex>
                 <Spacer size={40} />
               </form>
             </Box>

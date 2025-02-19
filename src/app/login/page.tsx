@@ -59,6 +59,7 @@ export default function Page() {
             sm: 0,
             base: 16,
           }}
+          w={"100%"}
           align={"center"}
         >
           <Box
