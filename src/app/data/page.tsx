@@ -84,6 +84,7 @@ const Page = () => {
   });
   const [data, setData] = useState<ResultType>();
   const [isLoading, setIsLoading] = useState(false);
+  const [step, setStep] = useState(0);
   const router = useRouter();
   const [location, setLocation] = useState<LocationModel[]>([]);
   const [filteredLocation, setFilteredLocation] = useState<LocationModel[]>([]);
@@ -116,7 +117,7 @@ const Page = () => {
   };
 
   const request = () => {
-    open();
+    setStep(1);
   };
   const getResult = async () => {
     setLoading(true);
@@ -177,6 +178,10 @@ const Page = () => {
         // Save the workbook as an Excel file
         XLSX.writeFile(workbook, `${title}.xlsx`);
         setQpay(null);
+        notifications.show({
+          message: "Татлаа",
+          position: "top-center",
+        });
         close();
         setLoading(false);
       } else {
@@ -194,6 +199,11 @@ const Page = () => {
     setLoading(true);
 
     if (form.town && form.area) {
+      if (type == PaymentType.QPAY && qpay != null) {
+        setStep(2);
+        setLoading(false);
+        return;
+      }
       const res = await sendRequest(
         +form.town,
         {
@@ -217,12 +227,12 @@ const Page = () => {
           qpay: res?.data.data,
           id: res?.data.res,
         });
+        setStep(2);
         setLoading(false);
         return;
       }
       if (res?.data?.success != false) {
         refetchUser();
-        console.log(res?.data);
         onGetExportProduct(res?.data?.res, "Дата", "Дата");
       }
 
@@ -633,7 +643,12 @@ const Page = () => {
         </Flex>
         {/* <Spacer size={80} /> */}
       </ReportTitle>
-      <Modal.Root opened={opened} centered size={"lg"} onClose={close}>
+      <Modal.Root
+        opened={step != 0}
+        centered
+        size={"lg"}
+        onClose={() => setStep(0)}
+      >
         <Modal.Overlay />
 
         <Modal.Content radius={20} bg={"transparent"}>
@@ -643,7 +658,7 @@ const Page = () => {
             </Modal.Title>
             <Modal.CloseButton />
           </Modal.Header>
-          {qpay == null && (
+          {step == 1 && (
             <Box bg={"white"} px={"10%"} pt={20}>
               <WalletCard
                 onClick={() => {
@@ -654,14 +669,14 @@ const Page = () => {
                 mt={24}
                 mb={32}
                 fz={18}
-                highlight={["урамшуулал", "20,000 E-unit"]}
+                highlight={["урамшуулал", "3,000 E-unit"]}
                 highlightStyles={{
                   background: Colors.main,
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                 }}
               >
-                Шинэ хэрэглэгчийн урамшуулал бүхий 20,000 E-unit ашиглан энэхүү
+                Шинэ хэрэглэгчийн урамшуулал бүхий 3,000 E-unit ашиглан энэхүү
                 үйлчилгээг авах боломжтой.
               </Highlight>
               <Flex>
@@ -725,7 +740,7 @@ const Page = () => {
               </Flex>
             </Box>
           )}
-          {qpay != null && (
+          {qpay != null && step == 2 && (
             <Box
               bg={"white"}
               px={{
