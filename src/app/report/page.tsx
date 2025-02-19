@@ -142,7 +142,11 @@ const Page = () => {
   const submit = async (payment: number) => {
     setLoading(true);
     if (!checker()) return;
-    if (user?.wallet && user?.wallet - 1000 < 0) {
+    if (
+      payment != PaymentType.QPAY &&
+      user?.wallet &&
+      user?.wallet - 1000 < 0
+    ) {
       notifications.show({
         position: "top-center",
         color: "warning",
