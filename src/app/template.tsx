@@ -23,7 +23,10 @@ const Template = ({ children }: { children: ReactNode }) => {
 
   const handler = async () => {
     try {
-      // const { data: dataUser } = await getUserData();
+      const { data: dataUser } = await getUserData();
+      if (dataUser) {
+        setUser(dataUser);
+      }
       // if ((dataUser == undefined || dataUser == null) && user == undefined) {
       //   if (data?.user != undefined) {
       //     const res = await loginUser(
