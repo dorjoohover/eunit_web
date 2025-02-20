@@ -273,20 +273,25 @@ const Page = () => {
     logo: string;
     name: string;
   };
-  const handleRedirect = (
-    url: QPayUrl,
-    event: React.MouseEvent<HTMLAnchorElement>
-  ) => {
-    event.preventDefault();
+  const openApp = (url: string) => {
+    const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+    const isAndroid = /Android/.test(navigator.userAgent);
 
-    const appLink = url.link;
-    const webLink = `https://${url.link}` || url.link;
+    if (isIOS || isAndroid) {
+      // Create an invisible iframe to force open the app
+      const iframe = document.createElement("iframe");
+      iframe.style.display = "none";
+      iframe.src = url;
+      document.body.appendChild(iframe);
 
-    window.location.href = appLink;
-
-    setTimeout(() => {
-      window.location.href = webLink;
-    }, 2000);
+      // Remove the iframe after 3 seconds to prevent clutter
+      setTimeout(() => {
+        document.body.removeChild(iframe);
+      }, 3000);
+    } else {
+      // Directly set location for desktop (just in case)
+      window.location.href = url;
+    }
   };
   return (
     <Box>
@@ -611,9 +616,9 @@ const Page = () => {
                   {qpay.qpay?.urls.map((url, k) => {
                     return (
                       <Grid.Col key={k} span={3}>
-                        <Link
-                          href={url.link}
-                          onClick={(e) => handleRedirect(url, e)}
+                        <Box
+                          onClick={() => openApp(url.link)}
+                          className="cursor-pointer"
                         >
                           <Image
                             src={url.logo}
@@ -621,7 +626,7 @@ const Page = () => {
                             height={60}
                             alt={url.name}
                           />
-                        </Link>
+                        </Box>
                       </Grid.Col>
                     );
                   })}
@@ -632,9 +637,9 @@ const Page = () => {
                   {qpay.qpay?.urls.map((url, k) => {
                     return (
                       <Grid.Col key={k} span={3}>
-                        <Link
-                          href={url.link}
-                          onClick={(e) => handleRedirect(url, e)}
+                        <Box
+                          onClick={() => openApp(url.link)}
+                          className="cursor-pointer"
                         >
                           <Image
                             src={url.logo}
@@ -642,7 +647,7 @@ const Page = () => {
                             height={60}
                             alt={url.name}
                           />{" "}
-                        </Link>
+                        </Box>
                       </Grid.Col>
                     );
                   })}

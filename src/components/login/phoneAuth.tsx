@@ -176,7 +176,7 @@ const PhoneAuth = () => {
               </Box>
             }
             height={54}
-            onChange={(e) => setPhone(e as string)}
+            onChange={(e) => setPhone(e.target.value as string)}
             styles={{
               label: {
                 color: "#566476",

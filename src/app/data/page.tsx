@@ -776,10 +776,7 @@ const Page = () => {
                   {qpay.qpay?.urls.map((url, k) => {
                     return (
                       <Grid.Col key={k} span={3}>
-                        <Link
-                          href={url.link}
-                          onClick={(e) => handleRedirect(url, e)}
-                        >
+                        <Link href={url.link}>
                           <Image
                             src={url.logo}
                             width={60}
@@ -797,10 +794,7 @@ const Page = () => {
                   {qpay.qpay?.urls.map((url, k) => {
                     return (
                       <Grid.Col key={k} span={3}>
-                        <Link
-                          href={url.link}
-                          onClick={(e) => handleRedirect(url, e)}
-                        >
+                        <Link href={url.link}>
                           <Image
                             src={url.logo}
                             width={60}
