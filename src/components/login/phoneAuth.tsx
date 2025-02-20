@@ -16,6 +16,7 @@ import {
   NumberInput,
   Stack,
   Text,
+  TextInput,
 } from "@mantine/core";
 import { MdPhoneIphone } from "react-icons/md";
 import { HiOutlineRefresh, HiOutlineX } from "react-icons/hi";
@@ -132,7 +133,8 @@ const PhoneAuth = () => {
     <Flex align={"end"}>
       {!confirmationResult ? (
         <>
-          <NumberInput
+          <TextInput
+          accept="[0-9]"
             flex={{
               base: 8,
               md: 3,
