@@ -274,22 +274,30 @@ const Page = () => {
     name: string;
   };
   const openApp = (url: string) => {
-    const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
     const isAndroid = /Android/.test(navigator.userAgent);
 
-    if (isIOS || isAndroid) {
-      // Create an invisible iframe to force open the app
+    if (isIOS) {
+      // For custom URL schemes with fallback
+      const start = Date.now();
+      window.location.href = url;
+
+      // Fallback to App Store if app not installed
+      setTimeout(() => {
+        if (Date.now() - start < 2000) {
+          window.location.href = url || "https://apps.apple.com";
+        }
+      }, 500);
+    } else if (isAndroid) {
+      // Android iframe approach
       const iframe = document.createElement("iframe");
       iframe.style.display = "none";
       iframe.src = url;
       document.body.appendChild(iframe);
-
-      // Remove the iframe after 3 seconds to prevent clutter
       setTimeout(() => {
         document.body.removeChild(iframe);
       }, 3000);
     } else {
-      // Directly set location for desktop (just in case)
       window.location.href = url;
     }
   };
