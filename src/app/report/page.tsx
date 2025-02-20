@@ -280,7 +280,7 @@ const Page = () => {
     if (isIOS) {
       // For custom URL schemes with fallback
       const start = Date.now();
-      window.location.href = url;
+      // window.location.href = url;
 
       // Fallback to App Store if app not installed
       setTimeout(() => {

@@ -115,7 +115,7 @@ const Page = () => {
                     );
                   })}
                 </Box>
-                <Flex gap={20} my={24}>
+                <Flex gap={20} my={24} align={'center'}>
                   <Button
                     type={"submit"}
                     fz={20}
