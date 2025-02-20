@@ -31,7 +31,7 @@ import { notifications } from "@mantine/notifications";
 import { IconSearch } from "@tabler/icons-react";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
-import { use, useEffect, useState } from "react";
+import { MouseEventHandler, use, useEffect, useState } from "react";
 import { debounce } from "lodash";
 import { QpayType } from "@/utils/type";
 import Link from "next/link";
@@ -266,6 +266,27 @@ const Page = () => {
       router.push(`/report/result?id=${qpay?.id}`);
     }
     setLoading(false);
+  };
+  type QPayUrl = {
+    link: string;
+    fallback?: string;
+    logo: string;
+    name: string;
+  };
+  const handleRedirect = (
+    url: QPayUrl,
+    event: React.MouseEvent<HTMLAnchorElement>
+  ) => {
+    event.preventDefault();
+
+    const appLink = url.link;
+    const webLink = `https://${url.link}` || url.link;
+
+    window.location.href = appLink;
+
+    setTimeout(() => {
+      window.location.href = webLink;
+    }, 2000);
   };
   return (
     <Box>
@@ -590,7 +611,10 @@ const Page = () => {
                   {qpay.qpay?.urls.map((url, k) => {
                     return (
                       <Grid.Col key={k} span={3}>
-                        <Link href={url.link}>
+                        <Link
+                          href={url.link}
+                          onClick={(e) => handleRedirect(url, e)}
+                        >
                           <Image
                             src={url.logo}
                             width={60}
@@ -608,7 +632,10 @@ const Page = () => {
                   {qpay.qpay?.urls.map((url, k) => {
                     return (
                       <Grid.Col key={k} span={3}>
-                        <Link href={url.link}>
+                        <Link
+                          href={url.link}
+                          onClick={(e) => handleRedirect(url, e)}
+                        >
                           <Image
                             src={url.logo}
                             width={60}
