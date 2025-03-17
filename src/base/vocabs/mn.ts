@@ -16,7 +16,7 @@ export const locale = {
       LOGIN: "Нэвтрэх",
       PROFILE: "Profile",
       REALSTATE_INFORMATION: "орон сууцны мэдээлэл",
-      CAR: "Машиний үнэлгээ",
+      CAR: "Машины үнэлгээ",
     },
     ERROR_MESSAGES: {
       SUCCESS: "Амжилттай",

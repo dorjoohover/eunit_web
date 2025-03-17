@@ -6,8 +6,6 @@ import { useAppContext } from "@/_context";
 import { Loading } from "@/app/loading";
 import { Colors } from "@/base/constants";
 import {
-  AnalyzeWidget,
-  ApartmentInfo,
   ResultWidget,
   UserWidget,
 } from "@/components/report/result";
@@ -17,11 +15,9 @@ import {
   ReportTitle,
   Spacer,
 } from "@/components/report/shared";
-import { ServiceCard } from "@/components/shared/card";
 import { LocationModel } from "@/models/location.model";
-import { Assets } from "@/utils/assets";
 import { formatNumber, money, parseDate } from "@/utils/functions";
-import { api, ConstantApi } from "@/utils/routes";
+import { api } from "@/utils/routes";
 import {
   defaultMapCenter,
   defaultMapContainerStyle,
@@ -29,15 +25,13 @@ import {
   defaultMapZoom,
 } from "@/utils/values";
 import { Box, Button, Center, Flex, Text } from "@mantine/core";
-import { useFetch, useMediaQuery } from "@mantine/hooks";
 import { GoogleMap, Marker } from "@react-google-maps/api";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { BiCalendar, BiDownload } from "react-icons/bi";
+import { BiCalendar } from "react-icons/bi";
 import { CiLocationOn } from "react-icons/ci";
 import {
   IoIosArrowRoundBack,
-  IoMdArrowBack,
   IoMdDownload,
 } from "react-icons/io";
 import { MdApartment } from "react-icons/md";

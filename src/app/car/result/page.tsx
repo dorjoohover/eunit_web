@@ -7,7 +7,7 @@ import { Colors } from "@/base/constants";
 import { IconText, ReportTitle, Spacer } from "@/components/report/shared";
 import { formatNumber, money, parseDate } from "@/utils/functions";
 import { api } from "@/utils/routes";
-import { Box, Button, Center, Flex, Grid, Text } from "@mantine/core";
+import { Box, Button, Center, Flex, Grid, px, Text, Title } from "@mantine/core";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { IoIosArrowRoundBack, IoMdDownload } from "react-icons/io";
@@ -15,6 +15,7 @@ import { MdApartment } from "react-icons/md";
 import Link from "next/link";
 import { notifications } from "@mantine/notifications";
 import { FaBeer, FaCar, FaPaintBrush } from "react-icons/fa";
+import { useMediaQuery } from "@mantine/hooks";
 
 type ResultType = {
   brand?: string;
@@ -35,6 +36,7 @@ type ResultType = {
 const Page = () => {
   const params = useSearchParams();
   const [loading, setLoading] = useState(false);
+  const matches = useMediaQuery("(min-width: 50em)");
   const id = params.get("id");
   const { user, refetchUser } = useAppContext();
   const [data, setData] = useState<ResultType>();
@@ -88,7 +90,7 @@ const Page = () => {
 
   return (
     <Box>
-      <ReportTitle text={data?.mark ?? "TOYOTA, PRIUS 20"}>
+      <ReportTitle text={data?.mark ?? "TOYOTA PRIUS 20"}>
         <Box>
           <Flex mb={40} pb={10}>
             <Text
@@ -97,9 +99,10 @@ const Page = () => {
                 base: 16,
               }}
               fw={{
-                sm: "500",
+                sm: "600",
                 base: "700",
-              }}
+              }}    
+              c={"headBlue"}        
             >
               Зах зээлийн үнэлгээ
             </Text>
@@ -126,8 +129,12 @@ const Page = () => {
             justify={"start"}
             w={"100%"}
             columnGap={40}
+            c={"headBlue"}
           >
-            <IconText child={<FaCar size={24} />} text={"Автомашин"} />
+            <IconText 
+              child={<FaCar size={24} />} 
+              text="Автомашин"
+            />
           </Flex>
 
           <Spacer
@@ -165,15 +172,15 @@ const Page = () => {
           }}
         />
 
-        <Spacer size={32} />
 
-        <Grid p={24}>
-          <Grid.Col span={9}>
+        <Grid>
+          <Grid.Col span={{"lg":9,"md":12,"sm":12}}>
             <Box
               bg={"white"}
-              p={16}
+              p={22}
               style={{
-                borderRadius: "12px",
+                borderRadius: "15px",
+                boxShadow: "0px 0px 25px rgba(0, 0, 0, 0.25)",
               }}
             >
               <Box style={{ textAlign: "center" }}>
@@ -190,40 +197,41 @@ const Page = () => {
                 >
                   Тээврийн хэрэгслийн үзүүлэлтүүд
                 </Text>
-                <Spacer size={56} />
+                <Spacer size={40} />
               </Box>
+              
               <Grid>
                 {carFields.map((carField, index) => (
-                  <Grid.Col span={3} key={index}>
+                  <Grid.Col span={{"lg":3,"md":3,"sm":4,"base":6}} key={index}>
                     <Flex
-                      mih={50}
+                      mih={30}
                       gap="md"
                       justify="center"
                       align="center"
                       direction="row"
                       wrap="wrap"
                       style={{
-                        borderRight: "2px solid black",
+                        borderRight: "1.5px solid black",
                       }}
                     >
-                      <FaPaintBrush color="gray" size={50} />
-                      <Box w={"70%"}>
+                      <FaPaintBrush color="grey" size={30} />
+                      <Box w={"70%"} h={70}>
                         <Text
                           fz={{
-                            sm: 16,
-                            base: 14,
+                            sm: 12,
+                            base: 12,
                           }}
                           fw={{
-                            sm: "500",
-                            base: "700",
+                            sm: "400",
+                            base: "400",
                           }}
-                          c={"gray"}
+                          c={"grey"}
                         >
                           {carField.name}
                         </Text>
                         <Text
                           fz={{
-                            sm: 30,
+                            sm: 24,
                             base: 16,
                           }}
                           fw={{
@@ -240,13 +248,16 @@ const Page = () => {
               </Grid>
             </Box>
           </Grid.Col>
-          <Grid.Col span={3}>
+          <Grid.Col span={{"lg":3,"md":12,"sm":12}}>
+            
             <Box
               bg={"white"}
-              p={12}
+              py={22}
+              px={62}
               style={{
-                borderRadius: "12px",
+                borderRadius: "15px",
                 textAlign: "center",
+                boxShadow: "0px 0px 25px rgba(0, 0, 0, 0.25)",
               }}
             >
               <Text
@@ -258,22 +269,22 @@ const Page = () => {
                   sm: "500",
                   base: "700",
                 }}
-                c={"gray"}
-                mt={20}
+                c={"headBlue"}
               >
                 Үнэлгээ
               </Text>
               <Text
                 fz={{
                   sm: 36,
-                  base: 14,
+                  base: 32,
                 }}
                 fw={{
                   sm: "500",
                   base: "700",
                 }}
                 c={Colors.main}
-                m={30}
+                mt={40}
+                mb={15}
               >
                 ₮{money(`15999999`)}{" "}
               </Text>
@@ -306,7 +317,7 @@ const Page = () => {
             </Flex>
           </Grid.Col>
         </Grid>
-
+                  
         <Spacer
           size={{
             md: 80,

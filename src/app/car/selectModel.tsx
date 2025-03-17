@@ -59,16 +59,16 @@ export const steerType = [
 
 export const wheelDrive = [
   {
-    label: "RWD",
-    value: "RWD",
+    label: "Хойноо RWD",
+    value: "Хойноо RWD",
   },
   {
-    label: "AWD",
-    value: "AWD",
+    label: "Урдаа FWD",
+    value: "Урдаа FWD",
   },
   {
-    label: "4WD",
-    value: "4WD",
+    label: "Бүх дугуй 4WD",
+    value: "Бүх дугуй 4WD",
   },
 ];
 
@@ -109,20 +109,32 @@ export const carColor = [
 
 export const meterRange = [
   {
-    label: "0 - 50000",
-    value: "0 - 50000",
+    label: "0-30,000 км",
+    value: "0-30,000 км",
   },
   {
-    label: "50001 - 100000",
-    value: "50001 - 100000",
+    label: "30,001-50,000 км",
+    value: "30,001-50,000 км",
   },
   {
-    label: "100001 - 150000",
-    value: "100001 - 150000",
+    label: "50,001-100,000 км",
+    value: "50,001-100,000 км",
   },
   {
-    label: "150001 - 200000",
-    value: "150001 - 200000",
+    label: "100,001км - 150,000км",
+    value: "100,001км - 150,000км",
+  },
+  {
+    label: "150,001-200,000 км",
+    value: "150,001-200,000 км",
+  },
+  {
+    label: "200,001-250,000 км",
+    value: "200,001-250,000 км",
+  },
+  {
+    label: "250,001 км-аас дээш",
+    value: "250,001 км-аас дээш",
   },
 ];
 

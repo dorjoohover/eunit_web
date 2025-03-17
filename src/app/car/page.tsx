@@ -9,7 +9,7 @@ import { Box, Button, Flex, Grid, Group, Select } from "@mantine/core";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { notifications } from "@mantine/notifications";
-import { CarEvaluateValues } from "@/utils/values";
+import { CarEvaluateKey, CarEvaluateValues } from "@/utils/values";
 import { Image } from "@mantine/core";
 import { QpayType } from "@/utils/type";
 import { PaymentType, ServiceType } from "@/config/enum";
@@ -109,216 +109,50 @@ const Page = () => {
             borderRadius: "20px",
           }}
         >
-          <Grid style={{ padding: "20px" }}>
-            <Grid.Col span={4}>
-              <Select
-                w={"100%"}
-                my={5}
-                onChange={(e) => {
-                  if (e != null) setForm((prev) => ({ ...prev, brand: e }));
-                }}
-                value={form.brand}
-                variant="rounded"
-                p={"2px"}
-                __size="20px"
-                withScrollArea={false}
-                styles={{ dropdown: { maxHeight: 200, overflowY: "auto" } }}
-                data={brands}
-                label={CarEvaluateValues["brand"].label}
-                placeholder={CarEvaluateValues["brand"].pl}
-              />
-            </Grid.Col>
-            <Grid.Col span={4}>
-              <Select
-                w={"100%"}
-                my={5}
-                onChange={(e) => {
-                  if (e != null) setForm((prev) => ({ ...prev, mark: e }));
-                }}
-                value={form.mark}
-                variant="rounded"
-                p={"2px"}
-                __size="20px"
-                withScrollArea={false}
-                styles={{ dropdown: { maxHeight: 200, overflowY: "auto" } }}
-                data={brands}
-                label={CarEvaluateValues["mark"].label}
-                placeholder={CarEvaluateValues["mark"].pl}
-              />
-            </Grid.Col>
-            <Grid.Col span={4}>
-              <Select
-                w={"100%"}
-                my={5}
-                onChange={(e) => {
-                  if (e != null) setForm((prev) => ({ ...prev, motor: e }));
-                }}
-                value={form.motor}
-                variant="rounded"
-                p={"2px"}
-                __size="20px"
-                withScrollArea={false}
-                styles={{ dropdown: { maxHeight: 200, overflowY: "auto" } }}
-                data={motor}
-                label={CarEvaluateValues["motor"].label}
-                placeholder={CarEvaluateValues["motor"].pl}
-              />
-            </Grid.Col>
-            <Grid.Col span={4}>
-              <Select
-                w={"100%"}
-                my={5}
-                onChange={(e) => {
-                  if (e != null) setForm((prev) => ({ ...prev, motorType: e }));
-                }}
-                value={form.motorType}
-                variant="rounded"
-                p={"2px"}
-                __size="20px"
-                withScrollArea={false}
-                styles={{ dropdown: { maxHeight: 200, overflowY: "auto" } }}
-                data={motorType}
-                label={CarEvaluateValues["motorType"].label}
-                placeholder={CarEvaluateValues["motorType"].pl}
-              />
-            </Grid.Col>
-            <Grid.Col span={4}>
-              <Select
-                w={"100%"}
-                my={5}
-                onChange={(e) => {
-                  if (e != null)
-                    setForm((prev) => ({ ...prev, engineType: e }));
-                }}
-                value={form.engineType}
-                variant="rounded"
-                p={"2px"}
-                __size="20px"
-                withScrollArea={false}
-                styles={{ dropdown: { maxHeight: 200, overflowY: "auto" } }}
-                data={engineType}
-                label={CarEvaluateValues["engineType"].label}
-                placeholder={CarEvaluateValues["engineType"].pl}
-              />
-            </Grid.Col>
-            <Grid.Col span={4}>
-              <Select
-                w={"100%"}
-                my={5}
-                onChange={(e) => {
-                  if (e != null) setForm((prev) => ({ ...prev, steerType: e }));
-                }}
-                value={form.steerType}
-                variant="rounded"
-                p={"2px"}
-                __size="20px"
-                withScrollArea={false}
-                styles={{ dropdown: { maxHeight: 200, overflowY: "auto" } }}
-                data={steerType}
-                label={CarEvaluateValues["steerType"].label}
-                placeholder={CarEvaluateValues["steerType"].pl}
-              />
-            </Grid.Col>
-            <Grid.Col span={4}>
-              <Select
-                w={"100%"}
-                my={5}
-                onChange={(e) => {
-                  if (e != null)
-                    setForm((prev) => ({ ...prev, wheelDrive: e }));
-                }}
-                value={form.wheelDrive}
-                variant="rounded"
-                p={"2px"}
-                __size="20px"
-                withScrollArea={false}
-                styles={{ dropdown: { maxHeight: 200, overflowY: "auto" } }}
-                data={wheelDrive}
-                label={CarEvaluateValues["wheelDrive"].label}
-                placeholder={CarEvaluateValues["wheelDrive"].pl}
-              />
-            </Grid.Col>
-            <Grid.Col span={4}>
-              <Select
-                w={"100%"}
-                my={5}
-                onChange={(e) => {
-                  if (e != null) setForm((prev) => ({ ...prev, color: e }));
-                }}
-                value={form.color}
-                variant="rounded"
-                p={"2px"}
-                __size="20px"
-                withScrollArea={false}
-                styles={{ dropdown: { maxHeight: 200, overflowY: "auto" } }}
-                data={carColor}
-                label={CarEvaluateValues["color"].label}
-                placeholder={CarEvaluateValues["color"].pl}
-              />
-            </Grid.Col>
-            <Grid.Col span={4}>
-              <Select
-                w={"100%"}
-                my={5}
-                onChange={(e) => {
-                  if (e != null) setForm((prev) => ({ ...prev, meter: e }));
-                }}
-                value={form.meter}
-                variant="rounded"
-                p={"2px"}
-                __size="20px"
-                withScrollArea={false}
-                styles={{ dropdown: { maxHeight: 200, overflowY: "auto" } }}
-                data={meterRange}
-                label={CarEvaluateValues["meter"].label}
-                placeholder={CarEvaluateValues["meter"].pl}
-              />
-            </Grid.Col>
-            <Grid.Col span={4}>
-              <Select
-                w={"100%"}
-                my={5}
-                onChange={(e) => {
-                  if (e != null)
-                    setForm((prev) => ({ ...prev, manufactured: e }));
-                }}
-                value={form.manufactured}
-                variant="rounded"
-                p={"2px"}
-                __size="20px"
-                withScrollArea={false}
-                styles={{ dropdown: { maxHeight: 200, overflowY: "auto" } }}
-                data={meterRange}
-                label={CarEvaluateValues["manufactured"].label}
-                placeholder={CarEvaluateValues["manufactured"].pl}
-              />
-            </Grid.Col>
-            <Grid.Col span={4}>
-              <Select
-                w={"100%"}
-                my={5}
-                onChange={(e) => {
-                  if (e != null) setForm((prev) => ({ ...prev, imported: e }));
-                }}
-                value={form.imported}
-                variant="rounded"
-                p={"2px"}
-                __size="20px"
-                withScrollArea={false}
-                styles={{ dropdown: { maxHeight: 200, overflowY: "auto" } }}
-                data={meterRange}
-                label={CarEvaluateValues["imported"].label}
-                placeholder={CarEvaluateValues["imported"].pl}
-              />
-            </Grid.Col>
+          <Grid style={{ padding: "20px", fontSize: "11px" }}>
+            {[
+              { key: "brand", data: brands },
+              { key: "mark", data: brands },
+              { key: "motor", data: motor },
+              { key: "motorType", data: motorType },
+              { key: "engineType", data: engineType },
+              { key: "steerType", data: steerType },
+              { key: "wheelDrive", data: wheelDrive },
+              { key: "color", data: carColor },
+              { key: "meter", data: meterRange },
+              { key: "manufactured", data: meterRange },
+              { key: "imported", data: meterRange },
+            ].map(({ key, data }) => (
+              <Grid.Col span={4} key={key}>
+                <Select
+                  w="100%"
+                  my={5}
+                  onChange={(e) => {
+                    if (e != null) setForm((prev) => ({ ...prev, [key]: e }));
+                  }}
+                  value={form[key as keyof FormType]}
+                  variant="rounded"
+                  p="2px"
+                  __size="20px"
+                  withScrollArea={false}
+                  styles={{
+                    dropdown: { maxHeight: 200, overflowY: "auto" },
+                    label: { fontSize: "16px" },
+                  }}
+                  data={data}
+                  label={CarEvaluateValues[key as CarEvaluateKey].label}
+                  placeholder={CarEvaluateValues[key as CarEvaluateKey].pl}
+                />
+              </Grid.Col>
+            ))}
             <Grid.Col span={4}>
               <Spacer size={44} />
               <Button
                 px={20}
-                bg={"main"}
+                bg="main"
                 fz={20}
                 py={12}
-                h={"auto"}
+                h="auto"
                 fullWidth
                 onClick={submit}
               >
@@ -326,7 +160,6 @@ const Page = () => {
               </Button>
             </Grid.Col>
           </Grid>
-          <Spacer size={"1rem"} />
           <Image
             src="/assets/images/car/carEva.png"
             alt="error image"
@@ -337,6 +170,7 @@ const Page = () => {
               xl: "100%",
             }}
             mx={"auto !important"}
+            p={20}
           />
         </Box>
         <Spacer size={"10rem"} />

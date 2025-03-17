@@ -253,51 +253,36 @@ export const DataDownloadValue = {
   },
 };
 
-export const CarEvaluateValues = {
-  brand: {
-    label: "Брэнд",
-    pl: "Сонгоно уу",
-  },
-  mark: {
-    label: "Марк",
-    pl: "Сонгоно уу",
-  },
-  motor: {
-    label: "Хөдөлгүүрийн багтаамж",
-    pl: "Сонгоно уу",
-  },
-  motorType: {
-    label: "Хөдөлгүүрийн төрөл",
-    pl: "Сонгоно уу",
-  },
-  engineType: {
-    label: "Хурдны хайрцаг",
-    pl: "Сонгоно уу",
-  },
-  steerType: {
-    label: "Хүрд",
-    pl: "Сонгоно уу",
-  },
-  wheelDrive: {
-    label: "Хөтлөгч",
-    pl: "Сонгоно уу",
-  },
-  color: {
-    label: "Өнгө",
-    pl: "Сонгоно уу",
-  },
-  meter: {
-    label: "Гүйлт",
-    pl: "Оруулна уу",
-  },
-  manufactured: {
-    label: "Үйлдвэрлэгдсэн он",
-    pl: "Оруулна уу",
-  },
-  imported: {
-    label: "Импортлогдсон он",
-    pl: "Оруулна уу",
-  },
+export type CarEvaluateKey = 
+  | "brand"
+  | "mark"
+  | "motor"
+  | "motorType"
+  | "engineType"
+  | "steerType"
+  | "wheelDrive"
+  | "color"
+  | "meter"
+  | "manufactured"
+  | "imported";
+
+type CarEvaluateValue = {
+  label: string;
+  pl: string;
+};
+
+export const CarEvaluateValues: Record<CarEvaluateKey, CarEvaluateValue> = {
+  brand: { label: "Брэнд", pl: "Сонгоно уу" },
+  mark: { label: "Марк", pl: "Сонгоно уу" },
+  motor: { label: "Хөдөлгүүрийн багтаамж", pl: "Сонгоно уу" },
+  motorType: { label: "Хөдөлгүүрийн төрөл", pl: "Сонгоно уу" },
+  engineType: { label: "Хурдны хайрцаг", pl: "Сонгоно уу" },
+  steerType: { label: "Хүрд", pl: "Сонгоно уу" },
+  wheelDrive: { label: "Хөтлөгч", pl: "Сонгоно уу" },
+  color: { label: "Өнгө", pl: "Сонгоно уу" },
+  meter: { label: "Гүйлт", pl: "Оруулна уу" },
+  manufactured: { label: "Үйлдвэрлэгдсэн он", pl: "Оруулна уу" },
+  imported: { label: "Импортлогдсон он", pl: "Оруулна уу" },
 };
 
 export const locationCenter = {

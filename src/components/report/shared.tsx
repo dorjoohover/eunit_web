@@ -16,6 +16,7 @@ import Image from "next/image";
 import { ReactNode } from "react";
 import { exo2 } from "@/utils/fonts";
 import { useMediaQuery } from "@mantine/hooks";
+import { Colors } from "@/base/constants";
 export const ReportTitle = ({
   text,
   children,
@@ -261,6 +262,7 @@ export const IconText = ({
             base: 14,
             sm: 16,
           }}
+          c={Colors.headBlue}
         >
           {text}
         </Text>
