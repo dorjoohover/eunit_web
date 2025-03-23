@@ -100,16 +100,17 @@ const PhoneAuth = () => {
       ) : (
         <>
           <input
-            type="number"
+            type="text"
+            pattern="[0-9]"
             value={otp}
             onChange={(e) => setOtp(e.target.value)}
-            placeholder="Enter OTP"
+            placeholder="OTP оруулах"
           />
           <button onClick={verifyOTP} disabled={loading}>
-            {loading ? "Verifying..." : "Verify OTP"}
+            {loading ? "Шалгаж байна..." : "Шалгах"}
           </button>
           <button onClick={resendOTP} disabled={countdown > 0 || loading}>
-            Resend OTP {countdown > 0 ? `(${countdown})` : ""}
+            Дахин явуулах {countdown > 0 ? `(${countdown})` : ""}
           </button>
         </>
       )}
