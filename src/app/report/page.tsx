@@ -145,7 +145,7 @@ const Page = () => {
     if (
       payment != PaymentType.QPAY &&
       user?.wallet &&
-      user?.wallet - 1000 < 0
+      user?.wallet - 2000 < 0
     ) {
       notifications.show({
         position: "top-center",
