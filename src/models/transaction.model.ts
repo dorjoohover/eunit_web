@@ -7,8 +7,8 @@ export interface TransactionModel {
   createdAt: Date;
   point: number;
   message: string;
-  receiver: UserModel | number;
-  remitter: UserModel | number;
+  user: UserModel | number;
   request: RequestModel | number | null;
   payment: PaymentModel | number | null;
+  paymentType: number | null;
 }

@@ -2,6 +2,7 @@ import { Box, Button, Flex, Text } from "@mantine/core";
 import { Spacer } from "./report/shared";
 import Link from "next/link";
 import { Colors } from "@/base/constants";
+import { IconAssets } from "@/utils/assets";
 
 export const Footer = () => {
   return (
@@ -13,8 +14,28 @@ export const Footer = () => {
         sm: 120,
         base: 80,
       }}
+      pos={"relative"}
+      style={{
+        zIndex: 1,
+      }}
     >
       <Box
+        style={{
+          backgroundImage: `url('${IconAssets.footer}')`,
+          backgroundPosition: "center",
+          right: 0,
+          left: "50%",
+          bottom: 0,
+          zIndex: 0,
+          top: 0,
+          position: "absolute",
+        }}
+      />
+      <Box
+        style={{
+          zIndex: 1,
+        }}
+        pos={"relative"}
         px={{
           md: 80,
           sm: 40,
@@ -48,7 +69,7 @@ export const Footer = () => {
           Шууд залга!
         </Text>
         <Link
-          href={"tel: +97688992864"}
+          href={"tel: +97695992333 "}
           style={{
             fontWeight: 700,
             fontSize: 18,
@@ -116,13 +137,13 @@ export const Footer = () => {
               Утасны дугаар
             </Text>
             <Link
-              href={"tel:+976-88992864"}
+              href={"tel:+976-95992333"}
               style={{
                 color: Colors.lightIvory,
               }}
               className="href text-[14px]"
             >
-              Tel:+976-8899 2864
+              Tel:+976-9599 2333
             </Link>
           </Box>
           <Box flex={1}>
@@ -140,13 +161,13 @@ export const Footer = () => {
               Цахим хаяг
             </Text>
             <Link
-              href={"mailto:bomarketm@gmail.com"}
+              href={"mailto:info@eunit.mn"}
               style={{
                 color: Colors.lightIvory,
               }}
               className="href text-[14px]"
             >
-              bomarketm@gmail.com
+              info@eunit.mn
             </Link>
           </Box>
         </Flex>

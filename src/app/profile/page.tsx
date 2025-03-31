@@ -1,4 +1,5 @@
 "use client";
+import { logOut } from "@/(api)/auth.api";
 import { saveUser } from "@/(api)/user.api";
 import { useAppContext } from "@/_context";
 import { Colors } from "@/base/constants";
@@ -8,7 +9,9 @@ import { ProfileValues } from "@/utils/values";
 import { Box, Button, Flex, Tabs, Text, TextInput } from "@mantine/core";
 import { useForm, UseFormReturnType } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { HiOutlineExternalLink } from "react-icons/hi";
 
 type ProfileType = {
   firstname?: string;
@@ -58,6 +61,7 @@ const Page = () => {
       });
     }
   };
+  const router = useRouter();
   return (
     <Box>
       <ReportTitle text={"Хэрэглэгч"}>
@@ -111,20 +115,41 @@ const Page = () => {
                     );
                   })}
                 </Box>
-                <Button
-                  type={"submit"}
-                  fz={20}
-                  bg={edit ? "#546274" : "main"}
-                  py={16}
-                  h={"auto"}
-                  w={{
-                    sm: 200,
-                    base: "100%",
-                  }}
-                  my={32}
-                >
-                  {edit ? " Хадгалах" : "Засах"}
-                </Button>
+                <Flex gap={20} my={24} align={'center'}>
+                  <Button
+                    type={"submit"}
+                    fz={20}
+                    bg={edit ? "#546274" : "main"}
+                    py={16}
+                    h={60}
+                    w={{
+                      sm: 200,
+                      base: "100%",
+                    }}
+                    my={32}
+                  >
+                    {edit ? " Хадгалах" : "Засах"}
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      logOut();
+                      router.refresh();
+                    }}
+                    fz={20}
+                    variant="outline"
+                    c={"red"}
+                    py={16}
+                    h={60}
+                    color="red"
+                    w={{
+                      sm: 200,
+                      base: "100%",
+                    }}
+                  >
+                    <HiOutlineExternalLink />{" "}
+                    <span className="ml-4">Гарах</span>
+                  </Button>
+                </Flex>
                 <Spacer size={40} />
               </form>
             </Box>
@@ -161,6 +186,7 @@ const ProfileSide = ({
       }}
       align={"center"}
       w={"auto"}
+      justify={"space-between"}
     >
       <Text
         c={"headBlue"}
@@ -202,6 +228,7 @@ const ProfileSide = ({
           lh={{
             md: 3,
           }}
+          w={"100%"}
         >
           {text}
         </Text>

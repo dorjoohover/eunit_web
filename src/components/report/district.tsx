@@ -114,6 +114,7 @@ export const ServiceForm = ({
       });
     } else {
       notifications.show({
+        position: "top-center",
         message: "Талбайн хэмжээг оруулна уу",
         title: "Анхааруулга",
       });

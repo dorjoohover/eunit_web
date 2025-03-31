@@ -18,6 +18,7 @@ export const sendRequest = async (
   service: number
 ) => {
   const token = (await cookies()).get("auth_token");
+  console.log(token)
   if (!token?.value) return { token: false };
   try {
     const body = {

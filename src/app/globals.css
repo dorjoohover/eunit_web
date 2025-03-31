@@ -23,6 +23,12 @@ body {
   -webkit-overflow-scrolling: unset !important;
 }
 
+input {
+  font-size: 16px !important;
+  touch-action: manipulation;
+  transform: scale(1);
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;

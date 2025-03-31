@@ -31,7 +31,7 @@ import { notifications } from "@mantine/notifications";
 import { IconSearch } from "@tabler/icons-react";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
-import { use, useEffect, useState } from "react";
+import { MouseEventHandler, use, useEffect, useState } from "react";
 import { debounce } from "lodash";
 import { QpayType } from "@/utils/type";
 import Link from "next/link";
@@ -137,27 +137,36 @@ const Page = () => {
     qpay: QpayType;
     id: number;
   } | null>(null);
+
+  const [step, setStep] = useState(0);
   const submit = async (payment: number) => {
     setLoading(true);
     if (!checker()) return;
     if (user?.wallet && user?.wallet - 2000 < 0) {
       notifications.show({
+        position: "top-center",
         color: "warning",
         title: "Анхааруулга",
         message: "Үлдэгдэл хүрэлцэхгүй байна.",
       });
+    }
+    if (payment == PaymentType.QPAY && qpay != null) {
+      setStep(2);
+      setLoading(false);
+      return;
     }
     const res = await sendRequest(
       payload.location!,
       { ...payload.values!, payment: payment },
       ServiceType.REVIEW
     );
+    console.log(res);
     if (payment == PaymentType.QPAY) {
-      console.log(res);
       setQpay({
         qpay: res?.data.data,
         id: res?.data.res,
       });
+      setStep(2);
       setLoading(false);
       return;
     }
@@ -202,7 +211,7 @@ const Page = () => {
   ) => {
     if (location && values) {
       setPayload((prev) => ({ ...prev, values: values }));
-      open();
+      setStep(1);
     } else {
       router.push(
         `/report?${
@@ -243,12 +252,50 @@ const Page = () => {
   const check = async () => {
     setLoading(true);
     const res = await checkPayment(qpay?.id!, qpay?.qpay.invoice_id!);
-
+    if (!res?.data)
+      notifications.show({
+        position: "top-center",
+        message: "Төлбөр төлөгдөөгүй байна.",
+      });
     if (res?.data) {
       refetchUser();
       router.push(`/report/result?id=${qpay?.id}`);
     }
     setLoading(false);
+  };
+  type QPayUrl = {
+    link: string;
+    fallback?: string;
+    logo: string;
+    name: string;
+  };
+  const openApp = (url: string) => {
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    const isAndroid = /Android/.test(navigator.userAgent);
+
+    if (isIOS) {
+      // For custom URL schemes with fallback
+      const start = Date.now();
+      // window.location.href = url;
+
+      // Fallback to App Store if app not installed
+      setTimeout(() => {
+        if (Date.now() - start < 2000) {
+          window.location.href = url || "https://apps.apple.com";
+        }
+      }, 500);
+    } else if (isAndroid) {
+      // Android iframe approach
+      const iframe = document.createElement("iframe");
+      iframe.style.display = "none";
+      iframe.src = url;
+      document.body.appendChild(iframe);
+      setTimeout(() => {
+        document.body.removeChild(iframe);
+      }, 3000);
+    } else {
+      window.location.href = url;
+    }
   };
   return (
     <Box>
@@ -452,11 +499,13 @@ const Page = () => {
         )}
       </ReportTitle>
       <Modal.Root
-        opened={opened}
+        opened={step != 0}
         centered
         // fullScreen={!matches}
         size={matches ? (qpay != null ? "md" : "lg") : "xl"}
-        onClose={close}
+        onClose={() => {
+          setStep(0);
+        }}
       >
         <Modal.Overlay />
 
@@ -467,7 +516,7 @@ const Page = () => {
             </Modal.Title>
             <Modal.CloseButton />
           </Modal.Header>
-          {qpay == null && (
+          {step == 1 && (
             <Box
               bg={"white"}
               px={{
@@ -543,7 +592,7 @@ const Page = () => {
                   ) : (
                     <Flex align={"center"}>
                       <Text c={"white"} fz={24}>
-                        QPAY
+                        QPAY 2,000.00
                       </Text>
                       <Image
                         src={Assets.qpay}
@@ -557,7 +606,7 @@ const Page = () => {
               </Flex>
             </Box>
           )}
-          {qpay != null && (
+          {qpay != null && step == 2 && (
             <Box
               bg={"white"}
               px={{
@@ -568,17 +617,20 @@ const Page = () => {
             >
               {!matchesPad && matches && (
                 <Grid mb={20}>
-                  {qpay.qpay.urls.map((url, k) => {
+                  {qpay.qpay?.urls.map((url, k) => {
                     return (
                       <Grid.Col key={k} span={3}>
-                        <Link href={url.link}>
+                        <Box
+                          onClick={() => openApp(url.link)}
+                          className="cursor-pointer"
+                        >
                           <Image
                             src={url.logo}
                             width={60}
                             height={60}
                             alt={url.name}
                           />
-                        </Link>
+                        </Box>
                       </Grid.Col>
                     );
                   })}
@@ -586,17 +638,20 @@ const Page = () => {
               )}
               {!matches ? (
                 <Grid mb={20}>
-                  {qpay.qpay.urls.map((url, k) => {
+                  {qpay.qpay?.urls.map((url, k) => {
                     return (
                       <Grid.Col key={k} span={3}>
-                        <Link href={url.link}>
+                        <Box
+                          onClick={() => openApp(url.link)}
+                          className="cursor-pointer"
+                        >
                           <Image
                             src={url.logo}
                             width={60}
                             height={60}
                             alt={url.name}
                           />{" "}
-                        </Link>
+                        </Box>
                       </Grid.Col>
                     );
                   })}
@@ -604,7 +659,7 @@ const Page = () => {
               ) : (
                 <Image
                   className="mx-auto"
-                  src={`data:image/png;base64,${qpay?.qpay.qr_image}`}
+                  src={`data:image/png;base64,${qpay?.qpay?.qr_image}`}
                   alt="qpay image"
                   width={200}
                   height={200}
@@ -717,6 +772,7 @@ const Page = () => {
                 onClick={() => {
                   // nextStep(d.id);
                   notifications.show({
+                    position: "top-center",
                     title: "Мэдэгдэл",
                     message: "Тун удахгүй",
                   });

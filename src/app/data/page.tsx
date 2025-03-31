@@ -84,6 +84,7 @@ const Page = () => {
   });
   const [data, setData] = useState<ResultType>();
   const [isLoading, setIsLoading] = useState(false);
+  const [step, setStep] = useState(0);
   const router = useRouter();
   const [location, setLocation] = useState<LocationModel[]>([]);
   const [filteredLocation, setFilteredLocation] = useState<LocationModel[]>([]);
@@ -116,7 +117,7 @@ const Page = () => {
   };
 
   const request = () => {
-    open();
+    setStep(1);
   };
   const getResult = async () => {
     setLoading(true);
@@ -140,7 +141,6 @@ const Page = () => {
   ) => {
     try {
       setLoading(true);
-
       const res = await getRequestResult(+id);
       const ads = res?.data.data.data;
       const location = res?.data.location as LocationModel;
@@ -177,6 +177,12 @@ const Page = () => {
         XLSX.utils.book_append_sheet(workbook, worksheet, worksheetname);
         // Save the workbook as an Excel file
         XLSX.writeFile(workbook, `${title}.xlsx`);
+        setQpay(null);
+        notifications.show({
+          message: "Татлаа",
+          position: "top-center",
+        });
+        close();
         setLoading(false);
       } else {
         setLoading(false);
@@ -191,7 +197,13 @@ const Page = () => {
   } | null>(null);
   const excel = async (type: number) => {
     setLoading(true);
+
     if (form.town && form.area) {
+      if (type == PaymentType.QPAY && qpay != null) {
+        setStep(2);
+        setLoading(false);
+        return;
+      }
       const res = await sendRequest(
         +form.town,
         {
@@ -211,17 +223,17 @@ const Page = () => {
         });
       }
       if (type == PaymentType.QPAY) {
-        console.log(res);
         setQpay({
           qpay: res?.data.data,
           id: res?.data.res,
         });
+        setStep(2);
         setLoading(false);
         return;
       }
       if (res?.data?.success != false) {
         refetchUser();
-        onGetExportProduct(res?.data, "Дата", "Дата");
+        onGetExportProduct(res?.data?.res, "Дата", "Дата");
       }
 
       close();
@@ -338,12 +350,51 @@ const Page = () => {
   const check = async () => {
     setLoading(true);
     const res = await checkPayment(qpay?.id!, qpay?.qpay.invoice_id!);
+    if (!res?.data)
+      notifications.show({
+        message: "Төлбөр төлөгдөөгүй байна",
+      });
 
-    if (res?.data) {
+    if (res?.data && qpay?.id) {
       refetchUser();
-      onGetExportProduct(res?.data, "Дата", "Дата");
+      onGetExportProduct(qpay?.id, "Дата", "Дата");
     }
     setLoading(false);
+  };
+
+  type QPayUrl = {
+    link: string;
+    fallback?: string;
+    logo: string;
+    name: string;
+  };
+  const openApp = (url: string) => {
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    const isAndroid = /Android/.test(navigator.userAgent);
+
+    if (isIOS) {
+      // For custom URL schemes with fallback
+      const start = Date.now();
+      // window.location.href = url;
+
+      // Fallback to App Store if app not installed
+      setTimeout(() => {
+        if (Date.now() - start < 2000) {
+          window.location.href = url || "https://apps.apple.com";
+        }
+      }, 500);
+    } else if (isAndroid) {
+      // Android iframe approach
+      const iframe = document.createElement("iframe");
+      iframe.style.display = "none";
+      iframe.src = url;
+      document.body.appendChild(iframe);
+      setTimeout(() => {
+        document.body.removeChild(iframe);
+      }, 3000);
+    } else {
+      window.location.href = url;
+    }
   };
   return (
     <Box>
@@ -371,7 +422,6 @@ const Page = () => {
         >
           <Flex>
             <Select
-              w={200}
               my={5}
               variant="rounded"
               p={"2px"}
@@ -398,10 +448,11 @@ const Page = () => {
             >
               <Combobox.Target>
                 <InputBase
+                  maw={315}
+                  w={"100%"}
                   my={5}
                   p={"2px"}
                   __size="20px"
-                  w={200}
                   label={DataDownloadValue["town"].label}
                   component="button"
                   type="button"
@@ -477,6 +528,7 @@ const Page = () => {
 
           <Flex align={"end"}>
             <DatePickerInput
+              maw={315}
               rightSection={icon}
               type="range"
               w={"100%"}
@@ -595,7 +647,7 @@ const Page = () => {
           </table>
         </ScrollArea>
         <Spacer size={60} />
-        <Flex justify={"space-between"}>
+        <Flex justify={"space-between"} pb={30}>
           {/* <Button
             bg={"main"}
             c={"white"}
@@ -626,7 +678,12 @@ const Page = () => {
         </Flex>
         {/* <Spacer size={80} /> */}
       </ReportTitle>
-      <Modal.Root opened={opened} centered size={"lg"} onClose={close}>
+      <Modal.Root
+        opened={step != 0}
+        centered
+        size={"lg"}
+        onClose={() => setStep(0)}
+      >
         <Modal.Overlay />
 
         <Modal.Content radius={20} bg={"transparent"}>
@@ -636,7 +693,7 @@ const Page = () => {
             </Modal.Title>
             <Modal.CloseButton />
           </Modal.Header>
-          {qpay == null && (
+          {step == 1 && (
             <Box bg={"white"} px={"10%"} pt={20}>
               <WalletCard
                 onClick={() => {
@@ -647,14 +704,14 @@ const Page = () => {
                 mt={24}
                 mb={32}
                 fz={18}
-                highlight={["урамшуулал", "20,000 E-unit"]}
+                highlight={["урамшуулал", "3,000 E-unit"]}
                 highlightStyles={{
                   background: Colors.main,
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                 }}
               >
-                Шинэ хэрэглэгчийн урамшуулал бүхий 20,000 E-unit ашиглан энэхүү
+                Шинэ хэрэглэгчийн урамшуулал бүхий 3,000 E-unit ашиглан энэхүү
                 үйлчилгээг авах боломжтой.
               </Highlight>
               <Flex>
@@ -718,7 +775,7 @@ const Page = () => {
               </Flex>
             </Box>
           )}
-          {qpay != null && (
+          {qpay != null && step == 2 && (
             <Box
               bg={"white"}
               px={{
@@ -729,17 +786,20 @@ const Page = () => {
             >
               {!matchesPad && matches && (
                 <Grid mb={20}>
-                  {qpay.qpay.urls.map((url, k) => {
+                  {qpay.qpay?.urls.map((url, k) => {
                     return (
                       <Grid.Col key={k} span={3}>
-                        <Link href={url.link}>
+                        <Box
+                          onClick={() => openApp(url.link)}
+                          className="cursor-pointer"
+                        >
                           <Image
                             src={url.logo}
                             width={60}
                             height={60}
                             alt={url.name}
                           />
-                        </Link>
+                        </Box>
                       </Grid.Col>
                     );
                   })}
@@ -747,17 +807,20 @@ const Page = () => {
               )}
               {!matches ? (
                 <Grid mb={20}>
-                  {qpay.qpay.urls.map((url, k) => {
+                  {qpay.qpay?.urls.map((url, k) => {
                     return (
                       <Grid.Col key={k} span={3}>
-                        <Link href={url.link}>
+                        <Box
+                          onClick={() => openApp(url.link)}
+                          className="cursor-pointer"
+                        >
                           <Image
                             src={url.logo}
                             width={60}
                             height={60}
                             alt={url.name}
-                          />{" "}
-                        </Link>
+                          />
+                        </Box>
                       </Grid.Col>
                     );
                   })}
