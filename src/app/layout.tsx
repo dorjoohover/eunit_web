@@ -53,15 +53,16 @@ export default async function RootLayout({
           name="viewport"
           content="minimum-scale=1, initial-scale=1, width=device-width, user-scalable=no"
         />
-        <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-M0TJV3RY7T"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-M0TJV3RY7T');
-</script>
+        {/* <!-- Google tag (gtag.js) --> */}
+        <script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-M0TJV3RY7T"
+        ></script>
+        <script>
+          {/* window.dataLayer = window.dataLayer || []; function gtag() */}
+          {/* {dataLayer.push(arguments)} */}
+          {/* gtag('js', new Date()); gtag('config', 'G-M0TJV3RY7T'); */}
+        </script>
       </Head>
       <body>
         <MantineProvider defaultColorScheme="light">
