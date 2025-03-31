@@ -41,6 +41,15 @@ import { useDisclosure } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 import { RangeInput } from "@/components/shared/select";
 import { districtIcon } from "@/utils/assets";
+import {
+  areaName,
+  buildingFloorName,
+  buildingFloorValues,
+  howFloorName,
+  operationName,
+  priceName,
+} from "@/utils/items";
+import { MultipleSelect } from "@/components/shared/button";
 
 export interface AdDataModel {
   id: number;
@@ -69,7 +78,7 @@ export interface AdDataModel {
 const Page = () => {
   const { isLoaded } = useAppContext();
   const [data, setData] = useState<AdDataModel>();
-  const [district, setDistrict] = useState<number | null>(null);
+  const [district, setDistrict] = useState<number>(0);
   const [loading, setLoading] = useState(false);
   const [locations, setLocations] = useState([]);
 
@@ -93,7 +102,7 @@ const Page = () => {
   );
   const [compareData, setCompareData] = useState<AdDataModel[]>([]);
   const [selectedCategory, setSelectedCatery] = useState(0);
-  const rangeItems = itemNames.filter((i) => i.range);
+  const rangeItems = [areaName, operationName, howFloorName];
   const locationItems = itemNames.filter((i) => i.location);
   const getLocation = async (name: string, d: string, category: number) => {
     setLoading(true);
@@ -255,7 +264,7 @@ const Page = () => {
         }}
       >
         <div className="flex gap-4">
-          <div>
+          {/* <div>
             <p className="py-2">Дэд төрөл</p>
             <MantineSelect
               value={categoryNames[selectedCategory].toString()}
@@ -270,11 +279,10 @@ const Page = () => {
               searchable
               data={categoryNames}
             />
-          </div>
+          </div> */}
           <div>
-            {JSON.stringify(district)}
             <MantineSelect
-              value={"Дүүрэг"}
+              value={districts[district]}
               leftSection={
                 <div className="px-2">
                   <img src={districtIcon} alt="" />
@@ -346,7 +354,97 @@ const Page = () => {
             </div>
           </div>
         )}
-        <div className="flex flex-wrap gap-4 my-4">
+        <div className="flex gap-10">
+          <div className="w-[60%] flex flex-col gap-4">
+            {rangeItems.map((item) => {
+              return (
+                <RangeInput
+                  key={item.id}
+                  maxChange={(e) => {
+                    filters.map((f) => {
+                      if (f.id == item.id) {
+                        return typeof e != "number"
+                          ? (f.max = null)
+                          : (f.max = e.toString());
+                      } else {
+                        return f;
+                      }
+                    });
+                    // console.log(first)
+                    setFilters((prev) => [...prev]);
+                  }}
+                  minChange={(e) => {
+                    filters.map((f) => {
+                      if (f.id == item.id) {
+                        return typeof e != "number"
+                          ? (f.min = null)
+                          : (f.min = e.toString());
+                      } else {
+                        return f;
+                      }
+                    });
+                    setFilters((prev) => [...prev]);
+                  }}
+                  maxValue={filters.filter((f) => f.id == item.id)?.[0]?.max}
+                  minValue={filters.filter((f) => f.id == item.id)?.[0]?.min}
+                  name={item?.name ?? ""}
+                />
+              );
+            })}
+          </div>
+          <div className="w-[35%]">
+            <Box h={20.8} />
+            <MultipleSelect
+              data={[
+                { id: "1", value: "12" },
+                { id: "2", value: "13" },
+                { id: "3", value: "14" },
+              ]}
+              name="Байршил"
+              onChange={(e) => {}}
+            />
+            <MantineSelect
+              onChange={(e) => {
+                if (e != null) {
+                  filters.map((f) => {
+                    if (f.id == buildingFloorName.id) {
+                      return e == buildingFloorName.name
+                        ? (f.value = "")
+                        : (f.value = e);
+                    } else {
+                      return f;
+                    }
+                  });
+                  setFilters((prev) => [...prev]);
+                }
+              }}
+              mt={36.8}
+              value={
+                filters.filter((f) => f.id == buildingFloorName.id)?.[0]
+                  ?.value == ""
+                  ? buildingFloorName.name
+                  : filters.filter((f) => f.id == buildingFloorName.id)?.[0]
+                      ?.value
+              }
+              data={buildingFloorValues}
+              // searchable
+              checkIconPosition="right"
+            />
+            <Button
+              bg={"blue"}
+              c={"white"}
+              h={36}
+              radius={8}
+              ta={"center"}
+              mt={36.8}
+              w={"100%"}
+              onClick={() => search()}
+            >
+              Хайх
+            </Button>
+          </div>
+        </div>
+        {/* <div className="flex flex-wrap gap-4 my-4">
           {items?.length > 0 &&
             (items as ItemModel[])?.map((v, i) => {
               if (v.type != "location" && v.type != "district")
@@ -508,13 +606,7 @@ const Page = () => {
                   // </Stack>
                 );
             })}
-        </div>
-        <button
-          className="px-8 rounded-md py-2 bg-blue-500 text-white"
-          onClick={() => search()}
-        >
-          Хайх
-        </button>
+        </div> */}
       </div>
 
       <button

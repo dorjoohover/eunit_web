@@ -12,6 +12,15 @@
   box-sizing: border-box;
 }
 
+:root {
+  @mixin light-root {
+    --input-bd: #e7e5e4 !important;
+  }
+  @mixin dark-root {
+    --input-bd: #e7e5e4 !important;
+  }
+}
+
 a {
   text-decoration: none;
 }
@@ -216,7 +225,8 @@ Note: Beware of modifying this element as it can break the animations - you shou
   background: rgba(0, 0, 0, 0.3);
 }
 input {
-  border: none !important;
+  // border: 2px solid $greyNew !important;
+  border-radius: 8px !important;
 }
 .select {
   // appearance: none; /* Remove default styling */
@@ -227,17 +237,10 @@ input {
   border-radius: 15px !important;
   // position: relative;
 }
-.mantine-Select-option:hover  {
+.mantine-Select-option:hover {
   border-radius: 15px !important;
 }
-.mantine-NumberInput-wrapper {
-  border-radius: 15px !important;
-  border: 2px solid $greyNew !important;
-  background: transparent !important;
-}
-.mantine-NumberInput-input {
-  background-color: transparent !important;
-}
+
 // .mantine-NumberInput-section {
 //   pointer-events: none !important;
 // }
@@ -251,4 +254,3 @@ input {
 //   transform: translateY(-50%);
 //   pointer-events: none;
 // }
-

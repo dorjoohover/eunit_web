@@ -10,13 +10,13 @@ import { IoIosCheckboxOutline, IoMdRadioButtonOn } from "react-icons/io";
 import { Libraries } from "@react-google-maps/api";
 import { AdSellType } from "@/config/enum";
 import { GridOptions, SwiperOptions } from "swiper/types";
-// export const api = "http://localhost:5050/api/";
+export const api = "http://localhost:5050/api/";
 
 // export const url = "http://localhost:3000";
 // export const url = "http://103.50.206.58";
 // export const api = "http://172.24.48.1:5050/api/";
 
-export const api = "https://srv549330.hstgr.cloud/api/";
+// export const api = "https://srv549330.hstgr.cloud/api/";
 // export const api = "http://93.127.186.77:5050/api/";
 export const imageApi = `${api}file/`;
 // export const url = "http://localhost:3000/";
@@ -32,15 +32,15 @@ export const categoryNames = [
   "Гараж, контейнер",
 ];
 export const districts = [
-  "Баянзүрх",
-  "Сүхбаатар",
-  "Багануур",
-  "Чингэлтэй",
-  "Сонгинохайрхан",
-  "Багахангай",
-  "Баянгол",
-  "Налайх",
-  "Хан-Уул",
+  "Баянзүрх дүүрэг",
+  "Сүхбаатар дүүрэг",
+  "Багануур дүүрэг",
+  "Чингэлтэй дүүрэг",
+  "Сонгинохайрхан дүүрэг",
+  "Багахангай дүүрэг",
+  "Баянгол дүүрэг",
+  "Налайх дүүрэг",
+  "Хан-Уул дүүрэг",
 ];
 
 export const itemNames = [
@@ -79,7 +79,7 @@ export const itemNames = [
     id: "location",
     range: false,
     location: true,
-  },
+  }
 ];
 
 export const gmailImageUrl = "https://lh3.googleusercontent.com";

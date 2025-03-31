@@ -14,6 +14,7 @@ import CategorySelect from "@/components/categorySelect";
 import { AdTypes, UserStatus } from "@/config/enum";
 import { UserModel } from "@/models/user.model";
 import useUserData from "@/hooks/user.hook";
+import WalletPage from "@/components/account/wallet";
 
 export default function Home() {
   const { ads, setAds } = useAppContext();
@@ -63,8 +64,9 @@ export default function Home() {
     <Loading />
   ) : (
     <>
-      <SwiperHeader />
-      <CategorySelect />
+      <WalletPage />
+      {/* <SwiperHeader />
+      <CategorySelect /> */}
 
       <ContainerX className="py-6">
         {/* <Heading className="">Шинэ зарууд</Heading> */}

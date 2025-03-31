@@ -14,8 +14,7 @@ export function middleware(request: NextRequest) {
   const needUser =
     url.startsWith("/ad/create") ||
     url.startsWith("/ad/sharing") ||
-    url.startsWith("/estimator") ||
-    url.startsWith("/account");
+    url.startsWith("/estimator");
   if (!current?.value && needUser) {
     return Response.redirect(new URL("/login", request.url));
   }
