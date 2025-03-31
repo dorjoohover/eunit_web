@@ -140,7 +140,7 @@ const Page = () => {
   const submit = async (payment: number) => {
     setLoading(true);
     if (!checker()) return;
-    if (user?.wallet && user?.wallet - 1000 < 0) {
+    if (user?.wallet && user?.wallet - 2000 < 0) {
       notifications.show({
         color: "warning",
         title: "Анхааруулга",
@@ -492,12 +492,12 @@ const Page = () => {
                   WebkitTextFillColor: "transparent",
                 }}
               >
-                Шинэ хэрэглэгчийн урамшуулал бүхий 3,000 E-unit ашиглан энэхүү
+                Шинэ хэрэглэгчийн урамшуулал бүхий 2,000 E-unit ашиглан энэхүү
                 үйлчилгээг авах боломжтой.
               </Highlight>
 
               <Flex>
-                {user?.wallet && user?.wallet > 1000 && (
+                {user?.wallet && user?.wallet > 2000 && (
                   <Button
                     w={"100%"}
                     fz={24}
@@ -517,7 +517,7 @@ const Page = () => {
                     ) : (
                       <Flex align={"center"}>
                         <Text c={"white"} fz={24}>
-                          1,000.00
+                          2,000.00
                         </Text>
                         <EunitIcon />
                       </Flex>
