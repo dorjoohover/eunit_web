@@ -142,7 +142,7 @@ const Page = () => {
   const submit = async (payment: number) => {
     setLoading(true);
     if (!checker()) return;
-    if (user?.wallet && user?.wallet - 2000 < 0) {
+    if (user?.wallet && user?.wallet - 2000 <= 0) {
       notifications.show({
         position: "top-center",
         color: "warning",
@@ -534,7 +534,7 @@ const Page = () => {
                 mt={24}
                 mb={32}
                 fz={18}
-                highlight={["урамшуулал", "3,000 E-unit"]}
+                highlight={["урамшуулал", "2,000 E-unit"]}
                 highlightStyles={{
                   background: Colors.main,
                   WebkitBackgroundClip: "text",
@@ -546,7 +546,7 @@ const Page = () => {
               </Highlight>
 
               <Flex>
-                {user?.wallet && user?.wallet > 2000 && (
+                {user?.wallet && user?.wallet >= 2000 && (
                   <Button
                     w={"100%"}
                     fz={24}
