@@ -144,9 +144,12 @@ const Page = () => {
               Лавлагаа
             </Text>
           </Flex>
-          <Spacer size={{
-            sm: 40, base: 32
-          }} />
+          <Spacer
+            size={{
+              sm: 40,
+              base: 32,
+            }}
+          />
           <Flex
             // style={{
             //   borderBottom: `1px solid ${Colors.deepMose20}`,
@@ -180,26 +183,28 @@ const Page = () => {
               </Text>
             )} */}
           </Flex>
-          <Spacer size={{
-            sm: 40, base: 32
-          }} />
+          <Spacer
+            size={{
+              sm: 40,
+              base: 32,
+            }}
+          />
           <GeneralWidget title="Ерөнхий мэдээлэл">
             <div
               className={`flex ${
                 matches ? "flex-row" : "flex-col"
               } justify-between`}
             >
-              {user?.firstname ||
-                (user?.lastname && (
-                  <Flex>
-                    <Text fz={{ sm: 20, base: 16 }} fw={300}>
-                      Овог нэр:
-                    </Text>
-                    <Text fw={600} fz={{ sm: 20, base: 16 }}>
-                      {user?.lastname ?? ""} {user?.firstname ?? ""}
-                    </Text>
-                  </Flex>
-                ))}
+              {(user?.firstname || user?.lastname) && (
+                <Flex>
+                  <Text fz={{ sm: 20, base: 16 }} fw={300}>
+                    Овог нэр:
+                  </Text>
+                  <Text fw={600} fz={{ sm: 20, base: 16 }}>
+                    {user?.lastname ?? ""} {user?.firstname ?? ""}
+                  </Text>
+                </Flex>
+              )}
               {user?.email && (
                 <Flex>
                   <Text fw={300} fz={{ sm: 20, base: 16 }}>
@@ -250,7 +255,7 @@ const Page = () => {
             <Spacer size={10} />
             <Text fz={{ sm: 20, base: 16 }}>
               Таны {data?.data.area ?? ""} м.кв орон сууцны нийт үнэ: ₮
-              {money((data?.data.avg ?? 0 * (data?.data.area ?? 0)).toString())}
+              {money(`${(data?.data.avg ?? 0) * (data?.data.area ?? 0)}`)}
             </Text>
             <Spacer size={20} />
           </GeneralWidget>
