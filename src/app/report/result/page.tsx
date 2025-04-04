@@ -279,7 +279,9 @@ const Page = () => {
                 WebkitTextFillColor: "transparent",
               }}
               children={`
-             Таны сонгосон сууцны м.кв тохиромжит үнэ: ₮${money((data?.data.avg ?? 0).toString())}`}
+             Таны сонгосон сууцны м.кв тохиромжит үнэ: ₮${money(
+               (data?.data.avg ?? 0).toString()
+             )}`}
             ></Highlight>
 
             <Spacer size={10} />
@@ -300,9 +302,11 @@ const Page = () => {
                 WebkitTextFillColor: "transparent",
               }}
               children={`
-                   Таны ${data?.data.area ?? ""} м.кв орон сууцны нийт үнэ: ₮${money(
-                     `${(data?.data.avg ?? 0) * (data?.data.area ?? 0)}`
-                   )}`}
+                   Таны ${
+                     data?.data.area ?? ""
+                   } м.кв орон сууцны нийт үнэ: ₮${money(
+                `${(data?.data.avg ?? 0) * (data?.data.area ?? 0)}`
+              )}`}
             ></Highlight>
 
             <Spacer size={20} />

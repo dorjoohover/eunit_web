@@ -41,7 +41,9 @@ export const parseDate = (date: Date, symbol = "/", time = false) => {
 };
 
 export const money = (value: string, currency = "") => {
-  return `${currency}${value
+  let v = Math.round(+value);
+  return `${currency}${v
+    .toString()
     .replaceAll(",", "")
     .toString()
     .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
