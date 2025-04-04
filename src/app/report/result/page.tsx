@@ -316,28 +316,43 @@ const Page = () => {
             <Spacer size={20} />
           </GeneralWidget>
           <GeneralWidget title="Тайлбар">
-            <Text
+            <Highlight
               fz={{
                 sm: 20,
                 base: 16,
               }}
-              ta={"justify"}
-            >
-              Иргэн {user?.lastname ?? ""}{" "}
-              {user?.firstname ??
-                (user?.phone && formatPhoneNumber(user?.phone))}{" "}
-              таны {data?.location.city} хот, {data?.location.district} дүүрэг,{" "}
-              {data?.location.khoroo}-р хороо, {data?.location.zipcode},{" "}
-              {data?.location.town} хотхон, {data?.data.area}м.кв орон сууцны
+              highlight={[
+                `${money(
+                  `${(data?.data.avg ?? 0) * (data?.data.area ?? 0)}`,
+                  "",
+                  100000
+                )}`,
+              ]}
+              highlightStyles={{
+                background: Colors.main,
+                color: Colors.main,
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+              }}
+              children={`Иргэн ${user?.lastname ?? ""} ${
+                user?.firstname ??
+                (user?.phone && formatPhoneNumber(user?.phone))
+              } таны ${data?.location.city} хот, ${
+                data?.location.district
+              } дүүрэг, ${data?.location.khoroo}-р хороо, ${
+                data?.location.zipcode
+              }, ${data?.location.town} хотхон, ${
+                data?.data.area
+              }м.кв орон сууцны
               өнөөгийн зах зээлийн үнэ 
-              {money(
+              ${money(
                 `${(data?.data.avg ?? 0) * (data?.data.area ?? 0)}`,
                 "",
                 100000
               )}
                төгрөг орчим үнэтэй байна. Энэхүү тооцоолол нь өгөгдөлд суурилж
-              тооцоолсон бөгөөд ±5%-ийн хооронд хэлбэлзэх боломжтой.
-            </Text>
+              тооцоолсон бөгөөд ±5%-ийн хооронд хэлбэлзэх боломжтой.`}
+            ></Highlight>
           </GeneralWidget>
           {/* <Flex
             style={{
