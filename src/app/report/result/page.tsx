@@ -34,7 +34,7 @@ import {
   defaultMapOptions,
   defaultMapZoom,
 } from "@/utils/values";
-import { Box, Button, Center, Flex, Text } from "@mantine/core";
+import { Box, Button, Center, Flex, Highlight, Text } from "@mantine/core";
 import { useFetch, useMediaQuery } from "@mantine/hooks";
 import { GoogleMap, Marker } from "@react-google-maps/api";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -242,21 +242,69 @@ const Page = () => {
             <Spacer size={20} />
           </GeneralWidget>
           <GeneralWidget title="Тооцоолол">
-            <Text fz={{ sm: 20, base: 16 }}>
-              Таны сонгосон хотхоны м.кв үнэ цэн: ₮
-              {money((data?.data.min ?? 0).toString())}-оос ₮
-              {money((data?.data.max ?? 0).toString())} хооронд
-            </Text>
+            <Highlight
+              // mt={24}
+              // mb={32}
+              fz={{
+                sm: 20,
+                base: 16,
+              }}
+              highlight={[
+                `₮${money((data?.data.min ?? 0).toString())}`,
+                `₮${money((data?.data.max ?? 0).toString())}`,
+              ]}
+              highlightStyles={{
+                background: Colors.main,
+                color: Colors.main,
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+              }}
+              children={`
+              Таны сонгосон хотхоны м.кв үнэ цэн: ₮${money(
+                (data?.data.min ?? 0).toString()
+              )}-оос ₮${money((data?.data.max ?? 0).toString())} хооронд`}
+            ></Highlight>
+
             <Spacer size={10} />
-            <Text fz={{ sm: 20, base: 16 }}>
-              Таны сонгосон сууцны м.кв тохиромжит үнэ: ₮
-              {money((data?.data.avg ?? 0).toString())}
-            </Text>
+            <Highlight
+              fz={{
+                sm: 20,
+                base: 16,
+              }}
+              highlight={[`₮${money((data?.data.avg ?? 0).toString())}`]}
+              highlightStyles={{
+                background: Colors.main,
+                color: Colors.main,
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+              }}
+              children={`
+             Таны сонгосон сууцны м.кв тохиромжит үнэ: ₮${money((data?.data.avg ?? 0).toString())}`}
+            ></Highlight>
+
             <Spacer size={10} />
-            <Text fz={{ sm: 20, base: 16 }}>
-              Таны {data?.data.area ?? ""} м.кв орон сууцны нийт үнэ: ₮
-              {money(`${(data?.data.avg ?? 0) * (data?.data.area ?? 0)}`)}
-            </Text>
+            <Highlight
+              fz={{
+                sm: 20,
+                base: 16,
+              }}
+              highlight={[
+                `₮${money(
+                  `${(data?.data.avg ?? 0) * (data?.data.area ?? 0)}`
+                )}`,
+              ]}
+              highlightStyles={{
+                background: Colors.main,
+                color: Colors.main,
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+              }}
+              children={`
+                   Таны ${data?.data.area ?? ""} м.кв орон сууцны нийт үнэ: ₮${money(
+                     `${(data?.data.avg ?? 0) * (data?.data.area ?? 0)}`
+                   )}`}
+            ></Highlight>
+
             <Spacer size={20} />
           </GeneralWidget>
           <GeneralWidget title="Тайлбар">
