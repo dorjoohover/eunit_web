@@ -96,12 +96,14 @@ const PhoneAuth = () => {
           message: "Амжилтгүй дахин оролдоно уу",
         });
       }
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
-      notifications.show({
-        position: "top-center",
-        message: "OTP буруу байна.",
-      });
+      if (error?.message == "auth/invalid-verification-code") {
+        notifications.show({
+          position: "top-center",
+          message: "OTP буруу байна.",
+        });
+      }
       // console.error("Invalid OTP");
     } finally {
       setLoading(false);

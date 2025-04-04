@@ -316,6 +316,39 @@ const Page = () => {
             </Box>
           </ResultWidget> */}
           <Spacer size={24} />
+
+          <Flex w={"100%"} justify={"center"}>
+            <Link href={`${api}request/service/pdf/${id}`} target="_blank">
+              <Button
+                radius={32}
+                px={20}
+                bg={"main"}
+                fz={20}
+                py={12}
+                h={"auto"}
+                leftSection={
+                  <Box
+                    bg={"white"}
+                    p={4}
+                    style={{
+                      borderRadius: "100%",
+                    }}
+                  >
+                    <IoMdDownload color={Colors.main} size={14} />
+                  </Box>
+                }
+              >
+                Татаж авах (PDF)
+              </Button>
+            </Link>
+          </Flex>
+          <Spacer
+            size={{
+              md: 32,
+              base: 16,
+            }}
+          />
+
           <ResultWidget title={"Байршил"}>
             <Spacer size={40} />
             <GoogleMap
@@ -342,38 +375,6 @@ const Page = () => {
             </GoogleMap>
           </ResultWidget>
         </Box>
-        <Spacer
-          size={{
-            md: 32,
-            base: 16,
-          }}
-        />
-
-        <Flex w={"100%"} justify={"center"}>
-          <Link href={`${api}request/service/pdf/${id}`} target="_blank">
-            <Button
-              radius={32}
-              px={20}
-              bg={"main"}
-              fz={20}
-              py={12}
-              h={"auto"}
-              leftSection={
-                <Box
-                  bg={"white"}
-                  p={4}
-                  style={{
-                    borderRadius: "100%",
-                  }}
-                >
-                  <IoMdDownload color={Colors.main} size={14} />
-                </Box>
-              }
-            >
-              Татаж авах (PDF)
-            </Button>
-          </Link>
-        </Flex>
 
         <div
           id="pspdfkit"
