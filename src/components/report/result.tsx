@@ -175,22 +175,27 @@ export const UserWidget = ({ user }: { user?: UserModel }) => {
   return (
     <Flex columnGap={"50px"}>
       <Box>
-        <Text
-          fz={{
-            sm: 20,
-            base: 16,
-          }}
-        >
-          Овог нэр
-        </Text>
-        <Text
-          fz={{
-            sm: 20,
-            base: 16,
-          }}
-        >
-          Цахим хаяг
-        </Text>
+        {user?.lastname ||
+          (user?.firstname && (
+            <Text
+              fz={{
+                sm: 20,
+                base: 16,
+              }}
+            >
+              Овог нэр
+            </Text>
+          ))}
+        {user?.email && (
+          <Text
+            fz={{
+              sm: 20,
+              base: 16,
+            }}
+          >
+            Цахим хаяг
+          </Text>
+        )}
         {user?.phone && (
           <Text
             fz={{
@@ -203,24 +208,29 @@ export const UserWidget = ({ user }: { user?: UserModel }) => {
         )}
       </Box>
       <Box>
-        <Text
-          c={"grey"}
-          fz={{
-            sm: 20,
-            base: 16,
-          }}
-        >
-          {user?.lastname ?? ""} {user?.firstname ?? ""}
-        </Text>
-        <Text
-          c={"grey"}
-          fz={{
-            sm: 20,
-            base: 16,
-          }}
-        >
-          {user?.email ?? "a"}
-        </Text>
+        {user?.lastname ||
+          (user?.firstname && (
+            <Text
+              c={"grey"}
+              fz={{
+                sm: 20,
+                base: 16,
+              }}
+            >
+              {user?.lastname ?? ""} {user?.firstname ?? ""}
+            </Text>
+          ))}
+        {user?.email && (
+          <Text
+            c={"grey"}
+            fz={{
+              sm: 20,
+              base: 16,
+            }}
+          >
+            {user?.email ?? ""}
+          </Text>
+        )}
 
         {user?.phone && (
           <Text
