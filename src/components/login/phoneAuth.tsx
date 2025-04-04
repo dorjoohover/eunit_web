@@ -97,7 +97,12 @@ const PhoneAuth = () => {
         });
       }
     } catch (error) {
-      console.error("Invalid OTP");
+      console.log(error);
+      notifications.show({
+        position: "top-center",
+        message: "OTP буруу байна.",
+      });
+      // console.error("Invalid OTP");
     } finally {
       setLoading(false);
     }

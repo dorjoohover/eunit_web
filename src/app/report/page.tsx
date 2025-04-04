@@ -142,7 +142,7 @@ const Page = () => {
   const submit = async (payment: number) => {
     setLoading(true);
     if (!checker()) return;
-    if (user?.wallet && user?.wallet - 2000 <= 0) {
+    if (user?.wallet && user?.wallet - 2000 < 0) {
       notifications.show({
         position: "top-center",
         color: "warning",

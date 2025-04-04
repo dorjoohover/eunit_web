@@ -110,7 +110,7 @@ export default function Home() {
         paddingLeft: matches ? 60 : 0,
       }}
     >
-      {showVideo && (
+      {/* {showVideo && (
         <div className="video-wrapper">
           <video
             src={video}
@@ -121,7 +121,7 @@ export default function Home() {
             onEnded={handleVideoEnd}
           />
         </div>
-      )}
+      )} */}
 
       <ReportWrapper>
         <Box
