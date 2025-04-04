@@ -321,6 +321,7 @@ const Page = () => {
                 sm: 20,
                 base: 16,
               }}
+              ta={"justify"}
               highlight={[
                 `${money(
                   `${(data?.data.avg ?? 0) * (data?.data.area ?? 0)}`,
