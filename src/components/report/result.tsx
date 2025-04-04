@@ -113,6 +113,37 @@ export const ReportResult = ({
   );
 };
 
+export const GeneralWidget = ({
+  title,
+  children,
+}: {
+  title: string;
+  children: ReactNode;
+}) => {
+  return (
+    <Box>
+      <Text
+        fz={{
+          sm: 28,
+          base: 20,
+        }}
+        fw={600}
+        mb={20}
+      >
+        {title}
+      </Text>
+      <Box
+        ml={{
+          sm: 32,
+          base: 20,
+        }}
+      >
+        {children}
+      </Box>
+    </Box>
+  );
+};
+
 export const ApartmentInfo = ({
   title,
   text,

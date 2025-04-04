@@ -398,9 +398,7 @@ const Page = () => {
   };
   return (
     <Center h={"400px"}>
-      <Text c={"white"} fz={40}>
-        Тун удахгүй
-      </Text>
+      <Text fz={40}>Тун удахгүй</Text>
     </Center>
   );
   // return (
