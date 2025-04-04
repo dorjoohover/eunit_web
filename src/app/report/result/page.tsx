@@ -317,6 +317,7 @@ const Page = () => {
                 sm: 20,
                 base: 16,
               }}
+              fs={""}
             >
               Иргэн {user?.lastname ?? ""}{" "}
               {user?.firstname ??
@@ -325,7 +326,7 @@ const Page = () => {
               {data?.location.khoroo}-р хороо, {data?.location.zipcode},{" "}
               {data?.location.town} хотхон, {data?.data.area}м.кв орон сууцны
               өнөөгийн зах зээлийн үнэ 
-              {money((data?.data.avg ?? 0 * (data?.data.area ?? 0)).toString())}
+              {money(`${(data?.data.avg ?? 0) * (data?.data.area ?? 0)}`)}
                төгрөг орчим үнэтэй байна. Энэхүү тооцоолол нь өгөгдөлд суурилж
               тооцоолсон бөгөөд ±5%-ийн хооронд хэлбэлзэх боломжтой.
             </Text>
