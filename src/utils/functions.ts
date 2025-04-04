@@ -47,6 +47,16 @@ export const money = (value: string, currency = "") => {
     .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
 };
 
+export function formatPhoneNumber(phone: string) {
+  if (!phone) return "";
+  if (!phone.startsWith("+976") || phone.length !== 12) {
+    return "Invalid number";
+  }
+
+  let digits = phone.slice(4);
+  return `+976 ${digits.slice(0, 4)}-${digits.slice(4)}`;
+}
+
 export function formatNumber(num: string, length = 4) {
   return num.toString().padStart(length, "0");
 }

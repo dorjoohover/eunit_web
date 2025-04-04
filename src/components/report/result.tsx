@@ -2,7 +2,7 @@ import { Box, BoxComponentProps, Flex, Text } from "@mantine/core";
 import { ReportTitle } from "./shared";
 import { districts } from "@/utils/values";
 import { Colors } from "@/base/constants";
-import { money, parseDate } from "@/utils/functions";
+import { formatPhoneNumber, money, parseDate } from "@/utils/functions";
 import { ReactNode } from "react";
 import { MdApartment, MdOutlineShowChart } from "react-icons/md";
 import { CiLocationOn } from "react-icons/ci";
@@ -240,7 +240,7 @@ export const UserWidget = ({ user }: { user?: UserModel }) => {
               base: 16,
             }}
           >
-            {user?.phone ?? ""}
+            {formatPhoneNumber(user.phone)}
           </Text>
         )}
       </Box>
