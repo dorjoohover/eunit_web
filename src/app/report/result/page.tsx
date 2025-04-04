@@ -317,7 +317,7 @@ const Page = () => {
                 sm: 20,
                 base: 16,
               }}
-              fs={""}
+              ta={"justify"}
             >
               Иргэн {user?.lastname ?? ""}{" "}
               {user?.firstname ??
@@ -398,7 +398,7 @@ const Page = () => {
             w={"100%"}
           ></Box>
           <Spacer size={20} />
-          <Text fz={{ sm: 20, base: 16 }}>
+          <Text fz={{ sm: 20, base: 16 }} ta={"justify"}>
             Энэхүү лавлагаа нь 7 хоногийн хугацаанд хүчинтэй бөгөөд ямар нэгэн
             байдлаар олшруулахыг хориглоно.
           </Text>
