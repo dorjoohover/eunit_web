@@ -40,8 +40,8 @@ export const parseDate = (date: Date, symbol = "/", time = false) => {
       }${symbol}${day < 10 ? `0${day}` : day}`;
 };
 
-export const money = (value: string, currency = "") => {
-  let v = Math.round(+value);
+export const money = (value: string, currency = "", round = 1) => {
+  let v = Math.round(+value / round) * round;
   return `${currency}${v
     .toString()
     .replaceAll(",", "")

@@ -291,8 +291,10 @@ const Page = () => {
                 base: 16,
               }}
               highlight={[
-                `₮${money(
-                  `${(data?.data.avg ?? 0) * (data?.data.area ?? 0)}`
+                `${money(
+                  `${(data?.data.avg ?? 0) * (data?.data.area ?? 0)}`,
+                  "₮",
+                  100000
                 )}`,
               ]}
               highlightStyles={{
@@ -304,8 +306,10 @@ const Page = () => {
               children={`
                    Таны ${
                      data?.data.area ?? ""
-                   } м.кв орон сууцны нийт үнэ: ₮${money(
-                `${(data?.data.avg ?? 0) * (data?.data.area ?? 0)}`
+                   } м.кв орон сууцны нийт үнэ: ${money(
+                `${(data?.data.avg ?? 0) * (data?.data.area ?? 0)}`,
+                "₮",
+                100000
               )}`}
             ></Highlight>
 
@@ -326,7 +330,11 @@ const Page = () => {
               {data?.location.khoroo}-р хороо, {data?.location.zipcode},{" "}
               {data?.location.town} хотхон, {data?.data.area}м.кв орон сууцны
               өнөөгийн зах зээлийн үнэ 
-              {money(`${(data?.data.avg ?? 0) * (data?.data.area ?? 0)}`)}
+              {money(
+                `${(data?.data.avg ?? 0) * (data?.data.area ?? 0)}`,
+                "",
+                100000
+              )}
                төгрөг орчим үнэтэй байна. Энэхүү тооцоолол нь өгөгдөлд суурилж
               тооцоолсон бөгөөд ±5%-ийн хооронд хэлбэлзэх боломжтой.
             </Text>
