@@ -160,7 +160,6 @@ const Page = () => {
       { ...payload.values!, payment: payment },
       ServiceType.REVIEW
     );
-    console.log(res);
     if (payment == PaymentType.QPAY) {
       setQpay({
         qpay: res?.data.data,

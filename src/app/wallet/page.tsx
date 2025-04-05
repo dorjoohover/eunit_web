@@ -116,7 +116,6 @@ const Page = () => {
   const [total, setTotal] = useState(0);
   const getHistory = async (page = 1, l = limit) => {
     await userHistory(l, page).then((d) => {
-      console.log(d);
       if (d.succeed) {
         setTotal(d.payload[1]);
         setHistory(d.payload[0]);

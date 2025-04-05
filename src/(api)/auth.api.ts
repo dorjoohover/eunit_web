@@ -13,7 +13,6 @@ export const loginUser = async (
   const token = cookie.get("auth_token")?.value;
   if (!token) {
     try {
-      console.log(token);
       const res = await fetch(`${api}${AuthApi.login}`, {
         method: "POST",
         mode: "no-cors",
@@ -24,7 +23,6 @@ export const loginUser = async (
           name: name,
         }),
       }).then((d) => d.json());
-      console.log(res);
       if (res) {
         cookie.set("auth_token", res.payload.accessToken, {
           httpOnly: true,
@@ -64,7 +62,6 @@ export const getUsers = async () => {
 export async function logOut() {
   try {
     const cookie = await cookies();
-    console.log("logout");
     cookie.delete("auth_token");
     // console.log("Logout request succeeded:");
     // return res;
