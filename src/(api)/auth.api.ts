@@ -28,7 +28,7 @@ export const loginUser = async (
       if (res) {
         cookie.set("auth_token", res.payload.accessToken, {
           httpOnly: true,
-          maxAge: 60 * 60 * 1000 * 24 * 7,
+          maxAge: 60 * 60 * 1000,
           sameSite: "none",
           secure: true,
         });
@@ -64,7 +64,7 @@ export const getUsers = async () => {
 export async function logOut() {
   try {
     const cookie = await cookies();
-    console.log('logout')
+    console.log("logout");
     cookie.delete("auth_token");
     // console.log("Logout request succeeded:");
     // return res;
