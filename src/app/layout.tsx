@@ -19,6 +19,7 @@ import { MapProviderWithSuspense } from "@/_context/maps.provider";
 import { cookies } from "next/headers";
 import "@mantine/dates/styles.css";
 import { viewport } from "@/base/constants";
+import { auth } from "@/lib/firebase";
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -55,6 +56,18 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const token = (await cookies()).get("auth_token");
+  // const user = auth?.currentUser;
+  // console.log(auth);
+  // if (user) {
+  //   console.log(user);
+  //   const t = await user.getIdToken(true);
+  //   console.log(t);
+  //   await fetch("/api/login/phone", {
+  //     method: "POST",
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify({ token: t }),
+  //   }).then((d) => d.json());
+  // }
   return (
     <html lang="en">
       <Head>

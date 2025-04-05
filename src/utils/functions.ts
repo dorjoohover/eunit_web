@@ -1,6 +1,7 @@
 import { AdSellType, TransactionType } from "@/config/enum";
 import { gmailImageUrl, imageApi } from "./routes";
 import { UserModel } from "@/models/user.model";
+import { LocationModel } from "@/models/location.model";
 
 export function mergeNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -47,6 +48,37 @@ export const money = (value: string, currency = "", round = 1) => {
     .replaceAll(",", "")
     .toString()
     .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
+};
+
+export const reportDescription = (
+  name: string,
+  area?: number,
+  avg?: number,
+  l?: LocationModel,
+  d?: { room?: number; no?: string; floor?: number }
+) => {
+  // Таны Улаанбаатар хот, Хан уул дүүрэг, 11-р хороо, 17020, Жардин хотхон, 120-р байр, 6 дугаар давхарын 3 өрөө 80м.кв орон сууцны өнөөгийн зах зээлийн үнэ 160,950,000.00 төгрөг орчмын үнэтэй байна.
+  const town =
+    l?.town?.toLowerCase().includes("хотхон") ||
+    l?.town?.toLowerCase().includes("хороолол");
+  const no = d?.no
+    ? ` ${d?.no}${isNaN(parseInt(d.no)) ? "" : "-р"} байр, `
+    : "";
+  const floor = d?.floor ? `${d.floor}-р давхарын ` : "";
+  const room = d?.room ? `${d.room} өрөө ` : "";
+  const location = `${l?.city} хот, ${l?.district} дүүрэг, ${
+    l?.khoroo
+  }-р хороо, ${l?.zipcode}, ${l?.town}${
+    !town ? " хотхон" : ""
+  },${no}${floor}${room}`;
+  return `Иргэн ${name} таны ${location} ${area}м.кв орон сууцны
+              өнөөгийн зах зээлийн үнэ
+                ${money(
+                  `${(avg ?? 0) * (area ?? 0)}`,
+                  "",
+                  100000
+                )} төгрөг орчим үнэтэй байна. Энэхүү тооцоолол нь өгөгдөлд суурилж
+                тооцоолсон бөгөөд ±5%-ийн хооронд хэлбэлзэх боломжтой.`;
 };
 
 export function formatPhoneNumber(phone: string) {

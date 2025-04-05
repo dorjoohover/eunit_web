@@ -26,6 +26,7 @@ import {
   formatPhoneNumber,
   money,
   parseDate,
+  reportDescription,
 } from "@/utils/functions";
 import { api, ConstantApi } from "@/utils/routes";
 import {
@@ -335,25 +336,38 @@ const Page = () => {
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
               }}
-              children={`Иргэн ${user?.lastname ?? ""} ${
-                user?.firstname ??
-                (user?.phone
-                  ? formatPhoneNumber(user?.phone)
-                  : user?.email ?? "")
-              } таны ${data?.location.city} хот, ${
-                data?.location.district
-              } дүүрэг, ${data?.location.khoroo}-р хороо, ${
-                data?.location.zipcode
-              }, ${data?.location.town} хотхон, ${
-                data?.data.area
-              }м.кв орон сууцны
-              өнөөгийн зах зээлийн үнэ 
-              ${money(
-                `${(data?.data.avg ?? 0) * (data?.data.area ?? 0)}`,
-                "",
-                100000
-              )} төгрөг орчим үнэтэй байна. Энэхүү тооцоолол нь өгөгдөлд суурилж
-              тооцоолсон бөгөөд ±5%-ийн хооронд хэлбэлзэх боломжтой.`}
+              // Таны Улаанбаатар хот, Хан уул дүүрэг, 11-р хороо, 17020, Жардин хотхон, 120-р байр, 6 дугаар давхарын 3 өрөө 80м.кв орон сууцны өнөөгийн зах зээлийн үнэ 160,950,000.00 төгрөг орчмын үнэтэй байна.
+              // Иргэн
+              // } таны ${data?.location.city} хот, ${
+              //   data?.location.district
+              // } дүүрэг, ${data?.location.khoroo}-р хороо, ${
+              //   data?.location.zipcode
+              // }, ${data?.location.town} хотхон, ${
+              //   data?.data.area
+              // }м.кв орон сууцны
+              // өнөөгийн зах зээлийн үнэ
+              // ${money(
+              //   `${(data?.data.avg ?? 0) * (data?.data.area ?? 0)}`,
+              //   "",
+              //   100000
+              // )} төгрөг орчим үнэтэй байна. Энэхүү тооцоолол нь өгөгдөлд суурилж
+              // тооцоолсон бөгөөд ±5%-ийн хооронд хэлбэлзэх боломжтой.
+              children={`${reportDescription(
+                `${user?.lastname ?? ""} ${
+                  user?.firstname ??
+                  (user?.phone
+                    ? formatPhoneNumber(user?.phone)
+                    : user?.email ?? "")
+                }`,
+                data?.data.area,
+                data?.data.avg,
+                data?.location,
+                {
+                  no: data?.data?.no,
+                  floor: data?.data?.floor,
+                  room: data?.data?.room,
+                }
+              )}`}
             ></Highlight>
           </GeneralWidget>
           {/* <Flex
