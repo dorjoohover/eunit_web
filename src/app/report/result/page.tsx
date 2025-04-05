@@ -337,7 +337,9 @@ const Page = () => {
               }}
               children={`Иргэн ${user?.lastname ?? ""} ${
                 user?.firstname ??
-                (user?.phone && formatPhoneNumber(user?.phone))
+                (user?.phone
+                  ? formatPhoneNumber(user?.phone)
+                  : user?.email ?? "")
               } таны ${data?.location.city} хот, ${
                 data?.location.district
               } дүүрэг, ${data?.location.khoroo}-р хороо, ${
