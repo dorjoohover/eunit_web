@@ -194,7 +194,7 @@ export const ReportList = ({
             className={montserratAlternates.className}
           >
             {`${text} ${`${zipcode ? "|" : ""} ${
-              matches ? `${zipcode ?? ""}` : zipcode ?? text
+              matches ? `${zipcode ?? ""}` : zipcode ?? ""
             }`} `}
           </Text>
         )}
