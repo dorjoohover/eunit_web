@@ -79,9 +79,9 @@ const Page = () => {
 
     refetchUser();
     const res = await getRequestResult(+id);
-    if (!res.success) {
+    if (!res?.success) {
       notifications.show({
-        message: res.message,
+        message: res?.message,
       });
       router.back();
       return;

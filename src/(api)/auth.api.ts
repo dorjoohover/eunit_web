@@ -3,6 +3,7 @@ import { UserModel } from "@/models/user.model";
 import { api, AuthApi } from "@/utils/routes";
 import { cookies } from "next/headers";
 import { getUser } from "./user.api";
+import { NextRequest, NextResponse } from "next/server";
 
 export const loginUser = async (
   email: string,
@@ -63,7 +64,6 @@ export async function logOut() {
   try {
     const cookie = await cookies();
     cookie.delete("auth_token");
-    // console.log("Logout request succeeded:");
     // return res;
   } catch (error) {
     // console.error("Logout error:", error);

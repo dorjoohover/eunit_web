@@ -1,30 +1,58 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { currentUrl } from "./utils/routes";
+import jwt from "jsonwebtoken";
 
 export async function middleware(req: NextRequest) {
   const token = req.cookies.get("auth_token")?.value;
   const prevPath = req.cookies.get("prevPath")?.value || "/";
-  if (token && req.nextUrl.pathname.startsWith("/login")) {
+  const pathname = req.nextUrl.pathname;
+  const search = req.nextUrl.search;
+
+  // Redirect authenticated users away from /login
+  if (token && pathname.startsWith("/login")) {
     return NextResponse.redirect(new URL("/", req.url));
   }
-  const needUserUrls: Record<string, string> = {
+
+  const protectedRoutes: Record<string, string> = {
     wallet: "",
     profile: "",
     report: "location",
   };
-  const url = req.nextUrl.pathname;
 
-  if (url == "/login" && token) {
-    return NextResponse.redirect(new URL(prevPath, req.url));
-  }
-  for (const [k, v] of Object.entries(needUserUrls)) {
-    if (
-      url.startsWith(`/${k}`) &&
-      (req.nextUrl.search.includes(v) || v === "") &&
-      !token
-    ) {
+  const isProtectedRoute = Object.entries(protectedRoutes).some(
+    ([route, requiredQuery]) =>
+      pathname.startsWith(`/${route}`) &&
+      (requiredQuery === "" || search.includes(requiredQuery))
+  );
+
+  // Handle protected routes
+  if (isProtectedRoute) {
+    if (!token) {
+      // No token? Redirect to login
       return NextResponse.redirect(new URL("/login", req.url));
     }
+
+    try {
+      const decoded = jwt.decode(token) as { exp?: number; iat?: number };
+
+      if (
+        (decoded?.exp && decoded.exp * 1000 < Date.now()) ||
+        (decoded?.exp ?? 0) - (decoded?.iat ?? 0) == 60 * 60 * 1000 * 24 * 7
+      ) {
+        const response = NextResponse.redirect(new URL("/login", req.url));
+        response.cookies.delete("auth_token");
+        return response;
+      }
+    } catch (err) {
+      console.error("Failed to decode token", err);
+      const response = NextResponse.redirect(new URL("/login", req.url));
+      response.cookies.delete("auth_token");
+      return response;
+    }
+  }
+
+  // If user is already logged in and tries to visit /login, redirect them
+  if (pathname === "/login" && token) {
+    return NextResponse.redirect(new URL(prevPath, req.url));
   }
 
   return NextResponse.next();

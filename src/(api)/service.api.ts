@@ -41,6 +41,7 @@ export const sendRequest = async (
         Authorization: `Bearer ${token?.value ?? ""}`,
       },
     }).then((d) => d.json());
+
     return {
       data: res.payload,
       token: true,
@@ -86,7 +87,7 @@ export const getRequestResult = async (id: number) => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token?.value ?? ""}`,
       },
-    }).then((d) => d.json())
+    }).then((d) => d.json());
     return {
       data: res.payload,
       token: true,
@@ -95,7 +96,7 @@ export const getRequestResult = async (id: number) => {
       success: res.succeed,
     };
   } catch (error: any) {
-    console.log(error)
+    console.log(error);
     return {
       success: false,
       message: error.message,
