@@ -50,6 +50,7 @@ import {
 import { MdApartment } from "react-icons/md";
 import Link from "next/link";
 import { notifications } from "@mantine/notifications";
+import { UserModel } from "@/models/user.model";
 type ResultType = {
   data: {
     min?: number;
@@ -61,6 +62,7 @@ type ResultType = {
     floor?: number;
     room?: number;
   };
+  user: UserModel;
 
   location: LocationModel;
 };
@@ -91,6 +93,7 @@ const Page = () => {
       return;
     }
     if (res.success) {
+      console.log(res.data);
       setData(res.data);
     }
     setLoading(false);
@@ -117,6 +120,7 @@ const Page = () => {
 
   return (
     <Box>
+      {JSON.stringify(data?.user)}
       <ReportTitle>
         <Box>
           <Flex pt={{ sm: 40, base: 32 }} w={"100%"} align={"center"}>
@@ -196,33 +200,33 @@ const Page = () => {
                 matches ? "flex-row" : "flex-col"
               } justify-between`}
             >
-              {(user?.firstname || user?.lastname) && (
+              {(data?.user?.firstname || data?.user?.lastname) && (
                 <Flex>
                   <Text fz={{ sm: 20, base: 16 }} fw={300}>
                     Овог нэр:
                   </Text>
                   <Text fw={600} fz={{ sm: 20, base: 16 }}>
-                    {user?.lastname ?? ""} {user?.firstname ?? ""}
+                    {data?.user?.lastname ?? ""} {data?.user?.firstname ?? ""}
                   </Text>
                 </Flex>
               )}
-              {user?.email && (
+              {data?.user?.email && (
                 <Flex>
                   <Text fw={300} fz={{ sm: 20, base: 16 }}>
                     Цахим хаяг:
                   </Text>
                   <Text fw={600} fz={{ sm: 20, base: 16 }}>
-                    {user.email}
+                    {data?.user.email}
                   </Text>
                 </Flex>
               )}
-              {user?.phone && (
+              {data?.user?.phone && (
                 <Flex>
                   <Text fz={{ sm: 20, base: 16 }} fw={300}>
                     Утасны дугаар:
                   </Text>
                   <Text fw={600} fz={{ sm: 20, base: 16 }}>
-                    {formatPhoneNumber(user?.phone) ?? ""}
+                    {formatPhoneNumber(data?.user?.phone) ?? ""}
                   </Text>
                 </Flex>
               )}
@@ -353,11 +357,13 @@ const Page = () => {
               // )} төгрөг орчим үнэтэй байна. Энэхүү тооцоолол нь өгөгдөлд суурилж
               // тооцоолсон бөгөөд ±5%-ийн хооронд хэлбэлзэх боломжтой.
               children={`${reportDescription(
-                `${user?.lastname ?? ""} ${
-                  user?.firstname ??
-                  (user?.phone
-                    ? formatPhoneNumber(user?.phone)
-                    : user?.email ?? "")
+                `${data?.user?.lastname ?? ""} ${
+                  data?.user?.firstname ??
+                  (data?.user?.lastname == null
+                    ? data?.user?.phone
+                      ? formatPhoneNumber(data?.user?.phone)
+                      : data?.user?.email ?? ""
+                    : "")
                 }`,
                 data?.data.area,
                 data?.data.avg,
