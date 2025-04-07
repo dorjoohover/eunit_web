@@ -77,6 +77,10 @@ export default async function RootLayout({
           type="image/png"
           sizes="32x32"
         />
+      </Head>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased relative`}
+      >
         <Script
           async
           src="https://www.googletagmanager.com/gtag/js?id=G-746W88T01J"
@@ -90,10 +94,6 @@ export default async function RootLayout({
       gtag('config', 'G-746W88T01J');
     `}
         </Script>
-      </Head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased relative`}
-      >
         <MantineProvider
           theme={theme}
           defaultColorScheme="light"
