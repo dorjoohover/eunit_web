@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
     } else {
       cookie.set("auth_token", token, {
         sameSite: "strict",
-        maxAge: 60 * 60 * 1000,
+        maxAge: 60 * 60 ,
       });
 
       response = NextResponse.json({

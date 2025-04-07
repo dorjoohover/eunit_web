@@ -27,7 +27,7 @@ export const loginUser = async (
       if (res) {
         cookie.set("auth_token", res.payload.accessToken, {
           httpOnly: true,
-          maxAge: 60 * 60 * 1000,
+          maxAge: 60 * 60 ,
           sameSite: "none",
           secure: true,
         });
