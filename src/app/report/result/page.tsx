@@ -120,7 +120,6 @@ const Page = () => {
 
   return (
     <Box>
-      {JSON.stringify(data?.user)}
       <ReportTitle>
         <Box>
           <Flex pt={{ sm: 40, base: 32 }} w={"100%"} align={"center"}>
