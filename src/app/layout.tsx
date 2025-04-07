@@ -19,6 +19,7 @@ import { MapProviderWithSuspense } from "@/_context/maps.provider";
 import { cookies } from "next/headers";
 import "@mantine/dates/styles.css";
 import Script from "next/script";
+import { Analytics } from "@/components/analytics";
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -83,12 +84,11 @@ export default async function RootLayout({
         />
         <Script id="google-analytics" strategy="afterInteractive">
           {`
-    window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-746W88T01J');
-  `}
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-746W88T01J');
+    `}
         </Script>
       </Head>
       <body
@@ -104,7 +104,9 @@ export default async function RootLayout({
             <Notifications />
             <MapProviderWithSuspense>
               <AppWrapper token={token?.value}>
-                <Suspense fallback={<Loading />}>{children}</Suspense>
+                <Suspense fallback={<Loading />}>
+                  {children} <Analytics />
+                </Suspense>
               </AppWrapper>
             </MapProviderWithSuspense>
           </NextAuthProvider>
