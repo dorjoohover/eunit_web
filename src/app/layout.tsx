@@ -18,8 +18,7 @@ import "@mantine/core/styles.css";
 import { MapProviderWithSuspense } from "@/_context/maps.provider";
 import { cookies } from "next/headers";
 import "@mantine/dates/styles.css";
-import { viewport } from "@/base/constants";
-import { auth } from "@/lib/firebase";
+import Script from "next/script";
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -77,6 +76,20 @@ export default async function RootLayout({
           type="image/png"
           sizes="32x32"
         />
+        <Script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-746W88T01J"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+    window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-746W88T01J');
+  `}
+        </Script>
       </Head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased relative`}
