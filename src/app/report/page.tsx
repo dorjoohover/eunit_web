@@ -754,6 +754,7 @@ const Page = () => {
                   high: d.englishNameOfTown,
                   zipcode: `${d.zipcode}`,
                   name: d.name,
+                  count: d.count,
                   title: d.town ?? "",
                 }}
                 onClick={() => {
@@ -767,6 +768,7 @@ const Page = () => {
                   label: `${d.count} ${locale.data.GLOBAL.INFORMATION}`,
                   title: d.name,
                   text: "",
+                  count: d.count,
                 }}
                 onClick={() => {
                   // nextStep(d.id);
