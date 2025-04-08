@@ -3,8 +3,7 @@
 import { ReactNode, useEffect } from "react";
 import { signOut, useSession } from "next-auth/react";
 import { useAppContext } from "@/_context";
-import { getUserData, loginUser, logOut } from "@/(api)/auth.api";
-import { UserType } from "@/config/enum";
+import { getUserData, loginUser } from "@/(api)/auth.api";
 import {
   AdminNavbar,
   BottomNavigationBar,
@@ -15,46 +14,47 @@ import { Loading } from "./loading";
 import { Footer } from "@/components/footer";
 import { useMediaQuery } from "@mantine/hooks";
 import { Box } from "@mantine/core";
+import { usePathname, useRouter } from "next/navigation";
 
-const Template = ({ children }: { children: ReactNode }) => {
-  const { data, status } = useSession();
+type TemplateProps = {
+  children: ReactNode;
+};
+
+const Template = ({ children }: TemplateProps) => {
+  const { data: session, status } = useSession();
   const { user, setUser, refetchUser } = useAppContext();
   const matches = useMediaQuery("(min-width: 50em)");
-
-  const handler = async () => {
+  const router = useRouter()
+  const pathname = usePathname()
+  const syncUser = async () => {
     try {
-      const { data: dataUser } = await getUserData();
-      if (dataUser) {
-        setUser(dataUser);
+      const { data: backendUser } = await getUserData();
+
+      if (backendUser) {
+        setUser(backendUser);
+        return;
       }
-      // if ((dataUser == undefined || dataUser == null) && user == undefined) {
-      //   if (data?.user != undefined) {
-      //     const res = await loginUser(
-      //       data?.user.email!,
-      //       data?.user.image!,
-      //       data?.user.name!
-      //     );
-      //     if (res) setUser(res);
-      //   }
-      // } else {
-      //   if (data && dataUser) {
-      //     setUser(dataUser);
-      //   } else {
-      //     // logOut();
-      //     refetchUser();
-      //   }
-      // }
+
+      if (!user && session?.user) {
+        const newUser = await loginUser(
+          session.user.email!,
+          session.user.image!,
+          session.user.name!
+        );
+        if (newUser) setUser(newUser);
+      } else {
+        refetchUser();
+      }
+      if(pathname == '/login') router.push('/')
     } catch (error) {
-      // console.error("Error during handler execution:", error);
+      console.error("Error syncing user:", error);
     }
   };
 
   useEffect(() => {
     if (status === "authenticated") {
-      handler();
-    }
-    if (status === "unauthenticated") {
-      // logOut();
+      syncUser();
+    } else if (status === "unauthenticated") {
       refetchUser();
     }
   }, [status]);
@@ -70,8 +70,7 @@ const Template = ({ children }: { children: ReactNode }) => {
       <Box pl={!matches ? 0 : 60}>
         <Footer />
       </Box>
-      {matches && <SideBar />}
-      {!matches && <BottomNavigationBar />}
+      {matches ? <SideBar /> : <BottomNavigationBar />}
     </>
   );
 };

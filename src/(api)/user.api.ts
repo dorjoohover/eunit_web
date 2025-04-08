@@ -26,14 +26,12 @@ export async function getUser(): Promise<UserModel | null> {
       })
         .then((d) => d.json())
         .catch((e) => {
-          console.log(e);
           cookie.delete("auth_token");
           return null;
         });
       if (res?.succeed) {
         return res.payload as UserModel;
       } else {
-        console.log("else");
         cookie.delete("auth_token");
         return null;
       }

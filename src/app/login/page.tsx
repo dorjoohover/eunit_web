@@ -96,7 +96,7 @@ export default function Page() {
               бүртгүүлэхдээ өөрийн GMAIL хаягийг ашиглахад хангалттай
             </Text>
             <GoogleAuth />
-            <Flex gap={8} align={"center"} my={30}>
+            {/* <Flex gap={8} align={"center"} my={30}>
               <Box h={2} w={"100%"} bg={"#E0E0E0"}></Box>
               <Text fw={500} fz={18}>
                 эсвэл
@@ -105,7 +105,7 @@ export default function Page() {
             </Flex>
             <Flex align={"end"}>
               <PhoneAuth />
-            </Flex>
+            </Flex> */}
           </Flex>
         </Flex>
       </Flex>

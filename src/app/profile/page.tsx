@@ -9,6 +9,7 @@ import { ProfileValues } from "@/utils/values";
 import { Box, Button, Flex, Tabs, Text, TextInput } from "@mantine/core";
 import { useForm, UseFormReturnType } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
+import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { HiOutlineExternalLink } from "react-icons/hi";
@@ -20,7 +21,7 @@ type ProfileType = {
   phone?: string;
 };
 const Page = () => {
-  const { user } = useAppContext();
+  const { user, setUser } = useAppContext();
   const form = useForm<ProfileType>({
     initialValues: {
       phone: user?.phone,
@@ -115,7 +116,7 @@ const Page = () => {
                     );
                   })}
                 </Box>
-                <Flex gap={20} my={24} align={'center'}>
+                <Flex gap={20} my={24} align={"center"}>
                   <Button
                     type={"submit"}
                     fz={20}
@@ -133,6 +134,8 @@ const Page = () => {
                   <Button
                     onClick={() => {
                       logOut();
+                      signOut()
+                      setUser(undefined);
                       router.refresh();
                     }}
                     fz={20}
