@@ -11,8 +11,7 @@ const GoogleAuth = () => {
   const router = useRouter();
   const signInWithGoogle = async () => {
     try {
-      const user = await signIn("google");
-      console.log(user);
+      await signIn("google");
       // const token = await user.user.getIdToken();
       // if (token) {
       //   const res = await fetch("/api/login/phone", {
@@ -36,7 +35,10 @@ const GoogleAuth = () => {
       //   });
       // }
     } catch (error) {
-      console.error(error);
+      notifications.show({
+        position: "top-center",
+        message: "Амжилтгүй дахин оролдоно уу",
+      });
     }
   };
   return (

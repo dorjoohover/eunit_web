@@ -545,7 +545,7 @@ const Page = () => {
               </Highlight>
 
               <Flex>
-                {user?.wallet && user?.wallet >= 2000 && (
+                {user?.wallet && user?.wallet >= 2000 ? (
                   <Button
                     w={"100%"}
                     fz={24}
@@ -571,7 +571,7 @@ const Page = () => {
                       </Flex>
                     )}
                   </Button>
-                )}
+                ) : null}
                 <Button
                   w={"100%"}
                   fz={24}

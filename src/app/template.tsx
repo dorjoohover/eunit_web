@@ -15,6 +15,7 @@ import { Footer } from "@/components/footer";
 import { useMediaQuery } from "@mantine/hooks";
 import { Box } from "@mantine/core";
 import { usePathname, useRouter } from "next/navigation";
+import { notifications } from "@mantine/notifications";
 
 type TemplateProps = {
   children: ReactNode;
@@ -24,8 +25,8 @@ const Template = ({ children }: TemplateProps) => {
   const { data: session, status } = useSession();
   const { user, setUser, refetchUser } = useAppContext();
   const matches = useMediaQuery("(min-width: 50em)");
-  const router = useRouter()
-  const pathname = usePathname()
+  const router = useRouter();
+  const pathname = usePathname();
   const syncUser = async () => {
     try {
       const { data: backendUser } = await getUserData();
@@ -45,7 +46,13 @@ const Template = ({ children }: TemplateProps) => {
       } else {
         refetchUser();
       }
-      if(pathname == '/login') router.push('/')
+      if (pathname == "/login") {
+        router.push("/");
+        notifications.show({
+          position: "top-center",
+          message: "Амжилттай нэвтэрлээ!",
+        });
+      }
     } catch (error) {
       console.error("Error syncing user:", error);
     }
