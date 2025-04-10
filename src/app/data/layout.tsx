@@ -1,26 +1,14 @@
-"use client";
-import { ReportWrapper } from "@/_context";
-import { Colors } from "@/base/constants";
 import { ReactNode, Suspense } from "react";
-import { Loading } from "../loading";
-import { useMediaQuery } from "@mantine/hooks";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Дата мэдээлэл - Eunit.mn",
+  description:
+    "Та хөрөнгийн үнэлгээний лавлагаагаа хамгийн хялбараар буюу ердөө 1 минутанд авах боломжтой.",
+};
 
 const RootLayout = ({ children }: { children: ReactNode }) => {
-  const matches = useMediaQuery("(min-width: 50em)");
-  return (
-    <Suspense fallback={<Loading />}>
-      <div
-        className={`bg-[${Colors.lightIvory}] relative  pt-[60px] ${
-          matches && "left-[60px]"
-        }`}
-        style={{
-          width: matches ? "calc(100vw - 70px)" : "",
-        }}
-      >
-        <ReportWrapper>{children}</ReportWrapper>
-      </div>
-    </Suspense>
-  );
+  return <>{children}</>;
 };
 
 export default RootLayout;

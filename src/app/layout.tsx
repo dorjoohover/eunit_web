@@ -34,10 +34,11 @@ const geistMono = localFont({
 export const metadata: Metadata = {
   title: {
     absolute: "",
-    default: "Eunit - Хөрөнгийн үнэлгээний сайт",
-    template: "Eunit | %s",
+    default: "Eunit - Хөрөнгө үнэлгээний хамгийн хурдан, найдвартай үйлчилгээ",
+    // template: "Eunit | %s",
   },
-
+  description:
+    'Eunit.mn сайт нь таны үл хөдлөх болон хөдлөх хөрөнгийн бодит үнэлгээг 1 минутанд хийж, лавлагаа гаргаж өгнө."',
   viewport: {
     viewportFit: "cover",
     width: "device-width",

@@ -2,9 +2,9 @@ import { ReactNode, Suspense } from "react";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Үнэлгээ хийх - Eunit.mn",
+  title: "Хэтэвч - Eunit.mn",
   description:
-    "Та хөрөнгийн үнэлгээний лавлагаагаа хамгийн хялбараар буюу ердөө 1 минутанд авах боломжтой.",
+    "Хөрөнгөө удирдах хялбар арга, өөрийн хөрөнгийн үнэлгээгээ хамгийн хялбараар шалгах боломжтой.",
 };
 
 const RootLayout = ({ children }: { children: ReactNode }) => {
