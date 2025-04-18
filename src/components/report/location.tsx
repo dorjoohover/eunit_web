@@ -11,6 +11,7 @@ import { ReportList, ReportTitle } from "./shared";
 import { IconSearch } from "@tabler/icons-react";
 import { LocationModel } from "@/models/location.model";
 import { useEffect, useState } from "react";
+import { notifications } from "@mantine/notifications";
 
 export const ChooseLocation = ({
   onClick,
@@ -23,6 +24,7 @@ export const ChooseLocation = ({
     text: string;
     label: string;
     high?: string;
+    count?: number;
   };
   onClick: () => void;
 }) => {
@@ -39,7 +41,19 @@ export const ChooseLocation = ({
         base: 20,
       }}
       className="cursor-pointer"
-      onClick={onClick}
+      onClick={() => {
+        if ((location?.count ?? 0) < 3)
+          notifications.show({
+            message:
+              "Уучлаарай. Энэхүү орон сууцны зах зээлийн мэдээлэл хангалтгүй тул үнэ цэний лавлагаа олгох боломжгүй байна. Баярлалаа😇",
+            position: "top-center",
+            color: "red",
+            autoClose: 5000,
+          });
+        else {
+          onClick();
+        }
+      }}
       py={27}
       align={"center"}
     >

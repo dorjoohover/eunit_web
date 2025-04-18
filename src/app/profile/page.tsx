@@ -9,6 +9,8 @@ import { ProfileValues } from "@/utils/values";
 import { Box, Button, Flex, Tabs, Text, TextInput } from "@mantine/core";
 import { useForm, UseFormReturnType } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
+import { signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { HiOutlineExternalLink } from "react-icons/hi";
 
@@ -19,7 +21,7 @@ type ProfileType = {
   phone?: string;
 };
 const Page = () => {
-  const { user } = useAppContext();
+  const { user, setUser } = useAppContext();
   const form = useForm<ProfileType>({
     initialValues: {
       phone: user?.phone,
@@ -60,6 +62,7 @@ const Page = () => {
       });
     }
   };
+  const router = useRouter();
   return (
     <Box>
       <ReportTitle text={"Хэрэглэгч"}>
@@ -113,35 +116,43 @@ const Page = () => {
                     );
                   })}
                 </Box>
-                <Button
-                  type={"submit"}
-                  fz={20}
-                  bg={edit ? "#546274" : "main"}
-                  py={16}
-                  h={"auto"}
-                  w={{
-                    sm: 200,
-                    base: "100%",
-                  }}
-                  my={32}
-                >
-                  {edit ? " Хадгалах" : "Засах"}
-                </Button>
-                <Button
-                  onClick={() => logOut()}
-                  fz={20}
-                  variant="outline"
-                  c={"red"}
-                  py={16}
-                  h={"auto"}
-                  color="red"
-                  w={{
-                    sm: 200,
-                    base: "100%",
-                  }}
-                >
-                  <HiOutlineExternalLink /> <span className="ml-4">Гарах</span>
-                </Button>
+                <Flex gap={20} my={24} align={"center"}>
+                  <Button
+                    type={"submit"}
+                    fz={20}
+                    bg={edit ? "#546274" : "main"}
+                    py={16}
+                    h={60}
+                    w={{
+                      sm: 200,
+                      base: "100%",
+                    }}
+                    my={32}
+                  >
+                    {edit ? " Хадгалах" : "Засах"}
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      logOut();
+                      signOut()
+                      setUser(undefined);
+                      router.refresh();
+                    }}
+                    fz={20}
+                    variant="outline"
+                    c={"red"}
+                    py={16}
+                    h={60}
+                    color="red"
+                    w={{
+                      sm: 200,
+                      base: "100%",
+                    }}
+                  >
+                    <HiOutlineExternalLink />{" "}
+                    <span className="ml-4">Гарах</span>
+                  </Button>
+                </Flex>
                 <Spacer size={40} />
               </form>
             </Box>

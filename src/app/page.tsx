@@ -15,6 +15,8 @@ import { useFetch, useMediaQuery } from "@mantine/hooks";
 import { api } from "@/utils/routes";
 import { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "@/lib/firebase";
 
 export default function Home() {
   const { data, loading } = useFetch<{
@@ -94,6 +96,14 @@ export default function Home() {
     }),
     []
   );
+  // onAuthStateChanged(auth, async (user) => {
+  //   if (user) {
+  //     const token = await user.getIdToken(true);
+  //     console.log("Token:", token);
+  //   } else {
+  //     console.log("User not logged in");
+  //   }
+  // });
   const handleMapLoad = (map: any) => {
     setMaploading(true);
 
@@ -110,7 +120,7 @@ export default function Home() {
         paddingLeft: matches ? 60 : 0,
       }}
     >
-      {showVideo && (
+      {/* {showVideo && (
         <div className="video-wrapper">
           <video
             src={video}
@@ -121,7 +131,7 @@ export default function Home() {
             onEnded={handleVideoEnd}
           />
         </div>
-      )}
+      )} */}
 
       <ReportWrapper>
         <Box

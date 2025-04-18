@@ -18,7 +18,6 @@ export const sendRequest = async (
   service: number
 ) => {
   const token = (await cookies()).get("auth_token");
-  console.log(token);
   if (!token?.value) return { token: false };
   try {
     const body = {
@@ -33,7 +32,6 @@ export const sendRequest = async (
       count: value.count,
       payment: value.payment,
     };
-    console.log(body);
     const res = await fetch(`${api}request`, {
       method: "POST",
       mode: "no-cors",
@@ -43,7 +41,7 @@ export const sendRequest = async (
         Authorization: `Bearer ${token?.value ?? ""}`,
       },
     }).then((d) => d.json());
-    console.log(res);
+
     return {
       data: res.payload,
       token: true,
@@ -67,7 +65,6 @@ export const checkPayment = async (id: number, code: string) => {
         Authorization: `Bearer ${token?.value ?? ""}`,
       },
     }).then((d) => d.json());
-    console.log(res);
     return {
       data: res.payload,
       token: true,
@@ -91,7 +88,6 @@ export const getRequestResult = async (id: number) => {
         Authorization: `Bearer ${token?.value ?? ""}`,
       },
     }).then((d) => d.json());
-    console.log(res);
     return {
       data: res.payload,
       token: true,

@@ -17,7 +17,9 @@ import { DatePicker } from "@mantine/dates";
 import {
   brands,
   carColor,
+  cars,
   engineType,
+  marks,
   meterRange,
   motor,
   motorType,
@@ -84,12 +86,13 @@ const Page = () => {
     if (!checker()) return;
 
     const res = await carEvaluate(form, ServiceType.REVIEW);
-    console.log(res);
-    if (res?.data?.success != false) {
-      refetchUser();
-      router.push(`/report/result?id=${res?.data.res}`);
-    }
-    setLoading(false);
+    router.push(`/car/result?id=0`);
+    // console.log(res);
+    // if (res?.data?.success != false) {
+    //   refetchUser();
+    //   router.push(`/car/result?id=${res?.data.res}`);
+    // }
+    // setLoading(false);
   };
 
   useEffect(() => {}, []);
@@ -110,19 +113,49 @@ const Page = () => {
           }}
         >
           <Grid style={{ padding: "20px", fontSize: "11px" }}>
-            {[
-              { key: "brand", data: brands },
-              { key: "mark", data: brands },
-              { key: "motor", data: motor },
-              { key: "motorType", data: motorType },
-              { key: "engineType", data: engineType },
-              { key: "steerType", data: steerType },
-              { key: "wheelDrive", data: wheelDrive },
-              { key: "color", data: carColor },
-              { key: "meter", data: meterRange },
-              { key: "manufactured", data: meterRange },
-              { key: "imported", data: meterRange },
-            ].map(({ key, data }) => (
+            <Grid.Col span={4}>
+              <Select
+                w="100%"
+                my={5}
+                onChange={(e) => {
+                  if (e != null) setForm((prev) => ({ ...prev, brand: e }));
+                }}
+                value={form["brand"]}
+                variant="rounded"
+                p="2px"
+                __size="20px"
+                withScrollArea={false}
+                styles={{
+                  dropdown: { maxHeight: 200, overflowY: "auto" },
+                  label: { fontSize: "16px" },
+                }}
+                data={brands}
+                label={CarEvaluateValues["brand"].label}
+                placeholder={CarEvaluateValues["brand"].pl}
+              />
+            </Grid.Col>
+            <Grid.Col span={4}>
+              <Select
+                w="100%"
+                my={5}
+                onChange={(e) => {
+                  if (e != null) setForm((prev) => ({ ...prev, mark: e }));
+                }}
+                value={form["mark"]}
+                variant="rounded"
+                p="2px"
+                __size="20px"
+                withScrollArea={false}
+                styles={{
+                  dropdown: { maxHeight: 200, overflowY: "auto" },
+                  label: { fontSize: "16px" },
+                }}
+                data={marks}
+                label={CarEvaluateValues["mark"].label}
+                placeholder={CarEvaluateValues["mark"].pl}
+              />
+            </Grid.Col>
+            {cars.map(({ key, data }) => (
               <Grid.Col span={4} key={key}>
                 <Select
                   w="100%"

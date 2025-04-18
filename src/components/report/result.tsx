@@ -2,7 +2,7 @@ import { Box, BoxComponentProps, Flex, Text } from "@mantine/core";
 import { ReportTitle } from "./shared";
 import { districts } from "@/utils/values";
 import { Colors } from "@/base/constants";
-import { money, parseDate } from "@/utils/functions";
+import { formatPhoneNumber, money, parseDate } from "@/utils/functions";
 import { ReactNode } from "react";
 import { MdApartment, MdOutlineShowChart } from "react-icons/md";
 import { CiLocationOn } from "react-icons/ci";
@@ -113,6 +113,37 @@ export const ReportResult = ({
   );
 };
 
+export const GeneralWidget = ({
+  title,
+  children,
+}: {
+  title: string;
+  children: ReactNode;
+}) => {
+  return (
+    <Box>
+      <Text
+        fz={{
+          sm: 28,
+          base: 20,
+        }}
+        fw={600}
+        mb={20}
+      >
+        {title}
+      </Text>
+      <Box
+        ml={{
+          sm: 32,
+          base: 20,
+        }}
+      >
+        {children}
+      </Box>
+    </Box>
+  );
+};
+
 export const ApartmentInfo = ({
   title,
   text,
@@ -175,22 +206,27 @@ export const UserWidget = ({ user }: { user?: UserModel }) => {
   return (
     <Flex columnGap={"50px"}>
       <Box>
-        <Text
-          fz={{
-            sm: 20,
-            base: 16,
-          }}
-        >
-          Овог нэр
-        </Text>
-        <Text
-          fz={{
-            sm: 20,
-            base: 16,
-          }}
-        >
-          Цахим хаяг
-        </Text>
+        {user?.lastname ||
+          (user?.firstname && (
+            <Text
+              fz={{
+                sm: 20,
+                base: 16,
+              }}
+            >
+              Овог нэр
+            </Text>
+          ))}
+        {user?.email && (
+          <Text
+            fz={{
+              sm: 20,
+              base: 16,
+            }}
+          >
+            Цахим хаяг
+          </Text>
+        )}
         {user?.phone && (
           <Text
             fz={{
@@ -203,24 +239,29 @@ export const UserWidget = ({ user }: { user?: UserModel }) => {
         )}
       </Box>
       <Box>
-        <Text
-          c={"grey"}
-          fz={{
-            sm: 20,
-            base: 16,
-          }}
-        >
-          {user?.lastname ?? ""} {user?.firstname ?? ""}
-        </Text>
-        <Text
-          c={"grey"}
-          fz={{
-            sm: 20,
-            base: 16,
-          }}
-        >
-          {user?.email ?? "a"}
-        </Text>
+        {user?.lastname ||
+          (user?.firstname && (
+            <Text
+              c={"grey"}
+              fz={{
+                sm: 20,
+                base: 16,
+              }}
+            >
+              {user?.lastname ?? ""} {user?.firstname ?? ""}
+            </Text>
+          ))}
+        {user?.email && (
+          <Text
+            c={"grey"}
+            fz={{
+              sm: 20,
+              base: 16,
+            }}
+          >
+            {user?.email ?? ""}
+          </Text>
+        )}
 
         {user?.phone && (
           <Text
@@ -230,7 +271,7 @@ export const UserWidget = ({ user }: { user?: UserModel }) => {
               base: 16,
             }}
           >
-            {user?.phone ?? ""}
+            {formatPhoneNumber(user.phone)}
           </Text>
         )}
       </Box>

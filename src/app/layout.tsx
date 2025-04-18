@@ -18,7 +18,8 @@ import "@mantine/core/styles.css";
 import { MapProviderWithSuspense } from "@/_context/maps.provider";
 import { cookies } from "next/headers";
 import "@mantine/dates/styles.css";
-import { viewport } from "@/base/constants";
+import Script from "next/script";
+import { Analytics } from "@/components/analytics";
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -33,10 +34,11 @@ const geistMono = localFont({
 export const metadata: Metadata = {
   title: {
     absolute: "",
-    default: "Eunit - Хөрөнгийн үнэлгээний сайт",
-    template: "Eunit | %s",
+    default: "Eunit - Хөрөнгө үнэлгээний хамгийн хурдан, найдвартай үйлчилгээ",
+    // template: "Eunit | %s",
   },
-
+  description:
+    'Eunit.mn сайт нь таны үл хөдлөх болон хөдлөх хөрөнгийн бодит үнэлгээг 1 минутанд хийж, лавлагаа гаргаж өгнө."',
   viewport: {
     viewportFit: "cover",
     width: "device-width",
@@ -55,6 +57,18 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const token = (await cookies()).get("auth_token");
+  // const user = auth?.currentUser;
+  // console.log(auth);
+  // if (user) {
+  //   console.log(user);
+  //   const t = await user.getIdToken(true);
+  //   console.log(t);
+  //   await fetch("/api/login/phone", {
+  //     method: "POST",
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify({ token: t }),
+  //   }).then((d) => d.json());
+  // }
   return (
     <html lang="en">
       <Head>
@@ -68,6 +82,43 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased relative`}
       >
+        <Script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-746W88T01J"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-746W88T01J');
+    `}
+        </Script>
+        <Script id="facebook-pixel" strategy="afterInteractive">
+          {`
+            !function(f,b,e,v,n,t,s)
+            {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+            n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+            if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+            n.queue=[];t=b.createElement(e);t.async=!0;
+            t.src=v;s=b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t,s)}(window, document,'script',
+            'https://connect.facebook.net/en_US/fbevents.js');
+            fbq('init', '996376759316520');
+            fbq('track', 'PageView');
+          `}
+        </Script>
+
+        {/* Noscript fallback */}
+        <noscript>
+          <img
+            height="1"
+            width="1"
+            style={{ display: "none" }}
+            src="https://www.facebook.com/tr?id=996376759316520&ev=PageView&noscript=1"
+          />
+        </noscript>
         <MantineProvider
           theme={theme}
           defaultColorScheme="light"
@@ -78,7 +129,9 @@ export default async function RootLayout({
             <Notifications />
             <MapProviderWithSuspense>
               <AppWrapper token={token?.value}>
-                <Suspense fallback={<Loading />}>{children}</Suspense>
+                <Suspense fallback={<Loading />}>
+                  {children} <Analytics />
+                </Suspense>
               </AppWrapper>
             </MapProviderWithSuspense>
           </NextAuthProvider>

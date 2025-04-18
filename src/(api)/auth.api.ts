@@ -3,6 +3,7 @@ import { UserModel } from "@/models/user.model";
 import { api, AuthApi } from "@/utils/routes";
 import { cookies } from "next/headers";
 import { getUser } from "./user.api";
+import { NextRequest, NextResponse } from "next/server";
 
 export const loginUser = async (
   email: string,
@@ -13,7 +14,6 @@ export const loginUser = async (
   const token = cookie.get("auth_token")?.value;
   if (!token) {
     try {
-      console.log(token);
       const res = await fetch(`${api}${AuthApi.login}`, {
         method: "POST",
         mode: "no-cors",
@@ -24,11 +24,10 @@ export const loginUser = async (
           name: name,
         }),
       }).then((d) => d.json());
-      console.log(res);
       if (res) {
         cookie.set("auth_token", res.payload.accessToken, {
           httpOnly: true,
-          maxAge: 60 * 60 * 1000 * 12,
+          maxAge: 60 * 60 ,
           sameSite: "none",
           secure: true,
         });
@@ -64,9 +63,7 @@ export const getUsers = async () => {
 export async function logOut() {
   try {
     const cookie = await cookies();
-    console.log('logout')
     cookie.delete("auth_token");
-    // console.log("Logout request succeeded:");
     // return res;
   } catch (error) {
     // console.error("Logout error:", error);

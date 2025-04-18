@@ -8,14 +8,14 @@ import {
 
 export interface UserModel {
   id?: number;
-  name: string;
+  name?: string;
   firstname?: string;
   lastname?: string;
   profile?: string;
   phone?: string;
-  role: number;
-  email: string;
-  wallet: number;
+  role?: number;
+  email?: string;
+  wallet?: number;
   birthdate?: string;
   status: number;
   emailStatus: number;

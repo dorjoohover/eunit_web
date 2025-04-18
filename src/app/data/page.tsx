@@ -84,6 +84,7 @@ const Page = () => {
   });
   const [data, setData] = useState<ResultType>();
   const [isLoading, setIsLoading] = useState(false);
+  const [step, setStep] = useState(0);
   const router = useRouter();
   const [location, setLocation] = useState<LocationModel[]>([]);
   const [filteredLocation, setFilteredLocation] = useState<LocationModel[]>([]);
@@ -116,7 +117,7 @@ const Page = () => {
   };
 
   const request = () => {
-    open();
+    setStep(1);
   };
   const getResult = async () => {
     setLoading(true);
@@ -177,6 +178,10 @@ const Page = () => {
         // Save the workbook as an Excel file
         XLSX.writeFile(workbook, `${title}.xlsx`);
         setQpay(null);
+        notifications.show({
+          message: "Татлаа",
+          position: "top-center",
+        });
         close();
         setLoading(false);
       } else {
@@ -194,6 +199,11 @@ const Page = () => {
     setLoading(true);
 
     if (form.town && form.area) {
+      if (type == PaymentType.QPAY && qpay != null) {
+        setStep(2);
+        setLoading(false);
+        return;
+      }
       const res = await sendRequest(
         +form.town,
         {
@@ -217,12 +227,12 @@ const Page = () => {
           qpay: res?.data.data,
           id: res?.data.res,
         });
+        setStep(2);
         setLoading(false);
         return;
       }
       if (res?.data?.success != false) {
         refetchUser();
-        console.log(res?.data);
         onGetExportProduct(res?.data?.res, "Дата", "Дата");
       }
 
@@ -351,472 +361,523 @@ const Page = () => {
     }
     setLoading(false);
   };
+
+  type QPayUrl = {
+    link: string;
+    fallback?: string;
+    logo: string;
+    name: string;
+  };
+  const openApp = (url: string) => {
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    const isAndroid = /Android/.test(navigator.userAgent);
+
+    if (isIOS) {
+      // For custom URL schemes with fallback
+      const start = Date.now();
+      // window.location.href = url;
+
+      // Fallback to App Store if app not installed
+      setTimeout(() => {
+        if (Date.now() - start < 2000) {
+          window.location.href = url || "https://apps.apple.com";
+        }
+      }, 500);
+    } else if (isAndroid) {
+      // Android iframe approach
+      const iframe = document.createElement("iframe");
+      iframe.style.display = "none";
+      iframe.src = url;
+      document.body.appendChild(iframe);
+      setTimeout(() => {
+        document.body.removeChild(iframe);
+      }, 3000);
+    } else {
+      window.location.href = url;
+    }
+  };
   return (
-    <Box>
-      <ReportTitle
-        text={"дата мэдээлэл"}
-        fz={{
-          md: 80,
-          sm: 64,
-          base: 40,
-        }}
-      >
-        <Flex
-          w={"100%"}
-          direction={{
-            xl: "row",
-            base: "column",
-          }}
-          gap={{
-            md: 40,
-            sm: 32,
-            base: 20,
-          }}
-          h={"100%"}
-          align={"center"}
-        >
-          <Flex>
-            <Select
-              my={5}
-              variant="rounded"
-              p={"2px"}
-              onChange={(e) => updateDistrict(e)}
-              data={districts.map((district) => {
-                return {
-                  label: district.name,
-                  value: district.id,
-                };
-              })}
-              __size="20px"
-              label={DataDownloadValue["district"].label}
-              placeholder={DataDownloadValue["district"].pl}
-              value={form.district}
-            />
-            <Combobox
-              store={combobox}
-              withinPortal={false}
-              onOptionSubmit={(val) => {
-                if (val != null) setForm((prev) => ({ ...prev, town: val }));
-
-                combobox.closeDropdown();
-              }}
-            >
-              <Combobox.Target>
-                <InputBase
-                  maw={315}
-                  w={"100%"}
-                  my={5}
-                  p={"2px"}
-                  __size="20px"
-                  label={DataDownloadValue["town"].label}
-                  component="button"
-                  type="button"
-                  pointer
-                  variant="rounded"
-                  rightSection={
-                    isLoading ? (
-                      <Loader size={18} type="bars" />
-                    ) : (
-                      <Combobox.Chevron />
-                    )
-                  }
-                  onClick={() => combobox.toggleDropdown()}
-                  rightSectionPointerEvents="none"
-                >
-                  {filteredLocation.filter((f) => `${f.id}` == form.town)?.[0]
-                    ?.town || (
-                    <Input.Placeholder>
-                      {DataDownloadValue["town"].pl}
-                    </Input.Placeholder>
-                  )}
-                </InputBase>
-              </Combobox.Target>
-
-              <Combobox.Dropdown>
-                <Combobox.Search
-                  value={search}
-                  onChange={(event) => setSearch(event.currentTarget.value)}
-                  placeholder="Хайх..."
-                />
-                <Combobox.Options>
-                  {isLoading ? (
-                    <Combobox.Empty>Уншиж байна...</Combobox.Empty>
-                  ) : options.length == 0 ? (
-                    <Combobox.Empty>Хоосон байна.</Combobox.Empty>
-                  ) : (
-                    options
-                  )}
-                </Combobox.Options>
-              </Combobox.Dropdown>
-            </Combobox>
-
-            <Select
-              w={200}
-              my={5}
-              onChange={(e) => {
-                if (e != null) setForm((prev) => ({ ...prev, area: e }));
-              }}
-              value={form.area}
-              variant="rounded"
-              p={"2px"}
-              __size="20px"
-              withScrollArea={false}
-              styles={{ dropdown: { maxHeight: 200, overflowY: "auto" } }}
-              data={[
-                {
-                  label: "80м.кв-с доош",
-                  value: `80`,
-                },
-                {
-                  label: "80м.кв-с дээш",
-                  value: `81`,
-                },
-                {
-                  label: "Бүгд",
-                  value: `0`,
-                },
-              ]}
-              label={DataDownloadValue["area"].label}
-              placeholder={DataDownloadValue["area"].pl}
-            />
-          </Flex>
-
-          <Flex align={"end"}>
-            <DatePickerInput
-              maw={315}
-              rightSection={icon}
-              type="range"
-              w={"100%"}
-              __size="20px"
-              value={form.date}
-              valueFormat="YYYY-MM-DD"
-              p={"2px"}
-              maxDate={new Date()}
-              onChange={(e) => {
-                setForm((prev) => ({ ...prev, date: e }));
-              }}
-              label={DataDownloadValue["date"].label}
-            />
-            <Button
-              onClick={() => {
-                submit();
-              }}
-              w={{
-                xl: "auto",
-
-                base: "100%",
-              }}
-              bg={"main"}
-              tt={"uppercase"}
-              px={40}
-              py={9}
-              mb={2}
-              h={"auto"}
-              fz={20}
-              display={{
-                base: "none",
-                xs: "block",
-              }}
-              radius={5}
-              c={"white"}
-            >
-              Харах
-            </Button>
-          </Flex>
-          <Button
-            onClick={() => {
-              submit();
-            }}
-            w={{
-              md: "auto",
-              base: "100%",
-            }}
-            display={{
-              xs: "none",
-              base: "block",
-            }}
-            bg={"main"}
-            tt={"uppercase"}
-            px={40}
-            fz={20}
-            radius={5}
-            py={9}
-            mb={2}
-            h={"auto"}
-            c={"white"}
-          >
-            Харах
-          </Button>
-        </Flex>
-        <Spacer
-          size={{
-            md: 80,
-            sm: 60,
-            base: 40,
-          }}
-        />
-        <Text c={"headBlue"} fz={16} fw={600}>
-          Илэрц:
-          {`${parseDate(new Date(form.date![0]!), ".")}-${parseDate(
-            new Date(form.date![1]!),
-            "."
-          )}`}{" "}
-          хооронд {data?.limit ?? 0} ширхэг мэдээлэл байна.
-        </Text>
-        <Spacer
-          size={{
-            md: 60,
-            sm: 42,
-            base: 24,
-          }}
-        />
-
-        <ScrollArea scrollbars="xy" mah={260}>
-          <table
-            style={{
-              overflowX: "auto",
-            }}
-            className="overscroll-x-auto relative overflow-x-auto"
-          >
-            <thead>{ths}</thead>
-            <tbody className="relative">
-              {rows}
-
-              <Overlay
-                style={{
-                  position: "absolute",
-                  top: `${
-                    ((data?.data.length ? 1 : 0) / (data?.data.length ?? 1)) *
-                    100
-                  }%`,
-                  left: 0,
-                  right: 0,
-                  bottom: "10px",
-                }}
-                bg={`
-          linear-gradient(to bottom, rgba(255,255,255, 0.02), rgba(255, 255, 255, 0.7))
-        `}
-                blur={4}
-              />
-            </tbody>
-          </table>
-        </ScrollArea>
-        <Spacer size={60} />
-        <Flex justify={"space-between"} pb={30}>
-          {/* <Button
-            bg={"main"}
-            c={"white"}
-            leftSection={unlock}
-            fz={20}
-            fw={400}
-            h={"auto"}
-            radius={5}
-            px={20}
-            py={8}
-          >
-            Битүүмж арилгах
-          </Button> */}
-          <Button
-            bg={"main"}
-            c={"white"}
-            leftSection={download}
-            fz={20}
-            fw={400}
-            h={"auto"}
-            radius={5}
-            px={20}
-            py={8}
-            onClick={() => request()}
-          >
-            Excel татах
-          </Button>
-        </Flex>
-        {/* <Spacer size={80} /> */}
-      </ReportTitle>
-      <Modal.Root opened={opened} centered size={"lg"} onClose={close}>
-        <Modal.Overlay />
-
-        <Modal.Content radius={20} bg={"transparent"}>
-          <Modal.Header>
-            <Modal.Title c={"#546274"} tt={"uppercase"}>
-              Төлбөр төлөлт
-            </Modal.Title>
-            <Modal.CloseButton />
-          </Modal.Header>
-          {qpay == null && (
-            <Box bg={"white"} px={"10%"} pt={20}>
-              <WalletCard
-                onClick={() => {
-                  router.push("/wallet");
-                }}
-              />
-              <Highlight
-                mt={24}
-                mb={32}
-                fz={18}
-                highlight={["урамшуулал", "20,000 E-unit"]}
-                highlightStyles={{
-                  background: Colors.main,
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                }}
-              >
-                Шинэ хэрэглэгчийн урамшуулал бүхий 20,000 E-unit ашиглан энэхүү
-                үйлчилгээг авах боломжтой.
-              </Highlight>
-              <Flex>
-                {user?.wallet && user?.wallet > (data?.limit ?? 0) * 100 && (
-                  <Button
-                    w={"100%"}
-                    fz={24}
-                    bg={"main"}
-                    py={16}
-                    h={"auto"}
-                    mb={40}
-                    disabled={loading}
-                    onClick={() => {
-                      if (!loading) excel(PaymentType.POINT);
-                    }}
-                  >
-                    {loading ? (
-                      <Center>
-                        <Loader color={"white"} type="bars" />
-                      </Center>
-                    ) : (
-                      <Flex align={"center"}>
-                        <Text c={"white"} fz={24}>
-                          {money(`${(data?.limit ?? 0) * 100}`)}
-                        </Text>
-                        <EunitIcon />
-                      </Flex>
-                    )}
-                  </Button>
-                )}
-                <Button
-                  w={"100%"}
-                  fz={24}
-                  bg={"main"}
-                  py={16}
-                  h={"auto"}
-                  mb={40}
-                  disabled={loading}
-                  onClick={() => {
-                    if (!loading) excel(PaymentType.QPAY);
-                  }}
-                >
-                  {loading ? (
-                    <Center>
-                      <Loader color={"white"} type="bars" />
-                    </Center>
-                  ) : (
-                    <Flex align={"center"}>
-                      <Text c={"white"} fz={24}>
-                        QPAY
-                      </Text>
-                      <Image
-                        src={Assets.qpay}
-                        width={25}
-                        height={25}
-                        alt="qpay logo"
-                      />
-                    </Flex>
-                  )}
-                </Button>
-              </Flex>
-            </Box>
-          )}
-          {qpay != null && (
-            <Box
-              bg={"white"}
-              px={{
-                sm: "10%",
-                base: 16,
-              }}
-              pt={20}
-            >
-              {!matchesPad && matches && (
-                <Grid mb={20}>
-                  {qpay.qpay?.urls.map((url, k) => {
-                    return (
-                      <Grid.Col key={k} span={3}>
-                        <Link href={url.link}>
-                          <Image
-                            src={url.logo}
-                            width={60}
-                            height={60}
-                            alt={url.name}
-                          />
-                        </Link>
-                      </Grid.Col>
-                    );
-                  })}
-                </Grid>
-              )}
-              {!matches ? (
-                <Grid mb={20}>
-                  {qpay.qpay?.urls.map((url, k) => {
-                    return (
-                      <Grid.Col key={k} span={3}>
-                        <Link href={url.link}>
-                          <Image
-                            src={url.logo}
-                            width={60}
-                            height={60}
-                            alt={url.name}
-                          />{" "}
-                        </Link>
-                      </Grid.Col>
-                    );
-                  })}
-                </Grid>
-              ) : (
-                <Image
-                  className="mx-auto"
-                  src={`data:image/png;base64,${qpay?.qpay.qr_image}`}
-                  alt="qpay image"
-                  width={200}
-                  height={200}
-                />
-              )}
-              <Button
-                w={"100%"}
-                fz={24}
-                bg={"main"}
-                py={10}
-                h={"auto"}
-                mb={40}
-                disabled={loading}
-                onClick={() => {
-                  check();
-                }}
-              >
-                {loading ? (
-                  <Center>
-                    <Loader color={"white"} type="bars" />
-                  </Center>
-                ) : (
-                  <Flex align={"center"}>
-                    <Text c={"white"} fz={24}>
-                      Төлбөр шалгах
-                    </Text>
-                  </Flex>
-                )}
-              </Button>
-            </Box>
-          )}
-        </Modal.Content>
-      </Modal.Root>
-      <Box
-        style={{
-          borderTopColor: Colors.deepMose20,
-          borderTopWidth: 1,
-          borderTopStyle: "solid",
-        }}
-        w={"100%"}
-        bg={"white"}
-      ></Box>
-    </Box>
+    <Center h={"400px"}>
+      <Text fz={40}>Тун удахгүй</Text>
+    </Center>
   );
+  // return (
+  //   <Box>
+  //     <ReportTitle
+  //       text={"дата мэдээлэл"}
+  //       fz={{
+  //         md: 80,
+  //         sm: 64,
+  //         base: 40,
+  //       }}
+  //     >
+  //       <Flex
+  //         w={"100%"}
+  //         direction={{
+  //           xl: "row",
+  //           base: "column",
+  //         }}
+  //         gap={{
+  //           md: 40,
+  //           sm: 32,
+  //           base: 20,
+  //         }}
+  //         h={"100%"}
+  //         align={"center"}
+  //       >
+  //         <Flex>
+  //           <Select
+  //             my={5}
+  //             variant="rounded"
+  //             p={"2px"}
+  //             onChange={(e) => updateDistrict(e)}
+  //             data={districts.map((district) => {
+  //               return {
+  //                 label: district.name,
+  //                 value: district.id,
+  //               };
+  //             })}
+  //             __size="20px"
+  //             label={DataDownloadValue["district"].label}
+  //             placeholder={DataDownloadValue["district"].pl}
+  //             value={form.district}
+  //           />
+  //           <Combobox
+  //             store={combobox}
+  //             withinPortal={false}
+  //             onOptionSubmit={(val) => {
+  //               if (val != null) setForm((prev) => ({ ...prev, town: val }));
+
+  //               combobox.closeDropdown();
+  //             }}
+  //           >
+  //             <Combobox.Target>
+  //               <InputBase
+  //                 maw={315}
+  //                 w={"100%"}
+  //                 my={5}
+  //                 p={"2px"}
+  //                 __size="20px"
+  //                 label={DataDownloadValue["town"].label}
+  //                 component="button"
+  //                 type="button"
+  //                 pointer
+  //                 variant="rounded"
+  //                 rightSection={
+  //                   isLoading ? (
+  //                     <Loader size={18} type="bars" />
+  //                   ) : (
+  //                     <Combobox.Chevron />
+  //                   )
+  //                 }
+  //                 onClick={() => combobox.toggleDropdown()}
+  //                 rightSectionPointerEvents="none"
+  //               >
+  //                 {filteredLocation.filter((f) => `${f.id}` == form.town)?.[0]
+  //                   ?.town || (
+  //                   <Input.Placeholder>
+  //                     {DataDownloadValue["town"].pl}
+  //                   </Input.Placeholder>
+  //                 )}
+  //               </InputBase>
+  //             </Combobox.Target>
+
+  //             <Combobox.Dropdown>
+  //               <Combobox.Search
+  //                 value={search}
+  //                 onChange={(event) => setSearch(event.currentTarget.value)}
+  //                 placeholder="Хайх..."
+  //               />
+  //               <Combobox.Options>
+  //                 {isLoading ? (
+  //                   <Combobox.Empty>Уншиж байна...</Combobox.Empty>
+  //                 ) : options.length == 0 ? (
+  //                   <Combobox.Empty>Хоосон байна.</Combobox.Empty>
+  //                 ) : (
+  //                   options
+  //                 )}
+  //               </Combobox.Options>
+  //             </Combobox.Dropdown>
+  //           </Combobox>
+
+  //           <Select
+  //             w={200}
+  //             my={5}
+  //             onChange={(e) => {
+  //               if (e != null) setForm((prev) => ({ ...prev, area: e }));
+  //             }}
+  //             value={form.area}
+  //             variant="rounded"
+  //             p={"2px"}
+  //             __size="20px"
+  //             withScrollArea={false}
+  //             styles={{ dropdown: { maxHeight: 200, overflowY: "auto" } }}
+  //             data={[
+  //               {
+  //                 label: "80м.кв-с доош",
+  //                 value: `80`,
+  //               },
+  //               {
+  //                 label: "80м.кв-с дээш",
+  //                 value: `81`,
+  //               },
+  //               {
+  //                 label: "Бүгд",
+  //                 value: `0`,
+  //               },
+  //             ]}
+  //             label={DataDownloadValue["area"].label}
+  //             placeholder={DataDownloadValue["area"].pl}
+  //           />
+  //         </Flex>
+
+  //         <Flex align={"end"}>
+  //           <DatePickerInput
+  //             maw={315}
+  //             rightSection={icon}
+  //             type="range"
+  //             w={"100%"}
+  //             __size="20px"
+  //             value={form.date}
+  //             valueFormat="YYYY-MM-DD"
+  //             p={"2px"}
+  //             maxDate={new Date()}
+  //             onChange={(e) => {
+  //               setForm((prev) => ({ ...prev, date: e }));
+  //             }}
+  //             label={DataDownloadValue["date"].label}
+  //           />
+  //           <Button
+  //             onClick={() => {
+  //               submit();
+  //             }}
+  //             w={{
+  //               xl: "auto",
+
+  //               base: "100%",
+  //             }}
+  //             bg={"main"}
+  //             tt={"uppercase"}
+  //             px={40}
+  //             py={9}
+  //             mb={2}
+  //             h={"auto"}
+  //             fz={20}
+  //             display={{
+  //               base: "none",
+  //               xs: "block",
+  //             }}
+  //             radius={5}
+  //             c={"white"}
+  //           >
+  //             Харах
+  //           </Button>
+  //         </Flex>
+  //         <Button
+  //           onClick={() => {
+  //             submit();
+  //           }}
+  //           w={{
+  //             md: "auto",
+  //             base: "100%",
+  //           }}
+  //           display={{
+  //             xs: "none",
+  //             base: "block",
+  //           }}
+  //           bg={"main"}
+  //           tt={"uppercase"}
+  //           px={40}
+  //           fz={20}
+  //           radius={5}
+  //           py={9}
+  //           mb={2}
+  //           h={"auto"}
+  //           c={"white"}
+  //         >
+  //           Харах
+  //         </Button>
+  //       </Flex>
+  //       <Spacer
+  //         size={{
+  //           md: 80,
+  //           sm: 60,
+  //           base: 40,
+  //         }}
+  //       />
+  //       <Text c={"headBlue"} fz={16} fw={600}>
+  //         Илэрц:
+  //         {`${parseDate(new Date(form.date![0]!), ".")}-${parseDate(
+  //           new Date(form.date![1]!),
+  //           "."
+  //         )}`}{" "}
+  //         хооронд {data?.limit ?? 0} ширхэг мэдээлэл байна.
+  //       </Text>
+  //       <Spacer
+  //         size={{
+  //           md: 60,
+  //           sm: 42,
+  //           base: 24,
+  //         }}
+  //       />
+
+  //       <ScrollArea scrollbars="xy" mah={260}>
+  //         <table
+  //           style={{
+  //             overflowX: "auto",
+  //           }}
+  //           className="overscroll-x-auto relative overflow-x-auto"
+  //         >
+  //           <thead>{ths}</thead>
+  //           <tbody className="relative">
+  //             {rows}
+
+  //             <Overlay
+  //               style={{
+  //                 position: "absolute",
+  //                 top: `${
+  //                   ((data?.data.length ? 1 : 0) / (data?.data.length ?? 1)) *
+  //                   100
+  //                 }%`,
+  //                 left: 0,
+  //                 right: 0,
+  //                 bottom: "10px",
+  //               }}
+  //               bg={`
+  //         linear-gradient(to bottom, rgba(255,255,255, 0.02), rgba(255, 255, 255, 0.7))
+  //       `}
+  //               blur={4}
+  //             />
+  //           </tbody>
+  //         </table>
+  //       </ScrollArea>
+  //       <Spacer size={60} />
+  //       <Flex justify={"space-between"} pb={30}>
+  //         {/* <Button
+  //           bg={"main"}
+  //           c={"white"}
+  //           leftSection={unlock}
+  //           fz={20}
+  //           fw={400}
+  //           h={"auto"}
+  //           radius={5}
+  //           px={20}
+  //           py={8}
+  //         >
+  //           Битүүмж арилгах
+  //         </Button> */}
+  //         <Button
+  //           bg={"main"}
+  //           c={"white"}
+  //           leftSection={download}
+  //           fz={20}
+  //           fw={400}
+  //           h={"auto"}
+  //           radius={5}
+  //           px={20}
+  //           py={8}
+  //           onClick={() => request()}
+  //         >
+  //           Excel татах
+  //         </Button>
+  //       </Flex>
+  //       {/* <Spacer size={80} /> */}
+  //     </ReportTitle>
+  //     <Modal.Root
+  //       opened={step != 0}
+  //       centered
+  //       size={"lg"}
+  //       onClose={() => setStep(0)}
+  //     >
+  //       <Modal.Overlay />
+
+  //       <Modal.Content radius={20} bg={"transparent"}>
+  //         <Modal.Header>
+  //           <Modal.Title c={"#546274"} tt={"uppercase"}>
+  //             Төлбөр төлөлт
+  //           </Modal.Title>
+  //           <Modal.CloseButton />
+  //         </Modal.Header>
+  //         {step == 1 && (
+  //           <Box bg={"white"} px={"10%"} pt={20}>
+  //             <WalletCard
+  //               onClick={() => {
+  //                 router.push("/wallet");
+  //               }}
+  //             />
+  //             <Highlight
+  //               mt={24}
+  //               mb={32}
+  //               fz={18}
+  //               highlight={["урамшуулал", "3,000 E-unit"]}
+  //               highlightStyles={{
+  //                 background: Colors.main,
+  //                 WebkitBackgroundClip: "text",
+  //                 WebkitTextFillColor: "transparent",
+  //               }}
+  //             >
+  //               Шинэ хэрэглэгчийн урамшуулал бүхий 3,000 E-unit ашиглан энэхүү
+  //               үйлчилгээг авах боломжтой.
+  //             </Highlight>
+  //             <Flex>
+  //               {user?.wallet && user?.wallet > (data?.limit ?? 0) * 100 && (
+  //                 <Button
+  //                   w={"100%"}
+  //                   fz={24}
+  //                   bg={"main"}
+  //                   py={16}
+  //                   h={"auto"}
+  //                   mb={40}
+  //                   disabled={loading}
+  //                   onClick={() => {
+  //                     if (!loading) excel(PaymentType.POINT);
+  //                   }}
+  //                 >
+  //                   {loading ? (
+  //                     <Center>
+  //                       <Loader color={"white"} type="bars" />
+  //                     </Center>
+  //                   ) : (
+  //                     <Flex align={"center"}>
+  //                       <Text c={"white"} fz={24}>
+  //                         {money(`${(data?.limit ?? 0) * 100}`)}
+  //                       </Text>
+  //                       <EunitIcon />
+  //                     </Flex>
+  //                   )}
+  //                 </Button>
+  //               )}
+  //               <Button
+  //                 w={"100%"}
+  //                 fz={24}
+  //                 bg={"main"}
+  //                 py={16}
+  //                 h={"auto"}
+  //                 mb={40}
+  //                 disabled={loading}
+  //                 onClick={() => {
+  //                   if (!loading) excel(PaymentType.QPAY);
+  //                 }}
+  //               >
+  //                 {loading ? (
+  //                   <Center>
+  //                     <Loader color={"white"} type="bars" />
+  //                   </Center>
+  //                 ) : (
+  //                   <Flex align={"center"}>
+  //                     <Text c={"white"} fz={24}>
+  //                       QPAY
+  //                     </Text>
+  //                     <Image
+  //                       src={Assets.qpay}
+  //                       width={25}
+  //                       height={25}
+  //                       alt="qpay logo"
+  //                     />
+  //                   </Flex>
+  //                 )}
+  //               </Button>
+  //             </Flex>
+  //           </Box>
+  //         )}
+  //         {qpay != null && step == 2 && (
+  //           <Box
+  //             bg={"white"}
+  //             px={{
+  //               sm: "10%",
+  //               base: 16,
+  //             }}
+  //             pt={20}
+  //           >
+  //             {!matchesPad && matches && (
+  //               <Grid mb={20}>
+  //                 {qpay.qpay?.urls.map((url, k) => {
+  //                   return (
+  //                     <Grid.Col key={k} span={3}>
+  //                       <Box
+  //                         onClick={() => openApp(url.link)}
+  //                         className="cursor-pointer"
+  //                       >
+  //                         <Image
+  //                           src={url.logo}
+  //                           width={60}
+  //                           height={60}
+  //                           alt={url.name}
+  //                         />
+  //                       </Box>
+  //                     </Grid.Col>
+  //                   );
+  //                 })}
+  //               </Grid>
+  //             )}
+  //             {!matches ? (
+  //               <Grid mb={20}>
+  //                 {qpay.qpay?.urls.map((url, k) => {
+  //                   return (
+  //                     <Grid.Col key={k} span={3}>
+  //                       <Box
+  //                         onClick={() => openApp(url.link)}
+  //                         className="cursor-pointer"
+  //                       >
+  //                         <Image
+  //                           src={url.logo}
+  //                           width={60}
+  //                           height={60}
+  //                           alt={url.name}
+  //                         />
+  //                       </Box>
+  //                     </Grid.Col>
+  //                   );
+  //                 })}
+  //               </Grid>
+  //             ) : (
+  //               <Image
+  //                 className="mx-auto"
+  //                 src={`data:image/png;base64,${qpay?.qpay.qr_image}`}
+  //                 alt="qpay image"
+  //                 width={200}
+  //                 height={200}
+  //               />
+  //             )}
+  //             <Button
+  //               w={"100%"}
+  //               fz={24}
+  //               bg={"main"}
+  //               py={10}
+  //               h={"auto"}
+  //               mb={40}
+  //               disabled={loading}
+  //               onClick={() => {
+  //                 check();
+  //               }}
+  //             >
+  //               {loading ? (
+  //                 <Center>
+  //                   <Loader color={"white"} type="bars" />
+  //                 </Center>
+  //               ) : (
+  //                 <Flex align={"center"}>
+  //                   <Text c={"white"} fz={24}>
+  //                     Төлбөр шалгах
+  //                   </Text>
+  //                 </Flex>
+  //               )}
+  //             </Button>
+  //           </Box>
+  //         )}
+  //       </Modal.Content>
+  //     </Modal.Root>
+  //     <Box
+  //       style={{
+  //         borderTopColor: Colors.deepMose20,
+  //         borderTopWidth: 1,
+  //         borderTopStyle: "solid",
+  //       }}
+  //       w={"100%"}
+  //       bg={"white"}
+  //     ></Box>
+  //   </Box>
+  // );
 };
 
 export default Page;

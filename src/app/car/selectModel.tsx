@@ -1,17 +1,404 @@
 export const brands = [
   {
-    label: "BMW",
-    value: "BMW",
+    label: "acura",
+    value: "acura",
   },
   {
-    label: "Audi",
-    value: "Audi",
+    label: "audi",
+    value: "audi",
   },
   {
-    label: "Mercedes-Benz",
-    value: "Mercedes-Benz",
+    label: "baic",
+    value: "baic",
+  },
+  {
+    label: "Bestune",
+    value: "Bestune",
+  },
+  {
+    label: "bmw",
+    value: "bmw",
+  },
+  {
+    label: "cadillac",
+    value: "cadillac",
+  },
+  {
+    label: "Changan",
+    value: "Changan",
+  },
+  {
+    label: "chery",
+    value: "chery",
+  },
+  {
+    label: "chevrolet",
+    value: "chevrolet",
+  },
+  {
+    label: "citroen",
+    value: "citroen",
+  },
+  {
+    label: "daihatsu",
+    value: "daihatsu",
+  },
+
+
+
+
+
+
+
+
+
+
+
+  {
+    label: "mercedes-benz",
+    value: "mercedes-benz",
+  },
+  {
+    label: "toyota",
+    value: "toyota",
+  },
+  {
+    label: "geely",
+    value: "geely",
+  },
+  {
+    label: "gwm",
+    value: "gwm",
+  },
+  {
+    label: "mitsubishi",
+    value: "mitsubishi",
+  },
+  {
+    label: "ssangyong",
+    value: "ssangyong",
+  },
+  {
+    label: "li-auto",
+    value: "li-auto",
+  },
+ 
+  {
+    label: "nissan",
+    value: "nissan",
+  },
+  {
+    label: "mg",
+    value: "mg",
+  },
+  {
+    label: "dongfeng",
+    value: "dongfeng",
+  },
+  {
+    label: "subaru",
+    value: "subaru",
+  },
+  {
+    label: "jeep",
+    value: "jeep",
+  },
+ 
+  {
+    label: "gmc",
+    value: "gmc",
+  },
+  {
+    label: "kia",
+    value: "kia",
+  },
+  
+  {
+    label: "kaiyi",
+    value: "kaiyi",
+  },
+  {
+    label: "ford",
+    value: "ford",
+  },
+  {
+    label: "suzuki",
+    value: "suzuki",
+  },
+  {
+    label: "porsche",
+    value: "porsche",
+  },
+  {
+    label: "volkswagen",
+    value: "volkswagen",
+  },
+  {
+    label: "Tesla",
+    value: "Tesla",
+  },
+  {
+    label: "mazda",
+    value: "mazda",
+  },
+  {
+    label: "hyundai",
+    value: "hyundai",
+  },
+  
+  {
+    label: "dodge",
+    value: "dodge",
+  },
+  {
+    label: "haval",
+    value: "haval",
+  },
+  {
+    label: "land-rover",
+    value: "land-rover",
+  },
+  {
+    label: "samsung",
+    value: "samsung",
+  },
+  
+  {
+    label: "Lada",
+    value: "Lada",
+  },
+  {
+    label: "Foton",
+    value: "Foton",
+  },
+
+  {
+    label: "renault",
+    value: "renault",
+  },
+  {
+    label: "jaguar",
+    value: "jaguar",
+  },
+  
+  {
+    label: "honda",
+    value: "honda",
+  },
+  {
+    label: "fiat",
+    value: "fiat",
+  },
+  {
+    label: "peugeot",
+    value: "peugeot",
+  },
+  
+  {
+    label: "hummer",
+    value: "hummer",
+  },
+  {
+    label: "lincoln",
+    value: "lincoln",
+  },
+  {
+    label: "infiniti",
+    value: "infiniti",
+  },
+
+  {
+    label: "mini",
+    value: "mini",
+  },
+  {
+    label: "volvo",
+    value: "volvo",
+  },
+  
+  {
+    label: "isuzu",
+    value: "isuzu",
+  },
+  {
+    label: "lexus",
+    value: "lexus",
   },
 ];
+export const marks = [
+  {
+    label: "cl",
+    value: "cl",
+    parent: "acura",
+  },
+  {
+    label: "a4",
+    value: "a4",
+    parent: "audi",
+  },
+  {
+    label: "a6",
+    value: "a6",
+    parent: "audi",
+  },
+  {
+    label: "a3",
+    value: "a3",
+    parent: "audi",
+  },
+  {
+    label: "q7",
+    value: "q7",
+    parent: "audi",
+  },
+  {
+    label: "busad",
+    value: "busad",
+    parent: "audi",
+  },
+  {
+    label: "bj40",
+    value: "bj40",
+    parent: "baic",
+  },
+  {
+    label: "b70",
+    value: "b70",
+    parent: "Bestune",
+  },
+  {
+    label: "x5",
+    value: "x5",
+    parent: "bmw",
+  },
+  {
+    label: "x3",
+    value: "x3",
+    parent: "bmw",
+  },
+  {
+    label: "320",
+    value: "320",
+    parent: "bmw",
+  },
+  {
+    label: "740",
+    value: "740",
+    parent: "bmw",
+  },
+  {
+    label: "525",
+    value: "525",
+    parent: "bmw",
+  },
+  {
+    label: "x6",
+    value: "x6",
+    parent: "bmw",
+  },
+  {
+    label: "x1",
+    value: "x1",
+    parent: "bmw",
+  },
+  {
+    label: "busad",
+    value: "busad",
+    parent: "bmw",
+  },
+  
+  {
+    label: "escalade",
+    value: "escalade",
+    parent: "cadillac",
+  },
+  {
+    label: "cts",
+    value: "cts",
+    parent: "cadillac",
+  },
+  {
+    label: "busad",
+    value: "busad",
+    parent: "cadillac",
+  },
+  {
+    label: "CS",
+    value: "CS",
+    parent: "Changan",
+  },
+  {
+    label: "UNI-K",
+    value: "UNI-K",
+    parent: "Changan",
+  },
+  {
+    label: "busad",
+    value: "busad",
+    parent: "Changan",
+  },
+  {
+    label: "tiggo-7-pro",
+    value: "tiggo-7-pro",
+    parent: "chery",
+  },
+  {
+    label: "busad",
+    value: "busad",
+    parent: "chery",
+  },
+  {
+    label: "camaro",
+    value: "camaro",
+    parent: "chevrolet",
+  },
+  {
+    label: "captiva-sport",
+    value: "captiva-sport",
+    parent: "chevrolet",
+  },
+  {
+    label: "colorado",
+    value: "colorado",
+    parent: "chevrolet",
+  },
+  {
+    label: "cruze",
+    value: "cruze",
+    parent: "chevrolet",
+  },
+  {
+    label: "tahoe",
+    value: "tahoe",
+    parent: "chevrolet",
+  },
+  {
+    label: "trailblazer",
+    value: "trailblazer",
+    parent: "chevrolet",
+  },
+  {
+    label: "c1",
+    value: "c1",
+    parent: "citroen",
+  },
+  {
+    label: "hijet",
+    value: "hijet",
+    parent: "daihatsu",
+  },
+  {
+    label: "busad",
+    value: "busad",
+    parent: "daihatsu",
+  },
+  {
+    label: "busad",
+    value: "busad",
+    parent: "daihatsu",
+  },
+];
+
 export const motorType = [
   {
     label: "Пэтрол",
@@ -367,4 +754,16 @@ export const motor = [
     label: "6.0",
     value: "6.0",
   },
+];
+
+export const cars = [
+  { key: "motor", data: motor },
+  { key: "motorType", data: motorType },
+  { key: "engineType", data: engineType },
+  { key: "steerType", data: steerType },
+  { key: "wheelDrive", data: wheelDrive },
+  { key: "color", data: carColor },
+  { key: "meter", data: meterRange },
+  { key: "manufactured", data: meterRange },
+  { key: "imported", data: meterRange },
 ];

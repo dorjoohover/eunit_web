@@ -17,6 +17,7 @@ export async function getUser(): Promise<UserModel | null> {
 
   if (token) {
     try {
+      // console.log(token);
       const res = await fetch(`${api}${UserApi.me}`, {
         headers: {
           Authorization: `Bearer ${token ?? ""}`,
@@ -25,21 +26,19 @@ export async function getUser(): Promise<UserModel | null> {
       })
         .then((d) => d.json())
         .catch((e) => {
-          console.log(e)
           cookie.delete("auth_token");
           return null;
         });
       if (res?.succeed) {
         return res.payload as UserModel;
       } else {
-        console.log('else')
         cookie.delete("auth_token");
         return null;
       }
     } catch (error: any) {
       if (error.message == "expired") {
-        console.log('expired')
         cookie.delete("auth_token");
+        location.reload()
       }
       return null;
     }

@@ -31,7 +31,7 @@ import { notifications } from "@mantine/notifications";
 import { IconSearch } from "@tabler/icons-react";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
-import { use, useEffect, useState } from "react";
+import { MouseEventHandler, use, useEffect, useState } from "react";
 import { debounce } from "lodash";
 import { QpayType } from "@/utils/type";
 import Link from "next/link";
@@ -164,7 +164,6 @@ const Page = () => {
       { ...payload.values!, payment: payment },
       ServiceType.REVIEW
     );
-    console.log(res);
     if (payment == PaymentType.QPAY) {
       setQpay({
         qpay: res?.data.data,
@@ -266,6 +265,40 @@ const Page = () => {
       router.push(`/report/result?id=${qpay?.id}`);
     }
     setLoading(false);
+  };
+  type QPayUrl = {
+    link: string;
+    fallback?: string;
+    logo: string;
+    name: string;
+  };
+  const openApp = (url: string) => {
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    const isAndroid = /Android/.test(navigator.userAgent);
+
+    if (isIOS) {
+      // For custom URL schemes with fallback
+      const start = Date.now();
+      // window.location.href = url;
+
+      // Fallback to App Store if app not installed
+      setTimeout(() => {
+        if (Date.now() - start < 2000) {
+          window.location.href = url || "https://apps.apple.com";
+        }
+      }, 500);
+    } else if (isAndroid) {
+      // Android iframe approach
+      const iframe = document.createElement("iframe");
+      iframe.style.display = "none";
+      iframe.src = url;
+      document.body.appendChild(iframe);
+      setTimeout(() => {
+        document.body.removeChild(iframe);
+      }, 3000);
+    } else {
+      window.location.href = url;
+    }
   };
   return (
     <Box>
@@ -504,19 +537,19 @@ const Page = () => {
                 mt={24}
                 mb={32}
                 fz={18}
-                highlight={["урамшуулал", "3,000 E-unit"]}
+                highlight={["урамшуулал", "2,000 E-unit"]}
                 highlightStyles={{
                   background: Colors.main,
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                 }}
               >
-                Шинэ хэрэглэгчийн урамшуулал бүхий 3,000 E-unit ашиглан энэхүү
+                Шинэ хэрэглэгчийн урамшуулал бүхий 2,000 E-unit ашиглан энэхүү
                 үйлчилгээг авах боломжтой.
               </Highlight>
 
               <Flex>
-                {user?.wallet && user?.wallet > 1000 && (
+                {user?.wallet && user?.wallet >= 2000 ? (
                   <Button
                     w={"100%"}
                     fz={24}
@@ -536,13 +569,13 @@ const Page = () => {
                     ) : (
                       <Flex align={"center"}>
                         <Text c={"white"} fz={24}>
-                          1,000.00
+                          2,000.00
                         </Text>
                         <EunitIcon />
                       </Flex>
                     )}
                   </Button>
-                )}
+                ) : null}
                 <Button
                   w={"100%"}
                   fz={24}
@@ -562,7 +595,7 @@ const Page = () => {
                   ) : (
                     <Flex align={"center"}>
                       <Text c={"white"} fz={24}>
-                        QPAY
+                        QPAY 2,000.00
                       </Text>
                       <Image
                         src={Assets.qpay}
@@ -590,14 +623,17 @@ const Page = () => {
                   {qpay.qpay?.urls.map((url, k) => {
                     return (
                       <Grid.Col key={k} span={3}>
-                        <Link href={url.link}>
+                        <Box
+                          onClick={() => openApp(url.link)}
+                          className="cursor-pointer"
+                        >
                           <Image
                             src={url.logo}
                             width={60}
                             height={60}
                             alt={url.name}
                           />
-                        </Link>
+                        </Box>
                       </Grid.Col>
                     );
                   })}
@@ -608,14 +644,17 @@ const Page = () => {
                   {qpay.qpay?.urls.map((url, k) => {
                     return (
                       <Grid.Col key={k} span={3}>
-                        <Link href={url.link}>
+                        <Box
+                          onClick={() => openApp(url.link)}
+                          className="cursor-pointer"
+                        >
                           <Image
                             src={url.logo}
                             width={60}
                             height={60}
                             alt={url.name}
                           />{" "}
-                        </Link>
+                        </Box>
                       </Grid.Col>
                     );
                   })}
@@ -719,6 +758,7 @@ const Page = () => {
                   high: d.englishNameOfTown,
                   zipcode: `${d.zipcode}`,
                   name: d.name,
+                  count: d.count,
                   title: d.town ?? "",
                 }}
                 onClick={() => {
@@ -732,6 +772,7 @@ const Page = () => {
                   label: `${d.count} ${locale.data.GLOBAL.INFORMATION}`,
                   title: d.name,
                   text: "",
+                  count: d.count,
                 }}
                 onClick={() => {
                   // nextStep(d.id);

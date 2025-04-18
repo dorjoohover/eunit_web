@@ -46,21 +46,21 @@ const Page = () => {
     if (id == null) return;
 
     refetchUser();
-    const res = await getRequestResult(+id);
-    if (!res.success) {
-      notifications.show({
-        message: res.message,
-      });
-      router.back();
-      return;
-    }
-    if (!res?.token) {
-      router.push("/login");
-      return;
-    }
-    if (res.success) {
-      setData(res.data);
-    }
+    // const res = await getRequestResult(+id);
+    // if (!res.success) {
+    //   notifications.show({
+    //     message: res.message,
+    //   });
+    //   router.back();
+    //   return;
+    // }
+    // if (!res?.token) {
+    //   router.push("/login");
+    //   return;
+    // }
+    // if (res.success) {
+    //   setData(res.data);
+    // }
     setLoading(false);
   };
 

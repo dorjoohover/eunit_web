@@ -28,7 +28,7 @@ export const ReportTitle = ({
     base: 40,
   },
 }: {
-  text: string;
+  text?: string;
   text1?: string;
   text2?: string;
   fz?: StyleProp<
@@ -50,16 +50,20 @@ export const ReportTitle = ({
     >
       <Flex
         align={"center"}
-        pb={{
-          md: 108,
-          sm: 64,
-          base: 32,
-        }}
-        pt={{
-          md: 80,
-          sm: 48,
-          base: 24,
-        }}
+        pb={
+          text && {
+            md: 108,
+            sm: 64,
+            base: 32,
+          }
+        }
+        pt={
+          text && {
+            md: 80,
+            sm: 48,
+            base: 24,
+          }
+        }
       >
         <Title
           fz={fz}
@@ -191,7 +195,7 @@ export const ReportList = ({
             className={montserratAlternates.className}
           >
             {`${text} ${`${zipcode ? "|" : ""} ${
-              matches ? `${zipcode ?? ""}` : zipcode ?? text
+              matches ? `${zipcode ?? ""}` : zipcode ?? ""
             }`} `}
           </Text>
         )}
@@ -259,8 +263,7 @@ export const IconText = ({
         <Text
           fz={{
             md: 20,
-            base: 14,
-            sm: 16,
+            base: 16,
           }}
           c={Colors.headBlue}
         >
