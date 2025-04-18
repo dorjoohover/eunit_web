@@ -43,16 +43,64 @@ export const brands = [
     label: "daihatsu",
     value: "daihatsu",
   },
-
-
-
-
-
-
-
-
-
-
+  {
+    label: "dongfeng",
+    value: "dongfeng",
+  },
+  {
+    label: "dodge",
+    value: "dodge",
+  },
+  {
+    label: "fiat",
+    value: "fiat",
+  },
+  {
+    label: "ford",
+    value: "ford",
+  },
+  {
+    label: "Foton",
+    value: "Foton",
+  },
+  {
+    label: "geely",
+    value: "geely",
+  },
+  {
+    label: "gmc",
+    value: "gmc",
+  },
+  {
+    label: "gwm",
+    value: "gwm",
+  },
+  {
+    label: "haval",
+    value: "haval",
+  },
+  {
+    label: "honda",
+    value: "honda",
+  },
+  {
+    label: "hyundai",
+    value: "hyundai",
+  },
+  {
+    label: "infiniti",
+    value: "infiniti",
+  },
+  {
+    label: "isuzu",
+    value: "isuzu",
+  },
+  {
+    label: "jaguar",
+    value: "jaguar",
+  },
+  
+  
 
   {
     label: "mercedes-benz",
@@ -62,14 +110,7 @@ export const brands = [
     label: "toyota",
     value: "toyota",
   },
-  {
-    label: "geely",
-    value: "geely",
-  },
-  {
-    label: "gwm",
-    value: "gwm",
-  },
+
   {
     label: "mitsubishi",
     value: "mitsubishi",
@@ -82,7 +123,7 @@ export const brands = [
     label: "li-auto",
     value: "li-auto",
   },
- 
+
   {
     label: "nissan",
     value: "nissan",
@@ -91,10 +132,7 @@ export const brands = [
     label: "mg",
     value: "mg",
   },
-  {
-    label: "dongfeng",
-    value: "dongfeng",
-  },
+
   {
     label: "subaru",
     value: "subaru",
@@ -103,24 +141,17 @@ export const brands = [
     label: "jeep",
     value: "jeep",
   },
- 
-  {
-    label: "gmc",
-    value: "gmc",
-  },
+
   {
     label: "kia",
     value: "kia",
   },
-  
+
   {
     label: "kaiyi",
     value: "kaiyi",
   },
-  {
-    label: "ford",
-    value: "ford",
-  },
+
   {
     label: "suzuki",
     value: "suzuki",
@@ -141,19 +172,7 @@ export const brands = [
     label: "mazda",
     value: "mazda",
   },
-  {
-    label: "hyundai",
-    value: "hyundai",
-  },
-  
-  {
-    label: "dodge",
-    value: "dodge",
-  },
-  {
-    label: "haval",
-    value: "haval",
-  },
+
   {
     label: "land-rover",
     value: "land-rover",
@@ -162,38 +181,22 @@ export const brands = [
     label: "samsung",
     value: "samsung",
   },
-  
+
   {
     label: "Lada",
     value: "Lada",
-  },
-  {
-    label: "Foton",
-    value: "Foton",
   },
 
   {
     label: "renault",
     value: "renault",
   },
-  {
-    label: "jaguar",
-    value: "jaguar",
-  },
-  
-  {
-    label: "honda",
-    value: "honda",
-  },
-  {
-    label: "fiat",
-    value: "fiat",
-  },
+
   {
     label: "peugeot",
     value: "peugeot",
   },
-  
+
   {
     label: "hummer",
     value: "hummer",
@@ -201,10 +204,6 @@ export const brands = [
   {
     label: "lincoln",
     value: "lincoln",
-  },
-  {
-    label: "infiniti",
-    value: "infiniti",
   },
 
   {
@@ -215,11 +214,7 @@ export const brands = [
     label: "volvo",
     value: "volvo",
   },
-  
-  {
-    label: "isuzu",
-    value: "isuzu",
-  },
+
   {
     label: "lexus",
     value: "lexus",
@@ -306,7 +301,7 @@ export const marks = [
     value: "busad",
     parent: "bmw",
   },
-  
+
   {
     label: "escalade",
     value: "escalade",
@@ -393,9 +388,239 @@ export const marks = [
     parent: "daihatsu",
   },
   {
+    label: "forthing-t5-evo",
+    value: "forthing-t5-evo",
+    parent: "dongfeng",
+  },
+  {
+    label: "challenger",
+    value: "challenger",
+    parent: "dodge",
+  },
+  {
+    label: "pickup",
+    value: "pickup",
+    parent: "dodge",
+  },
+  {
     label: "busad",
     value: "busad",
-    parent: "daihatsu",
+    parent: "dodge",
+  },
+  {
+    label: "busad",
+    value: "busad",
+    parent: "fiat",
+  },
+  {
+    label: "f150",
+    value: "f150",
+    parent: "ford",
+  },
+  {
+    label: "pickup",
+    value: "pickup",
+    parent: "ford",
+  },
+  {
+    label: "transit-connect",
+    value: "transit-connect",
+    parent: "ford",
+  },
+  {
+    label: "ranger",
+    value: "ranger",
+    parent: "ford",
+  },
+  {
+    label: "explorer",
+    value: "explorer",
+    parent: "ford",
+  },
+  {
+    label: "mustang",
+    value: "mustang",
+    parent: "ford",
+  },
+  {
+    label: "escape",
+    value: "escape",
+    parent: "ford",
+  },
+  {
+    label: "busad",
+    value: "busad",
+    parent: "ford",
+  },
+  {
+    label: "tunland",
+    value: "tunland",
+    parent: "Foton",
+  },
+  {
+    label: "monjaro",
+    value: "monjaro",
+    parent: "geely",
+  },
+  {
+    label: "tugella",
+    value: "tugella",
+    parent: "geely",
+  },
+  {
+    label: "coolray",
+    value: "coolray",
+    parent: "geely",
+  },
+  {
+    label: "azkarra",
+    value: "azkarra",
+    parent: "geely",
+  },
+  {
+    label: "acadia",
+    value: "acadia",
+    parent: "gmc",
+  },
+  {
+    label: "Tank",
+    value: "Tank",
+    parent: "gwm",
+  },
+  {
+    label: "h-series",
+    value: "h-series",
+    parent: "haval",
+  },
+  {
+    label: "busad",
+    value: "busad",
+    parent: "haval",
+  },
+  {
+    label: "cr-v",
+    value: "cr-v",
+    parent: "honda",
+  },
+  {
+    label: "insight",
+    value: "insight",
+    parent: "honda",
+  },
+  {
+    label: "hrv",
+    value: "hrv",
+    parent: "honda",
+  },
+  {
+    label: "fit",
+    value: "fit",
+    parent: "honda",
+  },
+  {
+    label: "cr-z",
+    value: "cr-z",
+    parent: "honda",
+  },
+  {
+    label: "odyssey",
+    value: "odyssey",
+    parent: "honda",
+  },
+  {
+    label: "civic",
+    value: "civic",
+    parent: "honda",
+  },
+  {
+    label: "busad",
+    value: "busad",
+    parent: "honda",
+  },
+  {
+    label: "h-2",
+    value: "h-2",
+    parent: "hummer",
+  },
+  {
+    label: "h-3",
+    value: "h-3",
+    parent: "hummer",
+  },
+  {
+    label: "tucson",
+    value: "tucson",
+    parent: "hyundai",
+  },
+  {
+    label: "grandeur",
+    value: "grandeur",
+    parent: "hyundai",
+  },
+  {
+    label: "sonato",
+    value: "sonato",
+    parent: "hyundai",
+  },
+  {
+    label: "starex",
+    value: "starex",
+    parent: "hyundai",
+  },
+  {
+    label: "equus",
+    value: "equus",
+    parent: "hyundai",
+  },
+  {
+    label: "santa-fe",
+    value: "santa-fe",
+    parent: "hyundai",
+  },
+  {
+    label: "accent",
+    value: "accent",
+    parent: "hyundai",
+  },
+  {
+    label: "busad",
+    value: "busad",
+    parent: "hyundai",
+  },
+  {
+    label: "fx35",
+    value: "fx35",
+    parent: "infiniti",
+  },
+  {
+    label: "q45",
+    value: "q45",
+    parent: "infiniti",
+  },
+  {
+    label: "qx56",
+    value: "qx56",
+    parent: "infiniti",
+  },
+  {
+    label: "bighorn",
+    value: "bighorn",
+    parent: "isuzu",
+  },
+  {
+    label: "x-type",
+    value: "x-type",
+    parent: "jaguar",
+  },
+  {
+    label: "xj",
+    value: "xj",
+    parent: "jaguar",
+  },
+  {
+    label: "busad",
+    value: "busad",
+    parent: "jaguar",
   },
 ];
 

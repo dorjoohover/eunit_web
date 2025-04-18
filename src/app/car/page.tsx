@@ -155,8 +155,8 @@ const Page = () => {
                 placeholder={CarEvaluateValues["mark"].pl}
               />
             </Grid.Col>
-            {cars.map(({ key, data }) => (
-              <Grid.Col span={4} key={key}>
+            {cars.map(({ key, data }, i) => (
+              <Grid.Col span={4} key={i}>
                 <Select
                   w="100%"
                   my={5}
