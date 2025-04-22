@@ -6,12 +6,9 @@ import { useAppContext } from "@/_context";
 import { Loading } from "@/app/loading";
 import { Colors } from "@/base/constants";
 import {
-<<<<<<< HEAD
-=======
   AnalyzeWidget,
   ApartmentInfo,
   GeneralWidget,
->>>>>>> main
   ResultWidget,
   UserWidget,
 } from "@/components/report/result";
@@ -22,10 +19,6 @@ import {
   Spacer,
 } from "@/components/report/shared";
 import { LocationModel } from "@/models/location.model";
-<<<<<<< HEAD
-import { formatNumber, money, parseDate } from "@/utils/functions";
-import { api } from "@/utils/routes";
-=======
 import { Assets } from "@/utils/assets";
 import {
   formatNumber,
@@ -35,27 +28,18 @@ import {
   reportDescription,
 } from "@/utils/functions";
 import { api, ConstantApi } from "@/utils/routes";
->>>>>>> main
 import {
   defaultMapCenter,
   defaultMapContainerStyle,
   defaultMapOptions,
   defaultMapZoom,
 } from "@/utils/values";
-<<<<<<< HEAD
-import { Box, Button, Center, Flex, Text } from "@mantine/core";
-import { GoogleMap, Marker } from "@react-google-maps/api";
-import { useRouter, useSearchParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
-import { BiCalendar } from "react-icons/bi";
-=======
 import { Box, Button, Center, Flex, Highlight, Text } from "@mantine/core";
 import { useFetch, useMediaQuery } from "@mantine/hooks";
 import { GoogleMap, Marker } from "@react-google-maps/api";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { ReactNode, useEffect, useState } from "react";
 import { BiCalendar, BiDownload } from "react-icons/bi";
->>>>>>> main
 import { CiLocationOn } from "react-icons/ci";
 import {
   IoIosArrowRoundBack,

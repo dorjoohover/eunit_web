@@ -264,6 +264,9 @@ export type CarEvaluateKey =
   | "color"
   | "meter"
   | "manufactured"
+  | "type"
+  | "interior"
+  | "conditions"
   | "imported";
 
 type CarEvaluateValue = {
@@ -280,6 +283,9 @@ export const CarEvaluateValues: Record<CarEvaluateKey, CarEvaluateValue> = {
   steerType: { label: "Хүрд", pl: "Сонгоно уу" },
   wheelDrive: { label: "Хөтлөгч", pl: "Сонгоно уу" },
   color: { label: "Өнгө", pl: "Сонгоно уу" },
+  interior: { label: "Салоны өнгө", pl: "Сонгоно уу" },
+  type: { label: "Төрөл", pl: "Сонгоно уу" },
+  conditions: { label: "Нөхцөл", pl: "Сонгоно уу" },
   meter: { label: "Гүйлт", pl: "Оруулна уу" },
   manufactured: { label: "Үйлдвэрлэгдсэн он", pl: "Оруулна уу" },
   imported: { label: "Импортлогдсон он", pl: "Оруулна уу" },

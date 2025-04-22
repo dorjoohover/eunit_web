@@ -15,6 +15,7 @@ export async function middleware(req: NextRequest) {
   const protectedRoutes: Record<string, string> = {
     wallet: "",
     profile: "",
+    car: "",
     report: "location",
   };
 
@@ -65,5 +66,6 @@ export const config = {
     "/report/:path*",
     "/profile/:path*",
     "/wallet/:path*",
+    "/car/:path*",
   ],
 };

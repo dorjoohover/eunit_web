@@ -88,6 +88,10 @@ input {
   grid-row-gap: 16px;
 }
 
+.mantine-YearPickerInput-wrapper {
+  background-color: transparent !important;
+}
+
 .div1 {
   grid-area: 1 / 1 / 2 / 2;
 }

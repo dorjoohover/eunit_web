@@ -5,32 +5,69 @@ import { useAppContext } from "@/_context";
 import { Loading } from "@/app/loading";
 import { Colors } from "@/base/constants";
 import { IconText, ReportTitle, Spacer } from "@/components/report/shared";
-import { formatNumber, money, parseDate } from "@/utils/functions";
+import { TbNumber } from "react-icons/tb";
+import { LuPaintRoller } from "react-icons/lu";
+import { GiCarWheel, GiGearStickPattern } from "react-icons/gi";
+import {
+  formatNumber,
+  formatPhoneNumber,
+  money,
+  parseDate,
+  reportDescription,
+} from "@/utils/functions";
 import { api } from "@/utils/routes";
-import { Box, Button, Center, Flex, Grid, px, Text, Title } from "@mantine/core";
+import {
+  Box,
+  Button,
+  Center,
+  Flex,
+  Grid,
+  Highlight,
+  px,
+  Text,
+  Title,
+} from "@mantine/core";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { IoIosArrowRoundBack, IoMdDownload } from "react-icons/io";
 import { MdApartment } from "react-icons/md";
 import Link from "next/link";
 import { notifications } from "@mantine/notifications";
-import { FaBeer, FaCar, FaPaintBrush } from "react-icons/fa";
+import { FaBeer, FaCar, FaCogs, FaPaintBrush, FaRoute } from "react-icons/fa";
 import { useMediaQuery } from "@mantine/hooks";
+import { GeneralWidget, ResultWidget } from "@/components/report/result";
+import { UserModel } from "@/models/user.model";
+import { BiCalendar } from "react-icons/bi";
+import { IoCarSportOutline, IoColorFillOutline } from "react-icons/io5";
+import { upperFirst } from "lodash";
+import { BsBookmark, BsFuelPump } from "react-icons/bs";
+import { PiArmchairBold, PiEngine, PiSteeringWheel } from "react-icons/pi";
+import { CiCalendar, CiCalendarDate } from "react-icons/ci";
+import { AiOutlineDashboard } from "react-icons/ai";
+import { IconManualGearbox } from "@tabler/icons-react";
+import { RiCarLine } from "react-icons/ri";
 
-type ResultType = {
+type ResultDataType = {
   brand?: string;
   mark?: string;
-  motor?: string;
-  motorType?: string;
-  engineType?: string;
-  steerType?: string;
-  wheelDrive?: string;
+  capacity?: string;
   color?: string;
-  meter?: string;
-  manufactured?: string;
-  imported?: string;
-  avg: string;
-  area: string;
+  manufacture?: number;
+  gearbox?: string;
+  engine?: string;
+  entry?: number;
+  type?: string;
+  hurd?: string;
+  drive?: string;
+  interior?: string;
+  mileage?: number;
+  conditions?: string;
+  createdAt?: Date;
+  price?: number;
+};
+type ResultType = {
+  data: ResultDataType;
+  user: UserModel;
 };
 
 const Page = () => {
@@ -39,6 +76,7 @@ const Page = () => {
   const matches = useMediaQuery("(min-width: 50em)");
   const id = params.get("id");
   const { user, refetchUser } = useAppContext();
+  const [date, setDate] = useState<Date | null>(null);
   const [data, setData] = useState<ResultType>();
   const router = useRouter();
   const getResult = async () => {
@@ -46,278 +84,370 @@ const Page = () => {
     if (id == null) return;
 
     refetchUser();
-    // const res = await getRequestResult(+id);
-    // if (!res.success) {
-    //   notifications.show({
-    //     message: res.message,
-    //   });
-    //   router.back();
-    //   return;
-    // }
-    // if (!res?.token) {
-    //   router.push("/login");
-    //   return;
-    // }
-    // if (res.success) {
-    //   setData(res.data);
-    // }
+    const res = await getRequestResult(+id);
+    console.log(res);
+    if (!res.success) {
+      notifications.show({
+        message: res.message,
+      });
+      router.back();
+      return;
+    }
+    if (!res?.token) {
+      router.push("/login");
+      return;
+    }
+    if (res.success) {
+      setData(res.data);
+      const date = new Date(`${res.data?.data.createdAt}`);
+      date.setDate(date.getDate() + 7);
+      setDate(date);
+    }
     setLoading(false);
   };
 
   const carFields = [
-    { name: "Бренд" },
-    { name: "Марк" },
-    { name: "Хөдөлгүүрийн багтаамж" },
-    { name: "Хөдөлгүүрийн төрөл" },
-    { name: "Хурдны хайрцаг" },
-    { name: "Хүрд" },
-    { name: "Хөтлөгч" },
-    { name: "Өнгө" },
-    { name: "Гүйлт" },
-    { name: "Үйлдвэрлэсэн он" },
-    { name: "Импортлосон он" },
+    { name: "Бренд", key: "brand", icon: <IoCarSportOutline size={24} /> },
+    { name: "Марк", key: "mark", icon: <BsBookmark size={24} /> },
+    { name: "Багтаамж", key: "capacity", icon: <PiEngine size={24} /> },
+    { name: "Өнгө", key: "color", icon: <IoColorFillOutline size={24} /> },
+    {
+      name: "Үйлдвэрлэсэн",
+      key: "manufacture",
+      icon: <CiCalendarDate size={24} />,
+    },
+    { name: "Импортлосон", key: "entry", icon: <CiCalendar size={24} /> },
+    { name: "Гүйлт", key: "mileage", icon: <AiOutlineDashboard size={24} /> },
+    {
+      name: "Хөдөлгүүрийн төрөл",
+      key: "engine",
+      icon: <BsFuelPump size={24} />,
+    },
+    { name: "Хүрд", key: "hurd", icon: <PiSteeringWheel size={24} /> },
+    {
+      name: "Хурдны хайрцаг",
+      key: "gearbox",
+      icon: <GiGearStickPattern size={24} />,
+    },
+    {
+      name: "Салоны өнгө",
+      key: "interior",
+      icon: <LuPaintRoller size={24} />,
+    },
+    { name: "Төрөл", key: "type", icon: <RiCarLine size={24} /> },
+    { name: "Хөтлөгч", key: "drive", icon: <GiCarWheel size={24} /> },
+    { name: "Нөхцөл", key: "conditions", icon: <TbNumber size={24} /> },
   ];
 
   useEffect(() => {
     getResult();
   }, []);
-  //   if (loading)
-  //     return (
-  //       <Center>
-  //         <Loading />
-  //       </Center>
-  //     );
+  if (loading)
+    return (
+      <Center>
+        <Loading />
+      </Center>
+    );
 
   return (
     <Box>
-      <ReportTitle text={data?.mark ?? "TOYOTA PRIUS 20"}>
+      <ReportTitle>
         <Box>
-          <Flex mb={40} pb={10}>
-            <Text
-              fz={{
-                sm: 30,
-                base: 16,
+          <Flex pt={{ sm: 40, base: 32 }} w={"100%"} align={"center"}>
+            <Box
+              style={{
+                background:
+                  "linear-gradient(90deg, rgba(40,80,250,1) 0%, rgba(24,47,148,1) 100%)",
               }}
-              fw={{
-                sm: "600",
-                base: "700",
-              }}    
-              c={"headBlue"}        
-            >
-              Зах зээлийн үнэлгээ
-            </Text>
-            {id && (
-              <Text
-                fz={{
-                  sm: 30,
-                  base: 16,
-                }}
-              >
-                #{formatNumber(id)}
-              </Text>
-            )}
-          </Flex>
-          <Flex
-            style={{
-              borderBottom: `1px solid ${Colors.deepMose20}`,
-            }}
-            direction={{
-              md: "row",
-              base: "column",
-            }}
-            pb={12}
-            justify={"start"}
-            w={"100%"}
-            columnGap={40}
-            c={"headBlue"}
-          >
-            <IconText 
-              child={<FaCar size={24} />} 
-              text="Автомашин"
+              h={{
+                sm: 50,
+                base: 36,
+              }}
+              w={"100%"}
+              maw={600}
             />
+            <Text
+              c={"#182F94"}
+              tt={"uppercase"}
+              fw={"bold"}
+              fz={{
+                sm: 56,
+                xs: 40,
+                base: 30,
+              }}
+            >
+              Лавлагаа
+            </Text>
           </Flex>
-
           <Spacer
             size={{
-              md: 40,
-              sm: 30,
-              base: 20,
+              sm: 40,
+              base: 32,
             }}
           />
+          <Flex
+            // style={{
+            //   borderBottom: `1px solid ${Colors.deepMose20}`,
+            // }}
+            // mb={20}
+            // mx={'auto'}
+            justify={"center"}
+            tt={"uppercase"}
+            // pb={10}
+          >
+            <Text
+              fz={{
+                sm: 40,
+                xs: 30,
+                base: 20,
+              }}
+              fw={700}
+              ta={"center"}
+            >
+              Зах зээлийн үнэ цэний лавлагаа
+            </Text>
+          </Flex>
+          <Spacer
+            size={{
+              sm: 40,
+              base: 32,
+            }}
+          />
+          <GeneralWidget title="Ерөнхий мэдээлэл">
+            <div
+              className={`flex ${
+                matches ? "flex-row" : "flex-col"
+              } justify-between`}
+            >
+              {(data?.user?.firstname || data?.user?.lastname) && (
+                <Flex>
+                  <Text fz={{ sm: 20, base: 16 }} fw={300}>
+                    Овог нэр:
+                  </Text>
+                  <Text fw={600} fz={{ sm: 20, base: 16 }}>
+                    {data?.user?.lastname ?? ""} {data?.user?.firstname ?? ""}
+                  </Text>
+                </Flex>
+              )}
+              {data?.user?.email && (
+                <Flex>
+                  <Text fw={300} fz={{ sm: 20, base: 16 }}>
+                    Цахим хаяг:
+                  </Text>
+                  <Text fw={600} fz={{ sm: 20, base: 16 }}>
+                    {data?.user.email}
+                  </Text>
+                </Flex>
+              )}
+              {data?.user?.phone && (
+                <Flex>
+                  <Text fz={{ sm: 20, base: 16 }} fw={300}>
+                    Утасны дугаар:
+                  </Text>
+                  <Text fw={600} fz={{ sm: 20, base: 16 }}>
+                    {formatPhoneNumber(data?.user?.phone) ?? ""}
+                  </Text>
+                </Flex>
+              )}
+            </div>
+            <Spacer size={10} />
+            <IconText
+              child={<IoCarSportOutline size={24} />}
+              text={"Автомашин"}
+            />
+
+            <Spacer size={20} />
+          </GeneralWidget>
+          <GeneralWidget title="Тооцоолол">
+            <Highlight
+              // mt={24}
+              // mb={32}
+              fz={{
+                sm: 20,
+                base: 16,
+              }}
+              highlight={[`${money((data?.data?.price ?? 0).toString(), "₮")}`]}
+              highlightStyles={{
+                background: Colors.main,
+                color: Colors.main,
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+              }}
+              children={`
+                    Таны сонгосон хотхоны м.кв үнэ цэн: ${money(
+                      (data?.data?.price ?? 0).toString(),
+                      "₮"
+                    )}`}
+            ></Highlight>
+
+            <Spacer size={20} />
+          </GeneralWidget>
+          <GeneralWidget title="Тайлбар">
+            <Highlight
+              fz={{
+                sm: 20,
+                base: 16,
+              }}
+              ta={"justify"}
+              highlight={[
+                `${money(`${data?.data?.price ?? ""}`, "", 100000)} төгрөг`,
+              ]}
+              highlightStyles={{
+                background: Colors.main,
+                color: Colors.main,
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+              }}
+              children={`${reportDescription(
+                `${data?.user?.lastname ?? ""} ${
+                  data?.user?.firstname ??
+                  (data?.user?.lastname == null
+                    ? data?.user?.phone
+                      ? formatPhoneNumber(data?.user?.phone)
+                      : data?.user?.email ?? ""
+                    : "")
+                }`,
+                1,
+                data?.data?.price ?? 0,
+                undefined,
+                {
+                  brand: data?.data?.brand,
+                  manufacture: data?.data?.manufacture,
+                  mark: data?.data?.mark,
+                  engine: data?.data?.engine,
+                  entry: data?.data?.entry,
+                  capacity: data?.data?.capacity,
+                }
+              )}`}
+            ></Highlight>
+          </GeneralWidget>
+          <GeneralWidget title="Техникийн үзүүлэлт">
+            <Grid>
+              {carFields.map((carField, index) => (
+                <Grid.Col span={{ lg: 3, md: 3, sm: 4, base: 6 }} key={index}>
+                  <Flex
+                    gap="md"
+                    justify="left"
+                    align="center"
+                    direction="row"
+                    w={"100%"}
+                    wrap="wrap"
+                    style={{
+                      border: "1px solid #DDDDDD",
+                      borderRadius: 12,
+                    }}
+                    py={12}
+                    px={{
+                      md: "10%",
+                      base: 10,
+                    }}
+                  >
+                    {carField.icon}
+                    <Box>
+                      <Text
+                        fz={{
+                          sm: 12,
+                          base: 12,
+                        }}
+                        fw={"bold"}
+                        c={"#262626"}
+                        lh={1}
+                      >
+                        {carField.name}
+                      </Text>
+                      <Text
+                        fz={{
+                          lg: 20,
+
+                          base: 16,
+                        }}
+                        lh={1.1}
+                        fw={300}
+                      >
+                        {upperFirst(
+                          `${
+                            carField.key == "mileage"
+                              ? `${money(
+                                  `${
+                                    data?.data[
+                                      carField.key as keyof ResultDataType
+                                    ]
+                                  }`
+                                )}км`
+                              : data?.data[carField.key as keyof ResultDataType]
+                          }`
+                        )}
+                      </Text>
+                    </Box>
+                  </Flex>
+                </Grid.Col>
+              ))}
+            </Grid>
+          </GeneralWidget>
+
+          <Spacer size={100} />
           <Text
-            c={"headBlue"}
+            ta={"end"}
+            fw={700}
             fz={{
               sm: 20,
               base: 16,
             }}
           >
-            Таны {data?.manufactured} онд үйлдвэрлэгдэж {data?.imported} онд
-            Монгол улсад импортлогдсон, {data?.brand} брендын
-            {data?.mark} маркын {data?.motor ?? ""}ийн хөдөлгүүрийн багтаамжтай
-            {data?.motorType} машины өнөөгийн зах зээлийн үнэ
-            {money(
-              `${Math.round(
-                (Number(data?.avg) || 0) *
-                  (parseFloat(`${data?.area}` || "0") || 0)
-              )}`
-            )}{" "}
-            төгрөг орчим үнэтэй байна.
+            Хүчинтэй хугацаа дуусах огноо:{" "}
+            {date != null ? parseDate(date, ".") : ""}
           </Text>
+          <Box
+            style={{
+              borderBottom: `1px solid #0000004d`,
+            }}
+            h={20}
+            w={"100%"}
+          ></Box>
           <Spacer size={20} />
+          <Text fz={{ sm: 20, base: 16 }} ta={"justify"}>
+            Энэхүү лавлагаа нь 7 хоногийн хугацаанд хүчинтэй бөгөөд ямар нэгэн
+            байдлаар олшруулахыг хориглоно.
+          </Text>
+          <Text fz={{ sm: 20, base: 16 }} fw={700}>
+            ©2025 www.eunit.mn. Бүх эрх хуулиар хамгаалагдсан.
+          </Text>
+          <Spacer size={24} />
+
+          <Spacer size={24} />
+          <Flex w={"100%"} justify={"center"}>
+            <Link href={`${api}request/service/pdf/${id}`} target="_blank">
+              <Button
+                radius={32}
+                px={20}
+                bg={"main"}
+                fz={20}
+                py={12}
+                h={"auto"}
+                leftSection={
+                  <Box
+                    bg={"white"}
+                    p={4}
+                    style={{
+                      borderRadius: "100%",
+                    }}
+                  >
+                    <IoMdDownload color={Colors.main} size={14} />
+                  </Box>
+                }
+              >
+                Татаж авах (PDF)
+              </Button>
+            </Link>
+          </Flex>
+          <Spacer
+            size={{
+              md: 32,
+              base: 16,
+            }}
+          />
         </Box>
-        <Spacer
-          size={{
-            md: 32,
-            base: 16,
-          }}
-        />
 
-
-        <Grid>
-          <Grid.Col span={{"lg":9,"md":12,"sm":12}}>
-            <Box
-              bg={"white"}
-              p={22}
-              style={{
-                borderRadius: "15px",
-                boxShadow: "0px 0px 25px rgba(0, 0, 0, 0.25)",
-              }}
-            >
-              <Box style={{ textAlign: "center" }}>
-                <Text
-                  fz={{
-                    sm: 30,
-                    base: 16,
-                  }}
-                  fw={{
-                    sm: "500",
-                    base: "700",
-                  }}
-                  c={Colors.headBlue}
-                >
-                  Тээврийн хэрэгслийн үзүүлэлтүүд
-                </Text>
-                <Spacer size={40} />
-              </Box>
-              
-              <Grid>
-                {carFields.map((carField, index) => (
-                  <Grid.Col span={{"lg":3,"md":3,"sm":4,"base":6}} key={index}>
-                    <Flex
-                      mih={30}
-                      gap="md"
-                      justify="center"
-                      align="center"
-                      direction="row"
-                      wrap="wrap"
-                      style={{
-                        borderRight: "1.5px solid black",
-                      }}
-                    >
-                      <FaPaintBrush color="grey" size={30} />
-                      <Box w={"70%"} h={70}>
-                        <Text
-                          fz={{
-                            sm: 12,
-                            base: 12,
-                          }}
-                          fw={{
-                            sm: "400",
-                            base: "400",
-                          }}
-                          c={"grey"}
-                        >
-                          {carField.name}
-                        </Text>
-                        <Text
-                          fz={{
-                            sm: 24,
-                            base: 16,
-                          }}
-                          fw={{
-                            sm: "500",
-                            base: "700",
-                          }}
-                        >
-                          Бренд
-                        </Text>
-                      </Box>
-                    </Flex>
-                  </Grid.Col>
-                ))}
-              </Grid>
-            </Box>
-          </Grid.Col>
-          <Grid.Col span={{"lg":3,"md":12,"sm":12}}>
-            
-            <Box
-              bg={"white"}
-              py={22}
-              px={62}
-              style={{
-                borderRadius: "15px",
-                textAlign: "center",
-                boxShadow: "0px 0px 25px rgba(0, 0, 0, 0.25)",
-              }}
-            >
-              <Text
-                fz={{
-                  sm: 30,
-                  base: 14,
-                }}
-                fw={{
-                  sm: "500",
-                  base: "700",
-                }}
-                c={"headBlue"}
-              >
-                Үнэлгээ
-              </Text>
-              <Text
-                fz={{
-                  sm: 36,
-                  base: 32,
-                }}
-                fw={{
-                  sm: "500",
-                  base: "700",
-                }}
-                c={Colors.main}
-                mt={40}
-                mb={15}
-              >
-                ₮{money(`15999999`)}{" "}
-              </Text>
-            </Box>
-
-            <Flex w={"100%"} justify={"center"} align={"center"} mih={150}>
-              <Link href={`${api}request/service/pdf/${id}`} target="_blank">
-                <Button
-                  radius={32}
-                  px={20}
-                  bg={"main"}
-                  fz={20}
-                  py={12}
-                  h={"auto"}
-                  leftSection={
-                    <Box
-                      bg={"white"}
-                      p={4}
-                      style={{
-                        borderRadius: "100%",
-                      }}
-                    >
-                      <IoMdDownload color={Colors.main} size={14} />
-                    </Box>
-                  }
-                >
-                  Татаж авах (PDF)
-                </Button>
-              </Link>
-            </Flex>
-          </Grid.Col>
-        </Grid>
-                  
         <Spacer
           size={{
             md: 80,
@@ -338,6 +468,16 @@ const Page = () => {
         </Link>
         <Spacer size={40} />
       </ReportTitle>
+      <Box
+        style={{
+          borderTopColor: Colors.deepMose20,
+          borderTopWidth: 1,
+          borderTopStyle: "solid",
+        }}
+        w={"100%"}
+        bg={"white"}
+      ></Box>
+
       <Box
         style={{
           borderTopColor: Colors.deepMose20,

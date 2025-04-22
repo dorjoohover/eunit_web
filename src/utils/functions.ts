@@ -2,6 +2,7 @@ import { AdSellType, TransactionType } from "@/config/enum";
 import { gmailImageUrl, imageApi } from "./routes";
 import { UserModel } from "@/models/user.model";
 import { LocationModel } from "@/models/location.model";
+import { upperFirst } from "lodash";
 
 export function mergeNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -43,6 +44,7 @@ export const parseDate = (date: Date, symbol = "/", time = false) => {
 
 export const money = (value: string, currency = "", round = 1) => {
   let v = Math.round(+value / round) * round;
+  if (isNaN(v)) return "0";
   return `${currency}${v
     .toString()
     .replaceAll(",", "")
@@ -55,9 +57,19 @@ export const reportDescription = (
   area?: number,
   avg?: number,
   l?: LocationModel,
-  d?: { room?: number; no?: string; floor?: number }
+  d?: {
+    room?: number;
+    no?: string;
+    floor?: number;
+    manufacture?: number;
+    entry?: number;
+    brand?: string;
+    mark?: string;
+    capacity?: string;
+    engine?: string;
+  }
 ) => {
-  // Таны Улаанбаатар хот, Хан уул дүүрэг, 11-р хороо, 17020, Жардин хотхон, 120-р байр, 6 дугаар давхарын 3 өрөө 80м.кв орон сууцны өнөөгийн зах зээлийн үнэ 160,950,000.00 төгрөг орчмын үнэтэй байна.
+  // Таны 2024 онд үйлдвэрлэгдэж 2024 онд Монгол улсадд импортлогдсон Toyota брендын Sai маркын 2.5 литрийн хөдөлгүүрийн багтаамжтай хайбрид машины өнөөгийн зах зээлийн үнэ ₮123,456,789.00 төгрөг орчмын үнэтэй байна.
   const town =
     l?.town?.toLowerCase().includes("хотхон") ||
     l?.town?.toLowerCase().includes("хороолол");
@@ -66,13 +78,24 @@ export const reportDescription = (
     : "";
   const floor = d?.floor ? `${d.floor}-р давхарын ` : "";
   const room = d?.room ? `${d.room} өрөө ` : "";
-  const location = `${l?.city} хот, ${l?.district} дүүрэг, ${
-    l?.khoroo
-  }-р хороо, ${l?.zipcode}, ${l?.town}${
-    !town ? " хотхон" : ""
-  },${no}${floor}${room}`;
-  return `Иргэн ${name} таны ${location} ${area}м.кв орон сууцны
-              өнөөгийн зах зээлийн үнэ
+  const value =
+    l != undefined
+      ? `${l?.city} хот, ${l?.district} дүүрэг, ${l?.khoroo}-р хороо, ${
+          l?.zipcode
+        }, ${l?.town}${
+          !town ? " хотхон" : ""
+        },${no}${floor}${room} ${area}м.кв орон сууцны`
+      : `${d?.manufacture} онд үйлдвэрлэгдэж ${
+          d?.entry
+        } онд Монгол улсад импортлогдсон ${upperFirst(
+          d?.brand
+        )} брендын ${upperFirst(d?.mark)} маркын ${
+          d?.capacity
+        } литрийн хөдөлгүүрийн багтаамжтай ${(
+          d?.engine ?? ""
+        ).toLowerCase()} машины`;
+
+  return `Иргэн ${name} таны ${value} өнөөгийн зах зээлийн үнэ
                 ${money(
                   `${(avg ?? 0) * (area ?? 0)}`,
                   "",

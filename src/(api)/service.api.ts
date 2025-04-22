@@ -88,6 +88,7 @@ export const getRequestResult = async (id: number) => {
         Authorization: `Bearer ${token?.value ?? ""}`,
       },
     }).then((d) => d.json());
+    console.log(res);
     return {
       data: res.payload,
       token: true,
@@ -164,10 +165,15 @@ export const carEvaluate = async (
     meter?: string;
     manufactured?: string;
     imported?: string;
-    payment?: number;
+    type?: string;
+    interior?: string;
+    conditions?: string;
   },
-  service: number
+  service: number,
+  payment = 2
+  // payment: number
 ) => {
+  console.log(value);
   const token = (await cookies()).get("auth_token");
   console.log(token);
   if (!token?.value) return { token: false };
@@ -175,16 +181,21 @@ export const carEvaluate = async (
     const body = {
       brand: value.brand,
       mark: value.mark,
-      motor: value.motor,
-      motorType: value.motorType,
-      engineType: value.engineType,
-      steerType: value.steerType,
-      wheelDrive: value.wheelDrive,
+      capacity: value.motor,
+      engine: value.motorType,
+      gearbox: value.engineType,
+      hurd: value.steerType,
+      drive: value.wheelDrive,
       color: value.color,
-      meter: value.meter,
-      manufactured: value.manufactured,
-      imported: value.imported,
+      mileage: value.meter,
+      manufacture: value.manufactured,
+      entry: value.imported,
       service,
+      type: value.type,
+      interior: value.interior,
+      conditions: value.conditions,
+      category: 20,
+      payment: payment,
     };
     console.log(body);
     const res = await fetch(`${api}request`, {

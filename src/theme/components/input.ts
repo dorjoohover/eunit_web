@@ -42,6 +42,26 @@ export const inputs = {
           },
         };
       }
+      if (props.variant == "car") {
+        return {
+          input: {
+            borderRadius: 10,
+            border: `2px solid #929292`,
+            height: "auto",
+            background: "transparent",
+            padding: props.p?.toString() ?? "8px 16px",
+          },
+          label: {
+            lineHeight: 2,
+            fontWeight: 400,
+            fontSize: 14,
+            color: "#546274",
+          },
+          root: {
+            margin: "4px 0px",
+          },
+        };
+      }
       return {
         input: {
           color: props.c?.toString() ?? "",
@@ -57,9 +77,10 @@ export const inputs = {
       miw: 150,
       radius: "sm",
       maw: 300,
+
       w: "300px",
       c: "grey",
-      fw: 500,
+      fw: 400,
     },
     vars: (theme, props) => {
       return {
@@ -165,6 +186,27 @@ export const inputs = {
           },
         };
       }
+      if (props.variant == "car") {
+        return {
+          input: {
+            borderRadius: 10,
+            border: `2px solid #929292`,
+            height: "auto",
+            background: "transparent",
+            padding: props.p?.toString() ?? "8px 16px",
+          },
+          label: {
+            marginBottom: 8,
+            fontSize: 14,
+            fontWeight: 400,
+
+            color: "#546274",
+          },
+          root: {
+            margin: "4px 0px",
+          },
+        };
+      }
       return {
         root: {
           background: "transparent",
@@ -231,10 +273,30 @@ export const select = {
             fontSize: 21,
           },
           input: {
-            borderRadius: 5,
+            borderRadius: 10,
             border: `2px solid ${Colors.headBlue}`,
             height: "auto",
             padding: "2px 10px",
+          },
+        };
+      }
+      if (props.variant == "car") {
+        return {
+          wrapper: {
+            marginTop: 8,
+          },
+          label: {
+            color: "#546274",
+            fontSize: 14,
+            fontWeight: 400,
+            // lineHeight: 2
+          },
+          input: {
+            borderRadius: 10,
+            background: "transparent",
+            border: `2px solid #929292`,
+            height: "auto",
+            padding: "8px 16px",
           },
         };
       }
