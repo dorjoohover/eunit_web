@@ -216,6 +216,6 @@ export const carEvaluate = async (
       success: res.succeed,
     };
   } catch (error) {
-    // console.error(error);
+    console.error(error);
   }
 };

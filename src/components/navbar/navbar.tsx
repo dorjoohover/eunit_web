@@ -1,4 +1,5 @@
 "use client";
+import { LiaCarSideSolid } from "react-icons/lia";
 import { useAppContext } from "@/_context";
 import { Colors, Sizes } from "@/base/constants";
 import { locale } from "@/base/vocabs/mn";
@@ -190,7 +191,7 @@ const BottomIcon = ({ d, color }: { color: string; d: string }) => {
     <CiDatabase color={color} size={22} />
   ) : d == "/wallet" ? (
     <IoWalletOutline color={color} size={18} />
-  ) : (
+  ) : d== '/car' ? <LiaCarSideSolid color={color} size={18} /> : (
     <AiOutlineUser color={color} size={20} />
   );
 };

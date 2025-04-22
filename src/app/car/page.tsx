@@ -8,6 +8,7 @@ import { ReportTitle, Spacer } from "@/components/report/shared";
 import {
   Box,
   Button,
+  Center,
   Flex,
   Grid,
   Group,
@@ -70,7 +71,7 @@ const Page = () => {
     interior: "",
     type: "",
     color: "",
-    meter: "",
+    meter: "0",
     manufactured: "",
     imported: "",
   });
@@ -108,7 +109,6 @@ const Page = () => {
     if (!checker()) return;
 
     const res = await carEvaluate(form, ServiceType.REVIEW);
-    console.log(res);
     if (res?.data?.success != false) {
       refetchUser();
       router.push(`/car/result?id=${res?.data.res}`);
@@ -116,13 +116,6 @@ const Page = () => {
     setLoading(false);
   };
 
-  useEffect(() => {}, []);
-  //   if (loading)
-  //     return (
-  //       <Center>
-  //         <Loading />
-  //       </Center>
-  //     );
   const [active, setActive] = useState(0);
 
   const nextStep = () => {
@@ -185,6 +178,12 @@ const Page = () => {
   };
   const prevStep = () =>
     setActive((current) => (current > 0 ? current - 1 : current));
+  if (loading)
+    return (
+      <Center>
+        <Loading />
+      </Center>
+    );
 
   return (
     <Box>
@@ -576,7 +575,13 @@ const Page = () => {
                 Буцах
               </Button>
             )}
-            <Button onClick={nextStep} radius={4} color={Colors.main}>
+            <Button
+              onClick={nextStep}
+              loading={loading}
+              disabled={loading}
+              radius={4}
+              color={Colors.main}
+            >
               {active == 3 ? "Илгээх" : "Үргэлжлүүлэх"}
             </Button>
           </Group>
