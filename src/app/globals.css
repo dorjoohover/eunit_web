@@ -78,7 +78,9 @@ input {
   transition: all 0.3s ease;
   color: black !important;
 }
-
+.mantine-Button-label {
+  white-space: normal !important;
+}
 /* Main grid container */
 .parent {
   display: grid;
