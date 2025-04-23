@@ -78,7 +78,11 @@ export const ServiceHistory = () => {
             unstyled
             onClick={() => {
               if (element.service != ServiceType.DATA) {
-                router.push(`/report/result?id=${element.id}`);
+                element.area
+                  ? router.push(`/report/result?id=${element.id}`)
+                  : element.brand
+                  ? router.push(`/car/result?id=${element.id}`)
+                  : null;
               }
             }}
           >

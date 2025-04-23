@@ -175,28 +175,28 @@ const Page = () => {
 
   const checker = () => {
     if (
-      form.brand != null ||
-      form.mark != null ||
-      form.motor != null ||
-      form.motorType != null ||
-      form.engineType != null ||
-      form.steerType != null ||
-      form.wheelDrive != null ||
-      form.color != null ||
-      form.meter != null ||
-      form.manufactured != null ||
-      form.conditions != null ||
-      form.type != null ||
-      form.interior != null ||
-      form.imported != null
+      form.brand &&
+      form.mark &&
+      form.motor &&
+      form.motorType &&
+      form.engineType &&
+      form.steerType &&
+      form.wheelDrive &&
+      form.color &&
+      form.meter &&
+      form.manufactured &&
+      form.conditions &&
+      form.type &&
+      form.interior &&
+      form.imported
     ) {
-      notifications.show({
-        message: "Мэдээлэл дутуу байна.",
-        position: "top-center",
-      });
-      return false;
+      return true;
     }
-    return true;
+    notifications.show({
+      message: "Мэдээлэл дутуу байна.",
+      position: "top-center",
+    });
+    return false;
   };
 
   const submit = async (payment: number) => {
@@ -577,7 +577,7 @@ const Page = () => {
                         <p className="leading-[2] text-[#546274] text-[14px] font-400">
                           {CarEvaluateValues[key as CarEvaluateKey].label}
                         </p>
-                        <Flex w={"100%"} gap={12} rowGap={12} align={'stretch'}>
+                        <Flex w={"100%"} gap={12} rowGap={12} align={"stretch"}>
                           {Array.from(
                             { length: data.length },
                             (_, i) => i + 1
@@ -669,9 +669,14 @@ const Page = () => {
                         <p className="leading-[2] text-[#546274] text-[14px] font-400">
                           {CarEvaluateValues[key as CarEvaluateKey].label}
                         </p>
-                        <Flex w={"100%"} gap={12} rowGap={12} style={{
-                          alignItems: 'stretch'
-                        }}>
+                        <Flex
+                          w={"100%"}
+                          gap={12}
+                          rowGap={12}
+                          style={{
+                            alignItems: "stretch",
+                          }}
+                        >
                           {Array.from(
                             { length: data.length },
                             (_, i) => i + 1
@@ -764,7 +769,7 @@ const Page = () => {
                         direction="row"
                         w={"100%"}
                         wrap="wrap"
-                        h={'100%'}
+                        h={"100%"}
                         style={{
                           border: "1px solid #DDDDDD",
                           borderRadius: 12,
