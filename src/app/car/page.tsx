@@ -900,7 +900,10 @@ const Page = () => {
         centered
         // fullScreen={!matches}
         size={matches ? (qpay != null ? "md" : "lg") : "xl"}
-        onClose={close}
+        onClose={() => {
+          close();
+          setQpay(null);
+        }}
       >
         <Modal.Overlay />
 
