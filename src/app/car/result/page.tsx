@@ -81,7 +81,7 @@ const Page = () => {
   const getResult = async () => {
     setLoading(true);
     if (id == null) return;
-    
+
     refetchUser();
     const res = await getRequestResult(+id);
     console.log(res);
@@ -139,15 +139,15 @@ const Page = () => {
     { name: "Төрөл", key: "type", icon: <RiCarLine size={24} /> },
     { name: "Хөтлөгч", key: "drive", icon: <GiCarWheel size={24} /> },
     { name: "Нөхцөл", key: "conditions", icon: <TbNumber size={24} /> },
-  ]
+  ];
   if (loading)
     return (
       <Center>
         <Loading />
       </Center>
     );
-    
-    return (
+
+  return (
     <Box>
       <ReportTitle>
         <Box>
@@ -272,7 +272,7 @@ const Page = () => {
                 WebkitTextFillColor: "transparent",
               }}
               children={`
-                    Таны сонгосон хотхоны м.кв үнэ цэн: ${money(
+                    Таны сонгосон автомашины м.кв үнэ цэн: ${money(
                       (data?.data?.price ?? 0).toString(),
                       "₮"
                     )}`}
@@ -329,7 +329,7 @@ const Page = () => {
                     align="center"
                     direction="row"
                     w={"100%"}
-                    h={'100%'}
+                    h={"100%"}
                     wrap="wrap"
                     style={{
                       border: "1px solid #DDDDDD",

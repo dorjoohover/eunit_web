@@ -319,7 +319,7 @@ export const NavbarValue = [
   { name: locale.data.NAVBAR.ESTIMATE, href: "/report" },
   { name: locale.data.NAVBAR.DATA, href: "/data" },
   { name: locale.data.NAVBAR.WALLET, href: "/wallet" },
-  { name: locale.data.NAVBAR.CAR, href: "/car" },
+  // { name: locale.data.NAVBAR.CAR, href: "/car" },
   // { name: locale.data.NAVBAR.CONTACT, href: "/contact" },
 ];
 
