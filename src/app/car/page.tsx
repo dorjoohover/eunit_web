@@ -34,19 +34,17 @@ import { QpayType } from "@/utils/type";
 import { PaymentType, ServiceType } from "@/config/enum";
 import { DatePicker, YearPicker, YearPickerInput } from "@mantine/dates";
 import {
-  brands,
+  CarBrand,
   carColor,
   carMain,
+  CarMark,
+  cars,
   carTechnik,
-  engineType,
-  marks,
   meterRange,
   motor,
-  motorType,
   steerType,
-  wheelDrive,
 } from "./selectModel";
-import { money } from "@/utils/functions";
+import { money, motorLabel } from "@/utils/functions";
 import { divide, upperFirst } from "lodash";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import { WalletCard } from "@/components/shared/card";
@@ -66,10 +64,10 @@ interface FormType {
   brand?: string;
   mark?: string;
   motor?: string;
-  motorType?: string;
-  engineType?: string;
+  engine?: string;
+  gearbox?: string;
   steerType?: string;
-  wheelDrive?: string;
+  drive?: string;
   color?: string;
   meter?: string;
   manufactured?: string;
@@ -113,7 +111,7 @@ const carFields = [
   },
   {
     name: "Хөдөлгүүрийн төрөл",
-    key: "motorType",
+    key: "engine",
     icon: <BsFuelPump size={24} />,
     step: 1,
   },
@@ -125,7 +123,7 @@ const carFields = [
   },
   {
     name: "Хурдны хайрцаг",
-    key: "engineType",
+    key: "gearbox",
     icon: <GiGearStickPattern size={24} />,
     step: 1,
   },
@@ -138,7 +136,7 @@ const carFields = [
   { name: "Төрөл", key: "type", icon: <RiCarLine size={24} />, step: 2 },
   {
     name: "Хөтлөгч",
-    key: "wheelDrive",
+    key: "drive",
     icon: <GiCarWheel size={24} />,
     step: 1,
   },
@@ -151,10 +149,10 @@ const Page = () => {
     brand: "",
     mark: "",
     motor: "",
-    motorType: "",
-    engineType: "",
+    engine: "",
+    gearbox: "",
     steerType: "",
-    wheelDrive: "",
+    drive: "",
     conditions: "",
     interior: "",
     type: "",
@@ -178,10 +176,10 @@ const Page = () => {
       form.brand &&
       form.mark &&
       form.motor &&
-      form.motorType &&
-      form.engineType &&
+      form.engine &&
+      form.gearbox &&
       form.steerType &&
-      form.wheelDrive &&
+      form.drive &&
       form.color &&
       form.meter &&
       form.manufactured &&
@@ -258,10 +256,10 @@ const Page = () => {
         break;
       case 1:
         if (
-          !form["motorType"] ||
+          !form["engine"] ||
           !form["motor"] ||
-          !form["engineType"] ||
-          !form["wheelDrive"]
+          !form["gearbox"] ||
+          !form["drive"]
         ) {
           notifications.show({
             position: "top-center",
@@ -379,6 +377,7 @@ const Page = () => {
                     my={5}
                     onChange={(e) => {
                       if (e != null) {
+                        console.log(e);
                         setForm((prev) => ({ ...prev, brand: e }));
                         setForm((prev) => ({ ...prev, mark: undefined }));
                       }
@@ -387,7 +386,14 @@ const Page = () => {
                     variant="car"
                     p="2px"
                     withScrollArea={false}
-                    data={brands}
+                    data={Object.entries(cars)
+                      .map(([key, value]) => {
+                        return {
+                          value: key,
+                          label: value.label,
+                        };
+                      })
+                      .filter((a) => a != undefined)}
                     label={CarEvaluateValues["brand"].label}
                     placeholder={CarEvaluateValues["brand"].pl}
                   />
@@ -397,44 +403,58 @@ const Page = () => {
                     w="100%"
                     onChange={(e) => {
                       if (e != null) {
-                        const split = e?.split(" ");
+                        const split = e?.split("-");
                         const brand = split?.[0];
                         const mark = split?.[1];
                         setForm((prev) => ({ ...prev, mark: mark }));
                         if (form["brand"] == null || form["brand"] != brand)
                           setForm((prev) => ({ ...prev, brand: brand }));
+                        const m =
+                          cars[brand as CarBrand].marks[mark as CarMark];
+                        if ((m["engine"] as string[]).length == 1)
+                          setForm((prev) => ({
+                            ...prev,
+                            engine: m["engine"][0],
+                          }));
+                        if ((m["gearbox"] as string[]).length == 1)
+                          setForm((prev) => ({
+                            ...prev,
+                            gearbox: m["gearbox"][0],
+                          }));
+                        if ((m["drive"] as string[]).length == 1)
+                          setForm((prev) => ({
+                            ...prev,
+                            drive: m["drive"][0],
+                          }));
                       }
                     }}
                     value={`${
                       form["mark"]
-                        ? `${form["brand"]} ${form["mark"]}`
+                        ? `${form["brand"]}-${form["mark"]}`
                         : undefined
                     }`}
                     variant="car"
                     p="2px"
                     withScrollArea={false}
-                    data={marks
-                      .map((mark) => {
-                        if (
-                          form["brand"] != null &&
-                          form["brand"] == mark.parent
-                        ) {
+                    data={(form["brand"]
+                      ? Object.entries(
+                          cars[form["brand"] as CarBrand].marks
+                        ).map(([key, value]) => {
                           return {
-                            label: mark.label,
-                            value: `${mark.parent} ${mark.value}`,
+                            label: value.label,
+                            value: `${form["brand"]}-${key}`,
                           };
-                        }
-
-                        if (!form["brand"]) {
-                          return {
-                            label: mark.label,
-                            value: `${mark.parent} ${mark.value}`,
-                          };
-                        } else {
-                          return undefined;
-                        }
-                      })
-                      .filter((e) => e != undefined)}
+                        })
+                      : Object.entries(cars).flatMap(([k, car]) =>
+                          Object.entries(car.marks).map(([key, value]) => {
+                            if (key != "busad" && key != "Бусад")
+                              return {
+                                value: `${k}-${key}`,
+                                label: value.label,
+                              };
+                          })
+                        )
+                    ).filter((a) => a != undefined)}
                     label={CarEvaluateValues["mark"].label}
                     placeholder={CarEvaluateValues["mark"].pl}
                   />
@@ -571,93 +591,103 @@ const Page = () => {
               bg={"transparent"}
             >
               <Grid gutter={12} maw={450}>
-                {carTechnik.map(({ key, data }, i) => (
-                  <Grid.Col
-                    span={data.length > 3 ? 12 : 12}
-                    key={`${key} ${i}`}
-                  >
-                    {data.length <= 3 ? (
-                      <div>
-                        <p className="leading-[2] text-[#546274] text-[14px] font-400">
-                          {CarEvaluateValues[key as CarEvaluateKey].label}
-                        </p>
-                        <Flex w={"100%"} gap={12} rowGap={12} align={"stretch"}>
-                          {Array.from(
-                            { length: data.length },
-                            (_, i) => i + 1
-                          ).map((i) => {
-                            return (
-                              <Button
-                                key={i}
-                                variant="outline"
-                                c={
-                                  form[key as keyof FormType] ==
-                                  data[i - 1].value
-                                    ? Colors.main
-                                    : Colors.black
-                                }
-                                flex={1}
-                                py={16}
-                                style={{
-                                  textWrap: "wrap",
-                                  whiteSpace: "normal",
-                                  wordWrap: "break-word",
-                                }}
-                                h={"auto"}
-                                lh={1.2}
-                                bg={
-                                  form[key as keyof FormType] ==
-                                  data[i - 1].value
-                                    ? Colors.reportInputActive
-                                    : "transparent"
-                                }
-                                styles={{
-                                  root: {
-                                    borderColor:
-                                      form[key as keyof FormType] ==
-                                      data[i - 1].value
-                                        ? Colors.main
-                                        : "#929292",
-                                  },
-                                }}
-                                onClick={() => {
-                                  setForm((prev) => ({
-                                    ...prev,
-                                    [key]: data[i - 1].value,
-                                  }));
-                                }}
-                              >
-                                {data[i - 1].label}
-                              </Button>
-                            );
-                          })}
-                        </Flex>
-                      </div>
-                    ) : (
-                      <Select
-                        w="100%"
-                        my={5}
-                        onChange={(e) => {
-                          if (e != null)
-                            setForm((prev) => ({ ...prev, [key]: e }));
-                        }}
-                        value={form[key as keyof FormType]}
-                        variant="car"
-                        __size="20px"
-                        withScrollArea={false}
-                        styles={{
-                          dropdown: { maxHeight: 200, overflowY: "auto" },
-                          label: { fontSize: "16px" },
-                        }}
-                        data={data}
-                        label={CarEvaluateValues[key as CarEvaluateKey].label}
-                        placeholder={
-                          CarEvaluateValues[key as CarEvaluateKey].pl
-                        }
-                      />
-                    )}
-                  </Grid.Col>
-                ))}
+                {carTechnik.map((key, i) => {
+                  const data =
+                    (cars[form["brand"] as CarBrand]?.marks[
+                      form["mark"] as CarMark
+                    ]?.[key] as any[]) ?? [];
+
+                  return (
+                    <Grid.Col
+                      span={data?.length > 3 ? 12 : 12}
+                      key={`${key} ${i}`}
+                    >
+                      {key != "motor" ? (
+                        <div>
+                          <p className="leading-[2] text-[#546274] text-[14px] font-400">
+                            {CarEvaluateValues[key as CarEvaluateKey].label}
+                          </p>
+                          <Flex
+                            w={"100%"}
+                            gap={12}
+                            rowGap={12}
+                            align={"stretch"}
+                          >
+                            {Array.from(
+                              { length: data.length },
+                              (_, i) => i + 1
+                            ).map((i) => {
+                              return (
+                                <Button
+                                  key={i}
+                                  variant="outline"
+                                  c={
+                                    form[key as keyof FormType] == data[i - 1]
+                                      ? Colors.main
+                                      : Colors.black
+                                  }
+                                  flex={1}
+                                  py={16}
+                                  style={{
+                                    textWrap: "wrap",
+                                    whiteSpace: "normal",
+                                    wordWrap: "break-word",
+                                  }}
+                                  h={"auto"}
+                                  lh={1.2}
+                                  bg={
+                                    form[key as keyof FormType] == data[i - 1]
+                                      ? Colors.reportInputActive
+                                      : "transparent"
+                                  }
+                                  styles={{
+                                    root: {
+                                      borderColor:
+                                        form[key as keyof FormType] ==
+                                        data[i - 1]
+                                          ? Colors.main
+                                          : "#929292",
+                                    },
+                                  }}
+                                  onClick={() => {
+                                    setForm((prev) => ({
+                                      ...prev,
+                                      [key]: data[i - 1],
+                                    }));
+                                  }}
+                                >
+                                  {data[i - 1]}
+                                </Button>
+                              );
+                            })}
+                          </Flex>
+                        </div>
+                      ) : (
+                        <Select
+                          w="100%"
+                          my={5}
+                          onChange={(e) => {
+                            if (e != null)
+                              setForm((prev) => ({ ...prev, [key]: e }));
+                          }}
+                          value={form[key as keyof FormType]}
+                          variant="car"
+                          __size="20px"
+                          withScrollArea={false}
+                          styles={{
+                            dropdown: { maxHeight: 200, overflowY: "auto" },
+                            label: { fontSize: "16px" },
+                          }}
+                          data={motorLabel(data[0], data[1], data?.[2])}
+                          label={CarEvaluateValues[key as CarEvaluateKey].label}
+                          placeholder={
+                            CarEvaluateValues[key as CarEvaluateKey].pl
+                          }
+                        />
+                      )}
+                    </Grid.Col>
+                  );
+                })}
               </Grid>
             </Stepper.Step>
             <Stepper.Step

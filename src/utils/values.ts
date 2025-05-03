@@ -253,14 +253,14 @@ export const DataDownloadValue = {
   },
 };
 
-export type CarEvaluateKey = 
+export type CarEvaluateKey =
   | "brand"
   | "mark"
   | "motor"
-  | "motorType"
-  | "engineType"
+  | "engine"
+  | "gearbox"
   | "steerType"
-  | "wheelDrive"
+  | "drive"
   | "color"
   | "meter"
   | "manufactured"
@@ -278,10 +278,10 @@ export const CarEvaluateValues: Record<CarEvaluateKey, CarEvaluateValue> = {
   brand: { label: "Брэнд", pl: "Сонгоно уу" },
   mark: { label: "Марк", pl: "Сонгоно уу" },
   motor: { label: "Хөдөлгүүрийн багтаамж", pl: "Сонгоно уу" },
-  motorType: { label: "Хөдөлгүүрийн төрөл", pl: "Сонгоно уу" },
-  engineType: { label: "Хурдны хайрцаг", pl: "Сонгоно уу" },
+  engine: { label: "Хөдөлгүүрийн төрөл", pl: "Сонгоно уу" },
+  gearbox: { label: "Хурдны хайрцаг", pl: "Сонгоно уу" },
   steerType: { label: "Хүрд", pl: "Сонгоно уу" },
-  wheelDrive: { label: "Хөтлөгч", pl: "Сонгоно уу" },
+  drive: { label: "Хөтлөгч", pl: "Сонгоно уу" },
   color: { label: "Өнгө", pl: "Сонгоно уу" },
   interior: { label: "Салоны өнгө", pl: "Сонгоно уу" },
   type: { label: "Төрөл", pl: "Сонгоно уу" },

@@ -157,10 +157,10 @@ export const carEvaluate = async (
     brand?: string;
     mark?: string;
     motor?: string;
-    motorType?: string;
-    engineType?: string;
+    engine?: string;
+    gearbox?: string;
     steerType?: string;
-    wheelDrive?: string;
+    drive?: string;
     color?: string;
     meter?: string;
     manufactured?: string;
@@ -182,10 +182,10 @@ export const carEvaluate = async (
       brand: value.brand,
       mark: value.mark,
       capacity: value.motor,
-      engine: value.motorType,
-      gearbox: value.engineType,
+      engine: value.engine,
+      gearbox: value.gearbox,
       hurd: value.steerType,
-      drive: value.wheelDrive,
+      drive: value.drive,
       color: value.color,
       mileage: value.meter,
       manufacture: value.manufactured,

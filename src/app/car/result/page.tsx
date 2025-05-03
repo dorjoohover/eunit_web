@@ -272,7 +272,7 @@ const Page = () => {
                 WebkitTextFillColor: "transparent",
               }}
               children={`
-                    Таны сонгосон автомашины м.кв үнэ цэн: ${money(
+                    Таны сонгосон автомашины үнэ цэн: ${money(
                       (data?.data?.price ?? 0).toString(),
                       "₮"
                     )}`}
