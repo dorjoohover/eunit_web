@@ -41,7 +41,8 @@ import {
   cars,
   carTechnik,
   meterRange,
-  motor,
+  paymentValues,
+  PaymentValueType,
   steerType,
 } from "./selectModel";
 import { money, motorLabel } from "@/utils/functions";
@@ -73,8 +74,12 @@ interface FormType {
   manufactured?: string;
   imported?: string;
   conditions?: string;
-  type?: string;
+  // type?: string;
   interior?: string;
+  lastname?: string;
+  firstname?: string;
+  usage?: string;
+  org?: string;
 }
 const carFields = [
   {
@@ -133,7 +138,7 @@ const carFields = [
     step: 2,
     icon: <LuPaintRoller size={24} />,
   },
-  { name: "Төрөл", key: "type", icon: <RiCarLine size={24} />, step: 2 },
+  // { name: "Төрөл", key: "type", icon: <RiCarLine size={24} />, step: 2 },
   {
     name: "Хөтлөгч",
     key: "drive",
@@ -155,10 +160,14 @@ const Page = () => {
     drive: "",
     conditions: "",
     interior: "",
-    type: "",
+    // type: "",
     color: "",
     meter: "0",
     manufactured: "",
+    lastname: undefined,
+    firstname: undefined,
+    usage: undefined,
+    org: undefined,
     imported: "",
   });
   const id = params.get("id");
@@ -184,7 +193,7 @@ const Page = () => {
       form.meter &&
       form.manufactured &&
       form.conditions &&
-      form.type &&
+      // form.type &&
       form.interior &&
       form.imported
     ) {
@@ -274,8 +283,8 @@ const Page = () => {
           !form["color"] ||
           !form["interior"] ||
           !form["steerType"] ||
-          !form["conditions"] ||
-          !form["type"]
+          !form["conditions"]
+          // !form["type"]
         ) {
           notifications.show({
             position: "top-center",
@@ -872,60 +881,6 @@ const Page = () => {
               {active == 3 ? "Илгээх" : "Үргэлжлүүлэх"}
             </Button>
           </Group>
-          {/* <Grid style={{ padding: "20px", fontSize: "11px" }}>
-           
-            {carMain.map(({ key, data }, i) => (
-              <Grid.Col span={4} key={i}>
-                <Select
-                  w="100%"
-                  my={5}
-                  onChange={(e) => {
-                    if (e != null) setForm((prev) => ({ ...prev, [key]: e }));
-                  }}
-                  value={form[key as keyof FormType]}
-                  variant="rounded"
-                  p="2px"
-                  __size="20px"
-                  withScrollArea={false}
-                  styles={{
-                    dropdown: { maxHeight: 200, overflowY: "auto" },
-                    label: { fontSize: "16px" },
-                  }}
-                  data={data}
-                  label={CarEvaluateValues[key as CarEvaluateKey].label}
-                  placeholder={CarEvaluateValues[key as CarEvaluateKey].pl}
-                />
-              </Grid.Col>
-            ))}
-            
-            
-            <Grid.Col span={4}>
-              <Spacer size={44} />
-              <Button
-                px={20}
-                bg="main"
-                fz={20}
-                py={12}
-                h="auto"
-                fullWidth
-                onClick={submit}
-              >
-                Үнэлгээ хийх
-              </Button>
-            </Grid.Col>
-          </Grid>
-          <Image
-            src="/assets/images/car/carEva.png"
-            alt="error image"
-            w={{
-              base: "100%",
-              md: "100%",
-              lg: "100%",
-              xl: "100%",
-            }}
-            mx={"auto !important"}
-            p={20}
-          /> */}
         </Box>
         <Spacer size={"10rem"} />
       </ReportTitle>
@@ -1042,15 +997,130 @@ const Page = () => {
               }}
               pt={20}
             >
-              <WalletCard
+              {["lastname", "firstname"].map((value, i) => {
+                return (
+                  <TextInput
+                    mb={10}
+                    key={i}
+                    fz={16}
+                    label={CarEvaluateValues[value as CarEvaluateKey].label}
+                    placeholder={CarEvaluateValues[value as CarEvaluateKey].pl}
+                    value={form[value as keyof FormType]}
+                    onChange={(e) => {
+                      if (e.target.value != null) {
+                        setForm((prev) => ({
+                          ...prev,
+                          [value]: e.target.value,
+                        }));
+                      }
+                    }}
+                    variant="icon"
+                    min={0}
+                    w={"100%"}
+                    maw={"100%"}
+                  />
+                );
+              })}
+              {["usage", "org"].map((value, k) => {
+                return (
+                  <Box key={k} mb={10}>
+                    <Text fz={14} fw={500} lh={1.55}>
+                      {CarEvaluateValues[value as CarEvaluateKey].label}
+                    </Text>
+                    <Flex
+                      w={"100%"}
+                      gap={12}
+                      rowGap={12}
+                      style={{
+                        alignItems: "stretch",
+                      }}
+                    >
+                      {paymentValues[value as PaymentValueType].map(
+                        (data, i) => {
+                          return (
+                            <Button
+                              variant="outline"
+                              style={{
+                                textWrap: "wrap",
+                                whiteSpace: "normal",
+                                wordWrap: "break-word",
+                              }}
+                              c={
+                                form[value as keyof FormType] == `${data.value}`
+                                  ? Colors.main
+                                  : Colors.black
+                              }
+                              fw={400}
+                              flex={1}
+                              key={i}
+                              py={8}
+                              h={"auto"}
+                              lh={1.2}
+                              bg={
+                                form[value as keyof FormType] == `${data.value}`
+                                  ? Colors.reportInputActive
+                                  : "transparent"
+                              }
+                              fz={12}
+                              styles={{
+                                root: {
+                                  borderColor:
+                                    form[value as keyof FormType] ==
+                                    `${data.value}`
+                                      ? Colors.main
+                                      : Colors.stroke,
+                                },
+                                label: {
+                                  whiteSpace: "normal",
+                                },
+                              }}
+                              onClick={() => {
+                                setForm((prev) => ({
+                                  ...prev,
+                                  [value]: `${data.value}`,
+                                }));
+                              }}
+                              leftSection={
+                                data.icon != undefined ? (
+                                  <Box
+                                    w={36}
+                                    h={36}
+                                    style={{
+                                      borderRadius: 5,
+                                      overflow: "hidden",
+                                    }}
+                                  >
+                                    <Image
+                                      src={Assets.service}
+                                      h={'100%'}
+                                      w={'100%'}
+                                      fit="cover"
+                                      alt={data.label}
+                                    />
+                                  </Box>
+                                ) : null
+                              }
+                            >
+                              {data.label}
+                            </Button>
+                          );
+                        }
+                      )}
+                    </Flex>
+                  </Box>
+                );
+              })}
+              {/* <WalletCard
                 onClick={() => {
                   router.push("/wallet");
                 }}
-              />
+              /> */}
               <Highlight
                 mt={24}
-                mb={32}
-                fz={18}
+                mb={24}
+                fz={16}
+                lh={1.1}
+                c={Colors.darkBlue}
                 highlight={["урамшуулал", "2,000 E-unit"]}
                 highlightStyles={{
                   background: Colors.main,
@@ -1061,14 +1131,27 @@ const Page = () => {
                 Шинэ хэрэглэгчийн урамшуулал бүхий 2,000 E-unit ашиглан энэхүү
                 үйлчилгээг авах боломжтой.
               </Highlight>
-
+              <Text fz={16} lh={1.1} mb={20} c={Colors.darkBlue}>
+                Урамшууллын үлдэгдэл: {money(`${user?.wallet ?? 0}`)} E-unit
+              </Text>
+              <Flex rowGap={0} gap={5} mb={20}>
+                <Text fz={16} lh={1.1} c={Colors.darkBlue}>
+                  Нийт төлбөр{" "}
+                </Text>
+                <Text fz={16} lh={1.1} c={Colors.darkBlue} fw={"bold"}>
+                  : {money(`${2000}`)}₮
+                </Text>
+              </Flex>
+              <Text fz={16} lh={1.1} mb={20} c={Colors.darkBlue} fw={"bold"}>
+                Төлбөрийн нөхцөл:
+              </Text>
               <Flex>
                 {user?.wallet && user?.wallet >= 2000 ? (
                   <Button
                     w={"100%"}
-                    fz={24}
+                    fz={20}
                     bg={"main"}
-                    py={16}
+                    py={12}
                     h={"auto"}
                     mb={40}
                     disabled={loading}
@@ -1082,19 +1165,19 @@ const Page = () => {
                       </Center>
                     ) : (
                       <Flex align={"center"}>
-                        <Text c={"white"} fz={24}>
-                          2,000.00
-                        </Text>
                         <EunitIcon />
+                        <Text c={"white"} fz={20}>
+                          Лояалти
+                        </Text>
                       </Flex>
                     )}
                   </Button>
                 ) : null}
                 <Button
                   w={"100%"}
-                  fz={24}
+                  fz={20}
                   bg={"main"}
-                  py={16}
+                  py={12}
                   h={"auto"}
                   mb={40}
                   disabled={loading}
@@ -1108,18 +1191,10 @@ const Page = () => {
                     </Center>
                   ) : (
                     <Flex align={"center"}>
-                      <Text c={"white"} fz={24}>
-                        QPAY 2,000.00
+                      <EunitIcon />
+                      <Text c={"white"} fz={20}>
+                        Qpay
                       </Text>
-                      <Image
-                        src={Assets.qpay}
-                        width={25}
-                        height={25}
-                        style={{
-                          width: 25,
-                        }}
-                        alt="qpay logo"
-                      />
                     </Flex>
                   )}
                 </Button>

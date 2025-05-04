@@ -13,6 +13,12 @@ export enum UserType {
   admin = 10,
 }
 
+export enum PaymentUsage {
+  INSURANCE = 10,
+  LOAN = 20,
+  VALUE = 30,
+}
+
 export enum PaymentType {
   QPAY = 1,
   POINT = 2,
@@ -20,10 +26,10 @@ export enum PaymentType {
 }
 
 export const PaymentTypeValue = {
-  1: "Qpay", 
+  1: "Qpay",
   2: "Оноо",
-  3: "Урамшуулал"
-}
+  3: "Урамшуулал",
+};
 
 export enum TransactionType {
   income = 10,

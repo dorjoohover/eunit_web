@@ -165,7 +165,7 @@ export const carEvaluate = async (
     meter?: string;
     manufactured?: string;
     imported?: string;
-    type?: string;
+    // type?: string;
     interior?: string;
     conditions?: string;
   },
@@ -191,7 +191,7 @@ export const carEvaluate = async (
       manufacture: value.manufactured,
       entry: value.imported,
       service,
-      type: value.type,
+      // type: value.type,
       interior: value.interior,
       conditions: value.conditions,
       category: 20,

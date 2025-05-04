@@ -267,6 +267,10 @@ export type CarEvaluateKey =
   | "type"
   | "interior"
   | "conditions"
+  | "org"
+  | "firstname"
+  | "lastname"
+  | "usage"
   | "imported";
 
 type CarEvaluateValue = {
@@ -289,6 +293,10 @@ export const CarEvaluateValues: Record<CarEvaluateKey, CarEvaluateValue> = {
   meter: { label: "Гүйлт", pl: "Оруулна уу" },
   manufactured: { label: "Үйлдвэрлэгдсэн он", pl: "Оруулна уу" },
   imported: { label: "Импортлогдсон он", pl: "Оруулна уу" },
+  lastname: { label: "Овог", pl: "Овог оруулна уу" },
+  firstname: { label: "Нэр", pl: "Өөрийн нэр оруулна уу" },
+  usage: { label: "Лавлагааны зориулалт", pl: "" },
+  org: { label: "Байгууллага сонголт", pl: "" },
 };
 
 export const locationCenter = {
@@ -316,10 +324,9 @@ export const createAdNav = [
 
 export const NavbarValue = [
   { name: locale.data.NAVBAR.HOME, href: "/" },
-  { name: locale.data.NAVBAR.ESTIMATE, href: "/report" },
-  { name: locale.data.NAVBAR.DATA, href: "/data" },
-  { name: locale.data.NAVBAR.WALLET, href: "/wallet" },
+  { name: locale.data.NAVBAR.REALSTATE, href: "/report" },
   { name: locale.data.NAVBAR.CAR, href: "/car" },
+  { name: locale.data.NAVBAR.WALLET, href: "/wallet" },
   // { name: locale.data.NAVBAR.CONTACT, href: "/contact" },
 ];
 

@@ -178,7 +178,8 @@ export const inputs = {
         return {
           input: {
             border: `2px solid ${Colors.stroke}`,
-            color: "#566476",
+            color: Colors.darkBlue,
+            fontSize: 14,
             padding: props.pe?.toString() ?? `8px 28px`,
             height: "auto",
             background: "white",
