@@ -8,8 +8,8 @@ const estimate = "estimate/";
 // export const api = "https://srv654666.hstgr.cloud/api/v1/";
 
 // export const api = "http://192.168.1.15:3001/api/v1/";
-export const api = "http://localhost:4000/api/v1/";
-// export const api = "https://dev.srv654666.hstgr.cloud/api/v1/";
+// export const api = "http://localhost:4000/api/v1/";
+export const api = "https://dev.srv654666.hstgr.cloud/api/v1/";
 // export const uri = "http://localhost:3001";
 export const currentUrl = "http://localhost:3000";
 
