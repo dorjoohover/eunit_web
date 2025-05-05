@@ -24,6 +24,7 @@ import { FaPlusCircle } from "react-icons/fa";
 import { IoIosArrowRoundForward, IoMdArrowForward } from "react-icons/io";
 
 export const WalletCard = ({ onClick }: { onClick: () => void }) => {
+  const { user } = useAppContext();
   return (
     <Box
       style={{
