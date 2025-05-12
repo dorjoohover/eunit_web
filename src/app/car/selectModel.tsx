@@ -917,7 +917,7 @@ export const cars = {
       },
       Nx200t: {
         label: "Nx200t",
-        engine: engine,
+        engine: [engine[0], engine[2]],
         gearbox: gearbox.slice(0, 1),
         //
         drive: drive,
@@ -925,7 +925,7 @@ export const cars = {
       },
       Nx300h: {
         label: "Nx300h",
-        engine: engine,
+        engine: [engine[0], engine[2]],
         gearbox: gearbox.slice(0, 1),
         //
         drive: drive,
@@ -933,28 +933,28 @@ export const cars = {
       },
       Rx: {
         label: "Rx",
-        engine: engine,
+        engine: [engine[0], engine[2]],
         gearbox: gearbox.slice(0, 1),
         drive: [drive[2]],
         motor: [3.5, 3.6],
       },
       Rx200t: {
         label: "Rx200t",
-        engine: engine,
+        engine: [engine[0], engine[2]],
         gearbox: gearbox.slice(0, 1),
         drive: [drive[2]],
         motor: [2.0, 2.0],
       },
       Rx270: {
         label: "Rx270",
-        engine: engine,
+        engine: [engine[0], engine[2]],
         gearbox: gearbox.slice(0, 1),
         drive: [drive[2]],
         motor: [2.7, 2.7],
       },
       Rx270h: {
         label: "Rx270h",
-        engine: engine,
+        engine: [engine[0], engine[2]],
         gearbox: gearbox.slice(0, 1),
         drive: [drive[2]],
         motor: [2.7, 2.7],
@@ -968,14 +968,14 @@ export const cars = {
       // },
       Rx300h: {
         label: "Rx300h",
-        engine: engine,
+        engine: [engine[0], engine[2]],
         gearbox: gearbox.slice(0, 1),
         drive: [drive[2]],
         motor: [2.0, 2.0],
       },
       Rx330: {
         label: "Rx330",
-        engine: engine,
+        engine: [engine[0], engine[2]],
         gearbox: gearbox.slice(0, 1),
         drive: [drive[2]],
         motor: [3.3, 3.3],
@@ -989,21 +989,21 @@ export const cars = {
       // },
       Rx350h: {
         label: "Rx350h",
-        engine: engine,
+        engine: [engine[0], engine[2]],
         gearbox: gearbox.slice(0, 1),
         drive: [drive[2]],
         motor: [2.5, 2.7],
       },
       Rx400h: {
         label: "Rx400h",
-        engine: engine,
+        engine: [engine[0], engine[2]],
         gearbox: gearbox.slice(0, 1),
         drive: [drive[2]],
         motor: [3.3, 3.3],
       },
       Rx450h: {
         label: "Rx450h",
-        engine: engine,
+        engine: [engine[0], engine[2]],
         gearbox: gearbox.slice(0, 1),
         drive: [drive[2]],
         motor: [3.3, 3.3],
