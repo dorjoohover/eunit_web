@@ -210,9 +210,10 @@ const Page = () => {
   };
 
   const submit = async (payment: number) => {
-    setLoading(true);
     const check = checker();
+    console.log(check)
     if (!check) return;
+    setLoading(true);
     if (
       payment != PaymentType.QPAY &&
       user?.wallet &&
@@ -229,7 +230,6 @@ const Page = () => {
       setLoading(false);
       return;
     }
-
     const res = await carEvaluate(form, ServiceType.REVIEW, payment);
     if (payment == PaymentType.QPAY) {
       setQpay({
