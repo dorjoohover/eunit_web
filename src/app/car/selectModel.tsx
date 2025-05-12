@@ -1,4 +1,5 @@
 import { PaymentUsage } from "@/config/enum";
+import { logo, logoMiniBlue, logos } from "@/utils/assets";
 
 export const drive = ["Хойноо RWD", "Урдаа FWD", "Бүх дугуй 4WD"];
 export const engine = ["Бензин", "Дизель", "Хайбрид", "Газ", "Цахилгаан"];
@@ -16,13 +17,13 @@ export const cars = {
         gearbox: gearbox.slice(0, 1),
         drive: drive.slice(1, 2),
       },
-      Integra: {
-        label: "Integra",
-        motor: [1.5, 2.0],
-        engine: [engine[0], engine[2]],
-        gearbox: gearbox,
-        drive: drive.slice(1, 2),
-      },
+      // Integra: {
+      //   label: "Integra",
+      //   motor: [1.5, 2.0],
+      //   engine: [engine[0], engine[2]],
+      //   gearbox: gearbox,
+      //   drive: drive.slice(1, 2),
+      // },
     },
   },
   Audi: {
@@ -73,18 +74,18 @@ export const cars = {
       },
     },
   },
-  Bestune: {
-    label: "Bestune",
-    marks: {
-      B70: {
-        label: "B70",
-        engine: [...engine.slice(0, 2), engine[4]],
-        gearbox: gearbox.slice(0, 1),
-        drive: drive.slice(1, 2),
-        motor: [1.5, 2.0],
-      },
-    },
-  },
+  // Bestune: {
+  //   label: "Bestune",
+  //   marks: {
+  //     B70: {
+  //       label: "B70",
+  //       engine: [...engine.slice(0, 2), engine[4]],
+  //       gearbox: gearbox.slice(0, 1),
+  //       drive: drive.slice(1, 2),
+  //       motor: [1.5, 2.0],
+  //     },
+  //   },
+  // },
   Bmw: {
     label: "Bmw",
     marks: {
@@ -142,28 +143,28 @@ export const cars = {
       },
     },
   },
-  Cadillac: {
-    label: "Cadillac",
-    marks: {
-      Cts: {
-        label: "Cts",
-        engine: engine.slice(0, 1),
-        gearbox: gearbox,
-        drive: [drive[0], drive[2]],
-        motor: [2.0, 6.2],
-      },
-      Escalade: {
-        label: "Escalade",
-        engine: [engine[0], engine[2]],
-        gearbox: gearbox.slice(0, 1),
-        drive: [drive[0], drive[2]],
-        motor: [6.2, 6.2],
-      },
-      busad: {
-        label: "busad",
-      },
-    },
-  },
+  // Cadillac: {
+  //   label: "Cadillac",
+  //   marks: {
+  //     Cts: {
+  //       label: "Cts",
+  //       engine: engine.slice(0, 1),
+  //       gearbox: gearbox,
+  //       drive: [drive[0], drive[2]],
+  //       motor: [2.0, 6.2],
+  //     },
+  //     Escalade: {
+  //       label: "Escalade",
+  //       engine: [engine[0], engine[2]],
+  //       gearbox: gearbox.slice(0, 1),
+  //       drive: [drive[0], drive[2]],
+  //       motor: [6.2, 6.2],
+  //     },
+  //     busad: {
+  //       label: "busad",
+  //     },
+  //   },
+  // },
   Changan: {
     label: "Changan",
     marks: {
@@ -186,45 +187,45 @@ export const cars = {
       },
     },
   },
-  Chery: {
-    label: "Chery",
-    marks: {
-      "Tiggo 7": {
-        label: "Tiggo 7",
-        engine: engine.slice(0, 1),
-        gearbox: gearbox.slice(0, 1),
-        drive: [drive[1]],
-        motor: [1.5, 1.6, "turbo"],
-      },
-      "Tiggo 7 Pro": {
-        label: "Tiggo 7 Pro",
-        engine: [engine[0], engine[2]],
-        gearbox: gearbox.slice(0, 1),
-        drive: [drive[1], drive[2]],
-        motor: [1.5, 1.6, "turbo"],
-      },
-      "Tiggo 7 Pro Max": {
-        label: "Tiggo 7 Pro Max",
-        engine: [engine[0], engine[2]],
-        gearbox: gearbox.slice(0, 1),
-        drive: [drive[1], drive[2]],
-        motor: [1.5, 1.6, "turbo"],
-      },
-      busad: {
-        label: "busad",
-      },
-    },
-  },
+  // Chery: {
+  //   label: "Chery",
+  //   marks: {
+  //     "Tiggo 7": {
+  //       label: "Tiggo 7",
+  //       engine: engine.slice(0, 1),
+  //       gearbox: gearbox.slice(0, 1),
+  //       drive: [drive[1]],
+  //       motor: [1.5, 1.6, "turbo"],
+  //     },
+  //     "Tiggo 7 Pro": {
+  //       label: "Tiggo 7 Pro",
+  //       engine: [engine[0], engine[2]],
+  //       gearbox: gearbox.slice(0, 1),
+  //       drive: [drive[1], drive[2]],
+  //       motor: [1.5, 1.6, "turbo"],
+  //     },
+  //     "Tiggo 7 Pro Max": {
+  //       label: "Tiggo 7 Pro Max",
+  //       engine: [engine[0], engine[2]],
+  //       gearbox: gearbox.slice(0, 1),
+  //       drive: [drive[1], drive[2]],
+  //       motor: [1.5, 1.6, "turbo"],
+  //     },
+  //     busad: {
+  //       label: "busad",
+  //     },
+  //   },
+  // },
   Chevrolet: {
     label: "Chevrolet",
     marks: {
-      Camaro: {
-        label: "Camaro",
-        engine: engine.slice(0, 1),
-        gearbox: gearbox,
-        drive: [drive[0]],
-        motor: [2.0, 6.2],
-      },
+      // Camaro: {
+      //   label: "Camaro",
+      //   engine: engine.slice(0, 1),
+      //   gearbox: gearbox,
+      //   drive: [drive[0]],
+      //   motor: [2.0, 6.2],
+      // },
       "Captiva Sport": {
         label: "Captiva Sport",
         engine: [engine[0]],
@@ -232,13 +233,13 @@ export const cars = {
         drive: [drive[1], drive[2]],
         motor: [2.4, 3.6],
       },
-      Colorado: {
-        label: "Colorado",
-        engine: [engine[0], engine[1]],
-        gearbox: gearbox,
-        drive: [drive[0], drive[2]],
-        motor: [2.5, 3.6],
-      },
+      // Colorado: {
+      //   label: "Colorado",
+      //   engine: [engine[0], engine[1]],
+      //   gearbox: gearbox,
+      //   drive: [drive[0], drive[2]],
+      //   motor: [2.5, 3.6],
+      // },
       Cruze: {
         label: "Cruze",
         engine: [engine[0], engine[1]],
@@ -253,42 +254,42 @@ export const cars = {
         drive: [drive[0], drive[2]],
         motor: [5.3, 6.2],
       },
-      Trailblazer: {
-        label: "Trailblazer",
-        engine: [engine[0], engine[1]],
-        gearbox: gearbox.slice(0, 1),
-        drive: [drive[1]],
-        motor: [1.2, 3.6],
-      },
+      // Trailblazer: {
+      //   label: "Trailblazer",
+      //   engine: [engine[0], engine[1]],
+      //   gearbox: gearbox.slice(0, 1),
+      //   drive: [drive[1]],
+      //   motor: [1.2, 3.6],
+      // },
     },
   },
-  Citroean: {
-    label: "Citroean",
-    marks: {
-      C1: {
-        label: "C1",
-        engine: engine.slice(0, 1),
-        gearbox: gearbox,
-        drive: drive.slice(1),
-        motor: [1.0, 1.2],
-      },
-    },
-  },
-  Deawoo: {
-    label: "Deawoo",
-    marks: {
-      Rezzo: {
-        label: "Rezzo",
-        engine: engine.slice(0, 1),
-        gearbox: gearbox,
-        drive: drive.slice(1, 2),
-        motor: [1.6, 2.0],
-      },
-      Busad: {
-        label: "busad",
-      },
-    },
-  },
+  // Citroean: {
+  //   label: "Citroean",
+  //   marks: {
+  //     C1: {
+  //       label: "C1",
+  //       engine: engine.slice(0, 1),
+  //       gearbox: gearbox,
+  //       drive: drive.slice(1),
+  //       motor: [1.0, 1.2],
+  //     },
+  //   },
+  // },
+  // Deawoo: {
+  //   label: "Deawoo",
+  //   marks: {
+  //     Rezzo: {
+  //       label: "Rezzo",
+  //       engine: engine.slice(0, 1),
+  //       gearbox: gearbox,
+  //       drive: drive.slice(1, 2),
+  //       motor: [1.6, 2.0],
+  //     },
+  //     Busad: {
+  //       label: "busad",
+  //     },
+  //   },
+  // },
   Daihatsu: {
     label: "Daihatsu",
     marks: {
@@ -336,23 +337,23 @@ export const cars = {
         drive: [drive[1]],
         motor: [1.5, 1.5],
       },
-      "Voyah Free": {
-        label: "Voyah Free",
-        engine: engine.slice(0, 1),
-        gearbox: gearbox.slice(0, 1),
-        drive: [drive[2]],
-        motor: [2.0, 2.0],
-      },
+      // "Voyah Free": {
+      //   label: "Voyah Free",
+      //   engine: engine.slice(0, 1),
+      //   gearbox: gearbox.slice(0, 1),
+      //   drive: [drive[2]],
+      //   motor: [2.0, 2.0],
+      // },
     },
   },
-  Fiat: {
-    label: "Fiat",
-    marks: {
-      Busad: {
-        label: "Busad",
-      },
-    },
-  },
+  // Fiat: {
+  //   label: "Fiat",
+  //   marks: {
+  //     Busad: {
+  //       label: "Busad",
+  //     },
+  //   },
+  // },
   Ford: {
     label: "Ford",
     marks: {
@@ -410,25 +411,25 @@ export const cars = {
       },
     },
   },
-  Foton: {
-    label: "Foton",
-    marks: {
-      Tunland: {
-        label: "Tunland",
-        engine: [engine[1]],
-        gearbox: gearbox.slice(0),
-        drive: [drive[0], drive[2]],
-        motor: [2.0, 2.4],
-      },
-      "View Cs2": {
-        label: "View Cs2",
-        engine: engine.slice(0, 1),
-        gearbox: gearbox.slice(0),
-        drive: [drive[1]],
-        motor: [1.5, 1.5],
-      },
-    },
-  },
+  // Foton: {
+  //   label: "Foton",
+  //   marks: {
+  //     Tunland: {
+  //       label: "Tunland",
+  //       engine: [engine[1]],
+  //       gearbox: gearbox.slice(0),
+  //       drive: [drive[0], drive[2]],
+  //       motor: [2.0, 2.4],
+  //     },
+  //     "View Cs2": {
+  //       label: "View Cs2",
+  //       engine: engine.slice(0, 1),
+  //       gearbox: gearbox.slice(0),
+  //       drive: [drive[1]],
+  //       motor: [1.5, 1.5],
+  //     },
+  //   },
+  // },
   Geely: {
     label: "Geely",
     marks: {
@@ -462,25 +463,25 @@ export const cars = {
       },
     },
   },
-  Gmc: {
-    label: "Gmc",
-    marks: {
-      Acadia: {
-        label: "Acadia",
-        engine: [engine[0]],
-        gearbox: gearbox.slice(0, 1),
-        drive: [drive[2]],
-        motor: [2.5, 3.6],
-      },
-      Yukon: {
-        label: "Yukon",
-        engine: engine.slice(0, 2),
-        gearbox: gearbox.slice(0, 1),
-        drive: [drive[2]],
-        motor: [5.3, 6.2],
-      },
-    },
-  },
+  // Gmc: {
+  //   label: "Gmc",
+  //   marks: {
+  //     Acadia: {
+  //       label: "Acadia",
+  //       engine: [engine[0]],
+  //       gearbox: gearbox.slice(0, 1),
+  //       drive: [drive[2]],
+  //       motor: [2.5, 3.6],
+  //     },
+  //     Yukon: {
+  //       label: "Yukon",
+  //       engine: engine.slice(0, 2),
+  //       gearbox: gearbox.slice(0, 1),
+  //       drive: [drive[2]],
+  //       motor: [5.3, 6.2],
+  //     },
+  //   },
+  // },
   Gwm: {
     label: "Gwm",
     marks: {
@@ -496,13 +497,13 @@ export const cars = {
   Haval: {
     label: "Haval",
     marks: {
-      "Dargo 4X2": {
-        label: "Dargo 4X2",
-        engine: [engine[1]],
-        gearbox: gearbox.slice(0),
-        drive: [drive[1]],
-        motor: [2.0, 2.5],
-      },
+      // "Dargo 4X2": {
+      //   label: "Dargo 4X2",
+      //   engine: [engine[1]],
+      //   gearbox: gearbox.slice(0),
+      //   drive: [drive[1]],
+      //   motor: [2.0, 2.5],
+      // },
       "H Series": {
         label: "H Series",
         engine: [engine[0], engine[1]],
@@ -518,13 +519,13 @@ export const cars = {
   Honda: {
     label: "Honda",
     marks: {
-      Civic: {
-        label: "Civic",
-        engine: [engine[0]],
-        gearbox: gearbox.slice(0),
-        drive: [drive[1]],
-        motor: [1.5, 2.0],
-      },
+      // Civic: {
+      //   label: "Civic",
+      //   engine: [engine[0]],
+      //   gearbox: gearbox.slice(0),
+      //   drive: [drive[1]],
+      //   motor: [1.5, 2.0],
+      // },
       "Cr V": {
         label: "Cr V",
         engine: [engine[0], engine[2]],
@@ -560,13 +561,13 @@ export const cars = {
         drive: [drive[1]],
         motor: [1.5, 1.5],
       },
-      Odyssey: {
-        label: "Odyssey",
-        engine: [engine[0]],
-        gearbox: gearbox.slice(0, 1),
-        drive: [drive[1]],
-        motor: [2.4, 3.5],
-      },
+      // Odyssey: {
+      //   label: "Odyssey",
+      //   engine: [engine[0]],
+      //   gearbox: gearbox.slice(0, 1),
+      //   drive: [drive[1]],
+      //   motor: [2.4, 3.5],
+      // },
       Busad: {
         label: "Busad",
       },
@@ -658,44 +659,44 @@ export const cars = {
         drive: [drive[2]],
         motor: [3.5, 3.5],
       },
-      Q45: {
-        label: "Q45",
-        engine: [engine[0]],
-        gearbox: gearbox.slice(0, 1),
-        drive: [drive[0]],
-        motor: [4.5, 4.5],
-      },
-      Qx56: {
-        label: "Qx56",
-        engine: [engine[1]],
-        gearbox: gearbox.slice(0, 1),
-        drive: [drive[2]],
-        motor: [5.6, 5.6],
-      },
+      // Q45: {
+      //   label: "Q45",
+      //   engine: [engine[0]],
+      //   gearbox: gearbox.slice(0, 1),
+      //   drive: [drive[0]],
+      //   motor: [4.5, 4.5],
+      // },
+      // Qx56: {
+      //   label: "Qx56",
+      //   engine: [engine[1]],
+      //   gearbox: gearbox.slice(0, 1),
+      //   drive: [drive[2]],
+      //   motor: [5.6, 5.6],
+      // },
     },
   },
-  Isuzu: {
-    label: "Isuzu",
-    marks: {
-      Bighorn: {
-        label: "Bighorn",
-        engine: [engine[1]],
-        gearbox: gearbox.slice(0),
-        drive: [drive[2]],
-        motor: [3.0, 3.5],
-      },
-    },
-  },
+  // Isuzu: {
+  //   label: "Isuzu",
+  //   marks: {
+  //     Bighorn: {
+  //       label: "Bighorn",
+  //       engine: [engine[1]],
+  //       gearbox: gearbox.slice(0),
+  //       drive: [drive[2]],
+  //       motor: [3.0, 3.5],
+  //     },
+  //   },
+  // },
   Jaguar: {
     label: "Jaguar",
     marks: {
-      "X Type": {
-        label: "X Type",
-        engine: [engine[0]],
-        gearbox: gearbox.slice(0),
-        drive: [drive[0], drive[2]],
-        motor: [2.0, 3.0],
-      },
+      // "X Type": {
+      //   label: "X Type",
+      //   engine: [engine[0]],
+      //   gearbox: gearbox.slice(0),
+      //   drive: [drive[0], drive[2]],
+      //   motor: [2.0, 3.0],
+      // },
       Xj: {
         label: "Xj",
         engine: [engine[0], engine[1]],
@@ -798,13 +799,13 @@ export const cars = {
         drive: [drive[2]],
         motor: [1.7, 1.7],
       },
-      Vesta: {
-        label: "Vesta",
-        engine: [engine[0]],
-        gearbox: gearbox.slice(0),
-        drive: [drive[1]],
-        motor: [1.6, 1.6],
-      },
+      // Vesta: {
+      //   label: "Vesta",
+      //   engine: [engine[0]],
+      //   gearbox: gearbox.slice(0),
+      //   drive: [drive[1]],
+      //   motor: [1.6, 1.6],
+      // },
     },
   },
   "Land Rover": {
@@ -824,20 +825,20 @@ export const cars = {
         drive: [drive[2]],
         motor: [2.0, 3.0],
       },
-      Freelander: {
-        label: "Freelander",
-        engine: [engine[0]],
-        gearbox: gearbox.slice(0),
-        drive: [drive[2]],
-        motor: [2.0, 2.5],
-      },
-      "Land Rover": {
-        label: "Land Rover",
-        engine: [engine[0]],
-        gearbox: gearbox.slice(0),
-        drive: [drive[2]],
-        motor: [2.0, 5.0],
-      },
+      // Freelander: {
+      //   label: "Freelander",
+      //   engine: [engine[0]],
+      //   gearbox: gearbox.slice(0),
+      //   drive: [drive[2]],
+      //   motor: [2.0, 2.5],
+      // },
+      // "Land Rover": {
+      //   label: "Land Rover",
+      //   engine: [engine[0]],
+      //   gearbox: gearbox.slice(0),
+      //   drive: [drive[2]],
+      //   motor: [2.0, 5.0],
+      // },
       "Range Rover": {
         label: "Range Rover",
         engine: [engine[0]],
@@ -879,13 +880,13 @@ export const cars = {
         drive: [drive[1]],
         motor: [2.0, 2.0],
       },
-      Is: {
-        label: "Is",
-        engine: [engine[0], engine[2]],
-        gearbox: gearbox.slice(0, 1),
-        drive: [drive[0]],
-        motor: [3.5, 5.0],
-      },
+      // Is: {
+      //   label: "Is",
+      //   engine: [engine[0], engine[2]],
+      //   gearbox: gearbox.slice(0, 1),
+      //   drive: [drive[0]],
+      //   motor: [3.5, 5.0],
+      // },
       "LX 470": {
         label: "LX 470",
         engine: [engine[0]],
@@ -909,14 +910,14 @@ export const cars = {
       },
       Nx: {
         label: "Nx",
-        engine: [engine[0], engine[2]],
+        engine: engine,
         gearbox: gearbox.slice(0, 1),
         drive: [drive[2]],
         motor: [2.0, 2.5],
       },
       Nx200t: {
         label: "Nx200t",
-        engine: [engine[0]],
+        engine: engine,
         gearbox: gearbox.slice(0, 1),
         //
         drive: [drive[0]],
@@ -924,7 +925,7 @@ export const cars = {
       },
       Nx300h: {
         label: "Nx300h",
-        engine: [engine[2]],
+        engine: engine,
         gearbox: gearbox.slice(0, 1),
         //
         drive: [drive[0]],
@@ -932,117 +933,117 @@ export const cars = {
       },
       Rx: {
         label: "Rx",
-        engine: [engine[0], engine[2]],
+        engine: engine,
         gearbox: gearbox.slice(0, 1),
         drive: [drive[2]],
         motor: [3.5, 3.6],
       },
       Rx200t: {
         label: "Rx200t",
-        engine: [engine[0]],
+        engine: engine,
         gearbox: gearbox.slice(0, 1),
         drive: [drive[2]],
         motor: [2.0, 2.0],
       },
       Rx270: {
         label: "Rx270",
-        engine: [engine[0]],
+        engine: engine,
         gearbox: gearbox.slice(0, 1),
         drive: [drive[2]],
         motor: [2.7, 2.7],
       },
       Rx270h: {
         label: "Rx270h",
-        engine: [engine[2]],
+        engine: engine,
         gearbox: gearbox.slice(0, 1),
         drive: [drive[2]],
         motor: [2.7, 2.7],
       },
-      Rx270t: {
-        label: "Rx270t",
-        engine: [engine[0]],
-        gearbox: gearbox.slice(0, 1),
-        drive: [drive[2]],
-        motor: [2.7, 2.7],
-      },
+      // Rx270t: {
+      //   label: "Rx270t",
+      //   engine: [engine[0]],
+      //   gearbox: gearbox.slice(0, 1),
+      //   drive: [drive[2]],
+      //   motor: [2.7, 2.7],
+      // },
       Rx300h: {
         label: "Rx300h",
-        engine: [engine[2]],
+        engine: engine,
         gearbox: gearbox.slice(0, 1),
         drive: [drive[2]],
         motor: [2.0, 2.0],
       },
       Rx330: {
         label: "Rx330",
-        engine: [engine[0]],
+        engine: engine,
         gearbox: gearbox.slice(0, 1),
         drive: [drive[2]],
         motor: [3.3, 3.3],
       },
-      Rx330h: {
-        label: "Rx330h",
-        engine: [engine[2]],
-        gearbox: gearbox.slice(0, 1),
-        drive: [drive[2]],
-        motor: [2.0, 3.0],
-      },
+      // Rx330h: {
+      //   label: "Rx330h",
+      //   engine: [engine[2]],
+      //   gearbox: gearbox.slice(0, 1),
+      //   drive: [drive[2]],
+      //   motor: [2.0, 3.0],
+      // },
       Rx350h: {
         label: "Rx350h",
-        engine: [engine[2]],
+        engine: engine,
         gearbox: gearbox.slice(0, 1),
         drive: [drive[2]],
         motor: [2.5, 2.7],
       },
       Rx400h: {
         label: "Rx400h",
-        engine: [engine[2]],
+        engine: engine,
         gearbox: gearbox.slice(0, 1),
         drive: [drive[2]],
         motor: [3.3, 3.3],
       },
       Rx450h: {
         label: "Rx450h",
-        engine: [engine[2]],
+        engine: engine,
         gearbox: gearbox.slice(0, 1),
         drive: [drive[2]],
         motor: [3.3, 3.3],
       },
     },
   },
-  "Li Auto": {
-    label: "Li Auto",
-    marks: {
-      L9: {
-        label: "L9",
-        engine: [engine[0]],
-        gearbox: gearbox.slice(0, 1),
-        drive: [drive[2]],
-        motor: [3.5, 3.5],
-      },
-      One: {
-        label: "One",
-        engine: [engine[0]],
-        gearbox: gearbox.slice(0, 1),
-        drive: [drive[2]],
-        motor: [2.0, 2.0],
-      },
-    },
-  },
-  Lincoln: {
-    label: "Lincoln",
-    marks: {
-      "Town Car": {
-        label: "Town Car",
-        engine: [engine[0]],
-        gearbox: gearbox.slice(0, 1),
-        drive: [drive[0]],
-        motor: [4.6, 4.6],
-      },
-      Busad: {
-        label: "Busad",
-      },
-    },
-  },
+  // "Li Auto": {
+  //   label: "Li Auto",
+  //   marks: {
+  //     L9: {
+  //       label: "L9",
+  //       engine: [engine[0]],
+  //       gearbox: gearbox.slice(0, 1),
+  //       drive: [drive[2]],
+  //       motor: [3.5, 3.5],
+  //     },
+  //     One: {
+  //       label: "One",
+  //       engine: [engine[0]],
+  //       gearbox: gearbox.slice(0, 1),
+  //       drive: [drive[2]],
+  //       motor: [2.0, 2.0],
+  //     },
+  //   },
+  // },
+  // Lincoln: {
+  //   label: "Lincoln",
+  //   marks: {
+  //     "Town Car": {
+  //       label: "Town Car",
+  //       engine: [engine[0]],
+  //       gearbox: gearbox.slice(0, 1),
+  //       drive: [drive[0]],
+  //       motor: [4.6, 4.6],
+  //     },
+  //     Busad: {
+  //       label: "Busad",
+  //     },
+  //   },
+  // },
   Mazda: {
     label: "Mazda",
     marks: {
@@ -1074,27 +1075,27 @@ export const cars = {
         drive: [drive[1]],
         motor: [1.6, 2.5],
       },
-      Mazda5: {
-        label: "Mazda5",
-        engine: [engine[0]],
-        gearbox: gearbox.slice(0),
-        drive: [drive[1]],
-        motor: [2.0, 2.5],
-      },
-      Mazda6: {
-        label: "Mazda6",
-        engine: [engine[0], engine[1]],
-        gearbox: gearbox.slice(0),
-        drive: [drive[1]],
-        motor: [2.0, 2.5],
-      },
-      Mpv: {
-        label: "Mpv",
-        engine: [engine[0]],
-        gearbox: gearbox.slice(0),
-        drive: [drive[1]],
-        motor: [2.3, 2.5],
-      },
+      // Mazda5: {
+      //   label: "Mazda5",
+      //   engine: [engine[0]],
+      //   gearbox: gearbox.slice(0),
+      //   drive: [drive[1]],
+      //   motor: [2.0, 2.5],
+      // },
+      // Mazda6: {
+      //   label: "Mazda6",
+      //   engine: [engine[0], engine[1]],
+      //   gearbox: gearbox.slice(0),
+      //   drive: [drive[1]],
+      //   motor: [2.0, 2.5],
+      // },
+      // Mpv: {
+      //   label: "Mpv",
+      //   engine: [engine[0]],
+      //   gearbox: gearbox.slice(0),
+      //   drive: [drive[1]],
+      //   motor: [2.3, 2.5],
+      // },
       Verisa: {
         label: "Verisa",
         engine: [engine[0]],
@@ -1158,14 +1159,14 @@ export const cars = {
       },
     },
   },
-  Mg: {
-    label: "Mg",
-    marks: {
-      Busad: {
-        label: "Busad",
-      },
-    },
-  },
+  // Mg: {
+  //   label: "Mg",
+  //   marks: {
+  //     Busad: {
+  //       label: "Busad",
+  //     },
+  //   },
+  // },
   Mini: {
     label: "Mini",
     marks: {
@@ -1191,20 +1192,20 @@ export const cars = {
   Mitsubishi: {
     label: "Mitsubishi",
     marks: {
-      Airtrek: {
-        label: "Airtrek",
-        engine: [engine[0], engine[1]],
-        gearbox: gearbox.slice(0),
-        drive: [drive[2]],
-        motor: [2.0, 2.4],
-      },
-      Challenger: {
-        label: "Challenger",
-        engine: [engine[0]],
-        gearbox: gearbox.slice(0),
-        drive: [drive[0]],
-        motor: [3.8, 6.4],
-      },
+      // Airtrek: {
+      //   label: "Airtrek",
+      //   engine: [engine[0], engine[1]],
+      //   gearbox: gearbox.slice(0),
+      //   drive: [drive[2]],
+      //   motor: [2.0, 2.4],
+      // },
+      // Challenger: {
+      //   label: "Challenger",
+      //   engine: [engine[0]],
+      //   gearbox: gearbox.slice(0),
+      //   drive: [drive[0]],
+      //   motor: [3.8, 6.4],
+      // },
       Colt: {
         label: "Colt",
         engine: [engine[0]],
@@ -1219,20 +1220,20 @@ export const cars = {
         drive: [drive[2]],
         motor: [2.0, 2.8],
       },
-      Eclipse: {
-        label: "Eclipse",
-        engine: [engine[0]],
-        gearbox: gearbox.slice(0),
-        drive: [drive[1]],
-        motor: [1.8, 2.4],
-      },
-      Galant: {
-        label: "Galant",
-        engine: [engine[0], engine[1]],
-        gearbox: gearbox.slice(0),
-        drive: [drive[1]],
-        motor: [1.8, 3.8],
-      },
+      // Eclipse: {
+      //   label: "Eclipse",
+      //   engine: [engine[0]],
+      //   gearbox: gearbox.slice(0),
+      //   drive: [drive[1]],
+      //   motor: [1.8, 2.4],
+      // },
+      // Galant: {
+      //   label: "Galant",
+      //   engine: [engine[0], engine[1]],
+      //   gearbox: gearbox.slice(0),
+      //   drive: [drive[1]],
+      //   motor: [1.8, 3.8],
+      // },
       L200: {
         label: "L200",
         engine: [engine[0], engine[1]],
@@ -1247,20 +1248,20 @@ export const cars = {
         drive: [drive[1], drive[2]],
         motor: [1.5, 2.0],
       },
-      Mirage: {
-        label: "Mirage",
-        engine: [engine[0]],
-        gearbox: gearbox.slice(0),
-        drive: [drive[1]],
-        motor: [1.0, 1.2],
-      },
-      Montero: {
-        label: "Montero",
-        engine: [engine[0], engine[1]],
-        gearbox: gearbox.slice(0),
-        drive: [drive[2]],
-        motor: [2.8, 3.8],
-      },
+      // Mirage: {
+      //   label: "Mirage",
+      //   engine: [engine[0]],
+      //   gearbox: gearbox.slice(0),
+      //   drive: [drive[1]],
+      //   motor: [1.0, 1.2],
+      // },
+      // Montero: {
+      //   label: "Montero",
+      //   engine: [engine[0], engine[1]],
+      //   gearbox: gearbox.slice(0),
+      //   drive: [drive[2]],
+      //   motor: [2.8, 3.8],
+      // },
       Outlander: {
         label: "Outlander",
         engine: [engine[0], engine[1]],
@@ -1268,13 +1269,13 @@ export const cars = {
         drive: [drive[2]],
         motor: [2.0, 2.4],
       },
-      Pajero: {
-        label: "Pajero",
-        engine: [engine[0], engine[1]],
-        gearbox: gearbox.slice(0),
-        drive: [drive[2]],
-        motor: [2.4, 3.8],
-      },
+      // Pajero: {
+      //   label: "Pajero",
+      //   engine: [engine[0], engine[1]],
+      //   gearbox: gearbox.slice(0),
+      //   drive: [drive[2]],
+      //   motor: [2.4, 3.8],
+      // },
       Rvr: {
         label: "Rvr",
         engine: [engine[0], engine[1]],
@@ -1287,14 +1288,14 @@ export const cars = {
       },
     },
   },
-  Neta: {
-    label: "Neta",
-    marks: {
-      Busad: {
-        label: "Busad",
-      },
-    },
-  },
+  // Neta: {
+  //   label: "Neta",
+  //   marks: {
+  //     Busad: {
+  //       label: "Busad",
+  //     },
+  //   },
+  // },
   Nissan: {
     label: "Nissan",
     marks: {
@@ -1312,20 +1313,20 @@ export const cars = {
         drive: [drive[0]],
         motor: [1.6, 2.0],
       },
-      Altima: {
-        label: "Altima",
-        engine: [engine[0]],
-        gearbox: gearbox.slice(0),
-        drive: [drive[1]],
-        motor: [2.5, 3.5],
-      },
-      Armada: {
-        label: "Armada",
-        engine: [engine[0]],
-        gearbox: gearbox.slice(0, 1),
-        drive: [drive[2]],
-        motor: [5.6, 5.6],
-      },
+      // Altima: {
+      //   label: "Altima",
+      //   engine: [engine[0]],
+      //   gearbox: gearbox.slice(0),
+      //   drive: [drive[1]],
+      //   motor: [2.5, 3.5],
+      // },
+      // Armada: {
+      //   label: "Armada",
+      //   engine: [engine[0]],
+      //   gearbox: gearbox.slice(0, 1),
+      //   drive: [drive[2]],
+      //   motor: [5.6, 5.6],
+      // },
       Caravan: {
         label: "Caravan",
         engine: [engine[0]],
@@ -1340,13 +1341,13 @@ export const cars = {
         drive: [drive[1]],
         motor: [1.5, 1.5],
       },
-      Datsun: {
-        label: "Datsun",
-        engine: [engine[0]],
-        gearbox: gearbox.slice(0),
-        drive: [drive[0], drive[1]],
-        motor: [1.0, 1.6],
-      },
+      // Datsun: {
+      //   label: "Datsun",
+      //   engine: [engine[0]],
+      //   gearbox: gearbox.slice(0),
+      //   drive: [drive[0], drive[1]],
+      //   motor: [1.0, 1.6],
+      // },
       Elgrand: {
         label: "Elgrand",
         engine: [engine[0], engine[1]],
@@ -1368,13 +1369,13 @@ export const cars = {
         drive: [drive[1], drive[2]],
         motor: [1.6, 2.0],
       },
-      Latio: {
-        label: "Latio",
-        engine: [engine[0]],
-        gearbox: gearbox.slice(0),
-        drive: [drive[1]],
-        motor: [1.2, 1.8],
-      },
+      // Latio: {
+      //   label: "Latio",
+      //   engine: [engine[0]],
+      //   gearbox: gearbox.slice(0),
+      //   drive: [drive[1]],
+      //   motor: [1.2, 1.8],
+      // },
       Leaf: {
         label: "Leaf",
         engine: [engine[4]],
@@ -1383,13 +1384,13 @@ export const cars = {
         // tsahilgaan
         motor: [2.4, 3.8],
       },
-      March: {
-        label: "March",
-        engine: [engine[0]],
-        gearbox: gearbox.slice(0),
-        drive: [drive[1]],
-        motor: [1.0, 1.6],
-      },
+      // March: {
+      //   label: "March",
+      //   engine: [engine[0]],
+      //   gearbox: gearbox.slice(0),
+      //   drive: [drive[1]],
+      //   motor: [1.0, 1.6],
+      // },
       Murano: {
         label: "Murano",
         engine: [engine[0], engine[1]],
@@ -1432,13 +1433,13 @@ export const cars = {
         drive: [drive[2]],
         motor: [2.8, 5.6],
       },
-      Presage: {
-        label: "Presage",
-        engine: [engine[0]],
-        gearbox: gearbox.slice(0),
-        drive: [drive[1]],
-        motor: [2.0, 2.5],
-      },
+      // Presage: {
+      //   label: "Presage",
+      //   engine: [engine[0]],
+      //   gearbox: gearbox.slice(0),
+      //   drive: [drive[1]],
+      //   motor: [2.0, 2.5],
+      // },
       Qashqai: {
         label: "Qashqai",
         engine: [engine[0], engine[1]],
@@ -1446,13 +1447,13 @@ export const cars = {
         drive: [drive[1], drive[2]],
         motor: [1.2, 2.0],
       },
-      Rnessa: {
-        label: "Rnessa",
-        engine: [engine[0]],
-        gearbox: gearbox.slice(0),
-        drive: [drive[1]],
-        motor: [2.0, 2.5],
-      },
+      // Rnessa: {
+      //   label: "Rnessa",
+      //   engine: [engine[0]],
+      //   gearbox: gearbox.slice(0),
+      //   drive: [drive[1]],
+      //   motor: [2.0, 2.5],
+      // },
       Serena: {
         label: "Serena",
         engine: [engine[0]],
@@ -1495,13 +1496,13 @@ export const cars = {
         drive: [drive[1]],
         motor: [1.3, 2.0],
       },
-      Versa: {
-        label: "Versa",
-        engine: [engine[0]],
-        gearbox: gearbox.slice(0, 1),
-        drive: [drive[1]],
-        motor: [1.6, 1.8],
-      },
+      // Versa: {
+      //   label: "Versa",
+      //   engine: [engine[0]],
+      //   gearbox: gearbox.slice(0, 1),
+      //   drive: [drive[1]],
+      //   motor: [1.6, 1.8],
+      // },
       Wingroad: {
         label: "Wingroad",
         engine: [engine[0]],
@@ -1509,8 +1510,8 @@ export const cars = {
         drive: [drive[1]],
         motor: [1.5, 1.8],
       },
-      "X-Trail": {
-        label: "X-Trail",
+      "X Trail": {
+        label: "X Trail",
         engine: [engine[0], engine[1]],
         gearbox: gearbox.slice(0),
         drive: [drive[2]],
@@ -1528,14 +1529,14 @@ export const cars = {
       },
     },
   },
-  Peugeot: {
-    label: "Peugeot",
-    marks: {
-      Busad: {
-        label: "Busad",
-      },
-    },
-  },
+  // Peugeot: {
+  //   label: "Peugeot",
+  //   marks: {
+  //     Busad: {
+  //       label: "Busad",
+  //     },
+  //   },
+  // },
   Porsche: {
     label: "Porsche",
     marks: {
@@ -1546,13 +1547,13 @@ export const cars = {
         drive: [drive[2]],
         motor: [3.0, 4.8],
       },
-      Cayman: {
-        label: "Cayman",
-        engine: [engine[0]],
-        gearbox: gearbox.slice(0),
-        drive: [drive[0]],
-        motor: [2.7, 4.0],
-      },
+      // Cayman: {
+      //   label: "Cayman",
+      //   engine: [engine[0]],
+      //   gearbox: gearbox.slice(0),
+      //   drive: [drive[0]],
+      //   motor: [2.7, 4.0],
+      // },
       Macan: {
         label: "Macan",
         engine: [engine[0], engine[1]],
@@ -1572,14 +1573,14 @@ export const cars = {
       },
     },
   },
-  Renault: {
-    label: "Renault",
-    marks: {
-      Busad: {
-        label: "Busad",
-      },
-    },
-  },
+  // Renault: {
+  //   label: "Renault",
+  //   marks: {
+  //     Busad: {
+  //       label: "Busad",
+  //     },
+  //   },
+  // },
   Samsung: {
     label: "Samsung",
     marks: {
@@ -1590,13 +1591,13 @@ export const cars = {
         drive: [drive[2]],
         motor: [2.0, 2.3],
       },
-      Sm: {
-        label: "Sm",
-        engine: [engine[0], engine[1]],
-        gearbox: gearbox.slice(0),
-        drive: [drive[2]],
-        motor: [2.0, 2.7],
-      },
+      // Sm: {
+      //   label: "Sm",
+      //   engine: [engine[0], engine[1]],
+      //   gearbox: gearbox.slice(0),
+      //   drive: [drive[2]],
+      //   motor: [2.0, 2.7],
+      // },
     },
   },
   Ssangyong: {
@@ -1630,13 +1631,13 @@ export const cars = {
         drive: [drive[2]],
         motor: [2.7, 3.2],
       },
-      "Rodius Stavic": {
-        label: "Rodius Stavic",
-        engine: [engine[0], engine[1]],
-        gearbox: gearbox.slice(0),
-        drive: [drive[0]],
-        motor: [2.7, 3.2],
-      },
+      // "Rodius Stavic": {
+      //   label: "Rodius Stavic",
+      //   engine: [engine[0], engine[1]],
+      //   gearbox: gearbox.slice(0),
+      //   drive: [drive[0]],
+      //   motor: [2.7, 3.2],
+      // },
       Busad: {
         label: "Busad",
       },
@@ -1673,13 +1674,13 @@ export const cars = {
         drive: [drive[1], drive[2]],
         motor: [2.0, 3.6],
       },
-      Liberty: {
-        label: "Liberty",
-        engine: [engine[0], engine[1]],
-        gearbox: gearbox.slice(0),
-        drive: [drive[1], drive[2]],
-        motor: [2.0, 3.0],
-      },
+      // Liberty: {
+      //   label: "Liberty",
+      //   engine: [engine[0], engine[1]],
+      //   gearbox: gearbox.slice(0),
+      //   drive: [drive[1], drive[2]],
+      //   motor: [2.0, 3.0],
+      // },
       Outback: {
         label: "Outback",
         engine: [engine[0], engine[1]],
@@ -1687,13 +1688,13 @@ export const cars = {
         drive: [drive[2]],
         motor: [2.0, 3.6],
       },
-      Trezia: {
-        label: "Trezia",
-        engine: [engine[0]],
-        gearbox: gearbox.slice(0),
-        drive: [drive[1]],
-        motor: [1.3, 1.3],
-      },
+      // Trezia: {
+      //   label: "Trezia",
+      //   engine: [engine[0]],
+      //   gearbox: gearbox.slice(0),
+      //   drive: [drive[1]],
+      //   motor: [1.3, 1.3],
+      // },
       Wrx: {
         label: "Wrx",
         engine: [engine[0], engine[1]],
@@ -1730,13 +1731,13 @@ export const cars = {
   Suzuki: {
     label: "Suzuki",
     marks: {
-      Aerio: {
-        label: "Aerio",
-        engine: [engine[0]],
-        gearbox: gearbox.slice(0),
-        drive: [drive[1]],
-        motor: [1.3, 1.6],
-      },
+      // Aerio: {
+      //   label: "Aerio",
+      //   engine: [engine[0]],
+      //   gearbox: gearbox.slice(0),
+      //   drive: [drive[1]],
+      //   motor: [1.3, 1.6],
+      // },
       Escudo: {
         label: "Escudo",
         engine: [engine[0], engine[1]],
@@ -1744,13 +1745,13 @@ export const cars = {
         drive: [drive[2]],
         motor: [1.6, 2.5],
       },
-      "Grand Vitara": {
-        label: "Grand Vitara",
-        engine: [engine[0], engine[1]],
-        gearbox: gearbox.slice(0),
-        drive: [drive[2]],
-        motor: [2.0, 2.4],
-      },
+      // "Grand Vitara": {
+      //   label: "Grand Vitara",
+      //   engine: [engine[0], engine[1]],
+      //   gearbox: gearbox.slice(0),
+      //   drive: [drive[2]],
+      //   motor: [2.0, 2.4],
+      // },
       Hustler: {
         label: "Hustler",
         engine: [engine[0]],
@@ -1772,13 +1773,13 @@ export const cars = {
         drive: [drive[1]],
         motor: [1.2, 1.6],
       },
-      Sx4: {
-        label: "Sx4",
-        engine: [engine[0], engine[1]],
-        gearbox: gearbox.slice(0),
-        drive: [drive[2]],
-        motor: [1.2, 1.6],
-      },
+      // Sx4: {
+      //   label: "Sx4",
+      //   engine: [engine[0], engine[1]],
+      //   gearbox: gearbox.slice(0),
+      //   drive: [drive[2]],
+      //   motor: [1.2, 1.6],
+      // },
       Busad: {
         label: "Brand",
       },
@@ -1867,27 +1868,27 @@ export const cars = {
         drive: [drive[1], drive[2]],
         motor: [1.3, 1.8],
       },
-      Bb: {
-        label: "Bb",
-        engine: [engine[0]],
-        gearbox: gearbox.slice(0),
-        drive: [drive[1]],
-        motor: [1.3, 1.5],
-      },
-      Brevis: {
-        label: "Brevis",
-        engine: [engine[0]],
-        gearbox: gearbox.slice(0, 1),
-        drive: [drive[1]],
-        motor: [2.5, 3.0],
-      },
-      Caldina: {
-        label: "Caldina",
-        engine: [engine[0], engine[1]],
-        gearbox: gearbox.slice(0),
-        drive: [drive[1]],
-        motor: [1.8, 2.0],
-      },
+      // Bb: {
+      //   label: "Bb",
+      //   engine: [engine[0]],
+      //   gearbox: gearbox.slice(0),
+      //   drive: [drive[1]],
+      //   motor: [1.3, 1.5],
+      // },
+      // Brevis: {
+      //   label: "Brevis",
+      //   engine: [engine[0]],
+      //   gearbox: gearbox.slice(0, 1),
+      //   drive: [drive[1]],
+      //   motor: [2.5, 3.0],
+      // },
+      // Caldina: {
+      //   label: "Caldina",
+      //   engine: [engine[0], engine[1]],
+      //   gearbox: gearbox.slice(0),
+      //   drive: [drive[1]],
+      //   motor: [1.8, 2.0],
+      // },
       Camry: {
         label: "Camry",
         engine: [engine[0], engine[2]],
@@ -1895,20 +1896,20 @@ export const cars = {
         drive: [drive[1]],
         motor: [2.4, 3.5],
       },
-      Celica: {
-        label: "Celica",
-        engine: [engine[0]],
-        gearbox: gearbox.slice(0),
-        drive: [drive[1]],
-        motor: [1.8, 2.0],
-      },
-      Chaser: {
-        label: "Chaser",
-        engine: [engine[0]],
-        gearbox: gearbox.slice(0),
-        drive: [drive[0]],
-        motor: [1.8, 2.0],
-      },
+      // Celica: {
+      //   label: "Celica",
+      //   engine: [engine[0]],
+      //   gearbox: gearbox.slice(0),
+      //   drive: [drive[1]],
+      //   motor: [1.8, 2.0],
+      // },
+      // Chaser: {
+      //   label: "Chaser",
+      //   engine: [engine[0]],
+      //   gearbox: gearbox.slice(0),
+      //   drive: [drive[0]],
+      //   motor: [1.8, 2.0],
+      // },
       Chr: {
         label: "Chr",
         engine: [engine[0], engine[2]],
@@ -1923,20 +1924,20 @@ export const cars = {
         drive: [drive[1]],
         motor: [1.6, 2.0],
       },
-      "Corolla Cross": {
-        label: "Corolla Cross",
-        engine: [engine[0], engine[2]],
-        gearbox: gearbox.slice(0),
-        drive: [drive[2]],
-        motor: [1.8, 2.0],
-      },
-      Cresta: {
-        label: "Cresta",
-        engine: [engine[0]],
-        gearbox: gearbox.slice(0),
-        drive: [drive[0]],
-        motor: [2.0, 2.5],
-      },
+      // "Corolla Cross": {
+      //   label: "Corolla Cross",
+      //   engine: [engine[0], engine[2]],
+      //   gearbox: gearbox.slice(0),
+      //   drive: [drive[2]],
+      //   motor: [1.8, 2.0],
+      // },
+      // Cresta: {
+      //   label: "Cresta",
+      //   engine: [engine[0]],
+      //   gearbox: gearbox.slice(0),
+      //   drive: [drive[0]],
+      //   motor: [2.0, 2.5],
+      // },
       Crown: {
         label: "Crown",
         engine: [engine[0], engine[2]],
@@ -1944,13 +1945,13 @@ export const cars = {
         drive: [drive[0]],
         motor: [2.0, 3.5],
       },
-      "Crown Cluger": {
-        label: "Crown Cluger",
-        engine: [engine[0], engine[2]],
-        gearbox: gearbox.slice(0, 1),
-        drive: [drive[2]],
-        motor: [2.4, 3.5],
-      },
+      // "Crown Cluger": {
+      //   label: "Crown Cluger",
+      //   engine: [engine[0], engine[2]],
+      //   gearbox: gearbox.slice(0, 1),
+      //   drive: [drive[2]],
+      //   motor: [2.4, 3.5],
+      // },
       Esquire: {
         label: "Esquire",
         engine: [engine[0]],
@@ -1979,20 +1980,20 @@ export const cars = {
         drive: [drive[2]],
         motor: [4.0, 4.0],
       },
-      Jaia: {
-        label: "Jaia",
-        engine: [engine[0]],
-        gearbox: gearbox.slice(0),
-        drive: [drive[2]],
-        motor: [2.0, 2.4],
-      },
-      Granvia: {
-        label: "Granvia",
-        engine: [engine[0]],
-        gearbox: gearbox.slice(0),
-        drive: [drive[0]],
-        motor: [2.4, 3.0],
-      },
+      // Jaia: {
+      //   label: "Jaia",
+      //   engine: [engine[0]],
+      //   gearbox: gearbox.slice(0),
+      //   drive: [drive[2]],
+      //   motor: [2.0, 2.4],
+      // },
+      // Granvia: {
+      //   label: "Granvia",
+      //   engine: [engine[0]],
+      //   gearbox: gearbox.slice(0),
+      //   drive: [drive[0]],
+      //   motor: [2.4, 3.0],
+      // },
       Harrier: {
         label: "Harrier",
         engine: [engine[0], engine[2]],
@@ -2126,13 +2127,13 @@ export const cars = {
         drive: [drive[2]],
         motor: [2.7, 3.0],
       },
-      "Land Cruiser Prado 90": {
-        label: "Land Cruiser Prado 90",
-        engine: [engine[0], engine[1]],
-        gearbox: gearbox.slice(0),
-        drive: [drive[2]],
-        motor: [2.7, 3.0],
-      },
+      // "Land Cruiser Prado 90": {
+      //   label: "Land Cruiser Prado 90",
+      //   engine: [engine[0], engine[1]],
+      //   gearbox: gearbox.slice(0),
+      //   drive: [drive[2]],
+      //   motor: [2.7, 3.0],
+      // },
       "Land Cruiser Prado 95": {
         label: "Land Cruiser Prado 95",
         engine: [engine[0], engine[1]],
@@ -2147,20 +2148,20 @@ export const cars = {
         drive: [drive[1]],
         motor: [1.8, 3.0],
       },
-      "Mark 2": {
-        label: "Mark 2",
-        engine: [engine[0], engine[1]],
-        gearbox: gearbox.slice(0),
-        drive: [drive[0]],
-        motor: [2.0, 3.0],
-      },
-      Nadia: {
-        label: "Nadia",
-        engine: [engine[0]],
-        gearbox: gearbox.slice(0.1),
-        drive: [drive[1]],
-        motor: [1.8, 2.0],
-      },
+      // "Mark 2": {
+      //   label: "Mark 2",
+      //   engine: [engine[0], engine[1]],
+      //   gearbox: gearbox.slice(0),
+      //   drive: [drive[0]],
+      //   motor: [2.0, 3.0],
+      // },
+      // Nadia: {
+      //   label: "Nadia",
+      //   engine: [engine[0]],
+      //   gearbox: gearbox.slice(0.1),
+      //   drive: [drive[1]],
+      //   motor: [1.8, 2.0],
+      // },
       Noah: {
         label: "Noah",
         engine: [engine[0]],
@@ -2189,71 +2190,71 @@ export const cars = {
         drive: [drive[1]],
         motor: [1.5, 2.0],
       },
-      "Pruis 10,11": {
-        label: "Pruis 10,11",
+      "Prius 10,11": {
+        label: "Prius 10,11",
         engine: [engine[2]],
         gearbox: gearbox.slice(0, 1),
         drive: [drive[1]],
         motor: [1.5, 1.5],
       },
-      "Pruis 20": {
-        label: "Pruis 20",
+      "Prius 20": {
+        label: "Prius 20",
         engine: [engine[2]],
         gearbox: gearbox.slice(0, 1),
         drive: [drive[1]],
         motor: [1.5, 1.5],
       },
-      "Pruis 30": {
-        label: "Pruis 30",
+      "Prius 30": {
+        label: "Prius 30",
         engine: [engine[2]],
         gearbox: gearbox.slice(0, 1),
         drive: [drive[1]],
         motor: [1.8, 1.8],
       },
-      "Pruis 35": {
-        label: "Pruis 35",
+      "Prius 35": {
+        label: "Prius 35",
         engine: [engine[2]],
         gearbox: gearbox.slice(0, 1),
         drive: [drive[1]],
         motor: [1.8, 1.8],
       },
-      "Pruis 40": {
-        label: "Pruis 40",
+      "Prius 40": {
+        label: "Prius 40",
         engine: [engine[2]],
         gearbox: gearbox.slice(0, 1),
         drive: [drive[1]],
         motor: [1.8, 1.8],
       },
-      "Pruis 41": {
-        label: "Pruis 41",
+      "Prius 41": {
+        label: "Prius 41",
         engine: [engine[2]],
         gearbox: gearbox.slice(0, 1),
         drive: [drive[1]],
         motor: [1.8, 1.8],
       },
-      "Pruis 50": {
-        label: "Pruis 50",
+      "Prius 50": {
+        label: "Prius 50",
         engine: [engine[2]],
         gearbox: gearbox.slice(0, 1),
         drive: [drive[1]],
         motor: [1.8, 1.8],
       },
-      "Pruis 51": {
-        label: "Pruis 51",
+      "Prius 51": {
+        label: "Prius 51",
         engine: [engine[2]],
         gearbox: gearbox.slice(0, 1),
         drive: [drive[1]],
         motor: [1.8, 1.8],
       },
-      "Pruis 55": {
-        label: "Pruis 55",
+      "Prius 55": {
+        label: "Prius 55",
         engine: [engine[2]],
         gearbox: gearbox.slice(0, 1),
         drive: [drive[1]],
         motor: [1.8, 1.8],
       },
-      "Pruis 52": {
-        label: "Pruis 52",
+      "Prius 52": {
+        label: "Prius 52",
         engine: [engine[2]],
         gearbox: gearbox.slice(0, 1),
         drive: [drive[1]],
@@ -2378,13 +2379,13 @@ export const cars = {
         drive: [drive[2]],
         motor: [2.4, 3.5],
       },
-      Venza: {
-        label: "Venza",
-        engine: [engine[0], engine[2]],
-        gearbox: gearbox.slice(0, 1),
-        drive: [drive[2]],
-        motor: [2.5, 2.5],
-      },
+      // Venza: {
+      //   label: "Venza",
+      //   engine: [engine[0], engine[2]],
+      //   gearbox: gearbox.slice(0, 1),
+      //   drive: [drive[2]],
+      //   motor: [2.5, 2.5],
+      // },
       Verossa: {
         label: "Verossa",
         engine: [engine[0]],
@@ -2413,13 +2414,13 @@ export const cars = {
         drive: [drive[1]],
         motor: [1.8, 2.0],
       },
-      Yaris: {
-        label: "Yaris",
-        engine: [engine[0], engine[2]],
-        gearbox: gearbox.slice(0),
-        drive: [drive[1]],
-        motor: [1.0, 1.5],
-      },
+      // Yaris: {
+      //   label: "Yaris",
+      //   engine: [engine[0], engine[2]],
+      //   gearbox: gearbox.slice(0),
+      //   drive: [drive[1]],
+      //   motor: [1.0, 1.5],
+      // },
       Busad: {
         label: "Busad",
       },
@@ -2428,27 +2429,27 @@ export const cars = {
   Volkswagen: {
     label: "Volkswagen",
     marks: {
-      Beetle: {
-        label: "Beetle",
-        engine: [engine[0], engine[1]],
-        gearbox: gearbox.slice(0),
-        drive: [drive[1]],
-        motor: [1.2, 2.5],
-      },
-      Golf: {
-        label: "Golf",
-        engine: [engine[0], engine[1], engine[2]],
-        gearbox: gearbox.slice(0),
-        drive: [drive[1], drive[2]],
-        motor: [1.0, 2.0],
-      },
-      Jetta: {
-        label: "Jetta",
-        engine: [engine[0], engine[1], engine[2]],
-        gearbox: gearbox.slice(0),
-        drive: [drive[1]],
-        motor: [1.4, 2.5],
-      },
+      // Beetle: {
+      //   label: "Beetle",
+      //   engine: [engine[0], engine[1]],
+      //   gearbox: gearbox.slice(0),
+      //   drive: [drive[1]],
+      //   motor: [1.2, 2.5],
+      // },
+      // Golf: {
+      //   label: "Golf",
+      //   engine: [engine[0], engine[1], engine[2]],
+      //   gearbox: gearbox.slice(0),
+      //   drive: [drive[1], drive[2]],
+      //   motor: [1.0, 2.0],
+      // },
+      // Jetta: {
+      //   label: "Jetta",
+      //   engine: [engine[0], engine[1], engine[2]],
+      //   gearbox: gearbox.slice(0),
+      //   drive: [drive[1]],
+      //   motor: [1.4, 2.5],
+      // },
       Passat: {
         label: "Passat",
         engine: [engine[0], engine[1], engine[2]],
@@ -2477,36 +2478,36 @@ export const cars = {
         drive: [drive[2]],
         motor: [3.0, 4.2],
       },
-      Vanagon: {
-        label: "Vanagon",
-        engine: [engine[0], engine[1]],
-        gearbox: gearbox.slice(1, 2),
-        drive: [drive[0], drive[2]],
-        motor: [1.6, 2.1],
-      },
+      // Vanagon: {
+      //   label: "Vanagon",
+      //   engine: [engine[0], engine[1]],
+      //   gearbox: gearbox.slice(1, 2),
+      //   drive: [drive[0], drive[2]],
+      //   motor: [1.6, 2.1],
+      // },
       Busad: {
         label: "Busad",
       },
     },
-    Volvo: {
-      label: "Volvo",
-      marks: {
-        Xc60: {
-          label: "Xc60",
-          engine: [engine[0], engine[1], engine[2]],
-          gearbox: gearbox.slice(0, 1),
-          drive: [drive[2]],
-          motor: [2.0, 2.5],
-        },
-        Xc90: {
-          label: "Xc90",
-          engine: [engine[0], engine[1], engine[2]],
-          gearbox: gearbox.slice(0, 1),
-          drive: [drive[2]],
-          motor: [2.0, 2.5],
-        },
-      },
-    },
+    // Volvo: {
+    //   label: "Volvo",
+    //   marks: {
+    //     Xc60: {
+    //       label: "Xc60",
+    //       engine: [engine[0], engine[1], engine[2]],
+    //       gearbox: gearbox.slice(0, 1),
+    //       drive: [drive[2]],
+    //       motor: [2.0, 2.5],
+    //     },
+    //     Xc90: {
+    //       label: "Xc90",
+    //       engine: [engine[0], engine[1], engine[2]],
+    //       gearbox: gearbox.slice(0, 1),
+    //       drive: [drive[2]],
+    //       motor: [2.0, 2.5],
+    //     },
+    //   },
+    // },
   },
 };
 
@@ -2670,34 +2671,71 @@ export const carMain = [
 
 export const carTechnik = ["engine", "motor", "gearbox", "drive"];
 export type PaymentValueType = keyof typeof paymentValues;
+export type OrgValueType = keyof typeof orgValues;
 export const paymentValues = {
   usage: [
     {
       label: "Даатгалын зориулалттай",
       value: PaymentUsage.INSURANCE,
-      icon: undefined
+      icon: undefined,
     },
     {
       label: "Зээлийн зориулалттай",
       value: PaymentUsage.LOAN,
-      icon: undefined
+      icon: undefined,
     },
     {
       label: "Үнэ цэнийн зориулалттай",
       value: PaymentUsage.VALUE,
-      icon: undefined
+      icon: undefined,
     },
   ],
   org: [
     {
-      label: "Agis Insurance",
-      value: 10,
-      icon: "",
+      label: "",
+      value: 0,
     },
     {
-      label: "Agula Insurance",
-      value: 20,
-      icon: "",
+      label: "",
+      value: 1,
+    },
+    {
+      label: "",
+      value: 2,
+    },
+  ],
+};
+
+export const orgValues = {
+  [`${PaymentUsage.INSURANCE}`]: [
+    {
+      name: "Агис Даатгал",
+      icon: `${logos}AgisInsur.png`,
+      value: "agis",
+    },
+    {
+      name: "Агула Даатгал",
+      icon: `${logos}AgulaInsur.jpg`,
+      value: "agula",
+    },
+  ],
+  [`${PaymentUsage.LOAN}`]: [
+    {
+      name: "68 Зээлийн төв",
+      icon: `${logos}68LendCenter.jpg`,
+      value: "68",
+    },
+    {
+      name: "Хаан Монгол Инвест ББСБ",
+      icon: `${logos}KhaanMongolInvest.png`,
+      value: "khaanmongol",
+    },
+  ],
+  [`${PaymentUsage.VALUE}`]: [
+    {
+      name: "Eunit",
+      icon: logoMiniBlue,
+      value: "eunit",
     },
   ],
 };

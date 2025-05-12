@@ -8,7 +8,7 @@ export const logo = `${lg}bom-white-text.png`;
 export const logoMiniBlue = `${lg}bom-blue.png`;
 export const logoMiniWhite = `${lg}bom-white.png`;
 export const cardBg = `${icons}card.svg`;
-
+export const logos = `${assets}logo/`;
 export class Assets {
   static logoMiniWhite = `${lg}bom-white.png`;
   static logoMiniBlue = `${lg}bom-blue.png`;

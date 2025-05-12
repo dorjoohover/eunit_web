@@ -168,14 +168,16 @@ export const carEvaluate = async (
     // type?: string;
     interior?: string;
     conditions?: string;
+    lastname?: string;
+    firstname?: string;
+    org?: string;
+    usage?: string;
   },
   service: number,
   payment = 2
   // payment: number
 ) => {
-  console.log(value);
   const token = (await cookies()).get("auth_token");
-  console.log(token);
   if (!token?.value) return { token: false };
   try {
     const body = {
@@ -190,8 +192,11 @@ export const carEvaluate = async (
       mileage: value.meter,
       manufacture: value.manufactured,
       entry: value.imported,
+      lastname: value.lastname,
+      firstname: value.firstname,
+      usage: value.usage,
+      org: value.org,
       service,
-      // type: value.type,
       interior: value.interior,
       conditions: value.conditions,
       category: 20,

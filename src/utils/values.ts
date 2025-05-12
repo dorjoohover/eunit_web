@@ -1,5 +1,5 @@
 import { locale } from "@/base/vocabs/mn";
-import { ItemPosition, ItemTypes, TransactionType } from "@/config/enum";
+import { ItemPosition, ItemTypes, PaymentUsage, TransactionType } from "@/config/enum";
 import { DistrictAssets } from "./assets";
 
 export const categoryNames = [
@@ -264,7 +264,7 @@ export type CarEvaluateKey =
   | "color"
   | "meter"
   | "manufactured"
-  | "type"
+  // | "type"
   | "interior"
   | "conditions"
   | "org"
@@ -278,6 +278,36 @@ type CarEvaluateValue = {
   pl: string;
 };
 
+export const ReportSubmitErrorMessages = {
+  lastname: "Овог оруулна уу",
+  firstname: "Нэр оруулна уу",
+  usage: "Лавлагааны зориулалт сонгоно уу",
+  org: "Байгууллага сонгоно уу",
+  brand: "Брэнд сонгоно уу",
+  mark: "Марк сонгоно уу",
+  motor: "Хөдөлгүүрийн багтаамж сонгоно уу",
+  engine: "Хөдөлгүүрийн төрөл сонгоно уу",
+  gearbox: "Хурдны хайрцаг сонгоно уу",
+  steerType: "Хүрд сонгоно уу",
+  drive: "Хөтлөгч сонгоно уу",
+  color: "Өнгө сонгоно уу",
+  interior: "Салоны өнгө сонгоно уу",
+  // type: "Төрөл сонгоно уу",
+  conditions: "Нөхцөл сонгоно уу",
+  meter: "Гүйлт сруулна уу",
+  manufactured: "Үйлдвэрлэгдсэн он сруулна уу",
+  imported: "Импортлогдсон он сруулна уу",
+};
+
+export type ReportSubmitErrorMessagesType =
+  keyof typeof ReportSubmitErrorMessages;
+
+
+export const reportPrice = (name?: string) => {
+  if(name == `${PaymentUsage.VALUE}`  || !name) return 2000
+  return 5000
+}
+
 export const CarEvaluateValues: Record<CarEvaluateKey, CarEvaluateValue> = {
   brand: { label: "Брэнд", pl: "Сонгоно уу" },
   mark: { label: "Марк", pl: "Сонгоно уу" },
@@ -288,7 +318,7 @@ export const CarEvaluateValues: Record<CarEvaluateKey, CarEvaluateValue> = {
   drive: { label: "Хөтлөгч", pl: "Сонгоно уу" },
   color: { label: "Өнгө", pl: "Сонгоно уу" },
   interior: { label: "Салоны өнгө", pl: "Сонгоно уу" },
-  type: { label: "Төрөл", pl: "Сонгоно уу" },
+  // type: { label: "Төрөл", pl: "Сонгоно уу" },
   conditions: { label: "Нөхцөл", pl: "Сонгоно уу" },
   meter: { label: "Гүйлт", pl: "Оруулна уу" },
   manufactured: { label: "Үйлдвэрлэгдсэн он", pl: "Оруулна уу" },

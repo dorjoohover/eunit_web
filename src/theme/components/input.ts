@@ -299,6 +299,10 @@ export const select = {
             height: "auto",
             padding: "8px 16px",
           },
+          dropdown: {
+            maxHeight: 300,
+            overflowY: "auto",
+          },
         };
       }
       return {
@@ -310,6 +314,10 @@ export const select = {
           border: `2px solid ${Colors.stroke}`,
           width: props.variant == "small" ? 150 : "100%",
         },
+          dropdown: {
+            maxHeight: 300,
+            overflowY: "auto",
+          },
       };
     },
     vars: (theme, props) => {

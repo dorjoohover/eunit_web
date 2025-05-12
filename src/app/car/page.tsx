@@ -28,10 +28,16 @@ import {
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { notifications } from "@mantine/notifications";
-import { CarEvaluateKey, CarEvaluateValues } from "@/utils/values";
+import {
+  CarEvaluateKey,
+  CarEvaluateValues,
+  reportPrice,
+  ReportSubmitErrorMessages,
+  ReportSubmitErrorMessagesType,
+} from "@/utils/values";
 import { Image } from "@mantine/core";
 import { QpayType } from "@/utils/type";
-import { PaymentType, ServiceType } from "@/config/enum";
+import { PaymentType, PaymentUsage, ServiceType } from "@/config/enum";
 import { DatePicker, YearPicker, YearPickerInput } from "@mantine/dates";
 import {
   CarBrand,
@@ -41,6 +47,8 @@ import {
   cars,
   carTechnik,
   meterRange,
+  orgValues,
+  OrgValueType,
   paymentValues,
   PaymentValueType,
   steerType,
@@ -181,38 +189,34 @@ const Page = () => {
   const matchesPad = useMediaQuery("(min-width: 50em)");
 
   const checker = () => {
-    if (
-      form.brand &&
-      form.mark &&
-      form.motor &&
-      form.engine &&
-      form.gearbox &&
-      form.steerType &&
-      form.drive &&
-      form.color &&
-      form.meter &&
-      form.manufactured &&
-      form.conditions &&
-      // form.type &&
-      form.interior &&
-      form.imported
-    ) {
-      return true;
+    let res = true;
+    const laststep = ["lastname", "firstname", "org", "usage"];
+
+    for (const value of Object.keys(CarEvaluateValues)) {
+      let v = value as keyof FormType;
+      if (laststep.includes(value) && active == 3 && !opened) continue;
+      if (!form[v]) {
+        notifications.show({
+          message:
+            ReportSubmitErrorMessages[v as ReportSubmitErrorMessagesType],
+          position: "top-center",
+        });
+        res = false;
+        break;
+      }
     }
-    notifications.show({
-      message: "Мэдээлэл дутуу байна.",
-      position: "top-center",
-    });
-    return false;
+
+    return res;
   };
 
   const submit = async (payment: number) => {
     setLoading(true);
-    if (!checker()) return;
+    const check = checker();
+    if (!check) return;
     if (
       payment != PaymentType.QPAY &&
       user?.wallet &&
-      user?.wallet - 2000 < 0
+      user?.wallet - reportPrice(form.usage) < 0
     ) {
       notifications.show({
         position: "top-center",
@@ -412,7 +416,7 @@ const Page = () => {
                     w="100%"
                     onChange={(e) => {
                       if (e != null) {
-                        const split = e?.split("-");
+                        const split = e?.split("_");
                         const brand = split?.[0];
                         const mark = split?.[1];
                         setForm((prev) => ({ ...prev, mark: mark }));
@@ -420,6 +424,7 @@ const Page = () => {
                           setForm((prev) => ({ ...prev, brand: brand }));
                         const m =
                           cars[brand as CarBrand].marks[mark as CarMark];
+                        console.log(brand, mark, m);
                         if ((m["engine"] as string[]).length == 1)
                           setForm((prev) => ({
                             ...prev,
@@ -439,7 +444,7 @@ const Page = () => {
                     }}
                     value={`${
                       form["mark"]
-                        ? `${form["brand"]}-${form["mark"]}`
+                        ? `${form["brand"]}_${form["mark"]}`
                         : undefined
                     }`}
                     variant="car"
@@ -451,14 +456,14 @@ const Page = () => {
                         ).map(([key, value]) => {
                           return {
                             label: value.label,
-                            value: `${form["brand"]}-${key}`,
+                            value: `${form["brand"]}_${key}`,
                           };
                         })
                       : Object.entries(cars).flatMap(([k, car]) =>
                           Object.entries(car.marks).map(([key, value]) => {
                             if (key != "busad" && key != "Бусад")
                               return {
-                                value: `${k}-${key}`,
+                                value: `${k}_${key}`,
                                 label: value.label,
                               };
                           })
@@ -1014,6 +1019,13 @@ const Page = () => {
                         }));
                       }
                     }}
+                    error={
+                      form[value as keyof FormType] == undefined
+                        ? ReportSubmitErrorMessages[
+                            value as ReportSubmitErrorMessagesType
+                          ]
+                        : ""
+                    }
                     variant="icon"
                     min={0}
                     w={"100%"}
@@ -1021,116 +1033,206 @@ const Page = () => {
                   />
                 );
               })}
-              {["usage", "org"].map((value, k) => {
-                return (
-                  <Box key={k} mb={10}>
-                    <Text fz={14} fw={500} lh={1.55}>
-                      {CarEvaluateValues[value as CarEvaluateKey].label}
-                    </Text>
-                    <Flex
-                      w={"100%"}
-                      gap={12}
-                      rowGap={12}
-                      style={{
-                        alignItems: "stretch",
-                      }}
-                    >
-                      {paymentValues[value as PaymentValueType].map(
-                        (data, i) => {
-                          return (
-                            <Button
-                              variant="outline"
-                              style={{
-                                textWrap: "wrap",
-                                whiteSpace: "normal",
-                                wordWrap: "break-word",
-                              }}
-                              c={
-                                form[value as keyof FormType] == `${data.value}`
-                                  ? Colors.main
-                                  : Colors.black
-                              }
-                              fw={400}
-                              flex={1}
-                              key={i}
-                              py={8}
-                              h={"auto"}
-                              lh={1.2}
-                              bg={
-                                form[value as keyof FormType] == `${data.value}`
-                                  ? Colors.reportInputActive
-                                  : "transparent"
-                              }
-                              fz={12}
-                              styles={{
-                                root: {
-                                  borderColor:
-                                    form[value as keyof FormType] ==
-                                    `${data.value}`
-                                      ? Colors.main
-                                      : Colors.stroke,
-                                },
-                                label: {
-                                  whiteSpace: "normal",
-                                },
-                              }}
-                              onClick={() => {
-                                setForm((prev) => ({
-                                  ...prev,
-                                  [value]: `${data.value}`,
-                                }));
-                              }}
-                              leftSection={
-                                data.icon != undefined ? (
-                                  <Box
-                                    w={36}
-                                    h={36}
-                                    style={{
-                                      borderRadius: 5,
-                                      overflow: "hidden",
-                                    }}
-                                  >
-                                    <Image
-                                      src={Assets.service}
-                                      h={'100%'}
-                                      w={'100%'}
-                                      fit="cover"
-                                      alt={data.label}
-                                    />
-                                  </Box>
-                                ) : null
-                              }
-                            >
-                              {data.label}
-                            </Button>
-                          );
+
+              <Box mb={10}>
+                <Text fz={14} fw={500} lh={1.55}>
+                  {CarEvaluateValues["usage"].label}
+                </Text>
+                <Flex
+                  w={"100%"}
+                  gap={12}
+                  rowGap={12}
+                  style={{
+                    alignItems: "stretch",
+                  }}
+                >
+                  {paymentValues["usage"].map((data, i) => {
+                    return (
+                      <Button
+                        variant="outline"
+                        style={{
+                          textWrap: "wrap",
+                          whiteSpace: "normal",
+                          wordWrap: "break-word",
+                        }}
+                        c={
+                          form["usage"] == `${data.value}`
+                            ? Colors.main
+                            : Colors.black
                         }
-                      )}
-                    </Flex>
-                  </Box>
-                );
-              })}
+                        fw={400}
+                        flex={1}
+                        key={i}
+                        py={8}
+                        h={"auto"}
+                        lh={1.2}
+                        bg={
+                          form["usage"] == `${data.value}`
+                            ? Colors.reportInputActive
+                            : "transparent"
+                        }
+                        fz={12}
+                        styles={{
+                          root: {
+                            borderColor:
+                              form["usage"] == `${data.value}`
+                                ? Colors.main
+                                : Colors.stroke,
+                          },
+                          label: {
+                            whiteSpace: "normal",
+                          },
+                        }}
+                        onClick={() => {
+                          setForm((prev) => ({
+                            ...prev,
+                            usage: `${data.value}`,
+                          }));
+
+                          setForm((prev) => ({
+                            ...prev,
+                            org:
+                              data.value == PaymentUsage.VALUE
+                                ? `eunit`
+                                : undefined,
+                          }));
+                        }}
+                        leftSection={
+                          data.icon != undefined ? (
+                            <Box
+                              w={36}
+                              h={36}
+                              style={{
+                                borderRadius: 5,
+                                overflow: "hidden",
+                              }}
+                            >
+                              <Image
+                                src={Assets.service}
+                                h={"100%"}
+                                w={"100%"}
+                                fit="cover"
+                                alt={data.label}
+                              />
+                            </Box>
+                          ) : null
+                        }
+                      >
+                        {data.label}
+                      </Button>
+                    );
+                  })}
+                </Flex>
+              </Box>
+              {form["usage"] && (
+                <Box mb={10}>
+                  <Text fz={14} fw={500} lh={1.55}>
+                    {CarEvaluateValues["org"].label}
+                  </Text>
+                  <Flex
+                    w={"100%"}
+                    gap={12}
+                    rowGap={12}
+                    style={{
+                      alignItems: "stretch",
+                    }}
+                  >
+                    {orgValues[form["usage"] as OrgValueType].map((data, i) => {
+                      return (
+                        <Button
+                          variant="outline"
+                          style={{
+                            textWrap: "wrap",
+                            whiteSpace: "normal",
+                            wordWrap: "break-word",
+                          }}
+                          c={
+                            form["org"] == `${data.value}`
+                              ? Colors.main
+                              : Colors.black
+                          }
+                          fw={400}
+                          flex={1}
+                          key={i}
+                          py={8}
+                          h={"auto"}
+                          lh={1.2}
+                          bg={
+                            form["org"] == `${data.value}`
+                              ? Colors.reportInputActive
+                              : "transparent"
+                          }
+                          fz={12}
+                          styles={{
+                            root: {
+                              borderColor:
+                                form["org"] == `${data.value}`
+                                  ? Colors.main
+                                  : Colors.stroke,
+                            },
+                            label: {
+                              whiteSpace: "normal",
+                            },
+                          }}
+                          onClick={() => {
+                            console.log(data.value)
+                            setForm((prev) => ({
+                              ...prev,
+                              org: `${data.value}`,
+                            }));
+                          }}
+                          leftSection={
+                            data.icon != undefined ? (
+                              <Box
+                                w={36}
+                                h={36}
+                                style={{
+                                  borderRadius: 5,
+                                  overflow: "hidden",
+                                }}
+                              >
+                                <Image
+                                  src={data.icon}
+                                  h={"100%"}
+                                  w={"100%"}
+                                  fit="cover"
+                                  alt={data.name}
+                                />
+                              </Box>
+                            ) : null
+                          }
+                        >
+                          {data.name}
+                        </Button>
+                      );
+                    })}
+                  </Flex>
+                </Box>
+              )}
               {/* <WalletCard
                 onClick={() => {
                   router.push("/wallet");
                 }}
               /> */}
-              <Highlight
-                mt={24}
-                mb={24}
-                fz={16}
-                lh={1.1}
-                c={Colors.darkBlue}
-                highlight={["урамшуулал", "2,000 E-unit"]}
-                highlightStyles={{
-                  background: Colors.main,
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                }}
-              >
-                Шинэ хэрэглэгчийн урамшуулал бүхий 2,000 E-unit ашиглан энэхүү
-                үйлчилгээг авах боломжтой.
-              </Highlight>
+              {form.usage == `${PaymentUsage.VALUE}` ||
+                (!form.usage && (
+                  <Highlight
+                    mt={24}
+                    mb={24}
+                    fz={16}
+                    lh={1.1}
+                    c={Colors.darkBlue}
+                    highlight={["урамшуулал", " E-unit"]}
+                    highlightStyles={{
+                      background: Colors.main,
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                    }}
+                  >
+                    Шинэ хэрэглэгчийн урамшуулал бүхий 2,000 E-unit ашиглан
+                    энэхүү үйлчилгээг авах боломжтой.
+                  </Highlight>
+                ))}
               <Text fz={16} lh={1.1} mb={20} c={Colors.darkBlue}>
                 Урамшууллын үлдэгдэл: {money(`${user?.wallet ?? 0}`)} E-unit
               </Text>
@@ -1139,14 +1241,14 @@ const Page = () => {
                   Нийт төлбөр{" "}
                 </Text>
                 <Text fz={16} lh={1.1} c={Colors.darkBlue} fw={"bold"}>
-                  : {money(`${2000}`)}₮
+                  : {money(`${reportPrice(form.usage)}`)}₮
                 </Text>
               </Flex>
               <Text fz={16} lh={1.1} mb={20} c={Colors.darkBlue} fw={"bold"}>
                 Төлбөрийн нөхцөл:
               </Text>
               <Flex>
-                {user?.wallet && user?.wallet >= 2000 ? (
+                {user?.wallet && user?.wallet >= reportPrice(form.usage) ? (
                   <Button
                     w={"100%"}
                     fz={20}
