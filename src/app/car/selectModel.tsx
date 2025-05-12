@@ -921,7 +921,7 @@ export const cars = {
         gearbox: gearbox.slice(0, 1),
         //
         drive: drive,
-        motor: [2.1, 2.5],
+        motor: [1.6, 2.5],
       },
       Nx300h: {
         label: "Nx300h",
