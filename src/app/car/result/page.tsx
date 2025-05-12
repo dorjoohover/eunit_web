@@ -46,6 +46,8 @@ import { CiCalendar, CiCalendarDate } from "react-icons/ci";
 import { AiOutlineDashboard } from "react-icons/ai";
 import { IconManualGearbox } from "@tabler/icons-react";
 import { RiCarLine } from "react-icons/ri";
+import Image from "next/image";
+import { orgValues, OrgValueType } from "../selectModel";
 
 type ResultDataType = {
   brand?: string;
@@ -68,6 +70,7 @@ type ResultDataType = {
 type ResultType = {
   data: ResultDataType;
   user: UserModel;
+  info: any;
 };
 const Page = () => {
   const params = useSearchParams();
@@ -151,6 +154,29 @@ const Page = () => {
     <Box>
       <ReportTitle>
         <Box>
+          <Flex justify={"space-between"} pt={{ sm: 40, base: 32 }}>
+            {data?.info?.usage && data?.info?.usage !== 30 ? (
+              <Image
+                width={50}
+                height={50}
+                alt={
+                  orgValues[data?.info.usage as OrgValueType].filter(
+                    (a) => a.value == data?.info.org
+                  )?.[0]?.name ?? ""
+                }
+                src={
+                  orgValues[data?.info.usage as OrgValueType].filter(
+                    (a) => a.value == data?.info.org
+                  )?.[0]?.icon
+                }
+              />
+            ) : (
+              <p></p>
+            )}
+            {data?.data?.createdAt && (
+              <Text fw={'bold'} fz={16}>{parseDate(new Date(data?.data.createdAt), '.')}</Text>
+            )}
+          </Flex>
           <Flex pt={{ sm: 40, base: 32 }} w={"100%"} align={"center"}>
             <Box
               style={{
@@ -217,13 +243,17 @@ const Page = () => {
                 matches ? "flex-row" : "flex-col"
               } justify-between`}
             >
-              {(data?.user?.firstname || data?.user?.lastname) && (
+              {(data?.user?.firstname ||
+                data?.user?.lastname ||
+                data?.info?.lastname ||
+                data?.info?.firstname) && (
                 <Flex>
                   <Text fz={{ sm: 20, base: 16 }} fw={300}>
                     Овог нэр:
                   </Text>
                   <Text fw={600} fz={{ sm: 20, base: 16 }}>
-                    {data?.user?.lastname ?? ""} {data?.user?.firstname ?? ""}
+                    {data?.info?.lastname ?? data?.user?.lastname ?? ""}{" "}
+                    {data?.info?.firstname ?? data?.user?.firstname ?? ""}
                   </Text>
                 </Flex>
               )}
@@ -297,7 +327,8 @@ const Page = () => {
                 WebkitTextFillColor: "transparent",
               }}
               children={`${reportDescription(
-                `${data?.user?.lastname ?? ""} ${
+                `${data?.info?.lastname ?? data?.user?.lastname ?? ""} ${
+                  data?.info?.firstname ??
                   data?.user?.firstname ??
                   (data?.user?.lastname == null
                     ? data?.user?.phone

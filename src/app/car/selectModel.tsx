@@ -912,7 +912,7 @@ export const cars = {
         label: "Nx",
         engine: engine,
         gearbox: gearbox.slice(0, 1),
-        drive: [drive[2]],
+        drive: drive,
         motor: [2.0, 2.5],
       },
       Nx200t: {
@@ -920,7 +920,7 @@ export const cars = {
         engine: engine,
         gearbox: gearbox.slice(0, 1),
         //
-        drive: [drive[0]],
+        drive: drive,
         motor: [2.0, 2.0],
       },
       Nx300h: {
@@ -928,7 +928,7 @@ export const cars = {
         engine: engine,
         gearbox: gearbox.slice(0, 1),
         //
-        drive: [drive[0]],
+        drive: drive,
         motor: [2.5, 2.5],
       },
       Rx: {
