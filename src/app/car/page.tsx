@@ -249,7 +249,6 @@ const Page = () => {
   const [active, setActive] = useState(0);
   const [opened, { open, close }] = useDisclosure(false);
   const nextStep = () => {
-    console.log(active);
     switch (active) {
       case 0:
         if (
@@ -390,7 +389,6 @@ const Page = () => {
                     my={5}
                     onChange={(e) => {
                       if (e != null) {
-                        console.log(e);
                         setForm((prev) => ({ ...prev, brand: e }));
                         setForm((prev) => ({ ...prev, mark: undefined }));
                       }

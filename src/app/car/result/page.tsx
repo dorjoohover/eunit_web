@@ -41,7 +41,12 @@ import { BiCalendar } from "react-icons/bi";
 import { IoCarSportOutline, IoColorFillOutline } from "react-icons/io5";
 import { upperFirst } from "lodash";
 import { BsBookmark, BsFuelPump } from "react-icons/bs";
-import { PiArmchairBold, PiEngine, PiSteeringWheel } from "react-icons/pi";
+import {
+  PiArmchairBold,
+  PiEngine,
+  PiReadCvLogo,
+  PiSteeringWheel,
+} from "react-icons/pi";
 import { CiCalendar, CiCalendarDate } from "react-icons/ci";
 import { AiOutlineDashboard } from "react-icons/ai";
 import { IconManualGearbox } from "@tabler/icons-react";
@@ -66,11 +71,20 @@ type ResultDataType = {
   conditions?: string;
   createdAt?: Date;
   price?: number;
+  result?: number;
+  lastname?: string;
+  firstname?: string;
+  org?: string;
+  usage?: number;
+  user?: UserModel;
 };
 type ResultType = {
-  data: ResultDataType;
-  user: UserModel;
-  info: any;
+  service: ResultDataType;
+  result: {
+    min?: number;
+    max?: number;
+    result: number;
+  };
 };
 const Page = () => {
   const params = useSearchParams();
@@ -87,7 +101,6 @@ const Page = () => {
 
     refetchUser();
     const res = await getRequestResult(+id);
-    console.log(res);
     if (!res.success) {
       notifications.show({
         message: res.message,
@@ -101,7 +114,7 @@ const Page = () => {
     }
     if (res.success) {
       setData(res.data);
-      const date = new Date(`${res.data?.data.createdAt}`);
+      const date = new Date(`${res.data?.service.createdAt}`);
       date.setDate(date.getDate() + 7);
       setDate(date);
     }
@@ -149,32 +162,65 @@ const Page = () => {
         <Loading />
       </Center>
     );
+  const downloadPDF = async () => {
+    try {
+      const res = await fetch(`/api/pdf/${id}`);
+      console.log(res);
+      if (!res.ok) {
+        const body = await res.json();
+        notifications.show({
+          message: body?.message ?? "Алдаа гарлаа",
+          position: "top-center",
+        });
+        router.refresh();
+        return;
+      }
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
 
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `Value Report-${parseDate(
+        new Date(data?.service.createdAt ?? new Date())
+      )}.pdf`;
+      a.click();
+
+      URL.revokeObjectURL(url); // optional cleanup
+    } catch (error) {
+      console.log(error);
+      notifications.show({
+        message: "Алдаа гарлаа",
+        position: "top-center",
+      });
+    }
+  };
   return (
     <Box>
       <ReportTitle>
         <Box>
           <Flex justify={"space-between"} pt={{ sm: 40, base: 32 }}>
-            {data?.info?.usage && data?.info?.usage !== 30 ? (
+            {data?.service?.usage && data?.service?.usage !== 30 ? (
               <Image
                 width={50}
                 height={50}
                 alt={
-                  orgValues[data?.info.usage as OrgValueType].filter(
-                    (a) => a.value == data?.info.org
-                  )?.[0]?.name ?? ""
+                  orgValues[
+                    (data?.service.usage ?? 30).toString() as OrgValueType
+                  ].filter((a) => a.value == data?.service.org)?.[0]?.name ?? ""
                 }
                 src={
-                  orgValues[data?.info.usage as OrgValueType].filter(
-                    (a) => a.value == data?.info.org
-                  )?.[0]?.icon
+                  orgValues[
+                    (data?.service.usage ?? 30).toString() as OrgValueType
+                  ].filter((a) => a.value == data?.service.org)?.[0]?.icon
                 }
               />
             ) : (
               <p></p>
             )}
-            {data?.data?.createdAt && (
-              <Text fw={'bold'} fz={16}>{parseDate(new Date(data?.data.createdAt), '.')}</Text>
+            {data?.service?.createdAt && (
+              <Text fw={"bold"} fz={16}>
+                {parseDate(new Date(data?.service.createdAt), ".")}
+              </Text>
             )}
           </Flex>
           <Flex pt={{ sm: 40, base: 32 }} w={"100%"} align={"center"}>
@@ -243,37 +289,41 @@ const Page = () => {
                 matches ? "flex-row" : "flex-col"
               } justify-between`}
             >
-              {(data?.user?.firstname ||
-                data?.user?.lastname ||
-                data?.info?.lastname ||
-                data?.info?.firstname) && (
+              {(data?.service.user?.firstname ||
+                data?.service.user?.lastname ||
+                data?.service?.lastname ||
+                data?.service?.firstname) && (
                 <Flex>
                   <Text fz={{ sm: 20, base: 16 }} fw={300}>
                     Овог нэр:
                   </Text>
                   <Text fw={600} fz={{ sm: 20, base: 16 }}>
-                    {data?.info?.lastname ?? data?.user?.lastname ?? ""}{" "}
-                    {data?.info?.firstname ?? data?.user?.firstname ?? ""}
+                    {data?.service?.lastname ??
+                      data?.service.user?.lastname ??
+                      ""}{" "}
+                    {data?.service?.firstname ??
+                      data?.service.user?.firstname ??
+                      ""}
                   </Text>
                 </Flex>
               )}
-              {data?.user?.email && (
+              {data?.service.user?.email && (
                 <Flex>
                   <Text fw={300} fz={{ sm: 20, base: 16 }}>
                     Цахим хаяг:
                   </Text>
                   <Text fw={600} fz={{ sm: 20, base: 16 }}>
-                    {data?.user.email}
+                    {data?.service.user.email}
                   </Text>
                 </Flex>
               )}
-              {data?.user?.phone && (
+              {data?.service.user?.phone && (
                 <Flex>
                   <Text fz={{ sm: 20, base: 16 }} fw={300}>
                     Утасны дугаар:
                   </Text>
                   <Text fw={600} fz={{ sm: 20, base: 16 }}>
-                    {formatPhoneNumber(data?.user?.phone) ?? ""}
+                    {formatPhoneNumber(data?.service.user?.phone) ?? ""}
                   </Text>
                 </Flex>
               )}
@@ -294,7 +344,9 @@ const Page = () => {
                 sm: 20,
                 base: 16,
               }}
-              highlight={[`${money((data?.data?.price ?? 0).toString(), "₮")}`]}
+              highlight={[
+                `${money((data?.result.result ?? 0).toString(), "₮")}`,
+              ]}
               highlightStyles={{
                 background: Colors.main,
                 color: Colors.main,
@@ -303,7 +355,7 @@ const Page = () => {
               }}
               children={`
                     Таны сонгосон автомашины үнэ цэн: ${money(
-                      (data?.data?.price ?? 0).toString(),
+                      (data?.result?.result ?? 0).toString(),
                       "₮"
                     )}`}
             ></Highlight>
@@ -318,7 +370,7 @@ const Page = () => {
               }}
               ta={"justify"}
               highlight={[
-                `${money(`${data?.data?.price ?? ""}`, "", 100000)} төгрөг`,
+                `${money(`${data?.result?.result ?? ""}`, "", 100000)} төгрөг`,
               ]}
               highlightStyles={{
                 background: Colors.main,
@@ -327,25 +379,27 @@ const Page = () => {
                 WebkitTextFillColor: "transparent",
               }}
               children={`${reportDescription(
-                `${data?.info?.lastname ?? data?.user?.lastname ?? ""} ${
-                  data?.info?.firstname ??
-                  data?.user?.firstname ??
-                  (data?.user?.lastname == null
-                    ? data?.user?.phone
-                      ? formatPhoneNumber(data?.user?.phone)
-                      : data?.user?.email ?? ""
+                `${
+                  data?.service?.lastname ?? data?.service.user?.lastname ?? ""
+                } ${
+                  data?.service?.firstname ??
+                  data?.service.user?.firstname ??
+                  (data?.service.user?.lastname == null
+                    ? data?.service.user?.phone
+                      ? formatPhoneNumber(data?.service.user?.phone)
+                      : data?.service.user?.email ?? ""
                     : "")
                 }`,
                 1,
-                data?.data?.price ?? 0,
+                data?.result?.result ?? 0,
                 undefined,
                 {
-                  brand: data?.data?.brand,
-                  manufacture: data?.data?.manufacture,
-                  mark: data?.data?.mark,
-                  engine: data?.data?.engine,
-                  entry: data?.data?.entry,
-                  capacity: data?.data?.capacity,
+                  brand: data?.service?.brand,
+                  manufacture: data?.service?.manufacture,
+                  mark: data?.service?.mark,
+                  engine: data?.service?.engine,
+                  entry: data?.service?.entry,
+                  capacity: data?.service?.capacity,
                 }
               )}`}
             ></Highlight>
@@ -399,12 +453,14 @@ const Page = () => {
                             carField.key == "mileage"
                               ? `${money(
                                   `${
-                                    data?.data[
+                                    data?.service[
                                       carField.key as keyof ResultDataType
                                     ]
                                   }`
                                 )}км`
-                              : data?.data[carField.key as keyof ResultDataType]
+                              : data?.service[
+                                  carField.key as keyof ResultDataType
+                                ]
                           }`
                         )}
                       </Text>
@@ -446,29 +502,28 @@ const Page = () => {
 
           <Spacer size={24} />
           <Flex w={"100%"} justify={"center"}>
-            <Link href={`${api}request/service/pdf/${id}`} target="_blank">
-              <Button
-                radius={32}
-                px={20}
-                bg={"main"}
-                fz={20}
-                py={12}
-                h={"auto"}
-                leftSection={
-                  <Box
-                    bg={"white"}
-                    p={4}
-                    style={{
-                      borderRadius: "100%",
-                    }}
-                  >
-                    <IoMdDownload color={Colors.main} size={14} />
-                  </Box>
-                }
-              >
-                Татаж авах (PDF)
-              </Button>
-            </Link>
+            <Button
+              radius={32}
+              px={20}
+              bg={"main"}
+              fz={20}
+              py={12}
+              h={"auto"}
+              onClick={downloadPDF}
+              leftSection={
+                <Box
+                  bg={"white"}
+                  p={4}
+                  style={{
+                    borderRadius: "100%",
+                  }}
+                >
+                  <IoMdDownload color={Colors.main} size={14} />
+                </Box>
+              }
+            >
+              Татаж авах (PDF)
+            </Button>
           </Flex>
           <Spacer
             size={{

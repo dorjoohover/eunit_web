@@ -41,16 +41,15 @@ import { useRouter, useSearchParams } from "next/navigation";
 import React, { ReactNode, useEffect, useState } from "react";
 import { BiCalendar, BiDownload } from "react-icons/bi";
 import { CiLocationOn } from "react-icons/ci";
-import {
-  IoIosArrowRoundBack,
-  IoMdDownload,
-} from "react-icons/io";
+import { IoIosArrowRoundBack, IoMdDownload } from "react-icons/io";
 import { MdApartment } from "react-icons/md";
 import Link from "next/link";
 import { notifications } from "@mantine/notifications";
 import { UserModel } from "@/models/user.model";
+import Image from "next/image";
+import { orgValues, OrgValueType } from "@/app/car/selectModel";
 type ResultType = {
-  data: {
+  service: {
     min?: number;
     max?: number;
     avg?: number;
@@ -59,10 +58,19 @@ type ResultType = {
     no?: string;
     floor?: number;
     room?: number;
+    usage?: number;
+    lastname?: string;
+    firstname?: string;
+    org?: string;
+    user: UserModel;
+    location: LocationModel;
+    result?: number;
   };
-  user: UserModel;
-
-  location: LocationModel;
+  result: {
+    min?: number;
+    max?: number;
+    result?: number;
+  };
 };
 
 const Page = () => {
@@ -107,19 +115,77 @@ const Page = () => {
       </Center>
     );
 
-  const address = `${data?.location.city}, ${data?.location.district}, 
+  const address = `${data?.service.location.city}, ${
+    data?.service.location.district
+  }, 
                ${
-                 data?.location?.khoroo
-                   ? `${data?.location?.khoroo}-р хороо,`
+                 data?.service.location?.khoroo
+                   ? `${data?.service.location?.khoroo}-р хороо,`
                    : ""
-               } ${data?.location.town}`;
-  const date = new Date(`${data?.data.createdAt}`);
+               } ${data?.service.location.town}`;
+  const date = new Date(`${data?.service.createdAt}`);
   date.setDate(date.getDate() + 7);
-
+   const downloadPDF = async () => {
+     try {
+       const res = await fetch(`/api/pdf/${id}`);
+       console.log(res);
+       if (!res.ok) {
+         const body = await res.json();
+         notifications.show({
+           message: body?.message ?? "Алдаа гарлаа",
+           position: "top-center",
+         });
+         router.refresh();
+         return;
+       }
+       const blob = await res.blob();
+       const url = URL.createObjectURL(blob);
+ 
+       const a = document.createElement("a");
+       a.href = url;
+       a.download = `Value Report-${parseDate(
+         new Date(data?.service.createdAt ?? new Date())
+       )}.pdf`;
+       a.click();
+ 
+       URL.revokeObjectURL(url); // optional cleanup
+     } catch (error) {
+       console.log(error);
+       notifications.show({
+         message: "Алдаа гарлаа",
+         position: "top-center",
+       });
+     }
+   };
   return (
     <Box>
       <ReportTitle>
         <Box>
+          <Flex justify={"space-between"} pt={{ sm: 40, base: 32 }}>
+            {data?.service?.usage && data?.service?.usage !== 30 ? (
+              <Image
+                width={50}
+                height={50}
+                alt={
+                  orgValues[
+                    (data?.service.usage ?? 30).toString() as OrgValueType
+                  ].filter((a) => a.value == data?.service.org)?.[0]?.name ?? ""
+                }
+                src={
+                  orgValues[
+                    (data?.service.usage ?? 30).toString() as OrgValueType
+                  ].filter((a) => a.value == data?.service.org)?.[0]?.icon
+                }
+              />
+            ) : (
+              <p></p>
+            )}
+            {data?.service?.createdAt && (
+              <Text fw={"bold"} fz={16}>
+                {parseDate(new Date(data?.service.createdAt), ".")}
+              </Text>
+            )}
+          </Flex>
           <Flex pt={{ sm: 40, base: 32 }} w={"100%"} align={"center"}>
             <Box
               style={{
@@ -197,33 +263,41 @@ const Page = () => {
                 matches ? "flex-row" : "flex-col"
               } justify-between`}
             >
-              {(data?.user?.firstname || data?.user?.lastname) && (
+              {(data?.service.user?.firstname ||
+                data?.service.user?.lastname ||
+                data?.service?.lastname ||
+                data?.service?.firstname) && (
                 <Flex>
                   <Text fz={{ sm: 20, base: 16 }} fw={300}>
                     Овог нэр:
                   </Text>
                   <Text fw={600} fz={{ sm: 20, base: 16 }}>
-                    {data?.user?.lastname ?? ""} {data?.user?.firstname ?? ""}
+                    {data?.service?.lastname ??
+                      data?.service.user?.lastname ??
+                      ""}{" "}
+                    {data?.service?.firstname ??
+                      data?.service.user?.firstname ??
+                      ""}
                   </Text>
                 </Flex>
               )}
-              {data?.user?.email && (
+              {data?.service.user?.email && (
                 <Flex>
                   <Text fw={300} fz={{ sm: 20, base: 16 }}>
                     Цахим хаяг:
                   </Text>
                   <Text fw={600} fz={{ sm: 20, base: 16 }}>
-                    {data?.user.email}
+                    {data?.service.user.email}
                   </Text>
                 </Flex>
               )}
-              {data?.user?.phone && (
+              {data?.service.user?.phone && (
                 <Flex>
                   <Text fz={{ sm: 20, base: 16 }} fw={300}>
                     Утасны дугаар:
                   </Text>
                   <Text fw={600} fz={{ sm: 20, base: 16 }}>
-                    {formatPhoneNumber(data?.user?.phone) ?? ""}
+                    {formatPhoneNumber(data?.service.user?.phone) ?? ""}
                   </Text>
                 </Flex>
               )}
@@ -236,7 +310,7 @@ const Page = () => {
             <IconText
               child={<BiCalendar size={24} />}
               text={parseDate(
-                new Date(data?.data.createdAt?.toString() ?? Date()) ??
+                new Date(data?.service.createdAt?.toString() ?? Date()) ??
                   new Date(),
                 "."
               )}
@@ -252,8 +326,8 @@ const Page = () => {
                 base: 16,
               }}
               highlight={[
-                `₮${money((data?.data.min ?? 0).toString())}`,
-                `₮${money((data?.data.max ?? 0).toString())}`,
+                `₮${money((data?.result.min ?? 0).toString())}`,
+                `₮${money((data?.result.max ?? 0).toString())}`,
               ]}
               highlightStyles={{
                 background: Colors.main,
@@ -263,8 +337,8 @@ const Page = () => {
               }}
               children={`
               Таны сонгосон хотхоны м.кв үнэ цэн: ₮${money(
-                (data?.data.min ?? 0).toString()
-              )}-оос ₮${money((data?.data.max ?? 0).toString())} хооронд`}
+                (data?.result.min ?? 0).toString()
+              )}-оос ₮${money((data?.result.max ?? 0).toString())} хооронд`}
             ></Highlight>
 
             <Spacer size={10} />
@@ -273,7 +347,7 @@ const Page = () => {
                 sm: 20,
                 base: 16,
               }}
-              highlight={[`₮${money((data?.data.avg ?? 0).toString())}`]}
+              highlight={[`₮${money((data?.result.result ?? 0).toString())}`]}
               highlightStyles={{
                 background: Colors.main,
                 color: Colors.main,
@@ -282,7 +356,7 @@ const Page = () => {
               }}
               children={`
              Таны сонгосон сууцны м.кв тохиромжит үнэ: ₮${money(
-               (data?.data.avg ?? 0).toString()
+               (data?.result.result ?? 0).toString()
              )}`}
             ></Highlight>
 
@@ -294,7 +368,7 @@ const Page = () => {
               }}
               highlight={[
                 `${money(
-                  `${(data?.data.avg ?? 0) * (data?.data.area ?? 0)}`,
+                  `${(data?.result.result ?? 0) * (data?.service.area ?? 0)}`,
                   "₮",
                   100000
                 )}`,
@@ -307,9 +381,9 @@ const Page = () => {
               }}
               children={`
                    Таны ${
-                     data?.data.area ?? ""
+                     data?.service.area ?? ""
                    } м.кв орон сууцны нийт үнэ: ${money(
-                `${(data?.data.avg ?? 0) * (data?.data.area ?? 0)}`,
+                `${(data?.result.result ?? 0) * (data?.service.area ?? 0)}`,
                 "₮",
                 100000
               )}`}
@@ -326,7 +400,7 @@ const Page = () => {
               ta={"justify"}
               highlight={[
                 `${money(
-                  `${(data?.data.avg ?? 0) * (data?.data.area ?? 0)}`,
+                  `${(data?.result.result ?? 0) * (data?.service.area ?? 0)}`,
                   "",
                   100000
                 )} төгрөг`,
@@ -354,21 +428,21 @@ const Page = () => {
               // )} төгрөг орчим үнэтэй байна. Энэхүү тооцоолол нь өгөгдөлд суурилж
               // тооцоолсон бөгөөд ±5%-ийн хооронд хэлбэлзэх боломжтой.
               children={`${reportDescription(
-                `${data?.user?.lastname ?? ""} ${
-                  data?.user?.firstname ??
-                  (data?.user?.lastname == null
-                    ? data?.user?.phone
-                      ? formatPhoneNumber(data?.user?.phone)
-                      : data?.user?.email ?? ""
+                `${data?.service.user?.lastname ?? ""} ${
+                  data?.service.user?.firstname ??
+                  (data?.service.user?.lastname == null
+                    ? data?.service.user?.phone
+                      ? formatPhoneNumber(data?.service.user?.phone)
+                      : data?.service.user?.email ?? ""
                     : "")
                 }`,
-                data?.data.area,
-                data?.data.avg,
-                data?.location,
+                data?.service.area,
+                data?.result.result,
+                data?.service.location,
                 {
-                  no: data?.data?.no,
-                  floor: data?.data?.floor,
-                  room: data?.data?.room,
+                  no: data?.service?.no,
+                  floor: data?.service?.floor,
+                  room: data?.service?.room,
                 }
               )}`}
             ></Highlight>
@@ -517,29 +591,28 @@ const Page = () => {
           </ResultWidget> */}
           <Spacer size={24} />
           <Flex w={"100%"} justify={"center"}>
-            <Link href={`${api}request/service/pdf/${id}`} target="_blank">
-              <Button
-                radius={32}
-                px={20}
-                bg={"main"}
-                fz={20}
-                py={12}
-                h={"auto"}
-                leftSection={
-                  <Box
-                    bg={"white"}
-                    p={4}
-                    style={{
-                      borderRadius: "100%",
-                    }}
-                  >
-                    <IoMdDownload color={Colors.main} size={14} />
-                  </Box>
-                }
-              >
-                Татаж авах (PDF)
-              </Button>
-            </Link>
+            <Button
+              radius={32}
+              px={20}
+              bg={"main"}
+              fz={20}
+              py={12}
+              h={"auto"}
+              leftSection={
+                <Box
+                  bg={"white"}
+                  p={4}
+                  style={{
+                    borderRadius: "100%",
+                  }}
+                >
+                  <IoMdDownload color={Colors.main} size={14} />
+                </Box>
+              }
+              onClick={downloadPDF}
+            >
+              Татаж авах (PDF)
+            </Button>
           </Flex>
           <Spacer
             size={{
@@ -552,21 +625,21 @@ const Page = () => {
             <GoogleMap
               mapContainerStyle={defaultMapContainerStyle}
               center={
-                data?.location.lat && data.location.lng
+                data?.service.location.lat && data.service.location.lng
                   ? {
-                      lat: data?.location.lat,
-                      lng: data?.location.lng,
+                      lat: data?.service.location.lat,
+                      lng: data?.service.location.lng,
                     }
                   : defaultMapCenter
               }
               zoom={defaultMapZoom}
               options={defaultMapOptions}
             >
-              {data?.location.lat && data.location.lng && (
+              {data?.service.location.lat && data.service.location.lng && (
                 <Marker
                   position={{
-                    lat: data?.location.lat,
-                    lng: data?.location.lng,
+                    lat: data?.service.location.lat,
+                    lng: data?.service.location.lng,
                   }}
                 />
               )}
