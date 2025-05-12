@@ -910,7 +910,7 @@ export const cars = {
       },
       Nx: {
         label: "Nx",
-        engine: engine,
+        engine: [engine[0], engine[2]],
         gearbox: gearbox.slice(0, 1),
         drive: drive,
         motor: [2.0, 2.5],
