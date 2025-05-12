@@ -136,7 +136,7 @@ const Page = () => {
       key: "interior",
       icon: <LuPaintRoller size={24} />,
     },
-    { name: "Төрөл", key: "type", icon: <RiCarLine size={24} /> },
+    // { name: "Төрөл", key: "type", icon: <RiCarLine size={24} /> },
     { name: "Хөтлөгч", key: "drive", icon: <GiCarWheel size={24} /> },
     { name: "Нөхцөл", key: "conditions", icon: <TbNumber size={24} /> },
   ];
