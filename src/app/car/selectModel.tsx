@@ -2069,7 +2069,7 @@ export const cars = {
         engine: [engine[0], engine[1]],
         gearbox: gearbox.slice(0),
         drive: [drive[2]],
-        motor: [4.0, 4.5],
+        motor: [4.0, 5.0],
       },
       "Land Cruiser 300": {
         label: "Land Cruiser 300",
