@@ -1998,7 +1998,7 @@ export const cars = {
         label: "Harrier",
         engine: [engine[0], engine[2]],
         gearbox: gearbox.slice(0),
-        drive: drive,
+        drive: [drive[1], drive[2]],
         motor: [2.0, 3.5],
       },
       Hiace: {
