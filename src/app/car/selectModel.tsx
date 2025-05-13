@@ -2674,16 +2674,16 @@ export type PaymentValueType = keyof typeof paymentValues;
 export type OrgValueType = keyof typeof orgValues;
 export const paymentValues = {
   usage: [
-    {
-      label: "Даатгалын зориулалттай",
-      value: PaymentUsage.INSURANCE,
-      icon: undefined,
-    },
-    {
-      label: "Зээлийн зориулалттай",
-      value: PaymentUsage.LOAN,
-      icon: undefined,
-    },
+    // {
+    //   label: "Даатгалын зориулалттай",
+    //   value: PaymentUsage.INSURANCE,
+    //   icon: undefined,
+    // },
+    // {
+    //   label: "Зээлийн зориулалттай",
+    //   value: PaymentUsage.LOAN,
+    //   icon: undefined,
+    // },
     {
       label: "Үнэ цэнийн зориулалттай",
       value: PaymentUsage.VALUE,
