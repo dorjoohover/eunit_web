@@ -20,6 +20,7 @@ import {
   Loader,
   Modal,
   NumberInput,
+  RingProgress,
   Select,
   Stepper,
   Text,
@@ -55,7 +56,11 @@ import {
 } from "./selectModel";
 import { money, motorLabel } from "@/utils/functions";
 import { divide, upperFirst } from "lodash";
-import { useDisclosure, useMediaQuery } from "@mantine/hooks";
+import {
+  useDisclosure,
+  useMediaQuery,
+  useScrollIntoView,
+} from "@mantine/hooks";
 import { WalletCard } from "@/components/shared/card";
 import { EunitIcon } from "@/theme/components/icon";
 import { Assets } from "@/utils/assets";
@@ -69,6 +74,7 @@ import { GiCarWheel, GiGearStickPattern } from "react-icons/gi";
 import { LuPaintRoller } from "react-icons/lu";
 import { RiCarLine } from "react-icons/ri";
 import { TbNumber } from "react-icons/tb";
+import { IconUserCheck } from "@tabler/icons-react";
 interface FormType {
   brand?: string;
   mark?: string;
@@ -211,7 +217,7 @@ const Page = () => {
 
   const submit = async (payment: number) => {
     const check = checker();
-    console.log(check)
+    console.log(check);
     if (!check) return;
     setLoading(true);
     if (
@@ -245,10 +251,15 @@ const Page = () => {
     }
     setLoading(false);
   };
-
+  const { scrollIntoView, targetRef } = useScrollIntoView<HTMLDivElement>({
+    offset: 0,
+  });
   const [active, setActive] = useState(0);
   const [opened, { open, close }] = useDisclosure(false);
   const nextStep = () => {
+    scrollIntoView({
+      alignment: "start",
+    });
     switch (active) {
       case 0:
         if (
@@ -307,8 +318,12 @@ const Page = () => {
         break;
     }
   };
-  const prevStep = () =>
+  const prevStep = () => {
+    scrollIntoView({
+      alignment: "start",
+    });
     setActive((current) => (current > 0 ? current - 1 : current));
+  };
 
   const openApp = (url: string) => {
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
@@ -363,511 +378,544 @@ const Page = () => {
   //     <Text fz={40}>Тун удахгүй</Text>
   //   </Center>
   // );
+
+  const steps = (step: number) => {
+    if (step == 0)
+      return (
+        <Grid maw={450} gutter={12}>
+          <Grid.Col span={12}>
+            <Select
+              w="100%"
+              my={5}
+              onChange={(e) => {
+                if (e != null) {
+                  setForm((prev) => ({ ...prev, brand: e }));
+                  setForm((prev) => ({ ...prev, mark: undefined }));
+                }
+              }}
+              value={form["brand"]}
+              variant="car"
+              p="2px"
+              withScrollArea={false}
+              data={Object.entries(cars)
+                .map(([key, value]) => {
+                  return {
+                    value: key,
+                    label: value.label,
+                  };
+                })
+                .filter((a) => a != undefined)}
+              label={CarEvaluateValues["brand"].label}
+              placeholder={CarEvaluateValues["brand"].pl}
+            />
+          </Grid.Col>
+          <Grid.Col span={12}>
+            <Select
+              w="100%"
+              onChange={(e) => {
+                if (e != null) {
+                  const split = e?.split("_");
+                  const brand = split?.[0];
+                  const mark = split?.[1];
+                  setForm((prev) => ({ ...prev, mark: mark }));
+                  if (form["brand"] == null || form["brand"] != brand)
+                    setForm((prev) => ({ ...prev, brand: brand }));
+                  const m = cars[brand as CarBrand].marks[mark as CarMark];
+                  console.log(brand, mark, m);
+                  if ((m["engine"] as string[]).length == 1)
+                    setForm((prev) => ({
+                      ...prev,
+                      engine: m["engine"][0],
+                    }));
+                  if ((m["gearbox"] as string[]).length == 1)
+                    setForm((prev) => ({
+                      ...prev,
+                      gearbox: m["gearbox"][0],
+                    }));
+                  if ((m["drive"] as string[]).length == 1)
+                    setForm((prev) => ({
+                      ...prev,
+                      drive: m["drive"][0],
+                    }));
+                }
+              }}
+              value={`${
+                form["mark"] ? `${form["brand"]}_${form["mark"]}` : undefined
+              }`}
+              variant="car"
+              p="2px"
+              withScrollArea={false}
+              data={(form["brand"]
+                ? Object.entries(cars[form["brand"] as CarBrand].marks).map(
+                    ([key, value]) => {
+                      return {
+                        label: value.label,
+                        value: `${form["brand"]}_${key}`,
+                      };
+                    }
+                  )
+                : Object.entries(cars).flatMap(([k, car]) =>
+                    Object.entries(car.marks).map(([key, value]) => {
+                      if (key != "busad" && key != "Бусад")
+                        return {
+                          value: `${k}_${key}`,
+                          label: value.label,
+                        };
+                    })
+                  )
+              ).filter((a) => a != undefined)}
+              label={CarEvaluateValues["mark"].label}
+              placeholder={CarEvaluateValues["mark"].pl}
+            />
+          </Grid.Col>
+          <Grid.Col span={6}>
+            <YearPickerInput
+              label="Үйлдвэрлэгдсэн он"
+              variant="unstyled"
+              styles={{
+                label: {
+                  fontWeight: 400,
+                  fontSize: 14,
+                  color: "#546274",
+                  lineHeight: 2,
+                  marginBottom: 4,
+                },
+
+                input: {
+                  borderRadius: 10,
+                  border: `2px solid #929292`,
+                  height: "auto",
+                  padding: "12px 16px",
+                  fontSize: 16,
+                },
+              }}
+              placeholder={"Сонгоно уу"}
+              minDate={new Date(1992, 1)}
+              maxDate={
+                form["imported"]
+                  ? new Date(+form["imported"], 1)
+                  : new Date(new Date().getFullYear(), 1)
+              }
+              value={
+                form["manufactured"]
+                  ? new Date(form["manufactured"])
+                  : undefined
+              }
+              onChange={(e) => {
+                if (e != null) {
+                  if (+e < 0) {
+                    notifications.show({
+                      color: "red",
+                      message: "Он буруу орсон байна.",
+                    });
+                  }
+                  setForm((prev) => ({
+                    ...prev,
+                    manufactured: `${e.getFullYear()}`,
+                  }));
+                }
+              }}
+            />
+          </Grid.Col>
+          <Grid.Col span={6}>
+            <YearPickerInput
+              label="Импортлогдсон он"
+              styles={{
+                label: {
+                  fontWeight: 400,
+                  fontSize: 14,
+                  color: "#546274",
+                  lineHeight: 2,
+                  marginBottom: 4,
+                },
+                input: {
+                  borderRadius: 10,
+                  border: `2px solid #929292`,
+                  height: "auto",
+                  fontSize: 16,
+                  padding: "12px 16px",
+                },
+              }}
+              variant="unstyled"
+              placeholder={"Сонгоно уу"}
+              minDate={
+                form["manufactured"]
+                  ? new Date(+form["manufactured"], 1)
+                  : new Date(1997, 1)
+              }
+              maxDate={new Date(new Date().getFullYear(), 1)}
+              value={form["imported"] ? new Date(form["imported"]) : undefined}
+              onChange={(e) => {
+                if (e != null) {
+                  if (+e < 0) {
+                    notifications.show({
+                      color: "red",
+                      message: "Он буруу орсон байна.",
+                    });
+                  }
+                  setForm((prev) => ({
+                    ...prev,
+                    imported: `${e.getFullYear()}`,
+                  }));
+                }
+              }}
+            />
+          </Grid.Col>
+
+          <Grid.Col span={12}>
+            <TextInput
+              fz={15}
+              label={"Гүйлт"}
+              placeholder={"Оруулна уу"}
+              value={`${money(`${form["meter"] ?? 0}`)}`}
+              rightSection={<>км</>}
+              onChange={(e) => {
+                if (e.target.value != null) {
+                  if (+e < 0) {
+                    notifications.show({
+                      color: "red",
+                      message: "Гүйлт буруу орсон байна.",
+                    });
+                  }
+                  const value = e.target.value.replaceAll(",", "");
+                  setForm((prev) => ({
+                    ...prev,
+                    meter: `${value}`,
+                  }));
+                }
+              }}
+              variant="car"
+              min={0}
+              w={"100%"}
+              maw={"100%"}
+            />
+          </Grid.Col>
+        </Grid>
+      );
+    if (step == 1)
+      return (
+        <Grid gutter={12} maw={450}>
+          {carTechnik.map((key, i) => {
+            const data =
+              (cars[form["brand"] as CarBrand]?.marks[
+                form["mark"] as CarMark
+              ]?.[key] as any[]) ?? [];
+
+            return (
+              <Grid.Col span={data?.length > 3 ? 12 : 12} key={`${key} ${i}`}>
+                {key != "motor" ? (
+                  <div>
+                    <p className="leading-[2] text-[#546274] text-[14px] font-400">
+                      {CarEvaluateValues[key as CarEvaluateKey].label}
+                    </p>
+                    <Flex w={"100%"} gap={12} rowGap={12} align={"stretch"}>
+                      {Array.from({ length: data.length }, (_, i) => i + 1).map(
+                        (i) => {
+                          return (
+                            <Button
+                              key={i}
+                              variant="outline"
+                              c={
+                                form[key as keyof FormType] == data[i - 1]
+                                  ? Colors.main
+                                  : Colors.black
+                              }
+                              flex={1}
+                              py={16}
+                              style={{
+                                textWrap: "wrap",
+                                whiteSpace: "normal",
+                                wordWrap: "break-word",
+                              }}
+                              h={"auto"}
+                              lh={1.2}
+                              bg={
+                                form[key as keyof FormType] == data[i - 1]
+                                  ? Colors.reportInputActive
+                                  : "transparent"
+                              }
+                              styles={{
+                                root: {
+                                  borderColor:
+                                    form[key as keyof FormType] == data[i - 1]
+                                      ? Colors.main
+                                      : "#929292",
+                                },
+                              }}
+                              onClick={() => {
+                                setForm((prev) => ({
+                                  ...prev,
+                                  [key]: data[i - 1],
+                                }));
+                              }}
+                            >
+                              {data[i - 1]}
+                            </Button>
+                          );
+                        }
+                      )}
+                    </Flex>
+                  </div>
+                ) : (
+                  <Select
+                    w="100%"
+                    my={5}
+                    onChange={(e) => {
+                      if (e != null) setForm((prev) => ({ ...prev, [key]: e }));
+                    }}
+                    value={form[key as keyof FormType]}
+                    variant="car"
+                    __size="20px"
+                    withScrollArea={false}
+                    styles={{
+                      dropdown: { maxHeight: 200, overflowY: "auto" },
+                      label: { fontSize: "16px" },
+                    }}
+                    data={motorLabel(data[0], data[1], data?.[2])}
+                    label={CarEvaluateValues[key as CarEvaluateKey].label}
+                    placeholder={CarEvaluateValues[key as CarEvaluateKey].pl}
+                  />
+                )}
+              </Grid.Col>
+            );
+          })}
+        </Grid>
+      );
+    if (step == 2)
+      return (
+        <Grid gutter={12} maw={450}>
+          {carMain.map(({ key, data }, i) => (
+            <Grid.Col span={data.length > 3 ? 6 : 12} key={i}>
+              {data.length <= 3 ? (
+                <div>
+                  <p className="leading-[2] text-[#546274] text-[14px] font-400">
+                    {CarEvaluateValues[key as CarEvaluateKey].label}
+                  </p>
+                  <Flex
+                    w={"100%"}
+                    gap={12}
+                    rowGap={12}
+                    style={{
+                      alignItems: "stretch",
+                    }}
+                  >
+                    {Array.from({ length: data.length }, (_, i) => i + 1).map(
+                      (i) => {
+                        return (
+                          <Button
+                            variant="outline"
+                            style={{
+                              textWrap: "wrap",
+                              whiteSpace: "normal",
+                              wordWrap: "break-word",
+                            }}
+                            c={
+                              form[key as keyof FormType] == data[i - 1].value
+                                ? Colors.main
+                                : Colors.black
+                            }
+                            flex={1}
+                            key={i}
+                            py={16}
+                            h={"auto"}
+                            lh={1.2}
+                            bg={
+                              form[key as keyof FormType] == data[i - 1].value
+                                ? Colors.reportInputActive
+                                : "transparent"
+                            }
+                            styles={{
+                              root: {
+                                borderColor:
+                                  form[key as keyof FormType] ==
+                                  data[i - 1].value
+                                    ? Colors.main
+                                    : "#929292",
+                              },
+                              label: {
+                                whiteSpace: "normal",
+                              },
+                            }}
+                            onClick={() => {
+                              setForm((prev) => ({
+                                ...prev,
+                                [key]: data[i - 1].value,
+                              }));
+                            }}
+                          >
+                            {data[i - 1].label}
+                          </Button>
+                        );
+                      }
+                    )}
+                  </Flex>
+                </div>
+              ) : (
+                <Select
+                  w="100%"
+                  my={5}
+                  onChange={(e) => {
+                    if (e != null) setForm((prev) => ({ ...prev, [key]: e }));
+                  }}
+                  value={form[key as keyof FormType]}
+                  variant="car"
+                  withScrollArea={false}
+                  data={data}
+                  label={CarEvaluateValues[key as CarEvaluateKey].label}
+                  placeholder={CarEvaluateValues[key as CarEvaluateKey].pl}
+                />
+              )}
+            </Grid.Col>
+          ))}
+        </Grid>
+      );
+  };
   return (
-    <Box>
+    <Box ref={targetRef}>
       <ReportTitle text={"АВТОМАШИН"}>
         <Box
           style={{
             borderRadius: "20px",
           }}
         >
-          <Stepper
-            active={active}
-            onStepClick={setActive}
-            color={Colors.main}
-            bg={"transparent"}
-          >
-            <Stepper.Step
-              description="Алхам 1"
-              label="Ерөнхий мэдээлэл"
-              bg={"transparent"}
-            >
-              <Grid maw={450} gutter={12}>
-                <Grid.Col span={12}>
-                  <Select
-                    w="100%"
-                    my={5}
-                    onChange={(e) => {
-                      if (e != null) {
-                        setForm((prev) => ({ ...prev, brand: e }));
-                        setForm((prev) => ({ ...prev, mark: undefined }));
-                      }
-                    }}
-                    value={form["brand"]}
-                    variant="car"
-                    p="2px"
-                    withScrollArea={false}
-                    data={Object.entries(cars)
-                      .map(([key, value]) => {
-                        return {
-                          value: key,
-                          label: value.label,
-                        };
-                      })
-                      .filter((a) => a != undefined)}
-                    label={CarEvaluateValues["brand"].label}
-                    placeholder={CarEvaluateValues["brand"].pl}
-                  />
-                </Grid.Col>
-                <Grid.Col span={12}>
-                  <Select
-                    w="100%"
-                    onChange={(e) => {
-                      if (e != null) {
-                        const split = e?.split("_");
-                        const brand = split?.[0];
-                        const mark = split?.[1];
-                        setForm((prev) => ({ ...prev, mark: mark }));
-                        if (form["brand"] == null || form["brand"] != brand)
-                          setForm((prev) => ({ ...prev, brand: brand }));
-                        const m =
-                          cars[brand as CarBrand].marks[mark as CarMark];
-                        console.log(brand, mark, m);
-                        if ((m["engine"] as string[]).length == 1)
-                          setForm((prev) => ({
-                            ...prev,
-                            engine: m["engine"][0],
-                          }));
-                        if ((m["gearbox"] as string[]).length == 1)
-                          setForm((prev) => ({
-                            ...prev,
-                            gearbox: m["gearbox"][0],
-                          }));
-                        if ((m["drive"] as string[]).length == 1)
-                          setForm((prev) => ({
-                            ...prev,
-                            drive: m["drive"][0],
-                          }));
-                      }
-                    }}
-                    value={`${
-                      form["mark"]
-                        ? `${form["brand"]}_${form["mark"]}`
-                        : undefined
-                    }`}
-                    variant="car"
-                    p="2px"
-                    withScrollArea={false}
-                    data={(form["brand"]
-                      ? Object.entries(
-                          cars[form["brand"] as CarBrand].marks
-                        ).map(([key, value]) => {
-                          return {
-                            label: value.label,
-                            value: `${form["brand"]}_${key}`,
-                          };
-                        })
-                      : Object.entries(cars).flatMap(([k, car]) =>
-                          Object.entries(car.marks).map(([key, value]) => {
-                            if (key != "busad" && key != "Бусад")
-                              return {
-                                value: `${k}_${key}`,
-                                label: value.label,
-                              };
-                          })
-                        )
-                    ).filter((a) => a != undefined)}
-                    label={CarEvaluateValues["mark"].label}
-                    placeholder={CarEvaluateValues["mark"].pl}
-                  />
-                </Grid.Col>
-                <Grid.Col span={6}>
-                  <YearPickerInput
-                    label="Үйлдвэрлэгдсэн он"
-                    variant="unstyled"
-                    styles={{
-                      label: {
-                        fontWeight: 400,
-                        fontSize: 14,
-                        color: "#546274",
-                        lineHeight: 2,
-                        marginBottom: 4,
-                      },
+          {!matches && (
+            <Flex align={"center"}>
+              <RingProgress
+                thickness={10}
+                sections={[
+                  {
+                    value: (100 * active) / 3,
+                    color: Colors.main,
+                  },
+                ]}
+                size={100}
+                transitionDuration={250}
+                label={
+                  <Text ta="center" c={Colors.headBlue} fw={"900"} fz={24}>
+                    {active}/3
+                  </Text>
+                }
+              />
+              <Box>
+                <Text fz={16} fw={500}>
+                  {active == 0
+                    ? "Ерөнхий мэдээлэл"
+                    : active == 1
+                    ? "Техникийн үзүүлэлт"
+                    : active == 2
+                    ? "Нэмэлт мэдээлэл"
+                    : "Баталгаажуулалт"}
+                </Text>
+                <Text c={"#546274"} fz={14} fw={400}>
+                  {active != 3 ? `Алхам ${active + 1}` : ""}
+                </Text>
+              </Box>
+            </Flex>
+          )}
+          {!matches && steps(active)}
+          {/* {matches && ( */}
+          <Stepper active={active} onStepClick={setActive} color={Colors.main}>
+            {matches && (
+              <Stepper.Step
+                description="Алхам 1"
+                label="Ерөнхий мэдээлэл"
+                bg={"transparent"}
+              >
+                {steps(0)}
+              </Stepper.Step>
+            )}
+            {matches && (
+              <Stepper.Step
+                description="Алхам 2"
+                label="Техникийн үзүүлэлт"
+                bg={"transparent"}
+              >
+                {steps(1)}
+              </Stepper.Step>
+            )}
+            {matches && (
+              <Stepper.Step
+                description="Алхам 3"
+                label="Нэмэлт мэдээлэл"
+                bg={"transparent"}
+              >
+                {steps(2)}
+              </Stepper.Step>
+            )}
 
-                      input: {
-                        borderRadius: 10,
-                        border: `2px solid #929292`,
-                        height: "auto",
-                        padding: "12px 16px",
-                        fontSize: 16,
-                      },
-                    }}
-                    placeholder={"Сонгоно уу"}
-                    minDate={new Date(1992, 1)}
-                    maxDate={
-                      form["imported"]
-                        ? new Date(+form["imported"], 1)
-                        : new Date(new Date().getFullYear(), 1)
-                    }
-                    value={
-                      form["manufactured"]
-                        ? new Date(form["manufactured"])
-                        : undefined
-                    }
-                    onChange={(e) => {
-                      if (e != null) {
-                        if (+e < 0) {
-                          notifications.show({
-                            color: "red",
-                            message: "Он буруу орсон байна.",
-                          });
-                        }
-                        setForm((prev) => ({
-                          ...prev,
-                          manufactured: `${e.getFullYear()}`,
-                        }));
-                      }
-                    }}
-                  />
-                </Grid.Col>
-                <Grid.Col span={6}>
-                  <YearPickerInput
-                    label="Импортлогдсон он"
-                    styles={{
-                      label: {
-                        fontWeight: 400,
-                        fontSize: 14,
-                        color: "#546274",
-                        lineHeight: 2,
-                        marginBottom: 4,
-                      },
-                      input: {
-                        borderRadius: 10,
-                        border: `2px solid #929292`,
-                        height: "auto",
-                        fontSize: 16,
-                        padding: "12px 16px",
-                      },
-                    }}
-                    variant="unstyled"
-                    placeholder={"Сонгоно уу"}
-                    minDate={
-                      form["manufactured"]
-                        ? new Date(+form["manufactured"], 1)
-                        : new Date(1997, 1)
-                    }
-                    maxDate={new Date(new Date().getFullYear(), 1)}
-                    value={
-                      form["imported"] ? new Date(form["imported"]) : undefined
-                    }
-                    onChange={(e) => {
-                      if (e != null) {
-                        if (+e < 0) {
-                          notifications.show({
-                            color: "red",
-                            message: "Он буруу орсон байна.",
-                          });
-                        }
-                        setForm((prev) => ({
-                          ...prev,
-                          imported: `${e.getFullYear()}`,
-                        }));
-                      }
-                    }}
-                  />
-                </Grid.Col>
-
-                <Grid.Col span={12}>
-                  <TextInput
-                    fz={15}
-                    label={"Гүйлт"}
-                    placeholder={"Оруулна уу"}
-                    value={`${money(`${form["meter"] ?? 0}`)}`}
-                    rightSection={<>км</>}
-                    onChange={(e) => {
-                      if (e.target.value != null) {
-                        if (+e < 0) {
-                          notifications.show({
-                            color: "red",
-                            message: "Гүйлт буруу орсон байна.",
-                          });
-                        }
-                        const value = e.target.value.replaceAll(",", "");
-                        setForm((prev) => ({
-                          ...prev,
-                          meter: `${value}`,
-                        }));
-                      }
-                    }}
-                    variant="car"
-                    min={0}
-                    w={"100%"}
-                    maw={"100%"}
-                  />
-                </Grid.Col>
-              </Grid>
-            </Stepper.Step>
-            <Stepper.Step
-              description="Алхам 2"
-              label="Техникийн үзүүлэлт"
-              bg={"transparent"}
-            >
-              <Grid gutter={12} maw={450}>
-                {carTechnik.map((key, i) => {
-                  const data =
-                    (cars[form["brand"] as CarBrand]?.marks[
-                      form["mark"] as CarMark
-                    ]?.[key] as any[]) ?? [];
-
-                  return (
-                    <Grid.Col
-                      span={data?.length > 3 ? 12 : 12}
-                      key={`${key} ${i}`}
-                    >
-                      {key != "motor" ? (
-                        <div>
-                          <p className="leading-[2] text-[#546274] text-[14px] font-400">
-                            {CarEvaluateValues[key as CarEvaluateKey].label}
-                          </p>
-                          <Flex
-                            w={"100%"}
-                            gap={12}
-                            rowGap={12}
-                            align={"stretch"}
-                          >
-                            {Array.from(
-                              { length: data.length },
-                              (_, i) => i + 1
-                            ).map((i) => {
-                              return (
-                                <Button
-                                  key={i}
-                                  variant="outline"
-                                  c={
-                                    form[key as keyof FormType] == data[i - 1]
-                                      ? Colors.main
-                                      : Colors.black
-                                  }
-                                  flex={1}
-                                  py={16}
-                                  style={{
-                                    textWrap: "wrap",
-                                    whiteSpace: "normal",
-                                    wordWrap: "break-word",
-                                  }}
-                                  h={"auto"}
-                                  lh={1.2}
-                                  bg={
-                                    form[key as keyof FormType] == data[i - 1]
-                                      ? Colors.reportInputActive
-                                      : "transparent"
-                                  }
-                                  styles={{
-                                    root: {
-                                      borderColor:
-                                        form[key as keyof FormType] ==
-                                        data[i - 1]
-                                          ? Colors.main
-                                          : "#929292",
-                                    },
-                                  }}
-                                  onClick={() => {
-                                    setForm((prev) => ({
-                                      ...prev,
-                                      [key]: data[i - 1],
-                                    }));
-                                  }}
-                                >
-                                  {data[i - 1]}
-                                </Button>
-                              );
-                            })}
-                          </Flex>
-                        </div>
-                      ) : (
-                        <Select
-                          w="100%"
-                          my={5}
-                          onChange={(e) => {
-                            if (e != null)
-                              setForm((prev) => ({ ...prev, [key]: e }));
-                          }}
-                          value={form[key as keyof FormType]}
-                          variant="car"
-                          __size="20px"
-                          withScrollArea={false}
-                          styles={{
-                            dropdown: { maxHeight: 200, overflowY: "auto" },
-                            label: { fontSize: "16px" },
-                          }}
-                          data={motorLabel(data[0], data[1], data?.[2])}
-                          label={CarEvaluateValues[key as CarEvaluateKey].label}
-                          placeholder={
-                            CarEvaluateValues[key as CarEvaluateKey].pl
-                          }
-                        />
-                      )}
-                    </Grid.Col>
-                  );
-                })}
-              </Grid>
-            </Stepper.Step>
-            <Stepper.Step
-              description="Алхам 3"
-              label="Нэмэлт мэдээлэл"
-              bg={"transparent"}
-            >
-              <Grid gutter={12} maw={450}>
-                {carMain.map(({ key, data }, i) => (
-                  <Grid.Col span={data.length > 3 ? 6 : 12} key={i}>
-                    {data.length <= 3 ? (
-                      <div>
-                        <p className="leading-[2] text-[#546274] text-[14px] font-400">
-                          {CarEvaluateValues[key as CarEvaluateKey].label}
-                        </p>
+            {active == 3 && (
+              <Stepper.Completed>
+                <GeneralWidget title="Та илгээхдээ итгэлтэй байна уу">
+                  <Grid>
+                    {carFields.map((carField, index) => (
+                      <Grid.Col
+                        span={{ lg: 3, md: 3, sm: 4, base: 6 }}
+                        key={index}
+                      >
                         <Flex
+                          gap="md"
+                          justify="left"
+                          align="center"
+                          direction="row"
                           w={"100%"}
-                          gap={12}
-                          rowGap={12}
+                          wrap="wrap"
+                          h={"100%"}
                           style={{
-                            alignItems: "stretch",
+                            border: "1px solid #DDDDDD",
+                            borderRadius: 12,
+                            cursor: "pointer",
+                          }}
+                          onClick={() => setActive(carField.step)}
+                          py={12}
+                          px={{
+                            md: "10%",
+                            base: 10,
                           }}
                         >
-                          {Array.from(
-                            { length: data.length },
-                            (_, i) => i + 1
-                          ).map((i) => {
-                            return (
-                              <Button
-                                variant="outline"
-                                style={{
-                                  textWrap: "wrap",
-                                  whiteSpace: "normal",
-                                  wordWrap: "break-word",
-                                }}
-                                c={
-                                  form[key as keyof FormType] ==
-                                  data[i - 1].value
-                                    ? Colors.main
-                                    : Colors.black
-                                }
-                                flex={1}
-                                key={i}
-                                py={16}
-                                h={"auto"}
-                                lh={1.2}
-                                bg={
-                                  form[key as keyof FormType] ==
-                                  data[i - 1].value
-                                    ? Colors.reportInputActive
-                                    : "transparent"
-                                }
-                                styles={{
-                                  root: {
-                                    borderColor:
-                                      form[key as keyof FormType] ==
-                                      data[i - 1].value
-                                        ? Colors.main
-                                        : "#929292",
-                                  },
-                                  label: {
-                                    whiteSpace: "normal",
-                                  },
-                                }}
-                                onClick={() => {
-                                  setForm((prev) => ({
-                                    ...prev,
-                                    [key]: data[i - 1].value,
-                                  }));
-                                }}
-                              >
-                                {data[i - 1].label}
-                              </Button>
-                            );
-                          })}
+                          {carField.icon}
+                          <Box>
+                            <Text
+                              fz={{
+                                sm: 12,
+                                base: 12,
+                              }}
+                              fw={"bold"}
+                              c={"#262626"}
+                              lh={1}
+                            >
+                              {carField.name}
+                            </Text>
+                            <Text
+                              fz={{
+                                lg: 20,
+
+                                base: 16,
+                              }}
+                              lh={1.1}
+                              fw={300}
+                            >
+                              {upperFirst(
+                                `${
+                                  carField.key == "meter"
+                                    ? `${money(
+                                        `${
+                                          form[carField.key as keyof FormType]
+                                        }`
+                                      )}км`
+                                    : form[carField.key as keyof FormType]
+                                }`
+                              )}
+                            </Text>
+                          </Box>
                         </Flex>
-                      </div>
-                    ) : (
-                      <Select
-                        w="100%"
-                        my={5}
-                        onChange={(e) => {
-                          if (e != null)
-                            setForm((prev) => ({ ...prev, [key]: e }));
-                        }}
-                        value={form[key as keyof FormType]}
-                        variant="car"
-                        withScrollArea={false}
-                        data={data}
-                        label={CarEvaluateValues[key as CarEvaluateKey].label}
-                        placeholder={
-                          CarEvaluateValues[key as CarEvaluateKey].pl
-                        }
-                      />
-                    )}
-                  </Grid.Col>
-                ))}
-              </Grid>
-            </Stepper.Step>
-
-            <Stepper.Completed>
-              <GeneralWidget title="Та илгээхдээ итгэлтэй байна уу">
-                <Grid>
-                  {carFields.map((carField, index) => (
-                    <Grid.Col
-                      span={{ lg: 3, md: 3, sm: 4, base: 6 }}
-                      key={index}
-                    >
-                      <Flex
-                        gap="md"
-                        justify="left"
-                        align="center"
-                        direction="row"
-                        w={"100%"}
-                        wrap="wrap"
-                        h={"100%"}
-                        style={{
-                          border: "1px solid #DDDDDD",
-                          borderRadius: 12,
-                          cursor: "pointer",
-                        }}
-                        onClick={() => setActive(carField.step)}
-                        py={12}
-                        px={{
-                          md: "10%",
-                          base: 10,
-                        }}
-                      >
-                        {carField.icon}
-                        <Box>
-                          <Text
-                            fz={{
-                              sm: 12,
-                              base: 12,
-                            }}
-                            fw={"bold"}
-                            c={"#262626"}
-                            lh={1}
-                          >
-                            {carField.name}
-                          </Text>
-                          <Text
-                            fz={{
-                              lg: 20,
-
-                              base: 16,
-                            }}
-                            lh={1.1}
-                            fw={300}
-                          >
-                            {upperFirst(
-                              `${
-                                carField.key == "meter"
-                                  ? `${money(
-                                      `${form[carField.key as keyof FormType]}`
-                                    )}км`
-                                  : form[carField.key as keyof FormType]
-                              }`
-                            )}
-                          </Text>
-                        </Box>
-                      </Flex>
-                    </Grid.Col>
-                  ))}
-                </Grid>
-              </GeneralWidget>
-            </Stepper.Completed>
+                      </Grid.Col>
+                    ))}
+                  </Grid>
+                </GeneralWidget>
+              </Stepper.Completed>
+            )}
           </Stepper>
+          {/* )} */}
           <Group justify="start" mt="xl">
             {active != 0 && (
               <Button variant="default" onClick={prevStep} radius={4}>
@@ -1173,7 +1221,7 @@ const Page = () => {
                             },
                           }}
                           onClick={() => {
-                            console.log(data.value)
+                            console.log(data.value);
                             setForm((prev) => ({
                               ...prev,
                               org: `${data.value}`,
