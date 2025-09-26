@@ -20,6 +20,53 @@ export type GoogleMapsType = {
   lng: number;
 };
 
+export type VehicleInfo = {
+  archiveDate: string | null;
+  archiveFirstNumber: string | null;
+  archiveNumber: string | null;
+  axleCount: number;
+  buildYear: number;
+  cabinNumber: string | null;
+  capacity: number;
+  certificateNumber: string | null;
+  className: string | null;
+  colorName: string | null;
+  countryName: string | null;
+  fueltype: string | null;
+  height: number;
+  importDate: string | null;
+  intent: string | null;
+  length: number;
+  manCount: number;
+  markName: string | null;
+  mass: number;
+  modelName: string | null;
+  motorNumber: string | null;
+  ownerAddress: {
+    apartment: string | null;
+    door: string | null;
+    soum: string | null;
+    state: string | null;
+    street: string | null;
+    town: string | null;
+  };
+  ownerCountry: string | null;
+  ownerFirstname: string | null;
+  ownerHandphone: string | null;
+  ownerHomephone: string | null;
+  ownerLastname: string | null;
+  ownerRegnum: string | null;
+  ownerType: string | null;
+  ownerWorkphone: string | null;
+  plateNumber: string | null;
+  transmission: string | null;
+  type: string | null;
+  typeId: number;
+  weight: number;
+  wheelPosition: string | null;
+  width: number;
+};
+
 export type CacheVarType = {
   parent?: string;
   position?: string;

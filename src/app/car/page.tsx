@@ -55,6 +55,75 @@ interface FormType {
   type?: string;
   interior?: string;
 }
+<<<<<<< refs/remotes/origin/dev
+=======
+export const carFields = [
+  {
+    name: "Бренд",
+    key: "brand",
+    icon: <IoCarSportOutline size={24} />,
+    step: 0,
+  },
+  { name: "Марк", key: "mark", icon: <BsBookmark size={24} />, step: 0 },
+  { name: "Багтаамж", key: "motor", icon: <PiEngine size={24} />, step: 1 },
+  {
+    name: "Өнгө",
+    key: "color",
+    icon: <IoColorFillOutline size={24} />,
+    step: 2,
+  },
+  {
+    name: "Үйлдвэрлэсэн",
+    key: "manufactured",
+    icon: <CiCalendarDate size={24} />,
+    step: 0,
+  },
+  {
+    name: "Импортлосон",
+    key: "imported",
+    icon: <CiCalendar size={24} />,
+    step: 0,
+  },
+  {
+    name: "Гүйлт",
+    key: "meter",
+    icon: <AiOutlineDashboard size={24} />,
+    step: 0,
+  },
+  {
+    name: "Хөдөлгүүрийн төрөл",
+    key: "engine",
+    icon: <BsFuelPump size={24} />,
+    step: 1,
+  },
+  {
+    name: "Хүрд",
+    key: "steerType",
+    icon: <PiSteeringWheel size={24} />,
+    step: 2,
+  },
+  {
+    name: "Хурдны хайрцаг",
+    key: "gearbox",
+    icon: <GiGearStickPattern size={24} />,
+    step: 1,
+  },
+  {
+    name: "Салоны өнгө",
+    key: "interior",
+    step: 2,
+    icon: <LuPaintRoller size={24} />,
+  },
+  // { name: "Төрөл", key: "type", icon: <RiCarLine size={24} />, step: 2 },
+  {
+    name: "Хөтлөгч",
+    key: "drive",
+    icon: <GiCarWheel size={24} />,
+    step: 1,
+  },
+  { name: "Нөхцөл", key: "conditions", icon: <TbNumber size={24} />, step: 2 },
+];
+>>>>>>> local
 const Page = () => {
   const params = useSearchParams();
   const [loading, setLoading] = useState(false);
