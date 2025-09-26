@@ -19,11 +19,17 @@ export enum PaymentType {
   LOYALTY = 3,
 }
 
-export const PaymentTypeValue = {
-  1: "Qpay", 
-  2: "Оноо",
-  3: "Урамшуулал"
+export enum PaymentUsage {
+  INSURANCE = 10,
+  LOAN = 20,
+  VALUE = 30,
 }
+
+export const PaymentTypeValue = {
+  1: "Qpay",
+  2: "Оноо",
+  3: "Урамшуулал",
+};
 
 export enum TransactionType {
   income = 10,

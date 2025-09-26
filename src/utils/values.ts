@@ -1,14 +1,12 @@
 import { locale } from "@/base/vocabs/mn";
-<<<<<<< refs/remotes/origin/dev
-import { ItemPosition, ItemTypes, TransactionType } from "@/config/enum";
-=======
+
 import {
   ItemPosition,
   ItemTypes,
   PaymentUsage,
   TransactionType,
 } from "@/config/enum";
->>>>>>> local
+
 import { DistrictAssets } from "./assets";
 
 export const categoryNames = [
@@ -283,8 +281,7 @@ type CarEvaluateValue = {
   pl: string;
 };
 
-<<<<<<< refs/remotes/origin/dev
-=======
+
 export const ReportSubmitErrorMessages = {
   lastname: "Овог оруулна уу",
   firstname: "Нэр оруулна уу",
@@ -314,7 +311,6 @@ export const reportPrice = (name?: string) => {
   return 5000;
 };
 
->>>>>>> local
 export const CarEvaluateValues: Record<CarEvaluateKey, CarEvaluateValue> = {
   brand: { label: "Брэнд", pl: "Сонгоно уу" },
   mark: { label: "Марк", pl: "Сонгоно уу" },
