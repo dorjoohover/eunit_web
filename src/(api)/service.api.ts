@@ -172,15 +172,12 @@ export const carEvaluate = async (
     type?: string;
     interior?: string;
     conditions?: string;
-<<<<<<< refs/remotes/origin/dev
-=======
     lastname?: string;
     firstname?: string;
     org?: string;
     usage?: string;
     value?: any;
     vehicle: VehicleInfo;
->>>>>>> local
   },
   service: number,
   payment = 2
