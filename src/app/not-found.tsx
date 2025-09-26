@@ -8,6 +8,7 @@ export default function NotFound() {
       <Stack
         display={"flex"}
         justify={"center"}
+        align="center"
         w={"100%"}
         ta={"center"}
         my="10vh"

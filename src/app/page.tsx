@@ -61,7 +61,7 @@ export default function Home() {
         position: { lat: 47.89864663332739, lng: 106.89576814269692 },
       },
       {
-        id: 2,
+        id: 3,
         icon: MarkerAssests.aqua,
         position: { lat: 47.924932363836156, lng: 106.81154741227641 },
       },
@@ -76,7 +76,7 @@ export default function Home() {
         position: { lat: 47.910709907527625, lng: 106.8783333148136 },
       },
       {
-        id: 3,
+        id: 2,
         icon: MarkerAssests.blue,
         position: { lat: 47.771730825448216, lng: 107.25424468977218 },
       },

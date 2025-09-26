@@ -260,27 +260,30 @@ export const DataDownloadValue = {
   },
 };
 
-export type CarEvaluateKey = 
+export type CarEvaluateKey =
   | "brand"
   | "mark"
   | "motor"
-  | "motorType"
-  | "engineType"
+  | "engine"
+  | "gearbox"
   | "steerType"
-  | "wheelDrive"
+  | "drive"
   | "color"
   | "meter"
   | "manufactured"
-  | "type"
+  // | "type"
   | "interior"
   | "conditions"
+  | "org"
+  | "firstname"
+  | "lastname"
+  | "usage"
   | "imported";
 
 type CarEvaluateValue = {
   label: string;
   pl: string;
 };
-
 
 export const ReportSubmitErrorMessages = {
   lastname: "Овог оруулна уу",
@@ -315,17 +318,21 @@ export const CarEvaluateValues: Record<CarEvaluateKey, CarEvaluateValue> = {
   brand: { label: "Брэнд", pl: "Сонгоно уу" },
   mark: { label: "Марк", pl: "Сонгоно уу" },
   motor: { label: "Хөдөлгүүрийн багтаамж", pl: "Сонгоно уу" },
-  motorType: { label: "Хөдөлгүүрийн төрөл", pl: "Сонгоно уу" },
-  engineType: { label: "Хурдны хайрцаг", pl: "Сонгоно уу" },
+  engine: { label: "Хөдөлгүүрийн төрөл", pl: "Сонгоно уу" },
+  gearbox: { label: "Хурдны хайрцаг", pl: "Сонгоно уу" },
   steerType: { label: "Хүрд", pl: "Сонгоно уу" },
-  wheelDrive: { label: "Хөтлөгч", pl: "Сонгоно уу" },
+  drive: { label: "Хөтлөгч", pl: "Сонгоно уу" },
   color: { label: "Өнгө", pl: "Сонгоно уу" },
   interior: { label: "Салоны өнгө", pl: "Сонгоно уу" },
-  type: { label: "Төрөл", pl: "Сонгоно уу" },
+  // type: { label: "Төрөл", pl: "Сонгоно уу" },
   conditions: { label: "Нөхцөл", pl: "Сонгоно уу" },
   meter: { label: "Гүйлт", pl: "Оруулна уу" },
   manufactured: { label: "Үйлдвэрлэгдсэн он", pl: "Оруулна уу" },
   imported: { label: "Импортлогдсон он", pl: "Оруулна уу" },
+  lastname: { label: "Овог", pl: "Овог оруулна уу" },
+  firstname: { label: "Нэр", pl: "Өөрийн нэр оруулна уу" },
+  usage: { label: "Лавлагааны зориулалт", pl: "" },
+  org: { label: "Байгууллага сонголт", pl: "" },
 };
 
 export const locationCenter = {
@@ -353,10 +360,9 @@ export const createAdNav = [
 
 export const NavbarValue = [
   { name: locale.data.NAVBAR.HOME, href: "/" },
-  { name: locale.data.NAVBAR.ESTIMATE, href: "/report" },
-  { name: locale.data.NAVBAR.DATA, href: "/data" },
+  { name: locale.data.NAVBAR.REALSTATE, href: "/report" },
+  { name: locale.data.NAVBAR.CAR, href: "/cars" },
   { name: locale.data.NAVBAR.WALLET, href: "/wallet" },
-  { name: locale.data.NAVBAR.CAR, href: "/car" },
   // { name: locale.data.NAVBAR.CONTACT, href: "/contact" },
 ];
 

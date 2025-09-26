@@ -107,7 +107,9 @@ export const reportDescription = (
                   "",
                   100000
                 )} төгрөг орчим үнэтэй байна. Энэхүү тооцоолол нь өгөгдөлд суурилж
-                тооцоолсон бөгөөд ±5%-ийн хооронд хэлбэлзэх боломжтой.`;
+                тооцоолсон бөгөөд ±${
+                  l != undefined ? "5" : "10"
+                }%-ийн хооронд хэлбэлзэх боломжтой.`;
 };
 
 export function formatPhoneNumber(phone: string) {
@@ -210,4 +212,48 @@ export const getSuggestionValue = (suggestion: string) => {
     default:
       return;
   }
+};
+
+export const motorLabel = (min: number, max: number, add?: string) => {
+  const list = [
+    "1.5-с доош",
+    "1.6-2.0",
+    "2.1-2.5",
+    "2.6-3.0",
+    "3.1-3.5",
+    "3.6-4.0",
+    "4.1-4.5",
+    "4.6-5.0",
+    "5.1-с дээш",
+    // "Цахилгаан",
+  ];
+
+  const filtered = list.filter((label) => {
+    // if (label === "Цахилгаан") return true;
+
+    if (label.includes("с доош")) {
+      const upper = parseFloat(label);
+      return max <= upper;
+    }
+
+    if (label.includes("с дээш")) {
+      const lower = parseFloat(label);
+      return min >= lower;
+    }
+
+    const [lowStr, highStr] = label.split("-");
+    const low = parseFloat(lowStr);
+    const high = parseFloat(highStr);
+
+    return high >= min && low <= max;
+  });
+
+  // Add and deduplicate
+  const all = add ? [...filtered, add] : filtered;
+  const unique = Array.from(new Set(all)); // remove duplicates
+
+  return unique.map((item) => ({
+    label: item,
+    value: item,
+  }));
 };

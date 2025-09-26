@@ -161,15 +161,15 @@ export const carEvaluate = async (
     brand?: string;
     mark?: string;
     motor?: string;
-    motorType?: string;
-    engineType?: string;
+    engine?: string;
+    gearbox?: string;
     steerType?: string;
-    wheelDrive?: string;
+    drive?: string;
     color?: string;
     meter?: string;
     manufactured?: string;
     imported?: string;
-    type?: string;
+    // type?: string;
     interior?: string;
     conditions?: string;
     lastname?: string;
@@ -183,25 +183,26 @@ export const carEvaluate = async (
   payment = 2
   // payment: number
 ) => {
-  console.log(value);
   const token = (await cookies()).get("auth_token");
-  console.log(token);
   if (!token?.value) return { token: false };
   try {
     const body = {
       brand: value.brand,
       mark: value.mark,
       capacity: value.motor,
-      engine: value.motorType,
-      gearbox: value.engineType,
+      engine: value.engine,
+      gearbox: value.gearbox,
       hurd: value.steerType,
-      drive: value.wheelDrive,
+      drive: value.drive,
       color: value.color,
       mileage: value.meter,
       manufacture: value.manufactured,
       entry: value.imported,
+      lastname: value.lastname,
+      firstname: value.firstname,
+      usage: value.usage,
+      org: value.org,
       service,
-      type: value.type,
       interior: value.interior,
       conditions: value.conditions,
       category: 20,
@@ -227,7 +228,7 @@ export const carEvaluate = async (
       success: res.succeed,
     };
   } catch (error) {
-    // console.error(error);
+    console.error(error);
   }
 };
 

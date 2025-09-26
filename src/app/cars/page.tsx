@@ -88,7 +88,13 @@ export interface FormType {
   overall?: number | string;
   extraFeatures?: number | string;
 }
-export const carFields = [
+type CarField = {
+  name: string;
+  key: string;
+  icon: JSX.Element;
+  step?: number;
+};
+export const carFields: CarField[] = [
   {
     name: "Марк",
     key: "markName",
@@ -467,7 +473,7 @@ const Page = () => {
       });
     if (res?.data) {
       refetchUser();
-      router.push(`/car/result?id=${qpay?.id}`);
+      router.push(`/cars/result?id=${qpay?.id}`);
     }
     setLoading(false);
   };

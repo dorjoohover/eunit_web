@@ -2,7 +2,7 @@ import { getRequestAllUser, getRequestUser } from "@/(api)/service.api";
 import { ServiceType } from "@/config/enum";
 import { LocationModel } from "@/models/location.model";
 import { RequestModel } from "@/models/request.model";
-import { parseDate } from "@/utils/functions";
+import { money, parseDate } from "@/utils/functions";
 import { ServiceValues } from "@/utils/values";
 import {
   Box,
@@ -14,6 +14,7 @@ import {
   Table,
   Text,
 } from "@mantine/core";
+import { upperFirst } from "lodash";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -27,6 +28,7 @@ export const ServiceHistory = () => {
     await getRequestUser(page, l).then((d) => {
       if (d?.success) {
         setTotal(d.data[1]);
+        console.log(d.data[0]);
         setHistory(d.data[0]);
       }
     });
@@ -39,11 +41,16 @@ export const ServiceHistory = () => {
     const type = element.service as keyof typeof ServiceValues;
     const router = useRouter();
     const location = element.location as LocationModel;
-    const address = `${location.city} хот, ${location.district} дүүрэг, ${
-      location.khoroo
-    }${location.khoroo && "-р хороо,"}${location.town}${
-      location.town ? " хотхон" : location.name
-    }`;
+    const address =
+      location != undefined
+        ? `${location.city} хот, ${location.district} дүүрэг, ${
+            location.khoroo
+          }${location.khoroo && "-р хороо,"}${location.town}${
+            location.town ? " хотхон" : location.name
+          }`
+        : `${upperFirst(element.brand)}, ${upperFirst(element?.mark)}, ${
+            element?.capacity
+          }л, ${element.engine}`;
     return (
       <Table.Tr key={element.id}>
         <Table.Td>
@@ -55,15 +62,27 @@ export const ServiceHistory = () => {
           </Text>
         </Table.Td>
         <Table.Td ta={"center"}>{address}</Table.Td>
-        <Table.Td>
-          {element.area == 0 ? "Бүгд" : `${element.area} м.кв`}
+        <Table.Td
+          style={{
+            textWrap: "nowrap",
+          }}
+        >
+          {element.area == 0
+            ? "Бүгд"
+            : element.area != null
+            ? `${element.area} м.кв`
+            : `${element.manufacture} / ${element.entry} он`}
         </Table.Td>
         <Table.Td ta={"center"}>
           <Button
             unstyled
             onClick={() => {
               if (element.service != ServiceType.DATA) {
-                router.push(`/report/result?id=${element.id}`);
+                element.area
+                  ? router.push(`/report/result?id=${element.id}`)
+                  : element.brand
+                  ? router.push(`/cars/result?id=${element.id}`)
+                  : null;
               }
             }}
           >
@@ -90,10 +109,11 @@ export const ServiceHistory = () => {
                 Төрөл
               </Table.Th>
               <Table.Th ta={"center"} c={"headBlue"} fw={"normal"}>
-                Хаяг байршил
+                {/* Хаяг байршил */}
+                Хөрөнгө
               </Table.Th>
               <Table.Th ta={"center"} c={"headBlue"} fw={"normal"}>
-                Хэмжээ
+                Хэмжүүр
               </Table.Th>
               <Table.Th ta={"center"} c={"headBlue"} fw={"normal"}>
                 Үйлдэл
