@@ -47,7 +47,7 @@ import Link from "next/link";
 import { notifications } from "@mantine/notifications";
 import { UserModel } from "@/models/user.model";
 import Image from "next/image";
-import { orgValues, OrgValueType } from "@/app/car/selectModel";
+// import { orgValues, OrgValueType } from "@/app/cars/selectModel";
 type ResultType = {
   service: {
     min?: number;
@@ -162,7 +162,7 @@ const Page = () => {
       <ReportTitle>
         <Box>
           <Flex justify={"space-between"} pt={{ sm: 40, base: 32 }}>
-            {data?.service?.usage && data?.service?.usage !== 30 ? (
+            {/* {data?.service?.usage && data?.service?.usage !== 30 ? (
               <Image
                 width={50}
                 height={50}
@@ -179,7 +179,7 @@ const Page = () => {
               />
             ) : (
               <p></p>
-            )}
+            )} */}
             {data?.service?.createdAt && (
               <Text fw={"bold"} fz={16}>
                 {parseDate(new Date(data?.service.createdAt), ".")}

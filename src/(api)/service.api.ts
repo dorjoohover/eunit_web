@@ -1,6 +1,8 @@
 "use server";
+import { FormType } from "@/app/cars/page";
 import { ServiceType } from "@/config/enum";
 import { api } from "@/utils/routes";
+import { VehicleInfo } from "@/utils/type";
 import { cookies } from "next/headers";
 
 export const sendRequest = async (
@@ -14,6 +16,7 @@ export const sendRequest = async (
     startDate?: Date;
     endDate?: Date;
     payment: number;
+    value?: any;
   },
   service: number
 ) => {
@@ -31,6 +34,7 @@ export const sendRequest = async (
       endDate: value.endDate,
       count: value.count,
       payment: value.payment,
+      value: value.value,
     };
     const res = await fetch(`${api}request`, {
       method: "POST",
@@ -172,6 +176,8 @@ export const carEvaluate = async (
     firstname?: string;
     org?: string;
     usage?: string;
+    value?: any;
+    vehicle: VehicleInfo;
   },
   service: number,
   payment = 2
@@ -201,8 +207,9 @@ export const carEvaluate = async (
       conditions: value.conditions,
       category: 20,
       payment: payment,
+      value: value.value,
+      vehicle: value.vehicle,
     };
-    console.log(body);
     const res = await fetch(`${api}request`, {
       method: "POST",
       mode: "no-cors",
@@ -213,6 +220,32 @@ export const carEvaluate = async (
       },
     }).then((d) => d.json());
     console.log(res);
+    return {
+      data: res.payload,
+      token: true,
+      message: res?.payload?.message,
+      status: res?.payload?.status,
+      success: res.succeed,
+    };
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const getCarInfo = async (plateNumber: string) => {
+  const token = (await cookies()).get("auth_token");
+  if (!token?.value) return { token: false };
+  try {
+    const res = await fetch(`${api}info/car/${plateNumber}`, {
+      method: "GET",
+      mode: "no-cors",
+
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token?.value}`,
+      },
+    }).then((d) => d.json());
+    console.log(res.payload);
     return {
       data: res.payload,
       token: true,

@@ -52,7 +52,8 @@ import { AiOutlineDashboard } from "react-icons/ai";
 import { IconManualGearbox } from "@tabler/icons-react";
 import { RiCarLine } from "react-icons/ri";
 import Image from "next/image";
-import { orgValues, OrgValueType } from "../selectModel";
+import { carFields, FormType } from "../page";
+import { VehicleInfo } from "@/utils/type";
 
 type ResultDataType = {
   brand?: string;
@@ -81,9 +82,13 @@ type ResultDataType = {
 type ResultType = {
   service: ResultDataType;
   result: {
-    min?: number;
-    max?: number;
-    result: number;
+    amount?: number;
+    createdAt?: Date;
+    estimatedPrice?: number;
+    quantity?: number;
+    service?: string;
+    value?: FormType;
+    vehicle?: VehicleInfo;
   };
 };
 const Page = () => {
@@ -101,6 +106,7 @@ const Page = () => {
 
     refetchUser();
     const res = await getRequestResult(+id);
+    console.log(res);
     if (!res.success) {
       notifications.show({
         message: res.message,
@@ -124,38 +130,7 @@ const Page = () => {
   useEffect(() => {
     getResult();
   }, []);
-  const carFields = [
-    { name: "Бренд", key: "brand", icon: <IoCarSportOutline size={24} /> },
-    { name: "Марк", key: "mark", icon: <BsBookmark size={24} /> },
-    { name: "Багтаамж", key: "capacity", icon: <PiEngine size={24} /> },
-    { name: "Өнгө", key: "color", icon: <IoColorFillOutline size={24} /> },
-    {
-      name: "Үйлдвэрлэсэн",
-      key: "manufacture",
-      icon: <CiCalendarDate size={24} />,
-    },
-    { name: "Импортлосон", key: "entry", icon: <CiCalendar size={24} /> },
-    { name: "Гүйлт", key: "mileage", icon: <AiOutlineDashboard size={24} /> },
-    {
-      name: "Хөдөлгүүрийн төрөл",
-      key: "engine",
-      icon: <BsFuelPump size={24} />,
-    },
-    { name: "Хүрд", key: "hurd", icon: <PiSteeringWheel size={24} /> },
-    {
-      name: "Хурдны хайрцаг",
-      key: "gearbox",
-      icon: <GiGearStickPattern size={24} />,
-    },
-    {
-      name: "Салоны өнгө",
-      key: "interior",
-      icon: <LuPaintRoller size={24} />,
-    },
-    // { name: "Төрөл", key: "type", icon: <RiCarLine size={24} /> },
-    { name: "Хөтлөгч", key: "drive", icon: <GiCarWheel size={24} /> },
-    { name: "Нөхцөл", key: "conditions", icon: <TbNumber size={24} /> },
-  ];
+
   if (loading)
     return (
       <Center>
@@ -199,24 +174,6 @@ const Page = () => {
       <ReportTitle>
         <Box>
           <Flex justify={"space-between"} pt={{ sm: 40, base: 32 }}>
-            {data?.service?.usage && data?.service?.usage !== 30 ? (
-              <Image
-                width={50}
-                height={50}
-                alt={
-                  orgValues[
-                    (data?.service.usage ?? 30).toString() as OrgValueType
-                  ].filter((a) => a.value == data?.service.org)?.[0]?.name ?? ""
-                }
-                src={
-                  orgValues[
-                    (data?.service.usage ?? 30).toString() as OrgValueType
-                  ].filter((a) => a.value == data?.service.org)?.[0]?.icon
-                }
-              />
-            ) : (
-              <p></p>
-            )}
             {data?.service?.createdAt && (
               <Text fw={"bold"} fz={16}>
                 {parseDate(new Date(data?.service.createdAt), ".")}
@@ -345,7 +302,7 @@ const Page = () => {
                 base: 16,
               }}
               highlight={[
-                `${money((data?.result.result ?? 0).toString(), "₮")}`,
+                `${money((data?.result.estimatedPrice ?? 0).toString(), "₮")}`,
               ]}
               highlightStyles={{
                 background: Colors.main,
@@ -355,7 +312,7 @@ const Page = () => {
               }}
               children={`
                     Таны сонгосон автомашины үнэ цэн: ${money(
-                      (data?.result?.result ?? 0).toString(),
+                      (data?.result?.estimatedPrice ?? 0).toString(),
                       "₮"
                     )}`}
             ></Highlight>
@@ -370,7 +327,11 @@ const Page = () => {
               }}
               ta={"justify"}
               highlight={[
-                `${money(`${data?.result?.result ?? ""}`, "", 100000)} төгрөг`,
+                `${money(
+                  `${data?.result?.estimatedPrice ?? ""}`,
+                  "",
+                  100000
+                )} төгрөг`,
               ]}
               highlightStyles={{
                 background: Colors.main,
@@ -391,15 +352,15 @@ const Page = () => {
                     : "")
                 }`,
                 1,
-                data?.result?.result ?? 0,
+                data?.result?.estimatedPrice ?? 0,
                 undefined,
                 {
-                  brand: data?.service?.brand,
-                  manufacture: data?.service?.manufacture,
-                  mark: data?.service?.mark,
+                  brand: data?.result?.vehicle?.markName ?? "",
+                  manufacture: data?.result?.vehicle?.buildYear,
+                  mark: data?.result?.vehicle?.modelName ?? "",
                   engine: data?.service?.engine,
-                  entry: data?.service?.entry,
-                  capacity: data?.service?.capacity,
+                  entry: +(data?.result?.vehicle?.importDate ?? "2025"),
+                  capacity: (data?.result?.vehicle?.capacity ?? "").toString(),
                 }
               )}`}
             ></Highlight>
@@ -414,11 +375,12 @@ const Page = () => {
                     align="center"
                     direction="row"
                     w={"100%"}
-                    h={"100%"}
                     wrap="wrap"
+                    h={"100%"}
                     style={{
                       border: "1px solid #DDDDDD",
                       borderRadius: 12,
+                      cursor: "pointer",
                     }}
                     py={12}
                     px={{
@@ -450,16 +412,19 @@ const Page = () => {
                       >
                         {upperFirst(
                           `${
-                            carField.key == "mileage"
+                            carField.key == "meter"
                               ? `${money(
                                   `${
-                                    data?.service[
-                                      carField.key as keyof ResultDataType
+                                    data?.result.value?.[
+                                      carField.key as keyof FormType
                                     ]
                                   }`
                                 )}км`
-                              : data?.service[
-                                  carField.key as keyof ResultDataType
+                              : data?.result.value?.[
+                                  carField.key as keyof FormType
+                                ] ??
+                                data?.result?.vehicle?.[
+                                  carField.key as keyof VehicleInfo
                                 ]
                           }`
                         )}

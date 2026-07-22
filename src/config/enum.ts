@@ -31,6 +31,8 @@ export const PaymentTypeValue = {
   3: "Урамшуулал",
 };
 
+
+
 export enum TransactionType {
   income = 10,
   outcome = 20,

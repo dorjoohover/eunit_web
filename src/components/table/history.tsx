@@ -81,7 +81,7 @@ export const ServiceHistory = () => {
                 element.area
                   ? router.push(`/report/result?id=${element.id}`)
                   : element.brand
-                  ? router.push(`/car/result?id=${element.id}`)
+                  ? router.push(`/cars/result?id=${element.id}`)
                   : null;
               }
             }}

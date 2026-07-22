@@ -191,7 +191,7 @@ const BottomIcon = ({ d, color }: { color: string; d: string }) => {
     <CiDatabase color={color} size={22} />
   ) : d == "/wallet" ? (
     <IoWalletOutline color={color} size={18} />
-  ) : d== '/car' ? <LiaCarSideSolid color={color} size={18} /> : (
+  ) : d== '/cars' ? <LiaCarSideSolid color={color} size={18} /> : (
     <AiOutlineUser color={color} size={20} />
   );
 };

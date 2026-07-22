@@ -22,6 +22,12 @@ export const profileImgUrl = (url?: string, assets?: string) => {
         "https://www.pikpng.com/pngl/m/80-805068_my-profile-icon-blank-profile-picture-circle-clipart.png";
 };
 
+export function isValidCarNumber(input: string): boolean {
+  return true
+  const regex = /^[0-9]{4}[А-Я]{3}$/;
+  return regex.test(input.toUpperCase());
+}
+
 export const parseDate = (date: Date, symbol = "/", time = false) => {
   const month = date.getMonth();
   const year = date.getFullYear();
