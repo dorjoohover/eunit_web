@@ -1,5 +1,5 @@
 "use server";
-import { FormType } from "@/app/cars/page";
+import { FormType } from "@/app/cars/car-fields";
 import { ServiceType } from "@/config/enum";
 import { api } from "@/utils/routes";
 import { VehicleInfo } from "@/utils/type";

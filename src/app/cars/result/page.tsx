@@ -52,7 +52,7 @@ import { AiOutlineDashboard } from "react-icons/ai";
 import { IconManualGearbox } from "@tabler/icons-react";
 import { RiCarLine } from "react-icons/ri";
 import Image from "next/image";
-import { carFields, FormType } from "../page";
+import { carFields, FormType } from "../car-fields";
 import { VehicleInfo } from "@/utils/type";
 
 type ResultDataType = {
