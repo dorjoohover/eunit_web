@@ -10,10 +10,10 @@ const estimate = "estimate/";
 
 
 // export const api = "http://localhost:4000/api/v1/";
-export const api = "https://api.eunit.mn/api/v1/";
+export const api =process.env.API_URL ||  "https://api.eunit.mn/api/v1/";
 
 // export const uri = "http://localhost:3001";
-export const currentUrl = "https://eunit.mn";
+export const currentUrl =process.env.CURRENT_URL || "https://eunit.mn";
 
 export const imageApi = `${api}file/`;
 
