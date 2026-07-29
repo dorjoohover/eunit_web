@@ -2,7 +2,7 @@ name: Build & Push Docker Image
 
 on:
   push:
-    branches: [main]
+    branches: [dev]
   workflow_dispatch:
 
 permissions:
@@ -35,7 +35,7 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ env.IMAGE }}:latest
+            ${{ env.IMAGE }}:dev
             ${{ env.IMAGE }}:${{ github.sha }}
           no-cache: true
 
