@@ -66,6 +66,6 @@ export const config = {
     "/report/:path*",
     "/profile/:path*",
     "/wallet/:path*",
-    "/cars/:path*",
+    "/car/:path*",
   ],
 };
