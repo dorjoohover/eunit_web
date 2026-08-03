@@ -30,6 +30,7 @@ export const loginUser = async (
           maxAge: 60 * 60 ,
           sameSite: "none",
           secure: true,
+          path: "/",
         });
       }
 
@@ -63,7 +64,7 @@ export const getUsers = async () => {
 export async function logOut() {
   try {
     const cookie = await cookies();
-    cookie.delete("auth_token");
+    cookie.delete({ name: "auth_token", path: "/" });
     // return res;
   } catch (error) {
     // console.error("Logout error:", error);

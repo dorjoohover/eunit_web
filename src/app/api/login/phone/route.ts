@@ -34,8 +34,19 @@ export async function POST(req: NextRequest) {
         { status: response.status }
       );
     } else {
-      cookie.set("auth_token", token, {
+      // BUG FIX: өмнө нь энд Firebase-ийн түр ID token-ийг ("token" хувьсагч)
+      // хадгалж байсан — core рүү Bearer болгож явуулдаг жинхэнэ session
+      // token нь data.payload.accessToken байх ёстой (Google flow-той адил,
+      // @/(api)/auth.api.ts-г үз).
+      // BUG FIX: "path" тохируулаагүй байсан тул cookie зөвхөн
+      // "/api/login" замд хамаарч, бусад бүх route (middleware-ийг оруулаад)
+      // үүнийг огт хардаггүй байсан — яг таны "нэвтэрсний дараа бүх token
+      // шаардсан хуудас block хийгдэж байна" гэсэн шинжтэй таарч байна.
+      cookie.set("auth_token", data.payload.accessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
         sameSite: "strict",
+        path: "/",
         maxAge: 60 * 60,
       });
 
@@ -48,6 +59,7 @@ export async function POST(req: NextRequest) {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
+      path: "/",
       maxAge: 0, // Immediately expire the cookie
     });
     console.error("❌ Error in phone-login route:", error.message);
@@ -99,6 +111,7 @@ export async function DELETE(request: NextRequest) {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
+    path: "/",
     maxAge: 0, // Immediately expire the cookie
   });
 
