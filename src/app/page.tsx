@@ -150,7 +150,7 @@ export default function Home() {
             fz={{ md: 57, sm: 45, base: 32 }}
             fw="900"
           >
-            Орон сууцны үнэлгээ
+            Орон сууцны үнэлгэ
           </Title>
 
           <Flex justify="center">
