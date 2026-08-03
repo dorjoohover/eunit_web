@@ -30,7 +30,6 @@ export const loginUser = async (
           maxAge: 60 * 60 ,
           sameSite: "none",
           secure: true,
-          path: "/",
         });
       }
 
